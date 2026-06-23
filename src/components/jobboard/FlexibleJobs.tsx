@@ -1,30 +1,42 @@
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { formatSalary, employmentTypeLabels } from '@/lib/jobs';
 
-const flexibleJobs = [
-  { icon: '🛍️', title: 'Retail Sales Assistant', location: 'Nairobi', type: 'Part-time', salary: 'KSh 15k/mo' },
-  { icon: '✍️', title: 'Freelance Writer', location: 'Remote', type: 'Freelance', salary: 'KSh 2k/article' },
-  { icon: '🎪', title: 'Event Staff', location: 'Mombasa', type: 'Casual', salary: 'KSh 1.5k/day' },
-  { icon: '📋', title: 'Temporary Admin', location: 'Kisumu', type: 'Temporary', salary: 'KSh 25k/mo' },
-];
+export default async function FlexibleJobs() {
+  // Fetch flexible work jobs
+  const flexibleJobs = await prisma.job.findMany({
+    where: {
+      status: 'ACTIVE',
+      deletedAt: null,
+      employmentType: { in: ['PART_TIME', 'FREELANCE', 'TEMPORARY', 'CASUAL'] },
+    },
+    select: {
+      slug: true, title: true, locationCity: true, locationCounty: true,
+      employmentType: true, salaryMin: true, salaryMax: true, salaryDisclosure: true,
+      organization: { select: { orgName: true } },
+    },
+    orderBy: { datePosted: 'desc' },
+    take: 4,
+  });
 
-const locations = [
-  { name: 'Nairobi', count: 234 },
-  { name: 'Mombasa', count: 98 },
-  { name: 'Kisumu', count: 76 },
-  { name: 'Nakuru', count: 63 },
-  { name: 'Eldoret', count: 52 },
-  { name: 'Thika', count: 41 },
-  { name: 'Kakamega', count: 29 },
-  { name: 'Machakos', count: 33 },
-];
+  // Get job counts per county for sidebar
+  const countyCounts = await prisma.job.groupBy({
+    by: ['locationCounty'],
+    where: { status: 'ACTIVE', deletedAt: null, locationCounty: { not: null } },
+    _count: { id: true },
+    orderBy: { _count: { id: 'desc' } },
+    take: 8,
+  });
 
-export default function FlexibleJobs() {
   const typeColors: Record<string, string> = {
     'Part-time': 'bg-blue-50 text-blue-700',
-    Freelance: 'bg-purple-50 text-purple-700',
-    Casual: 'bg-orange-50 text-orange-700',
-    Temporary: 'bg-yellow-50 text-yellow-700',
+    'Freelance': 'bg-purple-50 text-purple-700',
+    'Casual': 'bg-orange-50 text-orange-700',
+    'Temporary': 'bg-yellow-50 text-yellow-700',
+    'Contract': 'bg-green-50 text-green-700',
   };
+
+  const icons = ['🛍️', '✍️', '🎪', '📋'];
 
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
@@ -36,30 +48,36 @@ export default function FlexibleJobs() {
                 <h2 className="text-2xl font-extrabold text-gray-800">🧩 Flexible Work Opportunities</h2>
                 <p className="text-sm text-gray-500 font-light">Browse casual, temporary, freelance, and part-time jobs.</p>
               </div>
-              <Link href="/jobs?type=flexible" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+              <Link href="/jobs?type=part-time" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
                 Browse All →
               </Link>
             </div>
             <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
-              {flexibleJobs.map((job, idx) => (
-                <div key={idx} className="flex flex-wrap items-center justify-between py-4 px-5 hover:bg-emerald-50/30 transition rounded-t-xl">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">{job.icon}</span>
-                    <div>
-                      <Link href={`/jobs/${idx + 20}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
-                        {job.title}
-                      </Link>
-                      <p className="text-xs text-gray-500">{job.location}</p>
+              {flexibleJobs.map((job, idx) => {
+                const typeLabel = employmentTypeLabels[job.employmentType || ''] || job.employmentType || 'Full-time';
+                return (
+                  <div key={job.slug} className="flex flex-wrap items-center justify-between py-4 px-5 hover:bg-emerald-50/30 transition">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{icons[idx % icons.length]}</span>
+                      <div>
+                        <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+                          {job.title}
+                        </Link>
+                        <p className="text-xs text-gray-500">{job.locationCity || job.locationCounty || 'Kenya'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1 sm:mt-0">
+                      <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${typeColors[typeLabel] || 'bg-gray-50 text-gray-700'}`}>
+                        {typeLabel}
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">{formatSalary(job as any)}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 mt-1 sm:mt-0">
-                    <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${typeColors[job.type] || 'bg-gray-50 text-gray-700'}`}>
-                      {job.type}
-                    </span>
-                    <span className="text-sm font-medium text-gray-700">{job.salary}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
+              {flexibleJobs.length === 0 && (
+                <div className="py-8 text-center text-sm text-gray-400">No flexible jobs currently listed</div>
+              )}
             </div>
           </div>
           <div className="lg:col-span-1">
@@ -73,15 +91,15 @@ export default function FlexibleJobs() {
             </div>
             <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/60">
               <div className="space-y-1">
-                {locations.map((loc) => (
+                {countyCounts.map((loc) => (
                   <Link
-                    key={loc.name}
-                    href={`/jobs?location=${loc.name.toLowerCase()}`}
+                    key={loc.locationCounty}
+                    href={`/location/${loc.locationCounty!.toLowerCase().replace(/\s+/g, '-')}`}
                     className="location-item flex items-center justify-between p-2.5 rounded-lg transition"
                   >
-                    <span className="loc-name text-sm font-medium text-gray-700 transition">{loc.name}</span>
+                    <span className="loc-name text-sm font-medium text-gray-700 transition">{loc.locationCounty}</span>
                     <span className="text-xs font-medium text-emerald-600 bg-emerald-100/60 px-2 py-0.5 rounded-full">
-                      {loc.count} jobs
+                      {loc._count.id} jobs
                     </span>
                   </Link>
                 ))}

@@ -1,6 +1,10 @@
 import Link from 'next/link';
+import { getJobs } from '@/lib/jobs';
+import { timeAgo } from '@/lib/jobs';
 
-export default function Hero() {
+export default async function Hero() {
+  const { jobs } = await getJobs({ perPage: 5 });
+
   return (
     <section className="section-bg py-12 md:py-16" style={{ marginTop: 0 }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,18 +22,21 @@ export default function Hero() {
               Get real-time alerts and apply directly to trusted employers across Kenya.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-2xl pt-1">
-              <input
-                type="text"
-                placeholder="Job title, skill, or company"
-                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-emerald-600"
-              />
-              <button type="button" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
-                Find Matching Jobs
-              </button>
+              <form action="/jobs" method="get" className="flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-2xl">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Job title, skill, or company"
+                  className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-emerald-600"
+                />
+                <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+                  Find Matching Jobs
+                </button>
+              </form>
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
               <Link
-                href="#"
+                href="/upload-cv"
                 className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition border border-gray-300 hover:border-emerald-500 px-4 py-1.5 rounded-full bg-white/50"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,21 +63,15 @@ export default function Hero() {
               </Link>
             </div>
             <ul className="divide-y divide-gray-200/50">
-              {[
-                { title: 'Senior Software Engineer', company: 'Safaricom', time: '2h' },
-                { title: 'Public Health Officer', company: 'County Gov. Mombasa', time: '4h' },
-                { title: 'IT Support Intern', company: 'Equity Bank', time: '1d' },
-                { title: 'Project Coordinator', company: 'UNICEF', time: '2d' },
-                { title: 'Retail Sales Assistant', company: 'Naivas', time: '3h' },
-              ].map((job, idx) => (
-                <li key={idx} className="py-2.5 flex items-center justify-between">
+              {jobs.map((job) => (
+                <li key={job.id} className="py-2.5 flex items-center justify-between">
                   <div>
-                    <Link href={`/jobs/${idx + 1}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+                    <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
                       {job.title}
                     </Link>
-                    <span className="text-sm text-gray-400 ml-2">{job.company}</span>
+                    <span className="text-sm text-gray-400 ml-2">{job.organization?.orgName || 'Confidential'}</span>
                   </div>
-                  <span className="text-xs text-gray-300">{job.time}</span>
+                  <span className="text-xs text-gray-300">{timeAgo(job.datePosted)}</span>
                 </li>
               ))}
             </ul>

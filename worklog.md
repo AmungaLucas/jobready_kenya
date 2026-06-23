@@ -24,3 +24,35 @@ Stage Summary:
 - Organizations: 20 major employers seeded
 - DB: SQLite at db/custom.db (switch DATABASE_URL for MySQL in production)
 - Commands: `npm run db:push`, `npm run db:seed`, `npm run db:generate`
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Phase 2 - Upgrade Job Pages to Slug Routing, generateMetadata, JSON-LD, ISR
+
+Work Log:
+- Created prisma/seed-jobs.ts - seeded all 24 mock jobs from old jobs.ts into DB with slugs, linked to categories/subcategories/organizations
+- Created src/lib/jobs.ts - complete job service layer with getJobs, getJobBySlug, getSimilarJobs, getAllJobSlugs, getFeaturedJobs, getClosingSoonJobs + helper functions (formatSalary, timeAgo, formatDate, employmentTypeLabels)
+- Created src/lib/jsonld.ts - JSON-LD helpers: generateJobPostingJsonLd (schema.org/JobPosting), generateBreadcrumbJsonLd
+- Created new /jobs/[slug]/page.tsx - replaces old /jobs/[id] with:
+  - generateMetadata: title, OG, canonical, robots, twitter cards
+  - JSON-LD JobPosting structured data (title, description, datePosted, validThrough, employmentType, hiringOrganization, jobLocation, baseSalary)
+  - JSON-LD BreadcrumbList structured data
+  - revalidate = 60 (ISR)
+  - generateStaticParams for all 24 job slugs
+- Upgraded /jobs/page.tsx - now queries DB via getJobs(), has static SEO metadata, inline job cards with slug links, empty state UI
+- Updated JobDetailsContent.tsx - uses new FormattedJob interface, slug-based links, category breadcrumbs, company profile links, deadline countdown
+- Updated JobCard.tsx - accepts DB job shape, links to /jobs/[slug]
+- Updated Hero.tsx - now server component, fetches 5 latest jobs from DB
+- Updated GovernmentJobs.tsx - queries DB for national/county government jobs
+- Updated ClosingSoon.tsx - queries DB for jobs closing within 14 days
+- Updated FlexibleJobs.tsx - queries DB for part-time/freelance/temporary/casual jobs, dynamic county counts
+- Removed old /jobs/[id]/ directory
+- Added categoryId field to getSimilarJobs for proper category-based similar job suggestions
+
+Stage Summary:
+- Build: SUCCESS - zero errors, 24 ISR pages pre-generated
+- Routes: /jobs (dynamic), /jobs/[slug] (ISR, 24 pages)
+- SEO: generateMetadata + JSON-LD on all job detail pages
+- ISR: 60-second revalidation on job detail and listing pages
+- All homepage job links now use slug-based URLs from database

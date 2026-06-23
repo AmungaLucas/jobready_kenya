@@ -1,15 +1,19 @@
 import Link from 'next/link';
+import { getClosingSoonJobs, timeAgo } from '@/lib/jobs';
 
-const closingJobs = [
-  { title: 'Marketing Manager', company: 'Co-op Bank', days: '2 days' },
-  { title: 'Data Analyst', company: 'KRA', days: '4 days' },
-  { title: 'Nurse', company: 'County Gov. Kisumu', days: '5 days' },
-  { title: 'Civil Engineer', company: 'KURA', days: '6 days' },
-  { title: 'Finance Officer', company: 'UNICEF', days: '7 days' },
-  { title: 'Retail Sales Assistant', company: 'Naivas', days: '8 days' },
-];
+function daysUntil(date: Date | null): string {
+  if (!date) return 'Open';
+  const now = new Date();
+  const diff = date.getTime() - now.getTime();
+  const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  if (days <= 0) return 'Closed';
+  if (days === 1) return '1 day';
+  return `${days} days`;
+}
 
-export default function ClosingSoon() {
+export default async function ClosingSoon() {
+  const jobs = await getClosingSoonJobs(14, 6);
+
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,17 +33,20 @@ export default function ClosingSoon() {
               </Link>
             </div>
             <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 px-4">
-              {closingJobs.map((job, idx) => (
-                <li key={idx} className="closing-item py-3 flex items-center justify-between">
+              {jobs.map((job) => (
+                <li key={job.id} className="closing-item py-3 flex items-center justify-between">
                   <div>
-                    <Link href={`/jobs/${idx + 1}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+                    <Link href={`/jobs/${job.slug}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
                       {job.title}
                     </Link>
-                    <span className="closing-company text-sm text-gray-400 ml-2 transition">{job.company}</span>
+                    <span className="closing-company text-sm text-gray-400 ml-2 transition">{job.organization?.orgName || 'Confidential'}</span>
                   </div>
-                  <span className="text-xs font-medium text-red-600">{job.days}</span>
+                  <span className="text-xs font-medium text-red-600">{daysUntil(job.deadline)}</span>
                 </li>
               ))}
+              {jobs.length === 0 && (
+                <li className="py-6 text-sm text-gray-400 text-center">No deadlines closing soon</li>
+              )}
             </ul>
             <div className="mt-6 pt-2 flex justify-center">
               <Link href="/jobs" className="text-sm font-medium text-gray-400 hover:text-emerald-600 transition inline-flex items-center gap-1.5">
@@ -66,7 +73,7 @@ export default function ClosingSoon() {
                 <span className="text-sm font-medium text-gray-500">From</span>
                 <span className="text-2xl font-extrabold text-emerald-600">KSh 1,500</span>
               </div>
-              <Link href="#" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
+              <Link href="/upload-cv" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
                 Improve My CV →
               </Link>
               <p className="mt-3 text-xs text-gray-400 text-center">100% satisfaction guarantee</p>

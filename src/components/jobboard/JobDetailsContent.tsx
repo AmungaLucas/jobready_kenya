@@ -2,23 +2,66 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import type { Job } from '@/data/jobs';
+
+interface FormattedJob {
+  id: string;
+  slug: string;
+  title: string;
+  company: string;
+  companySlug: string | null;
+  companyWebsite: string | null;
+  companyDescription: string;
+  location: string;
+  locationCounty: string | null;
+  type: string;
+  salary: string;
+  posted: string;
+  deadline: string;
+  deadlineDate: Date | null;
+  datePosted: Date;
+  category: string;
+  categorySlug: string;
+  subcategory: string;
+  subcategorySlug: string;
+  experienceLevel?: string | null;
+  description: string;
+  isRemote: boolean;
+  featured?: boolean;
+  match: number;
+  requirements: string[];
+  responsibilities: string[];
+}
 
 interface JobDetailsContentProps {
-  job: Job;
-  similar: Job[];
+  job: FormattedJob;
+  similar: Partial<FormattedJob>[];
+}
+
+function daysUntil(date: Date | null): number | null {
+  if (!date) return null;
+  const now = new Date();
+  const diff = date.getTime() - now.getTime();
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
 export default function JobDetailsContent({ job, similar }: JobDetailsContentProps) {
   const [saved, setSaved] = useState(false);
+  const daysLeft = daysUntil(job.deadlineDate);
 
   return (
     <section className="section-bg py-4 border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb with schema-friendly structure */}
         <nav className="flex items-center gap-2 text-sm text-gray-500">
           <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
           <span>/</span>
           <Link href="/jobs" className="hover:text-emerald-600 transition">Browse Jobs</Link>
+          {job.categorySlug && (
+            <>
+              <span>/</span>
+              <Link href={`/categories/${job.categorySlug}`} className="hover:text-emerald-600 transition">{job.category}</Link>
+            </>
+          )}
           <span>/</span>
           <span className="text-gray-700 font-medium">{job.title}</span>
         </nav>
@@ -38,17 +81,27 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                     <div>
                       <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{job.title}</h1>
                       <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
-                        <span className="font-semibold text-gray-700">{job.company}</span>
+                        {job.companySlug ? (
+                          <Link href={`/organizations/${job.companySlug}`} className="font-semibold text-gray-700 hover:text-emerald-600 transition">{job.company}</Link>
+                        ) : (
+                          <span className="font-semibold text-gray-700">{job.company}</span>
+                        )}
                         <span className="text-gray-300">•</span>
                         <span>{job.location}</span>
+                        {job.isRemote && (
+                          <>
+                            <span className="text-gray-300">•</span>
+                            <span className="text-emerald-600 font-medium">Remote</span>
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {job.match}% Match
-                  </span>
+                  {job.featured && (
+                    <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
+                  )}
                   <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{job.type}</span>
                 </div>
               </div>
@@ -65,18 +118,6 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
               <h2 className="text-lg font-extrabold text-gray-800">Job Description</h2>
               <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
-              <h3 className="text-md font-extrabold text-gray-800 mt-5">Key Responsibilities</h3>
-              <ul className="mt-2 space-y-1.5 text-sm text-gray-600 list-disc list-inside">
-                {job.responsibilities.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
-              <h3 className="text-md font-extrabold text-gray-800 mt-5">Requirements</h3>
-              <ul className="mt-2 space-y-1.5 text-sm text-gray-600 list-disc list-inside">
-                {job.requirements.map((item, idx) => (
-                  <li key={idx}>{item}</li>
-                ))}
-              </ul>
             </div>
 
             {/* Application */}
@@ -85,7 +126,9 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                 <div>
                   <h3 className="text-lg font-extrabold text-gray-800">Ready to apply?</h3>
                   <p className="text-sm text-gray-600">Submit your application before the deadline.</p>
-                  <p className="text-xs text-red-600 font-medium mt-1">⏳ Closes in 10 days</p>
+                  {daysLeft !== null && daysLeft > 0 && (
+                    <p className="text-xs text-red-600 font-medium mt-1">Closes in {daysLeft} day{daysLeft !== 1 ? 's' : ''}</p>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Link href="#" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
@@ -116,17 +159,25 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                   {job.company.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-md font-bold text-gray-800">{job.company}</h3>
-                  <p className="text-sm text-gray-500">Telecommunications · Nairobi, Kenya</p>
-                  <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
-                  <Link href="#" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
-                    Visit company website →
-                  </Link>
+                  <h3 className="text-md font-bold text-gray-800">
+                    {job.companySlug ? (
+                      <Link href={`/organizations/${job.companySlug}`} className="hover:text-emerald-600 transition">{job.company}</Link>
+                    ) : job.company}
+                  </h3>
+                  <p className="text-sm text-gray-500">{job.location}, Kenya</p>
+                  {job.companyDescription && (
+                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
+                  )}
+                  {job.companyWebsite && (
+                    <Link href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                      Visit company website →
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Share & Report */}
+            {/* Share */}
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-500">
               <div className="flex items-center gap-3">
                 <span className="font-medium">Share:</span>
@@ -145,8 +196,8 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                 <div className="mt-4 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
                   {similar.map((s) => (
                     <Link
-                      key={s.id}
-                      href={`/jobs/${s.id}`}
+                      key={s.id || s.slug}
+                      href={`/jobs/${s.slug}`}
                       className="similar-item flex flex-wrap items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition rounded-t-xl"
                     >
                       <div>
@@ -170,7 +221,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <h4 className="text-base font-extrabold text-gray-800 mt-1">Smart Job Matching</h4>
               <p className="text-sm text-gray-600 mt-1 leading-relaxed">Upload your CV and let our AI find the perfect roles for you.</p>
-              <Link href="#" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+              <Link href="/upload-cv" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
                 Upload CV &amp; Get Matched →
               </Link>
             </div>
@@ -185,12 +236,17 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
               <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Job Summary</h4>
               <div className="space-y-2.5 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">5+ years</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">{job.experienceLevel || 'Not specified'}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Employment Type</span><span className="font-medium text-gray-700">{job.type}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Location</span><span className="font-medium text-gray-700">{job.location}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Remote</span><span className="font-medium text-gray-700">Hybrid</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Location</span><span className="font-medium text-gray-700">{job.location}{job.isRemote ? ' (Remote)' : ''}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Salary</span><span className="font-medium text-emerald-600">{job.salary}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Deadline</span><span className="font-medium text-red-600">{job.deadline}</span></div>
+                {job.category && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Category</span>
+                    <Link href={`/categories/${job.categorySlug}`} className="font-medium text-emerald-600 hover:text-emerald-700 transition">{job.category}</Link>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -217,7 +273,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <h4 className="text-base font-extrabold text-gray-800">Your CV Opens Doors</h4>
               <p className="text-sm text-gray-600 mt-1">Professional CV writing, cover letters, and LinkedIn optimization. From <span className="font-bold text-emerald-600">KSh 1,500</span>.</p>
-              <Link href="#" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+              <Link href="/upload-cv" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
                 Improve My CV →
               </Link>
             </div>
