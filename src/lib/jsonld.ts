@@ -143,3 +143,56 @@ export function generateBreadcrumbJsonLd(items: { name: string; url: string }[])
     })),
   };
 }
+
+export function generateOpportunityJsonLd(opp: {
+  title: string;
+  description: string;
+  slug: string;
+  datePosted: Date;
+  deadline: Date | null;
+  providerName: string;
+  providerLogoUrl: string | null;
+  providerWebsite: string | null;
+  locationCity: string | null;
+  locationCounty: string | null;
+  isOnline: boolean;
+  fundingAmount: number | null;
+  fundingCurrency: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: opp.title,
+    description: opp.description,
+    identifier: { '@type': 'PropertyValue', name: 'JobBoard Kenya', value: opp.slug },
+    startDate: opp.datePosted.toISOString(),
+    endDate: opp.deadline?.toISOString(),
+    organizer: {
+      '@type': 'Organization',
+      name: opp.providerName,
+      logo: opp.providerLogoUrl || `${SITE_URL}/default-og.jpg`,
+      sameAs: opp.providerWebsite || undefined,
+    },
+    location: opp.isOnline
+      ? { '@type': 'VirtualLocation', url: opp.providerWebsite || SITE_URL }
+      : {
+          '@type': 'Place',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: opp.locationCity || '',
+            addressRegion: opp.locationCounty || '',
+            addressCountry: 'KE',
+          },
+        },
+    offers: opp.fundingAmount
+      ? {
+          '@type': 'Offer',
+          price: opp.fundingAmount,
+          priceCurrency: opp.fundingCurrency || 'KES',
+          description: 'Funding amount',
+        }
+      : undefined,
+    isAccessibleForFree: !opp.fundingAmount || opp.fundingAmount === 0 ? true : undefined,
+    url: `${SITE_URL}/opportunities/${opp.slug}`,
+  };
+}

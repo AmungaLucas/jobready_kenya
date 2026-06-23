@@ -177,3 +177,24 @@ Stage Summary:
 - 5-layer fallback for counties with 0 gov jobs
 - Test script: scripts/test-phase5b.js (36/36 passing)
 
+---
+Task ID: 6
+Agent: main
+Task: Phase 6 - Opportunities Pages
+
+Work Log:
+- Created src/lib/opportunities.ts service layer (getOpportunities, getOpportunityBySlug, getAllOpportunitySlugs, getOpportunityCounts, formatFunding)
+- Added 9 SEO-rich OPP_TYPE_DESCRIPTIONS (100+ words each for scholarships, grants, fellowships, etc.)
+- Added generateOpportunityJsonLd to jsonld.ts (Event schema with VirtualLocation support)
+- Created /opportunities/page.tsx (dynamic, ?type= filter, 9 tabs, 5-layer empty fallback, JSON-LD)
+- Created /opportunities/[slug]/page.tsx (SSG+ISR, full detail with Description/Eligibility/Requirements/Benefits/HowToApply, Related Jobs, Apply CTA)
+- Fixed getSimilarJobs call — replaced with getJobs({ county }) since getSimilarJobs expects JobDetail not opportunity
+- Build: 634 routes (630 pre-rendered HTML)
+- Test script: scripts/test-phase6.js — 100/100 passing
+
+Stage Summary:
+- /opportunities: Dynamic listing page with 9 type tabs (Scholarships, Grants, Fellowships, etc.)
+- /opportunities/[slug]: SSG detail page with ISR, Event JSON-LD, related jobs
+- 0 opportunities in DB currently — all content served via 5-layer empty fallback
+- Test script: scripts/test-phase6.js (100/100 passing)
+
