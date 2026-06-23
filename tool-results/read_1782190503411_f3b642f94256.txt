@@ -1,0 +1,602 @@
+   501→   501→      { value: "AGRONOMY", label: "Agronomy" },
+   502→   502→      { value: "FARM_MANAGEMENT", label: "Farm Management" },
+   503→   503→      { value: "AGRICULTURAL_EXTENSION", label: "Agricultural Extension" },
+   504→   504→      { value: "LIVESTOCK_MANAGEMENT", label: "Livestock Management" },
+   505→   505→      { value: "CROP_SCIENCE", label: "Crop Science" },
+   506→   506→      { value: "AGRICULTURAL_ENGINEERING", label: "Agricultural Engineering" },
+   507→   507→      { value: "FOOD_SCIENCE", label: "Food Science" },
+   508→   508→      { value: "AGRIBUSINESS", label: "Agribusiness" },
+   509→   509→      { value: "HORTICULTURE", label: "Horticulture" },
+   510→   510→      { value: "SUSTAINABLE_AGRICULTURE", label: "Sustainable Agriculture" },
+   511→   511→      { value: "PRECISION_AGRICULTURE", label: "Precision Agriculture" },
+   512→   512→      { value: "AGRICULTURAL_ECONOMICS", label: "Agricultural Economics" },
+   513→   513→      { value: "PEST_MANAGEMENT", label: "Pest Management" },
+   514→   514→      { value: "SOIL_SCIENCE", label: "Soil Science" },
+   515→   515→      { value: "FORESTRY", label: "Forestry" }
+   516→   516→    ]
+   517→   517→  },
+   518→   518→  // 14. LEGAL
+   519→   519→  {
+   520→   520→    value: "LEGAL",
+   521→   521→    label: "Legal & Compliance",
+   522→   522→    subcategories: [
+   523→   523→      { value: "CORPORATE_LAW", label: "Corporate Law" },
+   524→   524→      { value: "LEGAL_ADVISORY", label: "Legal Advisory" },
+   525→   525→      { value: "CONTRACT_MANAGEMENT", label: "Contract Management" },
+   526→   526→      { value: "COMPLIANCE_OFFICER", label: "Compliance" },
+   527→   527→      { value: "PARALEGAL", label: "Paralegal Services" },
+   528→   528→      { value: "INTELLECTUAL_PROPERTY", label: "Intellectual Property" },
+   529→   529→      { value: "LITIGATION", label: "Litigation" },
+   530→   530→      { value: "LABOR_LAW", label: "Labor Law" },
+   531→   531→      { value: "TAX_LAW", label: "Tax Law" },
+   532→   532→      { value: "REAL_ESTATE_LAW", label: "Real Estate Law" },
+   533→   533→      { value: "REGULATORY_AFFAIRS", label: "Regulatory Affairs" },
+   534→   534→      { value: "INTERNATIONAL_LAW", label: "International Law" },
+   535→   535→      { value: "ENVIRONMENTAL_LAW", label: "Environmental Law" },
+   536→   536→      { value: "HEALTHCARE_LAW", label: "Healthcare Law" },
+   537→   537→      { value: "CRIMINAL_LAW", label: "Criminal Law" },
+   538→   538→      { value: "FAMILY_LAW", label: "Family Law" },
+   539→   539→      { value: "LEGAL_RESEARCH", label: "Legal Research" }
+   540→   540→    ]
+   541→   541→  },
+   542→   542→  // 15. CREATIVE_DESIGN
+   543→   543→  {
+   544→   544→    value: "CREATIVE_DESIGN",
+   545→   545→    label: "Creative Arts & Design",
+   546→   546→    subcategories: [
+   547→   547→      { value: "GRAPHIC_DESIGN", label: "Graphic Design" },
+   548→   548→      { value: "UX_UI_DESIGN", label: "UX/UI Design" },
+   549→   549→      { value: "MULTIMEDIA_DESIGN", label: "Multimedia Design" },
+   550→   550→      { value: "PHOTOGRAPHY", label: "Photography" },
+   551→   551→      { value: "VIDEO_EDITING", label: "Video Editing & Production" },
+   552→   552→      { value: "ANIMATION", label: "Animation" },
+   553→   553→      { value: "ART_DIRECTION", label: "Art Direction" },
+   554→   554→      { value: "ILLUSTRATION", label: "Illustration" },
+   555→   555→      { value: "INTERIOR_DESIGN", label: "Interior Design" },
+   556→   556→      { value: "FASHION_DESIGN", label: "Fashion Design" },
+   557→   557→      { value: "PRODUCT_DESIGN", label: "Product Design" },
+   558→   558→      { value: "MOTION_GRAPHICS", label: "Motion Graphics" },
+   559→   559→      { value: "3D_MODELING", label: "3D Modeling" },
+   560→   560→      { value: "VISUAL_ARTS", label: "Visual Arts" },
+   561→   561→      { value: "INDUSTRIAL_DESIGN", label: "Industrial Design" },
+   562→   562→      { value: "JEWELRY_DESIGN", label: "Jewelry Design" },
+   563→   563→      { value: "TEXTILE_DESIGN", label: "Textile Design" },
+   564→   564→      { value: "CERAMIC_DESIGN", label: "Ceramic Design" }
+   565→   565→    ]
+   566→   566→  },
+   567→   567→  // 16. ARCHITECTURE_CONSTRUCTION
+   568→   568→  {
+   569→   569→    value: "ARCHITECTURE_CONSTRUCTION",
+   570→   570→    label: "Architecture & Construction",
+   571→   571→    subcategories: [
+   572→   572→      { value: "ARCHITECTURE", label: "Architecture" },
+   573→   573→      { value: "CONSTRUCTION_MANAGEMENT", label: "Construction Management" },
+   574→   574→      { value: "QUANTITY_SURVEYING", label: "Quantity Surveying" },
+   575→   575→      { value: "SITE_SUPERVISION", label: "Site Supervision" },
+   576→   576→      { value: "URBAN_PLANNING", label: "Urban Planning" },
+   577→   577→      { value: "LANDSCAPE_ARCHITECTURE", label: "Landscape Architecture" },
+   578→   578→      { value: "BUILDING_SURVEYING", label: "Building Surveying" },
+   579→   579→      { value: "CONSTRUCTION_SAFETY", label: "Construction Safety" },
+   580→   580→      { value: "ESTIMATING", label: "Estimating" },
+   581→   581→      { value: "PROJECT_COORDINATION", label: "Project Coordination" },
+   582→   582→      { value: "INTERIOR_ARCHITECTURE", label: "Interior Architecture" },
+   583→   583→      { value: "STRUCTURAL_ENGINEERING_CONSTRUCTION", label: "Structural Engineering" },
+   584→   584→      { value: "CONSTRUCTION_EQUIPMENT", label: "Construction Equipment Operation" },
+   585→   585→      { value: "BUILDING_INSPECTION", label: "Building Inspection" },
+   586→   586→      { value: "GREEN_BUILDING", label: "Green Building" },
+   587→   587→      { value: "CONSTRUCTION_ESTIMATING", label: "Construction Estimating" }
+   588→   588→    ]
+   589→   589→  },
+   590→   590→  // 17. SCIENCE_RESEARCH
+   591→   591→  {
+   592→   592→    value: "SCIENCE_RESEARCH",
+   593→   593→    label: "Science & Research",
+   594→   594→    subcategories: [
+   595→   595→      { value: "LAB_RESEARCH", label: "Laboratory Research" },
+   596→   596→      { value: "CHEMISTRY", label: "Chemistry" },
+   597→   597→      { value: "BIOLOGY", label: "Biology" },
+   598→   598→      { value: "ENVIRONMENTAL_SCIENCE", label: "Environmental Science" },
+   599→   599→      { value: "PHYSICS", label: "Physics" },
+   600→   600→      { value: "R_AND_D", label: "Research & Development" },
+   601→   601→      { value: "BIOTECHNOLOGY", label: "Biotechnology" },
+   602→   602→      { value: "CLINICAL_RESEARCH", label: "Clinical Research" },
+   603→   603→      { value: "GEOLOGY", label: "Geology" },
+   604→   604→      { value: "FORENSIC_SCIENCE", label: "Forensic Science" },
+   605→   605→      { value: "MARINE_BIOLOGY", label: "Marine Biology" },
+   606→   606→      { value: "ASTRONOMY", label: "Astronomy" },
+   607→   607→      { value: "NEUROSCIENCE", label: "Neuroscience" },
+   608→   608→      { value: "GENETICS", label: "Genetics" },
+   609→   609→      { value: "MICROBIOLOGY", label: "Microbiology" },
+   610→   610→      { value: "BIOCHEMISTRY", label: "Biochemistry" }
+   611→   611→    ]
+   612→   612→  },
+   613→   613→  // 18. CUSTOMER_SERVICE
+   614→   614→  {
+   615→   615→    value: "CUSTOMER_SERVICE",
+   616→   616→    label: "Customer Service",
+   617→   617→    subcategories: [
+   618→   618→      { value: "CALL_CENTER", label: "Call Center" },
+   619→   619→      { value: "CUSTOMER_SUPPORT", label: "Customer Support" },
+   620→   620→      { value: "CLIENT_RELATIONS", label: "Client Relations" },
+   621→   621→      { value: "HELPDESK", label: "Helpdesk" },
+   622→   622→      { value: "CUSTOMER_EXPERIENCE", label: "Customer Experience" },
+   623→   623→      { value: "TECHNICAL_SUPPORT", label: "Technical Support" },
+   624→   624→      { value: "CHAT_SUPPORT", label: "Chat Support" },
+   625→   625→      { value: "CUSTOMER_SERVICE_MANAGEMENT", label: "Customer Service Management" },
+   626→   626→      { value: "COMPLAINT_RESOLUTION", label: "Complaint Resolution" },
+   627→   627→      { value: "OMNICHANNEL_SUPPORT", label: "Omnichannel Support" },
+   628→   628→      { value: "CUSTOMER_SUCCESS_SPECIALIST", label: "Customer Success Specialist" },
+   629→   629→      { value: "SERVICE_DELIVERY", label: "Service Delivery" },
+   630→   630→      { value: "CUSTOMER_SUPPORT_ENGINEER", label: "Customer Support Engineer" },
+   631→   631→      { value: "CALL_CENTER_MANAGER", label: "Call Center Manager" },
+   632→   632→      { value: "CLIENT_SERVICES", label: "Client Services" },
+   633→   633→      { value: "CUSTOMER_CARE", label: "Customer Care" }
+   634→   634→    ]
+   635→   635→  },
+   636→   636→  // 19. SKILLED_TRADES
+   637→   637→  {
+   638→   638→    value: "SKILLED_TRADES",
+   639→   639→    label: "Skilled Trades & Manual Work",
+   640→   640→    subcategories: [
+   641→   641→      { value: "ELECTRICIAN", label: "Electrical Installation" },
+   642→   642→      { value: "PLUMBING", label: "Plumbing" },
+   643→   643→      { value: "WELDING", label: "Welding & Fabrication" },
+   644→   644→      { value: "CARPENTRY", label: "Carpentry" },
+   645→   645→      { value: "MAINTENANCE", label: "Maintenance & Repair" },
+   646→   646→      { value: "MACHINERY_OPERATION", label: "Machinery Operation" },
+   647→   647→      { value: "HVAC", label: "HVAC Installation & Repair" },
+   648→   648→      { value: "PAINTING", label: "Painting & Finishing" },
+   649→   649→      { value: "MASONRY", label: "Masonry" },
+   650→   650→      { value: "AUTO_MECHANIC", label: "Automotive Mechanics" },
+   651→   651→      { value: "TOOL_MAKING", label: "Tool Making" },
+   652→   652→      { value: "CABINET_MAKING", label: "Cabinet Making" },
+   653→   653→      { value: "FLOORING", label: "Flooring Installation" },
+   654→   654→      { value: "ROOFING", label: "Roofing" },
+   655→   655→      { value: "GLAZING", label: "Glazing" },
+   656→   656→      { value: "LOCKSMITH", label: "Locksmith" },
+   657→   657→      { value: "BOILERMAKER", label: "Boilermaking" }
+   658→   658→    ]
+   659→   659→  },
+   660→   660→  // 20. MEDIA_PUBLISHING
+   661→   661→  {
+   662→   662→    value: "MEDIA_PUBLISHING",
+   663→   663→    label: "Media & Publishing",
+   664→   664→    subcategories: [
+   665→   665→      { value: "JOURNALISM", label: "Journalism" },
+   666→   666→      { value: "EDITING", label: "Editing & Proofreading" },
+   667→   667→      { value: "PUBLISHING", label: "Publishing" },
+   668→   668→      { value: "BROADCASTING", label: "Broadcasting" },
+   669→   669→      { value: "CONTENT_CREATION", label: "Content Creation" },
+   670→   670→      { value: "COPYWRITING", label: "Copywriting" },
+   671→   671→      { value: "TECHNICAL_WRITING", label: "Technical Writing" },
+   672→   672→      { value: "RADIO_PRODUCTION", label: "Radio Production" },
+   673→   673→      { value: "TV_PRODUCTION", label: "Television Production" },
+   674→   674→      { value: "DIGITAL_PUBLISHING", label: "Digital Publishing" },
+   675→   675→      { value: "NEWS_REPORTING", label: "News Reporting" },
+   676→   676→      { value: "MAGAZINE_PUBLISHING", label: "Magazine Publishing" },
+   677→   677→      { value: "BOOK_PUBLISHING", label: "Book Publishing" },
+   678→   678→      { value: "COPY_EDITING", label: "Copy Editing" },
+   679→   679→      { value: "PROOFREADING", label: "Proofreading" },
+   680→   680→      { value: "ACQUISITIONS_EDITOR", label: "Acquisitions Editor" }
+   681→   681→    ]
+   682→   682→  },
+   683→   683→  // 21. NONPROFIT
+   684→   684→  {
+   685→   685→    value: "NONPROFIT",
+   686→   686→    label: "Nonprofit & Social Services",
+   687→   687→    subcategories: [
+   688→   688→      { value: "SOCIAL_WORK", label: "Social Work" },
+   689→   689→      { value: "COMMUNITY_OUTREACH", label: "Community Outreach" },
+   690→   690→      { value: "FUNDRAISING", label: "Fundraising" },
+   691→   691→      { value: "GRANT_WRITING", label: "Grant Writing" },
+   692→   692→      { value: "VOLUNTEER_COORDINATION", label: "Volunteer Coordination" },
+   693→   693→      { value: "NGO_MANAGEMENT", label: "NGO Management" },
+   694→   694→      { value: "PROGRAM_DEVELOPMENT", label: "Program Development" },
+   695→   695→      { value: "ADVOCACY", label: "Advocacy" },
+   696→   696→      { value: "HUMANITARIAN_AID", label: "Humanitarian Aid" },
+   697→   697→      { value: "COUNSELING", label: "Counseling" },
+   698→   698→      { value: "CASE_MANAGEMENT", label: "Case Management" },
+   699→   699→      { value: "COMMUNITY_ORGANIZING", label: "Community Organizing" },
+   700→   700→      { value: "PHILANTHROPY", label: "Philanthropy" },
+   701→   701→      { value: "FOUNDATION_MANAGEMENT", label: "Foundation Management" },
+   702→   702→      { value: "SOCIAL_ENTERPRISE", label: "Social Enterprise" },
+   703→   703→      { value: "DISASTER_RELIEF", label: "Disaster Relief" }
+   704→   704→    ]
+   705→   705→  },
+   706→   706→  // 22. REAL_ESTATE
+   707→   707→  {
+   708→   708→    value: "REAL_ESTATE",
+   709→   709→    label: "Real Estate",
+   710→   710→    subcategories: [
+   711→   711→      { value: "PROPERTY_MANAGEMENT", label: "Property Management" },
+   712→   712→      { value: "REAL_ESTATE_AGENT", label: "Real Estate Agent" },
+   713→   713→      { value: "REAL_ESTATE_DEVELOPMENT", label: "Real Estate Development" },
+   714→   714→      { value: "FACILITIES_MANAGEMENT", label: "Facilities Management" },
+   715→   715→      { value: "VALUATION", label: "Valuation & Appraisal" },
+   716→   716→      { value: "COMMERCIAL_REAL_ESTATE", label: "Commercial Real Estate" },
+   717→   717→      { value: "RESIDENTIAL_REAL_ESTATE", label: "Residential Real Estate" },
+   718→   718→      { value: "REAL_ESTATE_INVESTMENT", label: "Real Estate Investment" },
+   719→   719→      { value: "PROPERTY_ACQUISITION", label: "Property Acquisition" },
+   720→   720→      { value: "LEASING", label: "Leasing" },
+   721→   721→      { value: "REAL_ESTATE_BROKER", label: "Real Estate Broker" },
+   722→   722→      { value: "ASSET_MANAGEMENT_REAL_ESTATE", label: "Asset Management" },
+   723→   723→      { value: "REAL_ESTATE_MARKETING", label: "Real Estate Marketing" },
+   724→   724→      { value: "PROPERTY_SALES", label: "Property Sales" },
+   725→   725→      { value: "REAL_ESTATE_CONSULTING", label: "Real Estate Consulting" },
+   726→   726→      { value: "TITLE_SEARCH", label: "Title Search" }
+   727→   727→    ]
+   728→   728→  },
+   729→   729→  // 23. FITNESS_WELLNESS
+   730→   730→  {
+   731→   731→    value: "FITNESS_WELLNESS",
+   732→   732→    label: "Fitness & Wellness",
+   733→   733→    subcategories: [
+   734→   734→      { value: "PERSONAL_TRAINING", label: "Personal Training" },
+   735→   735→      { value: "GYM_MANAGEMENT", label: "Gym Management" },
+   736→   736→      { value: "NUTRITION", label: "Nutrition & Dietetics" },
+   737→   737→      { value: "YOGA_INSTRUCTION", label: "Yoga Instruction" },
+   738→   738→      { value: "WELLNESS_COACHING", label: "Wellness Coaching" },
+   739→   739→      { value: "GROUP_FITNESS", label: "Group Fitness Instruction" },
+   740→   740→      { value: "SPORTS_COACHING", label: "Sports Coaching" },
+   741→   741→      { value: "PHYSICAL_THERAPY", label: "Physical Therapy" },
+   742→   742→      { value: "MASSAGE_THERAPY", label: "Massage Therapy" },
+   743→   743→      { value: "SPORTS_MEDICINE", label: "Sports Medicine" },
+   744→   744→      { value: "PILATES_INSTRUCTION", label: "Pilates Instruction" },
+   745→   745→      { value: "CROSSFIT_TRAINING", label: "CrossFit Training" },
+   746→   746→      { value: "WELLNESS_PROGRAMMING", label: "Wellness Programming" },
+   747→   747→      { value: "HEALTH_COACHING", label: "Health Coaching" },
+   748→   748→      { value: "FITNESS_CONSULTING", label: "Fitness Consulting" }
+   749→   749→    ]
+   750→   750→  },
+   751→   751→  // 24. GOVERNMENT_PUBLIC_SECTOR
+   752→   752→  {
+   753→   753→    value: "GOVERNMENT_PUBLIC_SECTOR",
+   754→   754→    label: "Government & Public Sector",
+   755→   755→    subcategories: [
+   756→   756→      { value: "PUBLIC_ADMINISTRATION", label: "Public Administration" },
+   757→   757→      { value: "POLICY_ANALYSIS", label: "Policy Analysis" },
+   758→   758→      { value: "GOVERNMENT_RELATIONS", label: "Government Relations" },
+   759→   759→      { value: "PUBLIC_AFFAIRS", label: "Public Affairs" },
+   760→   760→      { value: "DIPLOMACY", label: "Diplomacy" },
+   761→   761→      { value: "PUBLIC_POLICY", label: "Public Policy" },
+   762→   762→      { value: "CIVIL_SERVICE", label: "Civil Service" },
+   763→   763→      { value: "URBAN_DEVELOPMENT", label: "Urban Development" },
+   764→   764→      { value: "PUBLIC_SAFETY", label: "Public Safety" },
+   765→   765→      { value: "EMERGENCY_MANAGEMENT", label: "Emergency Management" },
+   766→   766→      { value: "FOREIGN_SERVICE", label: "Foreign Service" },
+   767→   767→      { value: "LEGISLATIVE_AFFAIRS", label: "Legislative Affairs" },
+   768→   768→      { value: "PUBLIC_FINANCE", label: "Public Finance" },
+   769→   769→      { value: "GOVERNMENT_PROGRAMS", label: "Government Programs" },
+   770→   770→      { value: "REGULATORY_ENFORCEMENT", label: "Regulatory Enforcement" }
+   771→   771→    ]
+   772→   772→  },
+   773→   773→  // 25. CONSULTING
+   774→   774→  {
+   775→   775→    value: "CONSULTING",
+   776→   776→    label: "Consulting",
+   777→   777→    subcategories: [
+   778→   778→      { value: "MANAGEMENT_CONSULTING", label: "Management Consulting" },
+   779→   779→      { value: "STRATEGY_CONSULTING", label: "Strategy Consulting" },
+   780→   780→      { value: "IT_CONSULTING", label: "IT Consulting" },
+   781→   781→      { value: "HR_CONSULTING", label: "HR Consulting" },
+   782→   782→      { value: "FINANCIAL_CONSULTING", label: "Financial Consulting" },
+   783→   783→      { value: "OPERATIONS_CONSULTING", label: "Operations Consulting" },
+   784→   784→      { value: "BUSINESS_ANALYSIS", label: "Business Analysis" },
+   785→   785→      { value: "ORGANIZATIONAL_CONSULTING", label: "Organizational Consulting" },
+   786→   786→      { value: "SUSTAINABILITY_CONSULTING", label: "Sustainability Consulting" },
+   787→   787→      { value: "RISK_CONSULTING", label: "Risk Consulting" },
+   788→   788→      { value: "MARKETING_CONSULTING", label: "Marketing Consulting" },
+   789→   789→      { value: "SALES_CONSULTING", label: "Sales Consulting" },
+   790→   790→      { value: "SUPPLY_CHAIN_CONSULTING", label: "Supply Chain Consulting" },
+   791→   791→      { value: "TECHNOLOGY_CONSULTING", label: "Technology Consulting" },
+   792→   792→      { value: "STRATEGIC_PLANNING", label: "Strategic Planning" },
+   793→   793→      { value: "BUSINESS_TRANSFORMATION", label: "Business Transformation" }
+   794→   794→    ]
+   795→   795→  },
+   796→   796→  // 26. INSURANCE
+   797→   797→  {
+   798→   798→    value: "INSURANCE",
+   799→   799→    label: "Insurance",
+   800→   800→    subcategories: [
+   801→   801→      { value: "UNDERWRITING", label: "Underwriting" },
+   802→   802→      { value: "CLAIMS_ADJUSTMENT", label: "Claims Adjustment" },
+   803→   803→      { value: "INSURANCE_SALES", label: "Insurance Sales" },
+   804→   804→      { value: "RISK_ASSESSMENT", label: "Risk Assessment" },
+   805→   805→      { value: "INSURANCE_BROKER", label: "Insurance Broker" },
+   806→   806→      { value: "ACTUARIAL_SCIENCE", label: "Actuarial Science" },
+   807→   807→      { value: "POLICY_ADMINISTRATION", label: "Policy Administration" },
+   808→   808→      { value: "LOSS_CONTROL", label: "Loss Control" },
+   809→   809→      { value: "REINSURANCE", label: "Reinsurance" },
+   810→   810→      { value: "INSURANCE_ANALYTICS", label: "Insurance Analytics" },
+   811→   811→      { value: "LIFE_INSURANCE", label: "Life Insurance" },
+   812→   812→      { value: "HEALTH_INSURANCE", label: "Health Insurance" },
+   813→   813→      { value: "PROPERTY_INSURANCE", label: "Property Insurance" },
+   814→   814→      { value: "CASUALTY_INSURANCE", label: "Casualty Insurance" },
+   815→   815→      { value: "INSURANCE_UNDERWRITING", label: "Insurance Underwriting" }
+   816→   816→    ]
+   817→   817→  },
+   818→   818→  // 27. TRANSPORTATION
+   819→   819→  {
+   820→   820→    value: "TRANSPORTATION",
+   821→   821→    label: "Transportation",
+   822→   822→    subcategories: [
+   823→   823→      { value: "TRUCK_DRIVING", label: "Truck Driving" },
+   824→   824→      { value: "FLEET_MANAGEMENT", label: "Fleet Management" },
+   825→   825→      { value: "DISPATCHING", label: "Dispatching" },
+   826→   826→      { value: "PILOT", label: "Pilot" },
+   827→   827→      { value: "MARITIME", label: "Maritime" },
+   828→   828→      { value: "RAILROAD", label: "Railroad Operations" },
+   829→   829→      { value: "DELIVERY_SERVICES", label: "Delivery Services" },
+   830→   830→      { value: "TRANSPORTATION_PLANNING", label: "Transportation Planning" },
+   831→   831→      { value: "ROUTE_OPTIMIZATION", label: "Route Optimization" },
+   832→   832→      { value: "LOGISTICS_COORDINATION", label: "Logistics Coordination" },
+   833→   833→      { value: "AIR_TRAFFIC_CONTROL", label: "Air Traffic Control" },
+   834→   834→      { value: "SHIPPING_COORDINATION", label: "Shipping Coordination" },
+   835→   835→      { value: "PUBLIC_TRANSPORTATION", label: "Public Transportation" },
+   836→   836→      { value: "FREIGHT_BROKER", label: "Freight Broker" },
+   837→   837→      { value: "TRANSPORTATION_SAFETY", label: "Transportation Safety" }
+   838→   838→    ]
+   839→   839→  },
+   840→   840→  // 28. SECURITY_SERVICES
+   841→   841→  {
+   842→   842→    value: "SECURITY_SERVICES",
+   843→   843→    label: "Security Services",
+   844→   844→    subcategories: [
+   845→   845→      { value: "PHYSICAL_SECURITY", label: "Physical Security" },
+   846→   846→      { value: "SURVEILLANCE", label: "Surveillance" },
+   847→   847→      { value: "LOSS_PREVENTION", label: "Loss Prevention" },
+   848→   848→      { value: "EXECUTIVE_PROTECTION", label: "Executive Protection" },
+   849→   849→      { value: "SECURITY_MANAGEMENT", label: "Security Management" },
+   850→   850→      { value: "ACCESS_CONTROL", label: "Access Control" },
+   851→   851→      { value: "EMERGENCY_RESPONSE", label: "Emergency Response" },
+   852→   852→      { value: "SECURITY_SYSTEMS", label: "Security Systems" },
+   853→   853→      { value: "INVESTIGATIONS", label: "Investigations" },
+   854→   854→      { value: "CYBER_PHYSICAL", label: "Cyber-Physical Security" },
+   855→   855→      { value: "ARMORED_TRANSPORT", label: "Armored Transport" },
+   856→   856→      { value: "K9_UNITS", label: "K9 Units" },
+   857→   857→      { value: "EVENT_SECURITY", label: "Event Security" },
+   858→   858→      { value: "CORPORATE_SECURITY", label: "Corporate Security" },
+   859→   859→      { value: "RESIDENTIAL_SECURITY", label: "Residential Security" }
+   860→   860→    ]
+   861→   861→  },
+   862→   862→  // 29. ENVIRONMENTAL_SUSTAINABILITY
+   863→   863→  {
+   864→   864→    value: "ENVIRONMENTAL_SUSTAINABILITY",
+   865→   865→    label: "Environmental & Sustainability",
+   866→   866→    subcategories: [
+   867→   867→      { value: "ENVIRONMENTAL_MANAGEMENT", label: "Environmental Management" },
+   868→   868→      { value: "SUSTAINABILITY", label: "Sustainability" },
+   869→   869→      { value: "ENVIRONMENTAL_COMPLIANCE", label: "Environmental Compliance" },
+   870→   870→      { value: "RENEWABLE_ENERGY", label: "Renewable Energy" },
+   871→   871→      { value: "WASTE_MANAGEMENT", label: "Waste Management" },
+   872→   872→      { value: "CONSERVATION", label: "Conservation" },
+   873→   873→      { value: "ENVIRONMENTAL_IMPACT", label: "Environmental Impact Assessment" },
+   874→   874→      { value: "CARBON_MANAGEMENT", label: "Carbon Management" },
+   875→   875→      { value: "WATER_RESOURCES", label: "Water Resources" },
+   876→   876→      { value: "CLIMATE_CHANGE", label: "Climate Change" },
+   877→   877→      { value: "ENVIRONMENTAL_EDUCATION", label: "Environmental Education" },
+   878→   878→      { value: "GREEN_TECHNOLOGY", label: "Green Technology" },
+   879→   879→      { value: "SUSTAINABLE_DESIGN", label: "Sustainable Design" },
+   880→   880→      { value: "ENVIRONMENTAL_POLICY", label: "Environmental Policy" },
+   881→   881→      { value: "ECOLOGY", label: "Ecology" }
+   882→   882→    ]
+   883→   883→  },
+   884→   884→  // 30. INTERNATIONAL_DEVELOPMENT
+   885→   885→  {
+   886→   886→    value: "INTERNATIONAL_DEVELOPMENT",
+   887→   887→    label: "International Development",
+   888→   888→    subcategories: [
+   889→   889→      { value: "DEVELOPMENT_PROGRAMS", label: "Development Programs" },
+   890→   890→      { value: "HUMANITARIAN_AID", label: "Humanitarian Aid" },
+   891→   891→      { value: "PROJECT_MANAGEMENT_DEV", label: "Project Management" },
+   892→   892→      { value: "MONITORING_EVALUATION", label: "Monitoring & Evaluation" },
+   893→   893→      { value: "COMMUNITY_DEVELOPMENT", label: "Community Development" },
+   894→   894→      { value: "ECONOMIC_DEVELOPMENT", label: "Economic Development" },
+   895→   895→      { value: "GLOBAL_HEALTH", label: "Global Health" },
+   896→   896→      { value: "FOOD_SECURITY", label: "Food Security" },
+   897→   897→      { value: "GENDER_EQUALITY", label: "Gender Equality" },
+   898→   898→      { value: "CAPACITY_BUILDING", label: "Capacity Building" },
+   899→   899→      { value: "DISASTER_RISK_REDUCTION", label: "Disaster Risk Reduction" },
+   900→   900→      { value: "WATER_SANITATION", label: "Water & Sanitation" },
+   901→   901→      { value: "LIVELIHOODS", label: "Livelihoods" },
+   902→   902→      { value: "REFUGEE_SUPPORT", label: "Refugee Support" },
+   903→   903→      { value: "MICROFINANCE", label: "Microfinance" }
+   904→   904→    ]
+   905→   905→  },
+   906→   906→  // 31. ENTERTAINMENT
+   907→   907→  {
+   908→   908→    value: "ENTERTAINMENT",
+   909→   909→    label: "Entertainment",
+   910→   910→    subcategories: [
+   911→   911→      { value: "EVENTS_MANAGEMENT", label: "Events Management" },
+   912→   912→      { value: "MUSIC_PRODUCTION", label: "Music Production" },
+   913→   913→      { value: "FILM_PRODUCTION", label: "Film Production" },
+   914→   914→      { value: "THEATRE", label: "Theatre" },
+   915→   915→      { value: "TALENT_MANAGEMENT", label: "Talent Management" },
+   916→   916→      { value: "CONCERT_PROMOTION", label: "Concert Promotion" },
+   917→   917→      { value: "VENUE_MANAGEMENT", label: "Venue Management" },
+   918→   918→      { value: "STAGE_PRODUCTION", label: "Stage Production" },
+   919→   919→      { value: "PERFORMING_ARTS", label: "Performing Arts" },
+   920→   920→      { value: "ENTERTAINMENT_LAW", label: "Entertainment Law" },
+   921→   921→      { value: "CASTING", label: "Casting" },
+   922→   922→      { value: "SOUND_ENGINEERING", label: "Sound Engineering" },
+   923→   923→      { value: "LIGHTING_DESIGN", label: "Lighting Design" },
+   924→   924→      { value: "CHOREOGRAPHY", label: "Choreography" },
+   925→   925→      { value: "CIRCUS_ARTS", label: "Circus Arts" }
+   926→   926→    ]
+   927→   927→  },
+   928→   928→  // 32. VETERINARY
+   929→   929→  {
+   930→   930→    value: "VETERINARY",
+   931→   931→    label: "Veterinary",
+   932→   932→    subcategories: [
+   933→   933→      { value: "VETERINARY_MEDICINE", label: "Veterinary Medicine" },
+   934→   934→      { value: "VETERINARY_SURGERY", label: "Veterinary Surgery" },
+   935→   935→      { value: "ANIMAL_CARE", label: "Animal Care" },
+   936→   936→      { value: "VETERINARY_TECHNICIAN", label: "Veterinary Technician" },
+   937→   937→      { value: "VETERINARY_RESEARCH", label: "Veterinary Research" },
+   938→   938→      { value: "ZOOLOGY", label: "Zoology" },
+   939→   939→      { value: "WILDLIFE_CARE", label: "Wildlife Care" },
+   940→   940→      { value: "VETERINARY_PUBLIC_HEALTH", label: "Veterinary Public Health" },
+   941→   941→      { value: "ANIMAL_NUTRITION", label: "Animal Nutrition" },
+   942→   942→      { value: "VETERINARY_PHARMACOLOGY", label: "Veterinary Pharmacology" },
+   943→   943→      { value: "EQUINE_MEDICINE", label: "Equine Medicine" },
+   944→   944→      { value: "EXOTIC_ANIMAL_CARE", label: "Exotic Animal Care" },
+   945→   945→      { value: "VETERINARY_DENTISTRY", label: "Veterinary Dentistry" },
+   946→   946→      { value: "ANIMAL_BEHAVIOR", label: "Animal Behavior" }
+   947→   947→    ]
+   948→   948→  },
+   949→   949→  // 33. DENTAL
+   950→   950→  {
+   951→   951→    value: "DENTAL",
+   952→   952→    label: "Dental Healthcare",
+   953→   953→    subcategories: [
+   954→   954→      { value: "DENTISTRY", label: "Dentistry" },
+   955→   955→      { value: "DENTAL_HYGIENE", label: "Dental Hygiene" },
+   956→   956→      { value: "DENTAL_ASSISTING", label: "Dental Assisting" },
+   957→   957→      { value: "ORTHODONTICS", label: "Orthodontics" },
+   958→   958→      { value: "ORAL_SURGERY", label: "Oral Surgery" },
+   959→   959→      { value: "PEDIATRIC_DENTISTRY", label: "Pediatric Dentistry" },
+   960→   960→      { value: "PERIODONTICS", label: "Periodontics" },
+   961→   961→      { value: "ENDODONTICS", label: "Endodontics" },
+   962→   962→      { value: "DENTAL_LABORATORY", label: "Dental Laboratory" },
+   963→   963→      { value: "DENTAL_RESEARCH", label: "Dental Research" },
+   964→   964→      { value: "PROSTHODONTICS", label: "Prosthodontics" },
+   965→   965→      { value: "DENTAL_RADIOLOGY", label: "Dental Radiology" },
+   966→   966→      { value: "ORAL_PATHOLOGY", label: "Oral Pathology" },
+   967→   967→      { value: "DENTAL_PUBLIC_HEALTH", label: "Dental Public Health" }
+   968→   968→    ]
+   969→   969→  },
+   970→   970→  // 34. SPORTS_RECREATION
+   971→   971→  {
+   972→   972→    value: "SPORTS_RECREATION",
+   973→   973→    label: "Sports & Recreation",
+   974→   974→    subcategories: [
+   975→   975→      { value: "SPORTS_COACHING", label: "Sports Coaching" },
+   976→   976→      { value: "ATHLETIC_TRAINING", label: "Athletic Training" },
+   977→   977→      { value: "SPORTS_MANAGEMENT", label: "Sports Management" },
+   978→   978→      { value: "RECREATION_MANAGEMENT", label: "Recreation Management" },
+   979→   979→      { value: "SPORTS_MEDICINE", label: "Sports Medicine" },
+   980→   980→      { value: "SPORTS_PSYCHOLOGY", label: "Sports Psychology" },
+   981→   981→      { value: "SPORTS_BROADCASTING", label: "Sports Broadcasting" },
+   982→   982→      { value: "SPORTS_JOURNALISM", label: "Sports Journalism" },
+   983→   983→      { value: "PROFESSIONAL_ATHLETE", label: "Professional Athlete" },
+   984→   984→      { value: "REFEREE_OFFICIATING", label: "Referee & Officiating" },
+   985→   985→      { value: "OUTDOOR_RECREATION", label: "Outdoor Recreation" },
+   986→   986→      { value: "CAMP_MANAGEMENT", label: "Camp Management" },
+   987→   987→      { value: "SPORTS_FACILITY_MANAGEMENT", label: "Sports Facility Management" }
+   988→   988→    ]
+   989→   989→  },
+   990→   990→  // 35. TELECOMMUNICATIONS
+   991→   991→  {
+   992→   992→    value: "TELECOMMUNICATIONS",
+   993→   993→    label: "Telecommunications",
+   994→   994→    subcategories: [
+   995→   995→      { value: "NETWORK_ENGINEERING_TELECOM", label: "Network Engineering" },
+   996→   996→      { value: "TELECOM_SALES", label: "Telecom Sales" },
+   997→   997→      { value: "WIRELESS_COMMUNICATIONS", label: "Wireless Communications" },
+   998→   998→      { value: "FIBER_OPTICS", label: "Fiber Optics" },
+   999→   999→      { value: "SATELLITE_COMMUNICATIONS", label: "Satellite Communications" },
+  1000→  1000→      { value: "VOIP_ENGINEERING", label: "VoIP Engineering" },
+  1001→  1001→      { value: "TELECOM_INFRASTRUCTURE", label: "Telecom Infrastructure" },
+  1002→  1002→      { value: "BROADBAND_TECHNOLOGY", label: "Broadband Technology" },
+  1003→  1003→      { value: "TELECOM_REGULATORY", label: "Telecom Regulatory Affairs" },
+  1004→  1004→      { value: "5G_TECHNOLOGY", label: "5G Technology" },
+  1005→  1005→      { value: "TELECOM_PROJECT_MANAGEMENT", label: "Telecom Project Management" },
+  1006→  1006→      { value: "RADIO_FREQUENCY_ENGINEERING", label: "Radio Frequency Engineering" }
+  1007→  1007→    ]
+  1008→  1008→  },
+  1009→  1009→  // 36. ENERGY_UTILITIES
+  1010→  1010→  {
+  1011→  1011→    value: "ENERGY_UTILITIES",
+  1012→  1012→    label: "Energy & Utilities",
+  1013→  1013→    subcategories: [
+  1014→  1014→      { value: "POWER_GENERATION", label: "Power Generation" },
+  1015→  1015→      { value: "RENEWABLE_ENERGY_UTILITIES", label: "Renewable Energy" },
+  1016→  1016→      { value: "NUCLEAR_ENERGY", label: "Nuclear Energy" },
+  1017→  1017→      { value: "OIL_GAS", label: "Oil & Gas" },
+  1018→  1018→      { value: "UTILITY_MANAGEMENT", label: "Utility Management" },
+  1019→  1019→      { value: "ENERGY_TRADING", label: "Energy Trading" },
+  1020→  1020→      { value: "POWER_DISTRIBUTION", label: "Power Distribution" },
+  1021→  1021→      { value: "ELECTRIC_GRID", label: "Electric Grid Management" },
+  1022→  1022→      { value: "WATER_UTILITIES", label: "Water Utilities" },
+  1023→  1023→      { value: "ENERGY_EFFICIENCY", label: "Energy Efficiency" },
+  1024→  1024→      { value: "SMART_GRID", label: "Smart Grid Technology" },
+  1025→  1025→      { value: "ENVIRONMENTAL_COMPLIANCE_ENERGY", label: "Environmental Compliance" }
+  1026→  1026→    ]
+  1027→  1027→  },
+  1028→  1028→  // 37. MINING_RESOURCES
+  1029→  1029→  {
+  1030→  1030→    value: "MINING_RESOURCES",
+  1031→  1031→    label: "Mining & Natural Resources",
+  1032→  1032→    subcategories: [
+  1033→  1033→      { value: "MINING_ENGINEERING", label: "Mining Engineering" },
+  1034→  1034→      { value: "GEOLOGY_MINING", label: "Geology" },
+  1035→  1035→      { value: "MINE_OPERATIONS", label: "Mine Operations" },
+  1036→  1036→      { value: "MINERAL_PROCESSING", label: "Mineral Processing" },
+  1037→  1037→      { value: "EXPLORATION_GEOLOGY", label: "Exploration Geology" },
+  1038→  1038→      { value: "MINE_SAFETY", label: "Mine Safety" },
+  1039→  1039→      { value: "QUARRY_MANAGEMENT", label: "Quarry Management" },
+  1040→  1040→      { value: "METALLURGY", label: "Metallurgy" },
+  1041→  1041→      { value: "RESOURCE_ESTIMATION", label: "Resource Estimation" },
+  1042→  1042→      { value: "ENVIRONMENTAL_RECLAMATION", label: "Environmental Reclamation" },
+  1043→  1043→      { value: "MINING_EQUIPMENT", label: "Mining Equipment Operation" }
+  1044→  1044→    ]
+  1045→  1045→  },
+  1046→  1046→  // 38. MANUFACTURING
+  1047→  1047→  {
+  1048→  1048→    value: "MANUFACTURING",
+  1049→  1049→    label: "Manufacturing & Production",
+  1050→  1050→    subcategories: [
+  1051→  1051→      { value: "PRODUCTION_MANAGEMENT", label: "Production Management" },
+  1052→  1052→      { value: "QUALITY_CONTROL", label: "Quality Control" },
+  1053→  1053→      { value: "PROCESS_ENGINEERING", label: "Process Engineering" },
+  1054→  1054→      { value: "ASSEMBLY_LINE", label: "Assembly Line Work" },
+  1055→  1055→      { value: "PLANT_MANAGEMENT", label: "Plant Management" },
+  1056→  1056→      { value: "LEAN_MANUFACTURING", label: "Lean Manufacturing" },
+  1057→  1057→      { value: "SIX_SIGMA", label: "Six Sigma" },
+  1058→  1058→      { value: "INDUSTRIAL_AUTOMATION", label: "Industrial Automation" },
+  1059→  1059→      { value: "PRODUCT_ASSEMBLY", label: "Product Assembly" },
+  1060→  1060→      { value: "MACHINE_OPERATION", label: "Machine Operation" },
+  1061→  1061→      { value: "PRINTING_PRODUCTION", label: "Printing Production" },
+  1062→  1062→      { value: "PACKAGING", label: "Packaging" }
+  1063→  1063→    ]
+  1064→  1064→  },
+  1065→  1065→  // 39. RETAIL
+  1066→  1066→  {
+  1067→  1067→    value: "RETAIL",
+  1068→  1068→    label: "Retail & Consumer Goods",
+  1069→  1069→    subcategories: [
+  1070→  1070→      { value: "RETAIL_MANAGEMENT", label: "Retail Management" },
+  1071→  1071→      { value: "MERCHANDISING", label: "Merchandising" },
+  1072→  1072→      { value: "BUYING", label: "Buying & Procurement" },
+  1073→  1073→      { value: "VISUAL_MERCHANDISING", label: "Visual Merchandising" },
+  1074→  1074→      { value: "STORE_OPERATIONS", label: "Store Operations" },
+  1075→  1075→      { value: "RETAIL_SALES", label: "Retail Sales" },
+  1076→  1076→      { value: "INVENTORY_CONTROL", label: "Inventory Control" },
+  1077→  1077→      { value: "CATEGORY_MANAGEMENT", label: "Category Management" },
+  1078→  1078→      { value: "RETAIL_MARKETING", label: "Retail Marketing" },
+  1079→  1079→      { value: "E_COMMERCE", label: "E-Commerce" },
+  1080→  1080→      { value: "OMNICHANNEL_RETAIL", label: "Omnichannel Retail" },
+  1081→  1081→      { value: "CUSTOMER_SERVICE_RETAIL", label: "Customer Service" }
+  1082→  1082→    ]
+  1083→  1083→  },
+  1084→  1084→  // 40. AVIATION
+  1085→  1085→  {
+  1086→  1086→    value: "AVIATION",
+  1087→  1087→    label: "Aviation & Aerospace",
+  1088→  1088→    subcategories: [
+  1089→  1089→      { value: "COMMERCIAL_PILOT", label: "Commercial Pilot" },
+  1090→  1090→      { value: "AIRCRAFT_MAINTENANCE", label: "Aircraft Maintenance" },
+  1091→  1091→      { value: "AVIATION_MANAGEMENT", label: "Aviation Management" },
+  1092→  1092→      { value: "AIR_TRAFFIC_CONTROL_AVIATION", label: "Air Traffic Control" },
+  1093→  1093→      { value: "FLIGHT_ATTENDANT", label: "Flight Attendant" },
+  1094→  1094→      { value: "AVIATION_SAFETY", label: "Aviation Safety" },
+  1095→  1095→      { value: "AEROSPACE_ENGINEERING_AVIATION", label: "Aerospace Engineering" },
+  1096→  1096→      { value: "AVIONICS", label: "Avionics" },
+  1097→  1097→      { value: "AIRPORT_OPERATIONS", label: "Airport Operations" },
+  1098→  1098→      { value: "GROUND_HANDLING", label: "Ground Handling" },
+  1099→  1099→      { value: "AVIATION_SECURITY", label: "Aviation Security" }
+  1100→  1100→    ]
+
+[showing lines 501-1100 of 1607; use offset=1101 with limit to continue reading]
