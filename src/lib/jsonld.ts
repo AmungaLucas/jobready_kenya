@@ -110,6 +110,27 @@ function mapEducationLevel(level: string): string {
   return map[level] || 'bachelor degree';
 }
 
+export function generateCollectionPageJsonLd(params: {
+  name: string;
+  description: string;
+  url: string;
+  itemCount: number;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: params.name,
+    description: params.description,
+    url: `${SITE_URL}${params.url}`,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'JobBoard Kenya',
+      url: SITE_URL,
+    },
+    ...(params.itemCount > 0 ? { about: { '@type': 'ItemList', numberOfItems: params.itemCount } } : {}),
+  };
+}
+
 export function generateBreadcrumbJsonLd(items: { name: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',

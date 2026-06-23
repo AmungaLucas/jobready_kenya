@@ -91,3 +91,28 @@ Stage Summary:
 - Listing page has fully dynamic SEO metadata based on active filters
 - Breadcrumb JSON-LD on both listing and detail pages
 - Ready for Phase 3 (Category/Subcategory pages)
+---
+Task ID: 3
+Agent: main
+Task: Phase 3 — Category/Subcategory pages with generateMetadata, JSON-LD, ISR, 5-layer empty fallback
+
+Work Log:
+- Read all existing files: schema, prisma lib, jobs lib, jsonld lib, category/subcategory route stubs, sidebar, job detail page
+- Discovered route stubs already existed at `/categories/[slug]/page.tsx` and `/categories/[category]/[slug]/page.tsx` importing from `@/lib/categories`
+- Discovered `src/lib/categories.ts` service layer already existed with all needed functions
+- Found critical bug: `getCategorySubcategories` returned full slugs (e.g. `technology-software-engineering`) but page linked as `/categories/${category.slug}/${sub.urlSlug}` causing double-prefix URLs
+- Fixed by adding `categorySlug` parameter to `getCategorySubcategories` to strip the category prefix
+- Updated both page components to pass `category.slug` / `categorySlug`
+- Found critical bug: `getAllSubcategorySlugs` returned `{ category, sub }` but route param is `{ category, slug }` — zero subcategory pages were pre-rendered
+- Fixed return type from `{ category, sub }` to `{ category, slug }` in `getAllSubcategorySlugs` and `getCachedSubcategorySlugs`
+- Removed test routes (`/cats-test/...`, `/test-nested/...`) and debug console.log statements
+- Build: 540 static pages (43 categories + 468 subcategories + 24 jobs + 5 other), zero errors
+- Wrote `scripts/test-phase3.js` — 31 tests covering: DB counts, slug resolution, URL stripping, pre-rendered HTML files, JSON-LD, 5-layer fallback, SEO metadata, breadcrumb links, no double-prefixing, ISR settings
+- All 31 tests passed
+
+Stage Summary:
+- Phase 3 complete. 43 category pages + 468 subcategory pages = 511 new ISR pages
+- All pages pre-rendered with `revalidate = 60`, generateMetadata (title, OG, canonical, robots), JSON-LD (CollectionPage + BreadcrumbList)
+- 5-layer empty fallback working: (1) SEO description, (2) subcategory grid, (3) sibling jobs, (4) county links, (5) explore categories + CTA + job alerts
+- Fixed 2 critical bugs (slug key mismatch, URL double-prefixing)
+- Cleaned up test routes and debug logs

@@ -135,7 +135,7 @@ export default async function JobDetailsPage({ params }: Props) {
     { name: 'Browse Jobs', url: '/jobs' },
   ];
   if (job.category) {
-    breadcrumbItems.push({ name: job.category.label, url: `/jobs?category=${job.category.slug}` });
+    breadcrumbItems.push({ name: job.category.label, url: `/categories/${job.category.slug}` });
   }
   breadcrumbItems.push({ name: job.title, url: `/jobs/${job.slug}` });
   const breadcrumbLd = generateBreadcrumbJsonLd(breadcrumbItems);

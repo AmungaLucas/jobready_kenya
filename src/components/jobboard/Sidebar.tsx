@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function Sidebar() {
+export default async function Sidebar() {
+  const categories = await prisma.jobCategory.findMany({
+    select: { label: true, slug: true, _count: { where: { status: 'ACTIVE', deletedAt: null }, select: { id: true } } },
+    orderBy: { sortOrder: 'asc' },
+    take: 8,
+  });
+
   return (
     <div className="lg:col-span-1 space-y-6 sidebar-sticky">
       {/* Smart Job Matching */}
@@ -26,26 +33,24 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Browse by Category */}
+      {/* Browse by Category - now dynamic */}
       <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
         <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
           Browse by Category
         </h4>
         <ul className="space-y-3">
-          {[
-            { name: '💻 IT & Software', count: 124, slug: 'it' },
-            { name: '🏥 Health & Medical', count: 87, slug: 'health' },
-            { name: '📊 Finance & Accounting', count: 63, slug: 'finance' },
-            { name: '🏗️ Engineering', count: 52, slug: 'engineering' },
-          ].map((cat) => (
+          {categories.map((cat) => (
             <li key={cat.slug}>
-              <Link href={`/jobs?category=${cat.slug}`} className="flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-emerald-600 transition">
-                <span>{cat.name}</span>
-                <span className="text-xs text-gray-400 font-normal">({cat.count})</span>
+              <Link href={`/categories/${cat.slug}`} className="flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-emerald-600 transition">
+                <span>{cat.label}</span>
+                <span className="text-xs text-gray-400 font-normal">({cat._count.id})</span>
               </Link>
             </li>
           ))}
         </ul>
+        <Link href="/categories" className="mt-3 block text-center text-xs font-medium text-emerald-600 hover:text-emerald-700 transition">
+          View all 43 categories →
+        </Link>
       </div>
 
       {/* Trending Searches */}

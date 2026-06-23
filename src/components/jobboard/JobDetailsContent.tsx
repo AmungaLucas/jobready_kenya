@@ -59,7 +59,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
           {job.categorySlug && (
             <>
               <span>/</span>
-              <Link href={`/jobs?category=${job.categorySlug}`} className="hover:text-emerald-600 transition">{job.category}</Link>
+              <Link href={`/categories/${job.categorySlug}`} className="hover:text-emerald-600 transition">{job.category}</Link>
             </>
           )}
           <span>/</span>

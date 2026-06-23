@@ -61,6 +61,8 @@ const jobListSelect = {
   subcategory: { select: { label: true, slug: true } },
 } as const;
 
+export { jobListSelect };
+
 export async function getJobs(params?: {
   category?: string;
   location?: string;
