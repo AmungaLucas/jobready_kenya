@@ -197,6 +197,27 @@ export function generateOpportunityJsonLd(opp: {
   };
 }
 
+export function generateWebPageJsonLd(params: {
+  name: string;
+  description: string;
+  url: string;
+  dateModified?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: params.name,
+    description: params.description,
+    url: `${SITE_URL}${params.url}`,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'JobBoard Kenya',
+      url: SITE_URL,
+    },
+    ...(params.dateModified ? { dateModified: params.dateModified } : {}),
+  };
+}
+
 export function generateArticleJsonLd(post: {
   title: string;
   excerpt: string;

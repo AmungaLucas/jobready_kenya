@@ -221,3 +221,74 @@ Stage Summary:
 - 10 blog posts seeded with 1000+ word articles on CV writing, salaries, interviews, government jobs, remote work, etc.
 - Test script: scripts/test-phase7.js (69/69 passing)
 
+---
+Task ID: 8
+Agent: main
+Task: Phase 8 - Static Pages (About, Contact, Privacy Policy, Terms of Service)
+
+Work Log:
+- Added generateWebPageJsonLd to jsonld.ts (schema.org WebPage type with isPartOf WebSite)
+- Created /about/page.tsx — Mission, What We Offer (4 cards), Our Reach (stats), Our Values (4 sections), CTA
+- Created /contact/page.tsx — Contact form (name, email, subject, message), sidebar with email/phone/location/hours, quick links, social
+- Created /privacy-policy/page.tsx — 9 sections covering data collection, usage, sharing, security, retention, user rights (Kenya DPA 2019), children, changes, contact
+- Created /terms-of-service/page.tsx — 10 sections covering use, accounts, listings, prohibited conduct, IP, liability, indemnification, modifications, Kenya law, contact
+- All pages: WebPage + BreadcrumbList JSON-LD, OG + Twitter meta, canonical URLs, revalidate = 86400
+- Updated Footer.tsx: replaced all # placeholder links with real routes (/privacy-policy, /terms-of-service, /contact, /about, /blog)
+- Build: 649 routes (644 pre-rendered HTML), zero errors
+- Test script: scripts/test-phase8.js (122/122 passing)
+
+Stage Summary:
+- 4 new static pages at /about, /contact, /privacy-policy, /terms-of-service
+- All pages pre-rendered with WebPage + BreadcrumbList JSON-LD
+- Footer no longer has placeholder links
+- Test script: scripts/test-phase8.js (122/122 passing)
+
+---
+Task ID: 9
+Agent: main
+Task: Phase 9 - Technical SEO (sitemap.xml, robots.txt, schema validation)
+
+Work Log:
+- Created /sitemap.ts — dynamic sitemap using MetadataRoute.Sitemap, queries all slugs from DB
+  - 9 static pages (priority 0.3-1.0), job details (0.8), categories (0.7), subcategories (0.6), locations (0.7), gov counties (0.6), opportunities (0.7), blog posts (0.6)
+  - changeFrequency: daily/weekly/monthly/yearly hierarchy
+  - 646 URLs generated (24 jobs + 43 categories + 468 subcategories + 46 locations + 46 gov counties + 10 blog + 9 static)
+- Created /robots.ts — MetadataRoute.Robots, allows /, disallows /api/ /admin/ /_next/, references sitemap.xml
+- Verified generated sitemap.xml.body: valid XML, all URL types, all https, no http
+- Verified generated robots.txt.body: correct rules and sitemap reference
+- Schema validation: verified JobPosting (jobs), CollectionPage (categories), Article (blog), WebPage (static pages) JSON-LD in rendered HTML
+- Build: 651 routes (644 pre-rendered HTML + sitemap.xml + robots.txt + _not-found)
+- Test script: scripts/test-phase9.js (84/84 passing)
+
+Stage Summary:
+- /sitemap.xml with 646 URLs, proper priority/frequency hierarchy
+- /robots.txt with correct allow/disallow rules and sitemap reference
+- 6 JSON-LD generators in jsonld.ts: JobPosting, CollectionPage, BreadcrumbList, Event, Article, WebPage
+- Test script: scripts/test-phase9.js (84/84 passing)
+
+---
+Task ID: 10
+Agent: main
+Task: Phase 10 - Optimization & Performance
+
+Work Log:
+- Enhanced root layout metadata: title template (%s | JobBoard Kenya), metadataBase, OG locale en_KE, googleBot directives (max-image-preview, max-snippet, max-video-preview), verification config
+- Added global WebSite JSON-LD to root layout (with SearchAction pointing to /jobs?search=, Organization publisher)
+- Created /not-found.tsx — 404 page with noindex, links to homepage/jobs/blog/categories/govt
+- Created /loading.tsx — lightweight spinner component
+- Updated next.config.ts: compress=true, poweredByHeader=false, reactProductionProfiling=false
+- Added security headers: X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-DNS-Prefetch-Control on
+- Added cache headers: sitemap.xml (s-maxage=3600), robots.txt (s-maxage=86400)
+- Build: 651 routes (644 pre-rendered HTML), zero errors
+- Test script: scripts/test-phase10.js (63/63 passing)
+
+Stage Summary:
+- Root layout: title template, metadataBase, googleBot directives, global WebSite JSON-LD with SearchAction
+- 404 page: noindex, user-friendly with navigation links
+- Loading skeleton: lightweight spinner
+- Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, X-DNS-Prefetch-Control
+- Cache headers: sitemap 1hr, robots 24hr
+- Test script: scripts/test-phase10.js (63/63 passing)
+- **ALL 10 PHASES COMPLETE**: 269 total tests (31+33+24+36+100+69+122+84+63) across phases 3-10
+- Build: 651 routes, 644 pre-rendered HTML pages, zero errors
+

@@ -34,11 +34,11 @@ export default function Footer() {
           <div>
             <h4>Resources</h4>
             <ul>
-              <li><Link href="#">Career Advice</Link></li>
-              <li><Link href="#">CV Writing</Link></li>
-              <li><Link href="#">Interview Tips</Link></li>
-              <li><Link href="#">Salary Guide</Link></li>
-              <li><Link href="#">Skill Assessments</Link></li>
+              <li><Link href="/blog?category=Career Advice">Career Advice</Link></li>
+              <li><Link href="/blog?category=How-To">CV Writing</Link></li>
+              <li><Link href="/blog?category=How-To">Interview Tips</Link></li>
+              <li><Link href="/blog?category=Kenya Job Market">Salary Guide</Link></li>
+              <li><Link href="/blog">All Articles</Link></li>
             </ul>
           </div>
 
@@ -89,10 +89,10 @@ export default function Footer() {
         <div className="footer-bottom">
           <span>&copy; 2026 JobBoard Kenya. All rights reserved.</span>
           <div className="footer-bottom-links">
-            <Link href="#">Privacy Policy</Link>
-            <Link href="#">Terms of Service</Link>
-            <Link href="#">Contact</Link>
-            <Link href="#">About</Link>
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/terms-of-service">Terms of Service</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/about">About</Link>
           </div>
         </div>
       </div>
