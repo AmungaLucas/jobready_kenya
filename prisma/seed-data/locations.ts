@@ -1,0 +1,232 @@
+export const locationData = [
+  {
+    county: "Mombasa",
+    slug: "mombasa",
+    description: "Mombasa is Kenya's second-largest city and the principal seaport of East Africa, serving as a critical gateway for international trade and commerce. The city's economy is driven by the Port of Mombasa, tourism along its pristine Indian Ocean coastline, manufacturing in the Changamwe industrial area, and a vibrant services sector. As a coastal city with a rich Swahili cultural heritage, Mombasa attracts both local and international job seekers. Key employment sectors include maritime and logistics, hospitality and tourism, trade, manufacturing, and government administration. Major employers include the Kenya Ports Authority, Kenya Revenue Authority, various hotel chains, and numerous import-export businesses. The county government also provides significant employment through devolved functions in health, education, and infrastructure development."
+  },
+  {
+    county: "Kwale",
+    slug: "kwale",
+    description: "Kwale County is located in the coastal region of Kenya, bordering Tanzania to the south and the Indian Ocean to the east. The county's economy is primarily driven by agriculture, mining, and tourism. Kwale is home to the Base Titanium mining operation, one of Kenya's largest mineral mining projects, which provides significant employment. The county's coastal areas including Diani Beach are major tourist destinations supporting hospitality industry jobs. Agricultural activities focus on coconut, sugarcane, and cashew nut production. The county government and local NGOs provide additional employment in education, health, and community development services. Infrastructure development projects and the growing mining sector continue to create new job opportunities in the county."
+  },
+  {
+    county: "Kilifi",
+    slug: "kilifi",
+    description: "Kilifi County stretches along the Kenyan coast and is known for its beautiful beaches, rich cultural heritage, and growing agricultural sector. The county's economy benefits from tourism, agriculture, and fishing. Towns like Malindi and Watamu are internationally recognised tourism destinations with numerous hotels, resorts, and tour operators. Agricultural activities include coconut, cashew nuts, and sisal farming. Kilifi is also home to the Kenya Medical Research Institute (KEMRI) research centre in Kilifi town, which provides employment for medical researchers and healthcare professionals. The county's proximity to Mombasa and its own growing urban centres make it an attractive location for job seekers in hospitality, agriculture, health research, and education."
+  },
+  {
+    county: "Tana River",
+    slug: "tana-river",
+    description: "Tana River County is located in the coastal region and is named after the Tana River, Kenya's longest river. The county's economy is predominantly agricultural and pastoral, with significant irrigation farming along the Tana River basin. Major employment sectors include agriculture, fishing, livestock rearing, and public administration. The county has potential for irrigation-based agriculture, and schemes like the Bura and Hola irrigation schemes provide farming employment. The county government is the largest formal employer, providing jobs in health, education, and local administration. Development organizations and NGOs working in food security, water management, and community development also offer employment opportunities in this largely rural county."
+  },
+  {
+    county: "Lamu",
+    slug: "lamu",
+    description: "Lamu County is a UNESCO World Heritage Site known for its ancient Swahili town, pristine beaches, and rich cultural heritage. The county's economy is driven by tourism, fishing, and agriculture. Lamu Old Town is one of the oldest and best-preserved Swahili settlements in East Africa, attracting cultural tourists from around the world. The Lamu Port-South Sudan-Ethiopia Transport Corridor (LAPSSET) project is expected to transform the county's economy, creating construction, logistics, and maritime employment opportunities. The fishing industry provides livelihoods for a significant portion of the coastal population. Employment opportunities exist in tourism and hospitality, maritime services, agriculture, and the growing construction sector driven by the LAPSSET development."
+  },
+  {
+    county: "Garissa",
+    slug: "garissa",
+    description: "Garissa County is located in the north-eastern region of Kenya and serves as the administrative capital of the former North Eastern Province. The county's economy is primarily pastoral and agro-pastoral, with livestock rearing being the main economic activity. Garissa town is the largest urban centre in the region and serves as a commercial hub for the surrounding counties. The county government is a major employer, along with the Kenya Police Service, Kenya Defence Forces, and various national government agencies. NGOs and humanitarian organizations operating in the region provide employment in community development, health, education, and emergency response. The Tana River provides opportunities for irrigation farming, and cross-border trade with Somalia contributes to commercial activity in the town."
+  },
+  {
+    county: "Wajir",
+    slug: "wajir",
+    description: "Wajir County is situated in Kenya's arid and semi-arid northern region, bordering Somalia to the east. The county's economy is predominantly pastoral, with livestock rearing being the primary source of livelihood for the majority of residents. Wajir town serves as the county's commercial and administrative centre. Formal employment opportunities are concentrated in the county government, national government departments, and humanitarian organizations working in the region. The healthcare and education sectors provide important employment opportunities, along with positions in security services. Cross-border trade with neighbouring Somalia is a significant economic activity. Development agencies working in water, food security, and community resilience also provide employment for professionals in these fields."
+  },
+  {
+    county: "Mandera",
+    slug: "mandera",
+    description: "Mandera County is located in the extreme north-eastern corner of Kenya, sharing borders with Somalia and Ethiopia. The county's economy is primarily based on pastoralism and cross-border trade. Mandera town is the administrative and commercial centre of the county. Employment opportunities are mainly found in the public sector through the county government, national government agencies, and security services. Humanitarian and development organizations provide additional employment in health, education, water and sanitation, and food security programmes. The county's strategic location at the tri-border point of Kenya, Somalia, and Ethiopia creates unique trade and commercial opportunities. Infrastructure development and devolution have gradually increased formal employment opportunities in the county."
+  },
+  {
+    county: "Marsabit",
+    slug: "marsabit",
+    description: "Marsabit County is located in northern Kenya and is the largest county in the country by land area. The county is characterised by its arid and semi-arid landscape, with Mount Marsabit providing a unique microclimate and lush highland environment. The economy is primarily pastoral, with significant tourism potential around Lake Turkana and Marsabit National Park. Employment opportunities are concentrated in the county government, national government departments, and NGOs working in pastoral development, peacebuilding, and natural resource management. The recent discovery of oil in the Turkana basin and ongoing infrastructure projects like the LAPSSET corridor are expected to create additional employment opportunities. Mining, particularly of gypsum and other minerals, also provides some employment."
+  },
+  {
+    county: "Isiolo",
+    slug: "isiolo",
+    description: "Isiolo County is located in the upper eastern region of Kenya and serves as a strategic gateway to Kenya's northern frontier. The county is home to the Isiolo International Airport, a key component of the LAPSSET corridor project. Isiolo town is a growing commercial centre and a hub for trade between the agricultural highlands and the pastoral northern regions. The county's economy is based on livestock rearing, tourism, and trade. Major employment sectors include the county government, national government agencies, hospitality, and NGOs. The development of the Isiolo Resort City, wildlife conservancies, and the expansion of the airport are expected to significantly boost employment in tourism, aviation, construction, and related services in the coming years."
+  },
+  {
+    county: "Meru",
+    slug: "meru",
+    description: "Meru County is located on the eastern slopes of Mount Kenya and is one of the most agriculturally productive counties in Kenya. The county's economy is driven by agriculture, with tea, coffee, miraa (khat), dairy farming, and horticulture being the main cash crops and products. Meru town is a vibrant commercial and educational centre, home to Meru University of Science and Technology and other educational institutions. Employment opportunities span agriculture and agribusiness, education, healthcare, banking, and retail. The county's proximity to Mount Kenya and Meru National Park provides tourism-related employment. The cooperative movement, particularly SACCOs and coffee cooperatives, provides additional employment in financial services and agricultural marketing."
+  },
+  {
+    county: "Tharaka Nithi",
+    slug: "tharaka-nithi",
+    description: "Tharaka Nithi County is located in the upper eastern region of Kenya, on the eastern slopes of Mount Kenya. The county's economy is primarily agricultural, with tea, coffee, cotton, and food crops being the main products. The county has a growing education sector with several secondary schools and tertiary institutions. Employment opportunities are found in agriculture and agribusiness, education, the county government, healthcare, and small-scale trading. The construction sector is active due to ongoing infrastructure development including roads and rural electrification. The county's rivers and streams provide opportunities for small-scale irrigation farming, and the growing middle class is stimulating the retail and services sector in towns like Chuka and Kathwana."
+  },
+  {
+    county: "Embu",
+    slug: "embu",
+    description: "Embu County is located on the south-eastern slopes of Mount Kenya and is known for its fertile agricultural land and favourable climate. The county's economy is driven by agriculture, with coffee, tea, dairy farming, and horticulture being the main economic activities. Embu town serves as the county's commercial and administrative centre. Employment opportunities are concentrated in agriculture and agribusiness, education, healthcare, and the county government. The University of Embu and other educational institutions provide academic and non-academic employment. The county's scenic landscapes and proximity to Mount Kenya create tourism potential, particularly in eco-tourism and adventure tourism. The growing retail and banking sectors in Embu town also provide diverse employment opportunities."
+  },
+  {
+    county: "Kitui",
+    slug: "kitui",
+    description: "Kitui County is located in the south-eastern part of Kenya's eastern region and is characterised by semi-arid conditions. The county's economy is predominantly agricultural, with subsistence farming, livestock rearing, and sand harvesting being the main economic activities. Kitui town is the county's administrative and commercial centre. Employment opportunities exist in the county government, education, healthcare, and agriculture. The county has significant mineral deposits including coal, limestone, and iron ore, which present future mining employment opportunities. NGOs working in food security, water management, and climate resilience provide additional employment. The construction sector is growing due to infrastructure development, and the retail sector in Kitui town and other urban centres provides trading and service industry jobs."
+  },
+  {
+    county: "Machakos",
+    slug: "machakos",
+    description: "Machakos County is located in the former Eastern Province, bordering Nairobi to the north-west. The county has experienced rapid growth as a residential and commercial satellite of Nairobi, with many people working in Nairobi but living in Machakos. The economy is diverse, encompassing agriculture, trade, manufacturing, and services. Machakos town and the wider Machakos Municipality have seen significant commercial development, including the Machakos People's Park and the Kenyatta Stadium. Employment opportunities exist in agriculture, manufacturing, retail, education, healthcare, and the county government. The county's proximity to Nairobi makes it attractive for businesses seeking lower operational costs while maintaining access to the capital's market. The growing real estate sector also provides construction and property management jobs."
+  },
+  {
+    county: "Makueni",
+    slug: "makueni",
+    description: "Makueni County is located in south-eastern Kenya and is known for its innovative approach to governance and public service delivery. The county's economy is primarily agricultural, with mango farming, livestock rearing, and beekeeping being significant economic activities. Makueni has pioneered several successful county government programmes including universal healthcare and water projects that have been recognised nationally. Employment opportunities are found in the county government (which has been commended for effective service delivery), agriculture and agribusiness, education, healthcare, and trade. The county's growing reputation for good governance has attracted development partners, creating additional employment in development programme management and implementation."
+  },
+  {
+    county: "Nyandarua",
+    slug: "nyandarua",
+    description: "Nyandarua County is located in the Aberdare range of central Kenya and is one of the country's most important agricultural counties. The county's high-altitude fertile soils and favourable climate make it ideal for dairy farming, potato production, and horticulture. Nyandarua is a major producer of milk and potatoes, supplying markets in Nairobi and other major towns. Employment opportunities are concentrated in agriculture and agribusiness, dairy processing, education, healthcare, and the county government. The flower farming industry is also growing, creating employment in horticulture and export-oriented agriculture. The county's scenic landscapes in the Aberdare ranges provide tourism potential, particularly in eco-tourism and nature-based activities. Trading centres and small towns across the county provide retail and services employment."
+  },
+  {
+    county: "Nyeri",
+    slug: "nyeri",
+    description: "Nyeri County is located in the central highlands of Kenya, on the slopes of Mount Kenya and the Aberdare Range. The county is renowned for its agricultural productivity, particularly in tea, coffee, and dairy farming. Nyeri town is a major commercial and administrative centre in central Kenya, with a strong banking and services sector. Employment opportunities span agriculture and agribusiness, education, healthcare, banking and financial services, and the county government. The county is home to several educational institutions including Karatina University and the Dedan Kimathi University of Technology. Tourism is also significant, with the Aberdare National Park, Mount Kenya National Park, and historical sites related to the Mau Mau movement attracting visitors and providing hospitality employment."
+  },
+  {
+    county: "Kirinyaga",
+    slug: "kirinyaga",
+    description: "Kirinyaga County is located in central Kenya, on the south-western slopes of Mount Kenya. The county is one of Kenya's most productive agricultural areas, famous for rice farming in the Mwea Irrigation Scheme, tea production, and dairy farming. The Mwea Irrigation Scheme is the largest rice-producing area in Kenya, providing extensive employment in farming, processing, and marketing. Kirinyaga town serves as the county's administrative centre, while other towns like Wang'uru and Sagana are important commercial centres. Employment opportunities are abundant in agriculture and agribusiness, particularly rice farming and processing, tea production, dairy farming, and horticulture. The county's proximity to major markets and its productive agricultural base make it an attractive location for food processing and value-addition industries."
+  },
+  {
+    county: "Murang'a",
+    slug: "muranga",
+    description: "Murang'a County is located in central Kenya and is known for its fertile highlands and significant agricultural output. The county is a major producer of tea, coffee, macadamia nuts, dairy products, and fresh produce. Murang'a town is the county's commercial and administrative centre, with growing banking and services sectors. Employment opportunities are primarily in agriculture and agribusiness, education, healthcare, and the county government. The county's numerous tea factories provide processing and management employment, while the dairy sector supports thousands of farming families and associated value chain jobs. The construction sector is active due to ongoing infrastructure development, and the county's growing middle class is stimulating the retail and real estate sectors. The county's rivers, which are part of the Tana River basin, provide water resources that support irrigation and hydroelectric power generation."
+  },
+  {
+    county: "Kiambu",
+    slug: "kiambu",
+    description: "Kiambu County borders Nairobi to the north and west and is one of the most economically dynamic counties in Kenya. The county has experienced rapid urbanisation and commercial growth, effectively serving as Nairobi's main residential and industrial satellite. Key economic activities include agriculture (particularly tea, coffee, dairy, and horticulture), manufacturing, real estate development, and services. Towns like Thika, Ruiru, Kikuyu, Limuru, and Juja have become major commercial and industrial centres. Major employers include tea and coffee estates, manufacturing companies in Thika's industrial area, retail chains, and the county government. The county's proximity to Nairobi and its well-developed infrastructure make it attractive for businesses, creating diverse employment opportunities across all sectors."
+  },
+  {
+    county: "Turkana",
+    slug: "turkana",
+    description: "Turkana County is located in north-western Kenya and is the second-largest county by land area. The county is known for Lake Turkana, the world's largest permanent desert lake, and its rich cultural heritage. The economy is predominantly pastoral, with fishing in Lake Turkana providing an important additional source of livelihood. Recent oil discoveries in the Lokichar basin have brought significant investment and employment to the county. Employment opportunities exist in the county government, national government agencies, oil and gas exploration, mining, fishing, and NGO development programmes. The county's unique archaeological and cultural heritage, including the Lake Turkana National Parks (a UNESCO World Heritage Site), provides tourism-related employment. Wind power projects in the county are also creating renewable energy jobs."
+  },
+  {
+    county: "West Pokot",
+    slug: "west-pokot",
+    description: "West Pokot County is located in the Rift Valley region of north-western Kenya. The county's economy is primarily agro-pastoral, with livestock rearing and crop farming being the main economic activities. The county has significant potential in mining, with gold and other mineral deposits attracting exploration and investment. Employment opportunities are found in the county government, education, healthcare, agriculture, and NGO development programmes. The county's scenic landscapes along the Great Rift Valley escarpments and the Kerio Valley provide tourism potential. Infrastructure development, including road construction and rural electrification, has created construction and engineering jobs. Cross-border trade with neighbouring Uganda also provides commercial employment opportunities in border areas."
+  },
+  {
+    county: "Samburu",
+    slug: "samburu",
+    description: "Samburu County is located in the Rift Valley region of northern Kenya and is home to the Samburu people, known for their rich cultural heritage. The county's economy is predominantly pastoral, with livestock rearing being the primary economic activity. Tourism is a significant employer due to Samburu National Reserve, Buffalo Springs National Reserve, and Shaba National Reserve, which attract wildlife enthusiasts from around the world. Employment opportunities exist in tourism and hospitality, the county government, national government agencies, and NGOs working in pastoral development, education, healthcare, and wildlife conservation. The county's unique cultural heritage and wildlife resources make community-based tourism a growing employment sector, while mining activities, particularly of gypsum and limestone, provide additional jobs."
+  },
+  {
+    county: "Trans Nzoia",
+    slug: "trans-nzoia",
+    description: "Trans Nzoia County is located in the Rift Valley region and is often referred to as Kenya's breadbasket due to its highly productive agricultural land. The county is the country's leading producer of maize and wheat, and also produces significant quantities of dairy products, horticultural crops, and flowers. Kitale town is the county's administrative and commercial centre, with a growing industrial base. Employment opportunities are abundant in agriculture and agribusiness, particularly large-scale and small-scale farming, agricultural processing, and input supply. The county's agricultural research institutions, including the Kenya Agricultural and Livestock Research Organization (KALRO) centres, provide research employment. The manufacturing, education, healthcare, and retail sectors also offer significant employment opportunities."
+  },
+  {
+    county: "Uasin Gishu",
+    slug: "uasin-gishu",
+    description: "Uasin Gishu County is located in the Rift Valley region and is one of Kenya's most agriculturally productive and economically vibrant counties. Eldoret, the county capital, is the fifth-largest city in Kenya and a major commercial, educational, and industrial centre. The county is renowned for large-scale wheat and maize farming, dairy production, and horticulture. It is also a major athletics training hub, producing numerous world and Olympic champions. Employment opportunities are diverse and span agriculture and agribusiness, manufacturing, education (Moi University and University of Eldoret), healthcare, banking, retail, and the county government. The Moi Teaching and Referral Hospital provides extensive healthcare employment. The county's well-developed infrastructure and strategic location make it attractive for business investment."
+  },
+  {
+    county: "Elgeyo Marakwet",
+    slug: "elgeyo-marakwet",
+    description: "Elgeyo Marakwet County is located in the Rift Valley region and is characterised by the scenic Kerio Valley and the Elgeyo Escarpment. The county's economy is primarily agricultural, with small-scale farming, livestock rearing, and fluorspar mining being the main economic activities. The Kerio Valley Fluorspar Mine has been a significant employer, though operations have fluctuated. The county is also known for producing world-class athletes, particularly in long-distance running. Employment opportunities are found in agriculture, mining, education, healthcare, the county government, and NGOs. The scenic landscapes provide potential for eco-tourism and adventure sports. The construction sector is active due to ongoing road infrastructure development, including the critical road connecting the highlands to the Kerio Valley."
+  },
+  {
+    county: "Nandi",
+    slug: "nandi",
+    description: "Nandi County is located in the Rift Valley region on the western side of the Great Rift Valley escarpment. The county is famous for its tea plantations, dairy farming, and as the home of many of Kenya's most celebrated long-distance runners. The economy is primarily agricultural, with tea being the dominant cash crop. Nandi Hills is a major tea-growing area, with multinational and local tea companies providing significant employment. Kapsabet town serves as the county's administrative and commercial centre. Employment opportunities exist in agriculture and agribusiness (particularly tea and dairy), education, healthcare, and the county government. The county's reputation as an athletics powerhouse creates opportunities in sports management and coaching. The growing retail and banking sectors in Kapsabet and other towns provide additional employment."
+  },
+  {
+    county: "Baringo",
+    slug: "baringo",
+    description: "Baringo County is located in the Rift Valley region and is characterised by Lake Baringo, Lake Bogoria, and the dramatic Tugen Hills. The county's economy is agro-pastoral, with livestock rearing, crop farming, fishing, and tourism being the main economic activities. Lake Bogoria is famous for its flamingos and hot springs, while Lake Baringo supports fishing communities and tourism. Employment opportunities are found in the county government, tourism and hospitality, agriculture, education, healthcare, and NGOs working in community development and natural resource management. The county has potential in geothermal energy exploration, which could create future employment in the energy sector. Artisanal mining of ruby and other gemstones also provides some income and employment opportunities."
+  },
+  {
+    county: "Laikipia",
+    slug: "laikipia",
+    description: "Laikipia County is located on the equator in the Rift Valley region and is one of Kenya's most important wildlife conservation areas outside the national parks system. The county's economy is driven by ranching, wildlife conservation, tourism, and agriculture. Laikipia is home to numerous private and community wildlife conservancies, including the famous Ol Pejeta Conservancy, which provide significant tourism and conservation employment. The county has a large ranching community and supports both commercial and small-scale farming. Nanyuki town is the county's main commercial centre and serves as a gateway to Mount Kenya. Employment opportunities span conservation and wildlife management, tourism and hospitality, agriculture, the county government, and education. The British Army Training Unit in Kenya (BATUK) also provides some employment."
+  },
+  {
+    county: "Nakuru",
+    slug: "nakuru",
+    description: "Nakuru County is the fourth-largest city in Kenya and one of the most economically dynamic counties in the country. Located in the Rift Valley, Nakuru is a major agricultural, industrial, and commercial centre. The county's economy is diverse, encompassing agriculture (particularly horticulture, dairy, and wheat farming), manufacturing, tourism (Lake Nakuru National Park), and services. Nakuru city has a thriving retail, banking, and real estate sector. The county hosts several major manufacturing companies and industrial parks. Employment opportunities are abundant and span all sectors including agriculture and agribusiness, manufacturing, education (Egerton University), healthcare, banking and financial services, retail, and the county government. The county's strategic location along the Nairobi-Kisumu highway makes it a key logistics and trade hub."
+  },
+  {
+    county: "Narok",
+    slug: "narok",
+    description: "Narok County is located in south-western Kenya and is home to the world-famous Masai Mara National Reserve, one of the most iconic wildlife conservation areas on the planet. The county's economy is driven by tourism, livestock rearing, and agriculture. The Masai Mara attracts hundreds of thousands of tourists annually, creating extensive employment in the hospitality sector including luxury lodges, tented camps, tour operations, and transport services. Narok town is the county's commercial centre, with growing retail and services sectors. Employment opportunities are concentrated in tourism and hospitality, agriculture (particularly wheat and maize farming in the wheat belt), the county government, education, and healthcare. The county's Maasai cultural heritage also creates opportunities in cultural tourism and artisanal crafts."
+  },
+  {
+    county: "Kajiado",
+    slug: "kajiado",
+    description: "Kajiado County borders Nairobi to the south and is part of the greater Nairobi metropolitan area. The county has experienced rapid urbanisation and commercial growth, with towns like Ongata Rongai, Kitengela, Ngong, and Kiserian serving as major residential areas for people working in Nairobi. The economy is diverse, encompassing pastoralism, agriculture, real estate, quarrying, and services. The county is home to the Amboseli National Park and numerous private wildlife conservancies, providing tourism employment. Employment opportunities span real estate and construction, tourism and hospitality, retail, education, healthcare, and the county government. The county's proximity to Nairobi and the Jomo Kenyatta International Airport makes it attractive for industrial and commercial investment, creating diverse job opportunities."
+  },
+  {
+    county: "Kericho",
+    slug: "kericho",
+    description: "Kericho County is located in the western highlands of the Rift Valley and is the heartland of Kenya's tea industry. The county is home to vast tea estates operated by multinational companies like Unilever (Brookside), James Finlay, and Williamson Tea, making it one of the world's leading tea-producing regions. The county's cool climate and fertile soils also support dairy farming, pyrethrum growing, and horticulture. Kericho town is a well-developed commercial and administrative centre. Employment opportunities are abundant in the tea industry (farming, processing, and management), agriculture, education, healthcare, banking, and the county government. The tea estates provide some of the most stable agricultural employment opportunities in Kenya, with comprehensive benefits packages and career progression paths."
+  },
+  {
+    county: "Bomet",
+    slug: "bomet",
+    description: "Bomet County is located in the Rift Valley region and is one of Kenya's leading tea and dairy producing counties. The county's cool highland climate and fertile soils make it ideal for tea cultivation and dairy farming. Bomet town serves as the county's administrative and commercial centre, with a growing retail and services sector. Employment opportunities are concentrated in agriculture and agribusiness, particularly tea farming and processing, dairy farming and processing, and horticulture. The county government, education sector, and healthcare services also provide significant employment. The cooperative movement, particularly tea and dairy cooperatives, plays a major role in the county's economy and provides employment in management, accounting, and marketing. The county's strategic location between Kericho and Narok makes it a trading hub for agricultural products."
+  },
+  {
+    county: "Kakamega",
+    slug: "kakamega",
+    description: "Kakamega County is located in the western region of Kenya and is one of the most populous counties in the country. The county is home to the Kakamega Forest, Kenya's only remaining tropical rainforest, which is a biodiversity hotspot and tourist attraction. The economy is primarily agricultural, with sugarcane farming being the dominant cash crop. Kakamega town is a major commercial and educational centre in western Kenya. Employment opportunities span agriculture and agribusiness (particularly sugarcane and maize farming), education (Masinde Muliro University of Science and Technology and numerous schools), healthcare, retail, and the county government. The sugar industry provides extensive employment through farming, milling, and marketing. The county's young population drives demand for services and creates opportunities in the informal sector."
+  },
+  {
+    county: "Vihiga",
+    slug: "vihiga",
+    description: "Vihiga County is located in the western region of Kenya and is one of the smallest but most densely populated counties in the country. The county's economy is primarily agricultural, with tea farming, dairy production, and food crops being the main economic activities. Vihiga town and Mbale serve as the main commercial centres. The county is known for its high educational standards and produces a large number of graduates who seek employment within and outside the county. Employment opportunities exist in agriculture and agribusiness, education, healthcare, the county government, and the growing retail sector. The county's proximity to Kisumu and Kakamega provides access to broader job markets. Many residents also engage in small-scale trading, boda boda operations, and other informal sector activities."
+  },
+  {
+    county: "Bungoma",
+    slug: "bungoma",
+    description: "Bungoma County is located in western Kenya and is known for its agricultural productivity, particularly in sugarcane, maize, and dairy farming. The county is one of the largest sugarcane-producing areas in Kenya, with the Nzoia Sugar Company and other mills providing significant employment. Bungoma town is the county's administrative and commercial centre, with a growing banking and services sector. Employment opportunities are concentrated in agriculture and agribusiness (sugarcane, maize, and horticulture), manufacturing (sugar processing), education, healthcare, retail, and the county government. The county's strategic location along the Nairobi-Kampala highway facilitates trade and creates logistics and transport employment. The construction sector is active, driven by infrastructure development and urbanisation."
+  },
+  {
+    county: "Busia",
+    slug: "busia",
+    description: "Busia County is located in western Kenya, bordering Uganda to the west, with the Busia border crossing being one of the busiest border points in East Africa. The county's economy is driven by cross-border trade, agriculture, and fishing (on Lake Victoria). The Malaba and Busia border posts facilitate significant trade between Kenya and Uganda, creating employment in customs, clearing and forwarding, transport, and trading. Agriculture focuses on sugarcane, maize, cotton, and fishing. Employment opportunities exist in trade and commerce, customs and border services, agriculture and fishing, education, healthcare, and the county government. The county's border location creates unique opportunities in cross-border trade, import-export businesses, and logistics services. The growth of fish farming (aquaculture) is also creating new employment opportunities."
+  },
+  {
+    county: "Siaya",
+    slug: "siaya",
+    description: "Siaya County is located in the Lake Victoria basin of western Kenya and is known for its fishing industry, agriculture, and as the home county of former US President Barack Obama's father. The county's economy is primarily driven by fishing on Lake Victoria, small-scale agriculture, and trade. Siaya town is the county's administrative centre, while other towns like Bondo serve as commercial hubs. Employment opportunities are found in fishing and fish processing, agriculture (particularly maize, rice, and sugarcane farming), education, healthcare, and the county government. The county has several educational institutions including Jaramogi Oginga Odinga University of Science and Technology. NGOs working in health, education, and community development provide additional employment. The county's proximity to Kisumu city provides access to broader employment opportunities."
+  },
+  {
+    county: "Kisumu",
+    slug: "kisumu",
+    description: "Kisumu County is home to Kisumu city, the third-largest city in Kenya and the principal urban centre of the Lake Victoria basin. The city serves as the economic hub of western Kenya and the wider East African lake region. The county's economy is diverse, encompassing trade, manufacturing, fishing, agriculture, transport, and services. Kisumu is a major port city on Lake Victoria with connections to Tanzania and Uganda. Key employment sectors include manufacturing, retail and wholesale trade, banking and financial services, education (Maseno University, Kisumu National Polytechnic), healthcare (Jaramogi Oginga Odinga Teaching and Referral Hospital), and the county government. The lakeside city's growing hospitality and tourism sector, supported by its cultural heritage and scenic lakefront, provides additional employment opportunities. The recently expanded Kisumu International Airport is facilitating increased business and tourism traffic."
+  },
+  {
+    county: "Homa Bay",
+    slug: "homabay",
+    description: "Homa Bay County is located on the shores of Lake Victoria in western Kenya. The county's economy is primarily driven by fishing on Lake Victoria, agriculture, and trade. Homa Bay town is the county's administrative and commercial centre, serving as a gateway to the lake region. Employment opportunities are concentrated in fishing and fish processing, agriculture (particularly maize, rice, and sugarcane), education, healthcare, and the county government. The county's extensive lakeshore provides abundant fishing employment, while the growing tourism sector around Lake Victoria's islands and beaches creates hospitality jobs. The county has significant potential in aquaculture (fish farming) and mining (lime and gold deposits). NGOs working in health, particularly HIV/AIDS programmes, provide additional employment in community health and development."
+  },
+  {
+    county: "Migori",
+    slug: "migori",
+    description: "Migori County is located in south-western Kenya, bordering Tanzania and Lake Victoria. The county's economy is driven by agriculture, mining, fishing, and cross-border trade with Tanzania. Migori is home to the Macalder gold mines and other mineral deposits, providing mining employment. Agricultural activities include sugarcane farming (served by the Sony Sugar Company), tobacco growing, and maize farming. The Migori-Isebania border crossing facilitates trade with Tanzania. Employment opportunities exist in mining, agriculture and agribusiness, fishing, cross-border trade, education, healthcare, and the county government. The county's mineral wealth, agricultural productivity, and strategic border location create diverse employment opportunities. The growing retail and services sector in Migori town and other urban centres provides additional jobs."
+  },
+  {
+    county: "Kisii",
+    slug: "kisii",
+    description: "Kisii County is located in the western highlands of Kenya and is one of the most densely populated and agriculturally productive counties in the country. The county is renowned for banana farming, tea production, dairy farming, and soapstone carving, a unique local craft. Kisii town is a major commercial and educational centre in the Gusii highlands, with a vibrant retail and banking sector. Employment opportunities span agriculture and agribusiness (particularly bananas, tea, coffee, and dairy), education (Kisii University and numerous schools), healthcare, banking and financial services, retail, and the county government. The county's high population density creates a strong local market for goods and services, supporting numerous small businesses and trading activities. The soapstone carving industry provides unique artisanal employment opportunities for the local community."
+  },
+  {
+    county: "Nyamira",
+    slug: "nyamira",
+    description: "Nyamira County is located in the western highlands of Kenya, adjacent to Kisii County. The county's economy is primarily agricultural, with tea, banana, coffee, and dairy farming being the main economic activities. Nyamira town serves as the county's administrative and commercial centre. The county's favourable climate and fertile soils support intensive small-scale farming, making it one of the most productive agricultural areas per unit area in Kenya. Employment opportunities are concentrated in agriculture and agribusiness, education, healthcare, the county government, and the growing retail sector. The tea industry provides significant employment through farming, processing, and marketing. The county's proximity to Kisii town provides access to additional commercial and employment opportunities. Many residents also commute to Kisumu, Nakuru, and Nairobi for employment."
+  },
+  {
+    county: "Nairobi",
+    slug: "nairobi",
+    description: "Nairobi County is Kenya's capital city and the primary economic, financial, and commercial hub of East and Central Africa. As a leading African city, Nairobi hosts the headquarters of numerous multinational corporations, international organizations including the United Nations Environment Programme (UNEP) and UN-Habitat, and regional offices of global companies. The city's economy is incredibly diverse, spanning financial services, technology (earning it the nickname 'Silicon Savannah'), manufacturing, media, hospitality, healthcare, and government. Nairobi is home to the Nairobi Securities Exchange, major commercial banks, telecom companies, and a thriving startup ecosystem. Employment opportunities are the most diverse and abundant in the country, covering virtually every professional field. The city's growing tech sector, established corporate base, and status as a regional hub make it the premier destination for job seekers in Kenya and across East Africa."
+  }
+] as const;

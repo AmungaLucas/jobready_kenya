@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +7,389 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ============================================
+// 🏢 ORGANIZATION ENUMS
+// ============================================
+
+enum OrganizationType {
+  PRIVATE_COMPANY
+  PUBLIC_LISTED_COMPANY
+  NATIONAL_GOVERNMENT
+  COUNTY_GOVERNMENT
+  STATE_CORPORATION
+  REGULATORY_AUTHORITY
+  NGO_LOCAL
+  NGO_INTERNATIONAL
+  UNIVERSITY
+  TVET_INSTITUTION
+  PRIMARY_SECONDARY_SCHOOL
+  FOUNDATION
+  EMBASSY_DIPLOMATIC
+  RELIGIOUS_ORGANIZATION
+  COOPERATIVE_SOCIETY
+  STARTUP
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum OrganizationIndustry {
+  AGRICULTURE
+  AUTOMOTIVE
+  AVIATION
+  BANKING
+  CONSTRUCTION
+  CONSULTING
+  CONSUMER_GOODS
+  EDUCATION
+  ENERGY
+  ENVIRONMENT
+  FINTECH
+  FOOD_BEVERAGE
+  GOVERNMENT_PUBLIC_ADMIN
+  HEALTHCARE
+  HOSPITALITY_TOURISM
+  HUMAN_RESOURCES
+  INFORMATION_TECHNOLOGY
+  INSURANCE
+  INTERNATIONAL_DEVELOPMENT
+  LEGAL
+  LOGISTICS_SUPPLY_CHAIN
+  MANUFACTURING
+  MARKETING_ADVERTISING
+  MEDIA_ENTERTAINMENT
+  MINING
+  NON_PROFIT
+  PHARMACEUTICAL
+  REAL_ESTATE
+  RESEARCH
+  RETAIL
+  SECURITY_DEFENSE
+  SPORTS
+  TELECOMMUNICATIONS
+  TEXTILES_APPAREL
+  WATER_SANITATION
+}
+
+// ============================================
+// 💼 JOB-SPECIFIC ENUMS
+// ============================================
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+  INTERNSHIP
+  APPRENTICESHIP
+  TEMPORARY
+  CASUAL
+  VOLUNTEER
+}
+
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+  EXECUTIVE
+}
+
+enum SalaryDisclosure {
+  NOT_DISCLOSED
+  NEGOTIABLE
+  COMPETITIVE
+  SHOW_RANGE
+}
+
+enum JobStatus {
+  ACTIVE
+  EXPIRED
+  PAUSED
+  DRAFT
+}
+
+enum EducationLevel {
+  NONE
+  HIGH_SCHOOL
+  CERTIFICATE
+  DIPLOMA
+  BACHELORS
+  MASTERS
+  DOCTORATE
+  PROFESSIONAL
+}
+
+enum JobSource {
+  MANUAL
+  SCRAPED
+  IMPORTED
+}
+
+// ============================================
+// 🎓 OPPORTUNITY-SPECIFIC ENUMS
+// ============================================
+
+enum OpportunityType {
+  SCHOLARSHIP
+  GRANT
+  FELLOWSHIP
+  SPONSORSHIP
+  MENTORSHIP
+  COMPETITION
+  CONFERENCE
+  TRAINING
+  VOLUNTEER
+}
+
+enum OpportunityStatus {
+  ACTIVE
+  EXPIRED
+  PAUSED
+  DRAFT
+}
+
+enum FundingDisclosure {
+  NOT_DISCLOSED
+  FULLY_FUNDED
+  PARTIALLY_FUNDED
+  SHOW_AMOUNT
+  NOT_FUNDED
+}
+
+// ============================================
+// 📍 LOCATION MODEL (47 Kenyan Counties)
+// ============================================
+
+model Location {
+  id             String   @id @default(cuid())
+  county         String   @unique
+  slug           String   @unique
+  description    String   // Market description for SEO (min 100 words)
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("locations")
+}
+
+// ============================================
+// 🏢 ORGANIZATION MODEL
+// ============================================
+
+model Organization {
+  id             String   @id @default(cuid())
+  orgName        String
+  orgSlug        String   @unique
+  orgLogoUrl     String?
+  orgWebsite     String?
+  orgDescription String?
+
+  orgIndustry    OrganizationIndustry
+  orgType        OrganizationType
+
+  headquarters   String?
+  socialLinks    String?   // JSON as string for SQLite compatibility
+
+  seoTitle       String?
+  seoDescription String?
+
+  deletedAt      DateTime?
+
+  isVerified     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  jobs                  Job[]
+  providedOpportunities Opportunity[]
+
+  @@index([deletedAt])
+  @@map("organizations")
+}
+
+// ============================================
+// 🗂️ JOB CATEGORY & SUBCATEGORY
+// ============================================
+
+model JobCategory {
+  id             String   @id @default(cuid())
+  value          String   @unique
+  label          String
+  slug           String   @unique
+  description    String?
+
+  seoTitle       String?
+  seoDescription String?
+
+  icon           String?
+  sortOrder      Int      @default(0)
+
+  subcategories  JobSubcategory[]
+  jobs           Job[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("job_categories")
+}
+
+model JobSubcategory {
+  id             String   @id @default(cuid())
+  value          String
+  label          String
+  slug           String
+  description    String?
+
+  seoTitle       String?
+  seoDescription String?
+
+  categoryId     String
+  sortOrder      Int      @default(0)
+
+  category       JobCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  jobs           Job[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([categoryId, value])
+  @@unique([categoryId, slug])
+  @@index([categoryId])
+  @@map("job_subcategories")
+}
+
+// ============================================
+// 💼 JOB MODEL
+// ============================================
+
+model Job {
+  id              String   @id @default(cuid())
+  organizationId  String?
+  subcategoryId   String
+  categoryId      String?
+
+  title           String
+  slug            String   @unique
+  description     String
+
+  seoTitle        String?
+  seoDescription  String?
+
+  jobSource       JobSource @default(MANUAL)
+  sourceUrl       String?
+  sourcePlatform  String?
+
+  searchText      String?
+
+  experienceLevel ExperienceLevel?
+  employmentType  EmploymentType?
+  educationLevel  EducationLevel?
+
+  howToApply      String?
+  applyEmail      String?
+  applicationUrl  String?
+
+  locationCity    String?
+  locationCounty  String?
+  isRemote        Boolean  @default(false)
+
+  salaryDisclosure SalaryDisclosure @default(NOT_DISCLOSED)
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String           @default("KES")
+
+  status           JobStatus @default(ACTIVE)
+  featured         Boolean   @default(false)
+  datePosted       DateTime  @default(now())
+  deadline         DateTime?
+
+  deletedAt        DateTime?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization     Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  category         JobCategory?      @relation(fields: [categoryId], references: [id])
+  subcategory      JobSubcategory    @relation(fields: [subcategoryId], references: [id])
+
+  @@index([status])
+  @@index([featured])
+  @@index([employmentType])
+  @@index([experienceLevel])
+  @@index([locationCounty])
+  @@index([deadline])
+  @@index([subcategoryId])
+  @@index([categoryId])
+  @@index([datePosted])
+  @@index([status, featured])
+  @@index([deletedAt])
+  @@index([jobSource])
+
+  @@map("jobs")
+}
+
+// ============================================
+// 🎓 OPPORTUNITY MODEL
+// ============================================
+
+model Opportunity {
+  id                  String   @id @default(cuid())
+  type                OpportunityType
+  title               String
+  slug                String   @unique
+
+  seoTitle            String?
+  seoDescription      String?
+
+  providerName        String
+  providerWebsite     String?
+  providerLogoUrl     String?
+  providerOrgId       String?
+  providerOrg         Organization? @relation(fields: [providerOrgId], references: [id], onDelete: SetNull)
+
+  description         String
+  eligibilityCriteria String?
+  requirements        String?
+  benefits            String?
+
+  locationCity        String?
+  locationCounty      String?
+  isRemote            Boolean  @default(false)
+  isOnline            Boolean  @default(false)
+
+  fundingDisclosure   FundingDisclosure @default(NOT_DISCLOSED)
+  fundingAmount       Int?
+  fundingCurrency     String            @default("KES")
+
+  duration            String?
+  applicationUrl      String?
+  applyEmail          String?
+  howToApply          String?
+
+  openToInternational Boolean @default(false)
+  targetDemographic   String?
+
+  status              OpportunityStatus @default(ACTIVE)
+  featured            Boolean           @default(false)
+
+  datePosted          DateTime @default(now())
+  deadline            DateTime?
+
+  deletedAt           DateTime?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([type])
+  @@index([status])
+  @@index([featured])
+  @@index([locationCounty])
+  @@index([deadline])
+  @@index([datePosted])
+  @@index([status, featured])
+  @@index([deletedAt])
+
+  @@map("opportunities")
 }
