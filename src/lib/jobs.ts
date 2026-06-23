@@ -29,6 +29,7 @@ export type JobDetail = JobListItem & {
   sourceUrl: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
+ categoryId: string | null;
   organization: {
     orgName: string;
     orgSlug: string;
@@ -120,7 +121,8 @@ export async function getJobBySlug(slug: string): Promise<JobDetail | null> {
       subcategory: { select: { label: true, slug: true } },
     },
   });
-  return job as unknown as JobDetail | null;
+  if (!job) return null;
+  return { ...job, categoryId: job.categoryId } as unknown as JobDetail;
 }
 
 export async function getSimilarJobs(job: JobDetail, limit = 4): Promise<JobListItem[]> {

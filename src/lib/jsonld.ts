@@ -1,3 +1,5 @@
+const SITE_URL = 'https://jobboard.ke';
+
 export function generateJobPostingJsonLd(job: {
   title: string;
   description: string;
@@ -5,19 +7,22 @@ export function generateJobPostingJsonLd(job: {
   datePosted: Date;
   deadline: Date | null;
   employmentType: string | null;
+  experienceLevel: string | null;
+  educationLevel: string | null;
   locationCity: string | null;
   locationCounty: string | null;
   isRemote: boolean;
   salaryMin: number | null;
   salaryMax: number | null;
   salaryCurrency?: string;
+  category?: { label: string } | null;
+  subcategory?: { label: string } | null;
   organization: {
     orgName: string;
     orgLogoUrl: string | null;
+    orgWebsite: string | null;
   } | null;
 }) {
-  const SITE_URL = 'https://jobboard.ke';
-
   return {
     '@context': 'https://schema.org/',
     '@type': 'JobPosting',
@@ -31,7 +36,11 @@ export function generateJobPostingJsonLd(job: {
       '@type': 'Organization',
       name: job.organization.orgName,
       logo: job.organization.orgLogoUrl || `${SITE_URL}/default-og.jpg`,
-    } : undefined,
+      sameAs: job.organization.orgWebsite || undefined,
+    } : {
+      '@type': 'Organization',
+      name: 'Confidential',
+    },
     jobLocation: {
       '@type': 'Place',
       address: {
@@ -52,6 +61,10 @@ export function generateJobPostingJsonLd(job: {
         unitText: 'MONTH',
       },
     } : undefined,
+    ...(job.experienceLevel ? { experienceRequirements: { '@type': 'OccupationalExperienceRequirements', monthsOfExperience: mapExperienceToMonths(job.experienceLevel) } } : {}),
+    ...(job.educationLevel ? { educationRequirements: { '@type': 'EducationalOccupationalCredential', credentialCategory: mapEducationLevel(job.educationLevel) } } : {}),
+    ...(job.category ? { industry: job.category.label } : {}),
+    ...(job.subcategory ? { occupationalCategory: job.subcategory.label } : {}),
   };
 }
 
@@ -63,11 +76,38 @@ function mapEmploymentType(type: string | null): string | undefined {
     CONTRACT: 'CONTRACT',
     FREELANCE: 'CONTRACTOR',
     INTERNSHIP: 'INTERN',
+    APPRENTICESHIP: 'INTERN',
     TEMPORARY: 'TEMPORARY',
     CASUAL: 'PART_TIME',
     VOLUNTEER: 'VOLUNTEER',
   };
   return map[type];
+}
+
+function mapExperienceToMonths(level: string): number {
+  const map: Record<string, number> = {
+    ENTRY: 0,
+    JUNIOR: 12,
+    MID: 36,
+    SENIOR: 60,
+    LEAD: 84,
+    EXECUTIVE: 120,
+  };
+  return map[level] || 12;
+}
+
+function mapEducationLevel(level: string): string {
+  const map: Record<string, string> = {
+    NONE: 'no formal education',
+    HIGH_SCHOOL: 'high school',
+    CERTIFICATE: 'professional certification',
+    DIPLOMA: 'diploma',
+    BACHELORS: 'bachelor degree',
+    MASTERS: 'master degree',
+    DOCTORATE: 'doctorate degree',
+    PROFESSIONAL: 'professional degree',
+  };
+  return map[level] || 'bachelor degree';
 }
 
 export function generateBreadcrumbJsonLd(items: { name: string; url: string }[]) {
@@ -78,7 +118,7 @@ export function generateBreadcrumbJsonLd(items: { name: string; url: string }[])
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,
-      item: `https://jobboard.ke${item.url}`,
+      item: `${SITE_URL}${item.url}`,
     })),
   };
 }

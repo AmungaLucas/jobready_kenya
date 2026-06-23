@@ -17,28 +17,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const job = await getJobBySlug(slug);
   if (!job) return { title: 'Job Not Found' };
 
-  const title = job.seoTitle || `${job.title} at ${job.organization?.orgName || 'JobBoard Kenya'}`;
-  const description = job.seoDescription || job.description.substring(0, 160);
+  const orgName = job.organization?.orgName || 'JobBoard Kenya';
+  const location = job.locationCity || job.locationCounty || 'Kenya';
+  const title = job.seoTitle || `${job.title} at ${orgName} - ${location} | JobBoard Kenya`;
+  const description = job.seoDescription || `${job.title} vacancy at ${orgName} in ${location}. ${job.description.substring(0, 120).trim()}. Apply now on JobBoard Kenya.`;
 
   return {
     title,
-    description,
+    description: description.substring(0, 160),
     alternates: { canonical: `/jobs/${job.slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
-      description,
+      description: description.substring(0, 160),
       type: 'article',
       publishedTime: job.datePosted.toISOString(),
       modifiedTime: job.datePosted.toISOString(),
       url: `/jobs/${job.slug}`,
       siteName: 'JobBoard Kenya',
-      images: job.organization?.orgLogoUrl ? [{ url: job.organization.orgLogoUrl }] : [],
+      images: job.organization?.orgLogoUrl ? [{ url: job.organization.orgLogoUrl, width: 1200, height: 630, alt: `${job.title} at ${orgName}` }] : [],
     },
     twitter: {
       card: 'summary_large_image',
       title,
-      description,
+      description: description.substring(0, 160),
     },
   };
 }
@@ -102,13 +104,41 @@ export default async function JobDetailsPage({ params }: Props) {
     description: '',
   }));
 
-  // JSON-LD
-  const jobLd = generateJobPostingJsonLd(job);
-  const breadcrumbLd = generateBreadcrumbJsonLd([
+  // JSON-LD: JobPosting + BreadcrumbList
+  const jobLd = generateJobPostingJsonLd({
+    title: job.title,
+    description: job.description,
+    slug: job.slug,
+    datePosted: job.datePosted,
+    deadline: job.deadline,
+    employmentType: job.employmentType,
+    experienceLevel: job.experienceLevel,
+    educationLevel: job.educationLevel,
+    locationCity: job.locationCity,
+    locationCounty: job.locationCounty,
+    isRemote: job.isRemote,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+    salaryCurrency: 'KES',
+    category: job.category,
+    subcategory: job.subcategory,
+    organization: job.organization ? {
+      orgName: job.organization.orgName,
+      orgLogoUrl: job.organization.orgLogoUrl,
+      orgWebsite: job.organization.orgWebsite,
+    } : null,
+  });
+
+  // Breadcrumb: Home > Jobs > [Category] > Job Title
+  const breadcrumbItems: { name: string; url: string }[] = [
     { name: 'Home', url: '/' },
     { name: 'Browse Jobs', url: '/jobs' },
-    { name: job.title, url: `/jobs/${job.slug}` },
-  ]);
+  ];
+  if (job.category) {
+    breadcrumbItems.push({ name: job.category.label, url: `/jobs?category=${job.category.slug}` });
+  }
+  breadcrumbItems.push({ name: job.title, url: `/jobs/${job.slug}` });
+  const breadcrumbLd = generateBreadcrumbJsonLd(breadcrumbItems);
 
   return (
     <>

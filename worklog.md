@@ -56,3 +56,38 @@ Stage Summary:
 - SEO: generateMetadata + JSON-LD on all job detail pages
 - ISR: 60-second revalidation on job detail and listing pages
 - All homepage job links now use slug-based URLs from database
+
+---
+Task ID: 2-enhancement
+Agent: Main Agent
+Task: Phase 2 Enhancement - Dynamic listing metadata, enriched JSON-LD, breadcrumbs
+
+Work Log:
+- Enhanced /jobs/page.tsx: replaced static metadata with dynamic generateMetadata that reacts to search params (category, county, type, search) - resolves category/county labels from DB for rich titles
+- Added robots directive: page > 1 gets noindex (avoid duplicate content), page 1 gets full index
+- Added dynamic canonical URLs that include active filter params (but exclude page number)
+- Added JSON-LD BreadcrumbList to jobs listing page, dynamically built from active filters
+- Added visual breadcrumb nav to listing page matching the JSON-LD structure
+- Enhanced dynamic h1 headings: shows "Search results for X", "Jobs in County", or category name
+- Enhanced src/lib/jsonld.ts:
+  - Added experienceRequirements (OccupationalExperienceRequirements with monthsOfExperience mapped from enum)
+  - Added educationRequirements (EducationalOccupationalCredential with credentialCategory)
+  - Added industry and occupationalCategory fields from category/subcategory
+  - Added sameAs link to hiringOrganization when orgWebsite exists
+  - Added APPRENTICESHIP mapping to INTERN
+  - Centralized SITE_URL constant
+- Enhanced /jobs/[slug]/page.tsx:
+  - Improved SEO title pattern: "{Title} at {Org} - {Location} | JobBoard Kenya"
+  - Improved SEO description: includes org name, location, and truncation at 160 chars
+  - Added OG image alt text
+  - Added category to JSON-LD BreadcrumbList (Home > Jobs > Category > Job Title)
+  - Passes experienceLevel, educationLevel, category, subcategory, orgWebsite to JSON-LD
+- Fixed JobDetailsContent breadcrumb: changed /categories/{slug} link to /jobs?category={slug} (category pages not yet built in Phase 3)
+- Fixed JobDetail type: added missing categoryId field for getSimilarJobs function
+
+Stage Summary:
+- Build: SUCCESS - 24 ISR job pages + dynamic /jobs listing
+- All job detail pages now have enriched JSON-LD with experience, education, industry
+- Listing page has fully dynamic SEO metadata based on active filters
+- Breadcrumb JSON-LD on both listing and detail pages
+- Ready for Phase 3 (Category/Subcategory pages)

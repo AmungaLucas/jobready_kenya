@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { getJobs } from '@/lib/jobs';
 import { employmentTypeLabels, formatSalary, timeAgo, formatDate } from '@/lib/jobs';
+import { generateBreadcrumbJsonLd } from '@/lib/jsonld';
+import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 import Sidebar from '@/components/jobboard/Sidebar';
@@ -10,20 +12,82 @@ import Link from 'next/link';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: 'Jobs in Kenya - Latest Vacancies & Career Opportunities | JobBoard Kenya',
-  description: 'Browse the latest job vacancies in Kenya across all industries. Find full-time, part-time, contract, and internship opportunities from top employers. Updated daily.',
-  alternates: { canonical: '/jobs' },
-  openGraph: {
-    title: 'Jobs in Kenya - Latest Vacancies | JobBoard Kenya',
-    description: 'Browse the latest job vacancies in Kenya across all industries. Updated daily.',
-    url: '/jobs',
-    siteName: 'JobBoard Kenya',
-  },
-};
-
 interface JobsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ searchParams }: JobsPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const category = typeof params.category === 'string' ? params.category : undefined;
+  const county = typeof params.county === 'string' ? params.county : undefined;
+  const type = typeof params.type === 'string' ? params.type : undefined;
+  const search = typeof params.search === 'string' ? params.search : undefined;
+  const page = typeof params.page === 'string' ? Number(params.page) : 1;
+
+  // Resolve category label for dynamic titles
+  let categoryLabel: string | null = null;
+  if (category) {
+    const cat = await prisma.jobCategory.findFirst({
+      where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
+      select: { label: true },
+    });
+    categoryLabel = cat?.label || null;
+  }
+
+  // Resolve county name
+  let countyName: string | null = null;
+  if (county) {
+    const loc = await prisma.location.findFirst({
+      where: { slug: county },
+      select: { county: true },
+    });
+    countyName = loc?.county || null;
+  }
+
+  // Build dynamic title parts
+  const parts: string[] = [];
+  if (search) parts.push(`"${search}"`);
+  if (categoryLabel) parts.push(`${categoryLabel}`);
+  if (countyName) parts.push(`in ${countyName}`);
+  if (type) {
+    const typeLabel = employmentTypeLabels[type.toUpperCase().replace(/-/g, '_')];
+    if (typeLabel) parts.push(typeLabel);
+  }
+
+  const isFiltered = parts.length > 0;
+  const titleSuffix = isFiltered
+    ? `${parts.join(' ')} Jobs in Kenya | JobBoard Kenya`
+    : 'Jobs in Kenya - Latest Vacancies & Career Opportunities | JobBoard Kenya';
+
+  const descriptionBase = isFiltered
+    ? `Browse ${parts.join(' ')} job vacancies in Kenya. Find and apply for the latest opportunities from top employers. Updated daily.`
+    : 'Browse the latest job vacancies in Kenya across all industries. Find full-time, part-time, contract, and internship opportunities from top employers. Updated daily.';
+
+  // Build canonical URL — don't include page 1 in canonical
+  const urlParts: string[] = ['/jobs'];
+  if (category) urlParts.push(`category=${category}`);
+  if (county) urlParts.push(`county=${county}`);
+  if (type) urlParts.push(`type=${type}`);
+  if (search) urlParts.push(`search=${encodeURIComponent(search)}`);
+  const canonicalPath = urlParts.join('?');
+
+  return {
+    title: titleSuffix,
+    description: descriptionBase,
+    alternates: { canonical: canonicalPath },
+    robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: {
+      title: titleSuffix,
+      description: descriptionBase,
+      url: canonicalPath,
+      siteName: 'JobBoard Kenya',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: titleSuffix,
+      description: descriptionBase,
+    },
+  };
 }
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {
@@ -38,14 +102,62 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
   const { jobs, total } = await getJobs({ category, location, type, county, search, page, perPage });
 
+  // Build breadcrumb items based on active filters
+  const breadcrumbItems = [
+    { name: 'Home', url: '/' },
+    { name: 'Jobs', url: '/jobs' },
+  ];
+  if (county) {
+    const loc = await prisma.location.findFirst({ where: { slug: county }, select: { county: true } });
+    if (loc) breadcrumbItems.push({ name: loc.county, url: `/jobs?county=${county}` });
+  }
+  if (category) {
+    const cat = await prisma.jobCategory.findFirst({
+      where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
+      select: { label: true },
+    });
+    if (cat) breadcrumbItems.push({ name: cat.label, url: `/jobs?category=${category}` });
+  }
+  if (search) {
+    breadcrumbItems.push({ name: `Search: ${search}`, url: `/jobs?search=${encodeURIComponent(search)}` });
+  }
+
+  const breadcrumbLd = generateBreadcrumbJsonLd(breadcrumbItems);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <Navbar />
       <section className="section-bg py-8 border-b border-gray-200/50" style={{ paddingTop: '88px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+            {breadcrumbItems.map((item, i) => (
+              <span key={item.url} className="flex items-center gap-2">
+                {i > 0 && <span className="text-gray-300">/</span>}
+                {i < breadcrumbItems.length - 1 ? (
+                  <Link href={item.url} className="hover:text-emerald-600 transition">{item.name}</Link>
+                ) : (
+                  <span className="text-gray-700 font-medium">{item.name}</span>
+                )}
+              </span>
+            ))}
+          </nav>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-extrabold text-gray-800">Browse Jobs</h1>
+              <h1 className="text-2xl font-extrabold text-gray-800">
+                {search ? (
+                  <>Search results for &ldquo;{search}&rdquo;</>
+                ) : county ? (
+                  <>Jobs in {breadcrumbItems.find(b => b.url.includes('county='))?.name || county}</>
+                ) : category ? (
+                  <>{breadcrumbItems.find(b => b.url.includes('category='))?.name || 'Jobs'}</>
+                ) : (
+                  'Browse Jobs'
+                )}
+              </h1>
               <p className="text-sm text-gray-500">
                 Showing <span className="font-semibold text-emerald-600">{total}</span> opportunities
               </p>
