@@ -48,7 +48,7 @@ export async function getGovernmentJobs(type?: string, page = 1, perPage = 20): 
 export async function getGovernmentOrgs(): Promise<{ orgName: string; orgSlug: string; orgType: string; jobCount: number }[]> {
   const orgs = await prisma.organization.findMany({
     where: { orgType: { in: GOV_ORG_TYPES } },
-    select: { orgName: true, orgSlug: true, orgType: true },
+    select: { id: true, orgName: true, orgSlug: true, orgType: true },
     orderBy: { orgName: 'asc' },
   });
 
@@ -90,4 +90,60 @@ export async function getGovernmentJobCounts(): Promise<Record<string, number>> 
   counts['all'] = Object.values(counts).reduce((sum, n) => sum + n, 0);
 
   return counts;
+}
+
+// ── County-level government jobs ──
+
+export async function getGovernmentJobsByCounty(
+  county: string,
+  type?: string,
+  page = 1,
+  perPage = 20
+): Promise<{ jobs: JobListItem[]; total: number }> {
+  const orgTypes = type && type !== 'all' ? [type] : GOV_ORG_TYPES;
+
+  const where: any = {
+    status: 'ACTIVE',
+    deletedAt: null,
+    locationCounty: county,
+    organization: { orgType: { in: orgTypes } },
+  };
+
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      select: jobListSelect,
+      orderBy: { datePosted: 'desc' },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    }),
+    prisma.job.count({ where }),
+  ]);
+
+  return { jobs: jobs as unknown as JobListItem[], total };
+}
+
+export async function getGovernmentJobCountsByCounty(county: string): Promise<Record<string, number>> {
+  const counts: Record<string, number> = {};
+
+  for (const orgType of GOV_ORG_TYPES) {
+    counts[orgType] = await prisma.job.count({
+      where: {
+        status: 'ACTIVE',
+        deletedAt: null,
+        locationCounty: county,
+        organization: { orgType },
+      },
+    });
+  }
+
+  counts['all'] = Object.values(counts).reduce((sum, n) => sum + n, 0);
+  return counts;
+}
+
+export async function getAllGovernmentCountySlugs(): Promise<{ slug: string; county: string }[]> {
+  return prisma.location.findMany({
+    select: { slug: true, county: true },
+    orderBy: { county: 'asc' },
+  });
 }

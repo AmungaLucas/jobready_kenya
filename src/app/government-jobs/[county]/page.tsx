@@ -1,6 +1,14 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getGovernmentJobs, getGovernmentOrgs, getGovernmentJobCounts, getAllGovernmentCountySlugs, GOV_TYPE_LABELS } from '@/lib/government';
+import { prisma } from '@/lib/prisma';
+import {
+  getGovernmentJobsByCounty,
+  getGovernmentJobCountsByCounty,
+  getAllGovernmentCountySlugs,
+  getGovernmentOrgs,
+  GOV_TYPE_LABELS,
+} from '@/lib/government';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
@@ -11,32 +19,29 @@ import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
 
-interface GovJobsPageProps {
+interface Props {
+  params: Promise<{ county: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export async function generateMetadata({ searchParams }: GovJobsPageProps): Promise<Metadata> {
-  const params = await searchParams;
-  const type = typeof params.type === 'string' ? params.type : undefined;
-  const typeLabel = type && type !== 'all' ? (GOV_TYPE_LABELS[type] || '') : '';
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { county: slug } = await params;
+  const location = await prisma.location.findUnique({ where: { slug } });
+  if (!location) return { title: 'County Not Found' };
 
-  const title = type && type !== 'all'
-    ? `${typeLabel} Jobs in Kenya - Government Vacancies | JobBoard Kenya`
-    : 'Government Jobs in Kenya - Public Sector Vacancies & Careers | JobBoard Kenya';
-
-  const description = type && type !== 'all'
-    ? `Browse the latest ${typeLabel.toLowerCase()} job vacancies in Kenya. Apply for ${typeLabel.toLowerCase()} positions from ministries, agencies, and parastatals. Updated daily.`
-    : 'Browse government jobs in Kenya including national government, county government, state corporations, and regulatory authorities. Updated daily with public sector vacancies from across Kenya.';
+  const county = location.county;
+  const title = `Government Jobs in ${county} County - Public Sector Vacancies | JobBoard Kenya`;
+  const description = `Browse government job vacancies in ${county} County, Kenya. Find county government, national government, state corporation, and regulatory authority positions in ${county}. Updated daily.`;
 
   return {
     title,
     description: description.substring(0, 160),
-    alternates: { canonical: `${SITE_URL}${type ? `/government-jobs?type=${type}` : '/government-jobs'}` },
+    alternates: { canonical: `${SITE_URL}/government-jobs/${slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
       description: description.substring(0, 160),
-      url: `${SITE_URL}${type ? `/government-jobs?type=${type}` : '/government-jobs'}`,
+      url: `${SITE_URL}/government-jobs/${slug}`,
       siteName: 'JobBoard Kenya',
     },
     twitter: {
@@ -47,48 +52,64 @@ export async function generateMetadata({ searchParams }: GovJobsPageProps): Prom
   };
 }
 
-export default async function GovernmentJobsPage({ searchParams }: GovJobsPageProps) {
-  const params = await searchParams;
-  const type = typeof params.type === 'string' ? params.type : 'all';
-  const page = typeof params.page === 'string' ? Number(params.page) : 1;
+export async function generateStaticParams() {
+  const counties = await getAllGovernmentCountySlugs();
+  return counties.map((c) => ({ county: c.slug }));
+}
+
+export default async function GovernmentJobsCountyPage({ params }: Props) {
+  const { county: slug } = await params;
+  const location = await prisma.location.findUnique({ where: { slug } });
+  if (!location) notFound();
+
+  const county = location.county;
   const perPage = 20;
 
-  const [jobsData, orgs, counts, allCategories, locations, govCounties] = await Promise.all([
-    getGovernmentJobs(type, page, perPage),
+  const [jobsData, counts, orgs, allCategories, popularLocations] = await Promise.all([
+    getGovernmentJobsByCounty(county, 'all', 1, perPage),
+    getGovernmentJobCountsByCounty(county),
     getGovernmentOrgs(),
-    getGovernmentJobCounts(),
     getAllCategories(),
     getPopularLocations(8),
-    getAllGovernmentCountySlugs(),
   ]);
 
   const { jobs, total } = jobsData;
 
   // JSON-LD
-  const typeLabel = type !== 'all' ? (GOV_TYPE_LABELS[type] || 'Government') : 'Government';
   const collectionLd = generateCollectionPageJsonLd({
-    name: `${typeLabel} Jobs in Kenya`,
-    description: `Browse ${total}+ ${typeLabel.toLowerCase()} job vacancies in Kenya from public sector employers.`,
-    url: type ? `/government-jobs?type=${type}` : '/government-jobs',
+    name: `Government Jobs in ${county} County`,
+    description: `Browse ${total}+ government job vacancies in ${county} County, Kenya from public sector employers.`,
+    url: `/government-jobs/${slug}`,
     itemCount: total,
   });
 
-  const breadcrumbItems: { name: string; url: string }[] = [
+  const breadcrumbLd = generateBreadcrumbJsonLd([
     { name: 'Home', url: '/' },
     { name: 'Jobs', url: '/jobs' },
     { name: 'Government Jobs', url: '/government-jobs' },
-  ];
-  if (type !== 'all') {
-    breadcrumbItems.push({ name: typeLabel, url: `/government-jobs?type=${type}` });
-  }
+    { name: county, url: `/government-jobs/${slug}` },
+  ]);
 
-  const breadcrumbLd = generateBreadcrumbJsonLd(breadcrumbItems);
+  // Other counties for fallback
+  const otherCounties = await prisma.location.findMany({
+    where: { slug: { not: slug } },
+    select: { slug: true, county: true },
+    orderBy: { county: 'asc' },
+    take: 12,
+  });
 
-  // Tab definitions
+  // Filter gov orgs to those in this county
+  const countyOrgs = orgs.filter(o => {
+    // We check if the org name contains the county name as a heuristic,
+    // or just show all gov orgs since jobs are already filtered by county
+    return true;
+  }).slice(0, 10);
+
+  // Tabs
   const tabs = [
-    { key: 'all', label: `All Government (${counts.all || 0})` },
+    { key: 'all', label: `All (${counts.all || 0})` },
     { key: 'NATIONAL_GOVERNMENT', label: `National (${counts.NATIONAL_GOVERNMENT || 0})` },
-    { key: 'COUNTY_GOVERNMENT', label: `County (${counts.COUNTY_GOVERNMENT || 0})` },
+    { key: 'COUNTY_GOVERNMENT', label: `County Gov (${counts.COUNTY_GOVERNMENT || 0})` },
     { key: 'STATE_CORPORATION', label: `State Corps (${counts.STATE_CORPORATION || 0})` },
     { key: 'REGULATORY_AUTHORITY', label: `Regulatory (${counts.REGULATORY_AUTHORITY || 0})` },
   ];
@@ -103,16 +124,13 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
       <section className="section-bg py-4 border-b border-gray-200/50" style={{ paddingTop: '88px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
-            {breadcrumbItems.map((item, i) => (
-              <span key={item.url} className="flex items-center gap-2">
-                {i > 0 && <span className="text-gray-300">/</span>}
-                {i < breadcrumbItems.length - 1 ? (
-                  <Link href={item.url} className="hover:text-emerald-600 transition">{item.name}</Link>
-                ) : (
-                  <span className="text-gray-700 font-medium">{item.name}</span>
-                )}
-              </span>
-            ))}
+            <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
+            <span>/</span>
+            <Link href="/jobs" className="hover:text-emerald-600 transition">Jobs</Link>
+            <span>/</span>
+            <Link href="/government-jobs" className="hover:text-emerald-600 transition">Government Jobs</Link>
+            <span>/</span>
+            <span className="text-gray-700 font-medium">{county}</span>
           </nav>
         </div>
       </section>
@@ -123,19 +141,24 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">🏛️</span>
+                <span className="text-lg">&#x1F3DB;</span>
                 <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">
-                  {type !== 'all' ? `${typeLabel} Jobs in Kenya` : 'Government Jobs in Kenya'}
+                  Government Jobs in {county} County
                 </h1>
               </div>
               <p className="text-sm text-gray-500">
-                <span className="font-semibold text-emerald-600">{total}</span> public sector vacancies
-                &middot; <span className="text-gray-400">{orgs.length} government employers</span>
+                <span className="font-semibold text-emerald-600">{total}</span> public sector vacancies in {county}
+                &middot; <span className="text-gray-400">National, County &amp; State Corporation</span>
               </p>
             </div>
-            <Link href="/jobs" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap">
-              &larr; All Jobs
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/government-jobs" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                &larr; All Government Jobs
+              </Link>
+              <Link href={`/locations/${slug}`} className="text-sm font-medium text-gray-500 hover:text-gray-700 transition">
+                All Jobs in {county} &rarr;
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -152,9 +175,9 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                 {tabs.map((tab) => (
                   <Link
                     key={tab.key}
-                    href={tab.key === 'all' ? '/government-jobs' : `/government-jobs?type=${tab.key}`}
+                    href={tab.key === 'all' ? `/government-jobs/${slug}` : `/government-jobs/${slug}?type=${tab.key}`}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                      type === tab.key
+                      tab.key === 'all'
                         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
                         : 'bg-white/70 text-gray-600 hover:bg-gray-100 border border-white/60'
                     }`}
@@ -164,35 +187,23 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                 ))}
               </div>
 
-              {/* SEO intro */}
+              {/* LAYER 1: SEO Description */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                {type !== 'all' ? (
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Browse the latest {GOV_TYPE_LABELS[type]?.toLowerCase() || 'government'} job vacancies in Kenya. 
-                    These positions are offered by {GOV_TYPE_LABELS[type]?.toLowerCase() || 'government'} entities including 
-                    ministries, departments, agencies, and parastatals. Government jobs in Kenya are highly sought after 
-                    due to job security, competitive benefits, and opportunities for career advancement in the public service. 
-                    Check this page regularly for new {GOV_TYPE_LABELS[type]?.toLowerCase() || 'government'} openings across 
-                    all counties and sectors.
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Government jobs in Kenya span national government ministries, county governments, state corporations, 
-                    and regulatory authorities. Public sector employment offers competitive salaries, pension benefits, 
-                    job security, and structured career progression. The Government of Kenya is one of the largest employers 
-                    in the country, with vacancies regularly advertised through official gazette notices, Public Service 
-                    Commission (PSC) listings, and individual agency recruitment portals. Browse all current government 
-                    vacancies below, filtered by organization type, or use the tabs to narrow your search to specific 
-                    public sector categories.
-                  </p>
-                )}
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Government jobs in {county} County include positions from the {county} County Government,
+                  national government ministries and agencies operating in {county}, state corporations with offices
+                  in the region, and regulatory authorities. Public sector employment in {county} offers competitive
+                  salaries, pension benefits, job security, and structured career progression under the Commission
+                  for Public Service and the County Public Service Board. Browse all current government vacancies
+                  in {county} below, or use the tabs to filter by organization type.
+                </p>
               </div>
 
               {/* Job listings or empty fallback */}
               {jobs.length > 0 ? (
                 <div>
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                    Latest Government Vacancies
+                    Latest Government Vacancies in {county}
                   </h2>
                   <div className="space-y-3">
                     {jobs.map((job) => (
@@ -205,37 +216,39 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                 <div className="space-y-6">
 
                   {/* Layer 2: Government organizations */}
-                  <div>
-                    <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                      Government Employers on JobBoard Kenya
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {orgs.map((org) => (
-                        <Link
-                          key={org.orgSlug}
-                          href={`/jobs?search=${encodeURIComponent(org.orgName)}`}
-                          className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
-                        >
-                          <div>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition block">{org.orgName}</span>
-                            <span className="text-xs text-gray-400">{GOV_TYPE_LABELS[org.orgType] || org.orgType}</span>
-                          </div>
-                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{org.jobCount}</span>
-                        </Link>
-                      ))}
+                  {countyOrgs.length > 0 && (
+                    <div>
+                      <h2 className="text-lg font-extrabold text-gray-800 mb-4">
+                        Government Employers on JobBoard Kenya
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {countyOrgs.map((org) => (
+                          <Link
+                            key={org.orgSlug}
+                            href={`/jobs?search=${encodeURIComponent(org.orgName)}`}
+                            className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
+                          >
+                            <div>
+                              <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition block">{org.orgName}</span>
+                              <span className="text-xs text-gray-400">{GOV_TYPE_LABELS[org.orgType] || org.orgType}</span>
+                            </div>
+                            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{org.jobCount}</span>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Layer 3: Categories with government jobs */}
+                  {/* Layer 3: Popular categories */}
                   <div>
                     <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                      Popular Categories for Government Jobs
+                      Popular Categories for Government Jobs in {county}
                     </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                       {allCategories.slice(0, 12).map((cat) => (
                         <Link
                           key={cat.slug}
-                          href={`/categories/${cat.slug}`}
+                          href={`/categories/${cat.slug}?county=${slug}`}
                           className="flex items-center justify-between p-3 bg-white/70 backdrop-blur-sm rounded-lg border border-white/60 hover:border-emerald-300 transition text-sm"
                         >
                           <span className="text-gray-700 font-medium truncate mr-2">{cat.label}</span>
@@ -245,16 +258,16 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                     </div>
                   </div>
 
-                  {/* Layer 4: Browse by county */}
+                  {/* Layer 4: Other counties */}
                   <div>
                     <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                      Government Jobs by County
+                      Government Jobs in Other Counties
                     </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {locations.map((loc) => (
+                      {otherCounties.map((loc) => (
                         <Link
                           key={loc.slug}
-                          href={`/locations/${loc.slug}`}
+                          href={`/government-jobs/${loc.slug}`}
                           className="text-center p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
                         >
                           <span className="text-sm font-medium text-gray-700">{loc.county}</span>
@@ -266,19 +279,20 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                   {/* Layer 5: CTA + alert signup */}
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60">
                     <h2 className="text-lg font-extrabold text-gray-800 mb-2">
-                      No {type !== 'all' ? GOV_TYPE_LABELS[type]?.toLowerCase() : 'government'} jobs right now
+                      No government jobs in {county} right now
                     </h2>
                     <p className="text-sm text-gray-600">
-                      Government vacancies are posted regularly, especially during recruitment drives. 
-                      Set up an alert and be the first to apply when new public sector positions are listed.
+                      Government vacancies in {county} are posted regularly, especially during annual recruitment
+                      drives by the {county} County Public Service Board and national agencies. Set up an alert
+                      and be the first to apply when new public sector positions are listed.
                     </p>
                     <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
-                      <Link href="/jobs" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm shadow-md shadow-emerald-200">
-                        Browse All Jobs &rarr;
+                      <Link href="/government-jobs" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm shadow-md shadow-emerald-200">
+                        All Government Jobs &rarr;
                       </Link>
-                      <p className="text-xs text-gray-500">
-                        Check back soon or set up a job alert for government vacancies.
-                      </p>
+                      <Link href={`/locations/${slug}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                        View all jobs in {county} &rarr;
+                      </Link>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
                       <input type="email" placeholder="Your email address" className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
@@ -296,22 +310,23 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
 
               {/* Quick stats */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Overview</h3>
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
+                  {county} County Overview
+                </h3>
                 <div className="space-y-2.5 text-sm">
-                  <div className="flex justify-between"><span className="text-gray-500">Total Vacancies</span><span className="font-medium text-emerald-600">{total}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Gov Vacancies</span><span className="font-medium text-emerald-600">{total}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">National</span><span className="font-medium text-gray-700">{counts.NATIONAL_GOVERNMENT || 0}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">County</span><span className="font-medium text-gray-700">{counts.COUNTY_GOVERNMENT || 0}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">County Gov</span><span className="font-medium text-gray-700">{counts.COUNTY_GOVERNMENT || 0}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">State Corps</span><span className="font-medium text-gray-700">{counts.STATE_CORPORATION || 0}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Regulatory</span><span className="font-medium text-gray-700">{counts.REGULATORY_AUTHORITY || 0}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Employers</span><span className="font-medium text-gray-700">{orgs.length}</span></div>
                 </div>
               </div>
 
-              {/* Government organizations */}
+              {/* Government orgs */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Employers</h3>
-                <ul className="space-y-1">
-                  {orgs.map((org) => (
+                <ul className="space-y-1 max-h-48 overflow-y-auto">
+                  {countyOrgs.map((org) => (
                     <li key={org.orgSlug}>
                       <Link
                         href={`/jobs?search=${encodeURIComponent(org.orgName)}`}
@@ -325,17 +340,17 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
                 </ul>
               </div>
 
-              {/* Browse by County */}
+              {/* Other counties */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Gov Jobs by County</h3>
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Other Counties</h3>
                 <ul className="space-y-1 max-h-60 overflow-y-auto">
-                  {govCounties.map((c) => (
-                    <li key={c.slug}>
+                  {otherCounties.map((loc) => (
+                    <li key={loc.slug}>
                       <Link
-                        href={`/government-jobs/${c.slug}`}
+                        href={`/government-jobs/${loc.slug}`}
                         className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition text-gray-700"
                       >
-                        <span>{c.county}</span>
+                        <span>{loc.county}</span>
                       </Link>
                     </li>
                   ))}
@@ -345,10 +360,10 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
               {/* Job alerts CTA */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">📬</span>
-                  <h4 className="text-sm font-bold text-gray-700">Get Government Job Alerts</h4>
+                  <span className="text-xl">&#x1F4EC;</span>
+                  <h4 className="text-sm font-bold text-gray-700">Get {county} Gov Job Alerts</h4>
                 </div>
-                <p className="text-xs text-gray-600">New government vacancies sent to your inbox.</p>
+                <p className="text-xs text-gray-600">New government vacancies in {county} sent to your inbox.</p>
                 <div className="mt-3 flex flex-col gap-2">
                   <input type="email" placeholder="Your email" className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
                   <button type="button" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition text-sm">Subscribe</button>

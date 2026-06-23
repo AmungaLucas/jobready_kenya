@@ -157,3 +157,23 @@ Stage Summary:
 - Canonical URLs are now fully qualified (https://jobboard.ke/...) across ALL pre-rendered and dynamic pages
 - Test script: scripts/test-phase5.js (24/24 passing)
 
+---
+Task ID: 5b
+Agent: main
+Task: Phase 5b - Government Jobs County Pages
+
+Work Log:
+- Added 3 service functions to government.ts: getGovernmentJobsByCounty, getGovernmentJobCountsByCounty, getAllGovernmentCountySlugs
+- Created /government-jobs/[county]/page.tsx with generateStaticParams (46 counties), generateMetadata, JSON-LD, ISR, 5-layer empty fallback
+- Added "Gov Jobs by County" sidebar to main /government-jobs page
+- Fixed bug: getGovernmentOrgs() missing id select — caused undefined in groupBy filter (pre-existing, exposed by county page build)
+- Build: 633 total pages (587 → 633, +46 county gov pages)
+- 630 pre-rendered HTML files
+
+Stage Summary:
+- 46 county-level government job pages at /government-jobs/[county]
+- Each page: SEO title, canonical URL, OG tags, CollectionPage + BreadcrumbList JSON-LD
+- Breadcrumb: Home > Jobs > Government Jobs > County
+- 5-layer fallback for counties with 0 gov jobs
+- Test script: scripts/test-phase5b.js (36/36 passing)
+
