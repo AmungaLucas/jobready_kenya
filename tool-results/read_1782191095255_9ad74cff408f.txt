@@ -1,0 +1,502 @@
+     1→     1→     1→You are absolutely right. My apologies—I took a shortcut in the v3.1 manifest by saying *"Full list available in the previous manifest"* instead of including the actual data. 
+     2→     2→     2→
+     3→     3→     3→A manifest is supposed to be a **single source of truth**. Here is the **complete v3.1 documentation** with the **entire 49-category + subcategory array** fully restored. No references. No shortcuts. 
+     4→     4→     4→
+     5→     5→     5→---
+     6→     6→     6→
+     7→     7→     7→# 🗃️ Job Board Master Schema Manifest (v3.1 – COMPLETE)
+     8→     8→     8→*100% Production-Ready | Next.js + Prisma | MySQL Optimized | Kenyan Market Focus*
+     9→     9→     9→
+    10→    10→    10→---
+    11→    11→    11→
+    12→    12→    12→## 📚 Table of Contents
+    13→    13→    13→1. [Global Enums](#1-global-enums)
+    14→    14→    14→2. [Organization Industry Labels](#2-organization-industry-labels)
+    15→    15→    15→3. [Complete Job Categories & Subcategories (49 Parents)](#3-complete-job-categories--subcategories-49-parents)
+    16→    16→    16→4. [Prisma Database Models](#4-prisma-database-models)
+    17→    17→    17→5. [Implementation Guide (Service Layer & Search)](#5-implementation-guide-service-layer--search)
+    18→    18→    18→6. [Migration Checklist](#6-migration-checklist)
+    19→    19→    19→7. [Deferred Features (MVP Phase 1)](#7-deferred-features-mvp-phase-1)
+    20→    20→    20→
+    21→    21→    21→---
+    22→    22→    22→
+    23→    23→    23→## 1. Global Enums
+    24→    24→    24→
+    25→    25→    25→### 🏢 Organization Enums
+    26→    26→    26→```prisma
+    27→    27→    27→enum OrganizationType {
+    28→    28→    28→  PRIVATE_COMPANY
+    29→    29→    29→  PUBLIC_LISTED_COMPANY
+    30→    30→    30→  NATIONAL_GOVERNMENT
+    31→    31→    31→  COUNTY_GOVERNMENT
+    32→    32→    32→  STATE_CORPORATION
+    33→    33→    33→  REGULATORY_AUTHORITY
+    34→    34→    34→  NGO_LOCAL
+    35→    35→    35→  NGO_INTERNATIONAL
+    36→    36→    36→  UNIVERSITY
+    37→    37→    37→  TVET_INSTITUTION
+    38→    38→    38→  PRIMARY_SECONDARY_SCHOOL
+    39→    39→    39→  FOUNDATION
+    40→    40→    40→  EMBASSY_DIPLOMATIC
+    41→    41→    41→  RELIGIOUS_ORGANIZATION
+    42→    42→    42→  COOPERATIVE_SOCIETY
+    43→    43→    43→  STARTUP
+    44→    44→    44→}
+    45→    45→    45→
+    46→    46→    46→enum OrganizationIndustry {
+    47→    47→    47→  AGRICULTURE
+    48→    48→    48→  AUTOMOTIVE
+    49→    49→    49→  AVIATION
+    50→    50→    50→  BANKING
+    51→    51→    51→  CONSTRUCTION
+    52→    52→    52→  CONSULTING
+    53→    53→    53→  CONSUMER_GOODS
+    54→    54→    54→  EDUCATION
+    55→    55→    55→  ENERGY
+    56→    56→    56→  ENVIRONMENT
+    57→    57→    57→  FINTECH
+    58→    58→    58→  FOOD_BEVERAGE
+    59→    59→    59→  GOVERNMENT_PUBLIC_ADMIN
+    60→    60→    60→  HEALTHCARE
+    61→    61→    61→  HOSPITALITY_TOURISM
+    62→    62→    62→  HUMAN_RESOURCES
+    63→    63→    63→  INFORMATION_TECHNOLOGY
+    64→    64→    64→  INSURANCE
+    65→    65→    65→  INTERNATIONAL_DEVELOPMENT
+    66→    66→    66→  LEGAL
+    67→    67→    67→  LOGISTICS_SUPPLY_CHAIN
+    68→    68→    68→  MANUFACTURING
+    69→    69→    69→  MARKETING_ADVERTISING
+    70→    70→    70→  MEDIA_ENTERTAINMENT
+    71→    71→    71→  MINING
+    72→    72→    72→  NON_PROFIT
+    73→    73→    73→  PHARMACEUTICAL
+    74→    74→    74→  REAL_ESTATE
+    75→    75→    75→  RESEARCH
+    76→    76→    76→  RETAIL
+    77→    77→    77→  SECURITY_DEFENSE
+    78→    78→    78→  SPORTS
+    79→    79→    79→  TELECOMMUNICATIONS
+    80→    80→    80→  TEXTILES_APPAREL
+    81→    81→    81→  WATER_SANITATION
+    82→    82→    82→}
+    83→    83→    83→```
+    84→    84→    84→
+    85→    85→    85→### 💼 Job-Specific Enums
+    86→    86→    86→```prisma
+    87→    87→    87→enum EmploymentType {
+    88→    88→    88→  FULL_TIME
+    89→    89→    89→  PART_TIME
+    90→    90→    90→  CONTRACT
+    91→    91→    91→  FREELANCE
+    92→    92→    92→  INTERNSHIP
+    93→    93→    93→  APPRENTICESHIP
+    94→    94→    94→  TEMPORARY
+    95→    95→    95→  CASUAL
+    96→    96→    96→  VOLUNTEER
+    97→    97→    97→}
+    98→    98→    98→
+    99→    99→    99→enum ExperienceLevel {
+   100→   100→   100→  ENTRY
+   101→   101→   101→  JUNIOR
+   102→   102→   102→  MID
+   103→   103→   103→  SENIOR
+   104→   104→   104→  LEAD
+   105→   105→   105→  EXECUTIVE
+   106→   106→   106→}
+   107→   107→   107→
+   108→   108→   108→enum SalaryDisclosure {
+   109→   109→   109→  NOT_DISCLOSED
+   110→   110→   110→  NEGOTIABLE
+   111→   111→   111→  COMPETITIVE
+   112→   112→   112→  SHOW_RANGE
+   113→   113→   113→}
+   114→   114→   114→
+   115→   115→   115→enum JobStatus {
+   116→   116→   116→  ACTIVE
+   117→   117→   117→  EXPIRED
+   118→   118→   118→  PAUSED
+   119→   119→   119→  DRAFT
+   120→   120→   120→}
+   121→   121→   121→
+   122→   122→   122→enum EducationLevel {
+   123→   123→   123→  NONE
+   124→   124→   124→  HIGH_SCHOOL
+   125→   125→   125→  CERTIFICATE
+   126→   126→   126→  DIPLOMA
+   127→   127→   127→  BACHELORS
+   128→   128→   128→  MASTERS
+   129→   129→   129→  DOCTORATE
+   130→   130→   130→  PROFESSIONAL
+   131→   131→   131→}
+   132→   132→   132→
+   133→   133→   133→enum JobSource {
+   134→   134→   134→  MANUAL     // Created by employer/admin via UI
+   135→   135→   135→  SCRAPED    // Aggregated from external sites
+   136→   136→   136→  IMPORTED   // Bulk CSV/Excel uploads
+   137→   137→   137→}
+   138→   138→   138→```
+   139→   139→   139→
+   140→   140→   140→### 🎓 Opportunity-Specific Enums
+   141→   141→   141→```prisma
+   142→   142→   142→enum OpportunityType {
+   143→   143→   143→  SCHOLARSHIP
+   144→   144→   144→  GRANT
+   145→   145→   145→  FELLOWSHIP
+   146→   146→   146→  SPONSORSHIP
+   147→   147→   147→  MENTORSHIP
+   148→   148→   148→  COMPETITION
+   149→   149→   149→  CONFERENCE
+   150→   150→   150→  TRAINING
+   151→   151→   151→  VOLUNTEER
+   152→   152→   152→}
+   153→   153→   153→
+   154→   154→   154→enum OpportunityStatus {
+   155→   155→   155→  ACTIVE
+   156→   156→   156→  EXPIRED
+   157→   157→   157→  PAUSED
+   158→   158→   158→  DRAFT
+   159→   159→   159→}
+   160→   160→   160→
+   161→   161→   161→enum FundingDisclosure {
+   162→   162→   162→  NOT_DISCLOSED
+   163→   163→   163→  FULLY_FUNDED
+   164→   164→   164→  PARTIALLY_FUNDED
+   165→   165→   165→  SHOW_AMOUNT
+   166→   166→   166→  NOT_FUNDED
+   167→   167→   167→}
+   168→   168→   168→```
+   169→   169→   169→
+   170→   170→   170→---
+   171→   171→   171→
+   172→   172→   172→## 2. Organization Industry Labels
+   173→   173→   173→```ts
+   174→   174→   174→export const organizationIndustryLabels: Record<OrganizationIndustry, string> = {
+   175→   175→   175→  AGRICULTURE: "Agriculture, Forestry & Fishing",
+   176→   176→   176→  AUTOMOTIVE: "Automotive & Vehicle Manufacturing",
+   177→   177→   177→  AVIATION: "Aviation & Aerospace",
+   178→   178→   178→  BANKING: "Banking & Financial Services",
+   179→   179→   179→  CONSTRUCTION: "Construction & Civil Engineering",
+   180→   180→   180→  CONSULTING: "Consulting & Professional Services",
+   181→   181→   181→  CONSUMER_GOODS: "Consumer Goods & Manufacturing",
+   182→   182→   182→  EDUCATION: "Education & Training",
+   183→   183→   183→  ENERGY: "Energy, Power & Utilities",
+   184→   184→   184→  ENVIRONMENT: "Environment & Sustainability",
+   185→   185→   185→  FINTECH: "Financial Technology (FinTech)",
+   186→   186→   186→  FOOD_BEVERAGE: "Food & Beverage Production",
+   187→   187→   187→  GOVERNMENT_PUBLIC_ADMIN: "Government & Public Administration",
+   188→   188→   188→  HEALTHCARE: "Healthcare & Medical Services",
+   189→   189→   189→  HOSPITALITY_TOURISM: "Hospitality, Travel & Tourism",
+   190→   190→   190→  HUMAN_RESOURCES: "Human Resources & Recruitment",
+   191→   191→   191→  INFORMATION_TECHNOLOGY: "Information Technology & Software",
+   192→   192→   192→  INSURANCE: "Insurance",
+   193→   193→   193→  INTERNATIONAL_DEVELOPMENT: "International Development & Humanitarian Aid",
+   194→   194→   194→  LEGAL: "Legal Services",
+   195→   195→   195→  LOGISTICS_SUPPLY_CHAIN: "Logistics, Transport & Supply Chain",
+   196→   196→   196→  MANUFACTURING: "Manufacturing & Industrial Production",
+   197→   197→   197→  MARKETING_ADVERTISING: "Marketing, Advertising & Media",
+   198→   198→   198→  MEDIA_ENTERTAINMENT: "Media, Entertainment & Broadcasting",
+   199→   199→   199→  MINING: "Mining & Natural Resources",
+   200→   200→   200→  NON_PROFIT: "Non-Profit & Social Impact",
+   201→   201→   201→  PHARMACEUTICAL: "Pharmaceuticals & Biotechnology",
+   202→   202→   202→  REAL_ESTATE: "Real Estate & Property Management",
+   203→   203→   203→  RESEARCH: "Research & Scientific Institutions",
+   204→   204→   204→  RETAIL: "Retail & E-Commerce",
+   205→   205→   205→  SECURITY_DEFENSE: "Security & Defense",
+   206→   206→   206→  SPORTS: "Sports & Recreation",
+   207→   207→   207→  TELECOMMUNICATIONS: "Telecommunications",
+   208→   208→   208→  TEXTILES_APPAREL: "Textiles, Apparel & Fashion",
+   209→   209→   209→  WATER_SANITATION: "Water, Sanitation & Waste Management",
+   210→   210→   210→};
+   211→   211→   211→```
+   212→   212→   212→
+   213→   213→   213→---
+   214→   214→   214→
+   215→   215→   215→## 3. Complete Job Categories & Subcategories (49 Parents)
+   216→   216→   216→*Seed this exact data into `JobCategory` and `JobSubcategory`.*
+   217→   217→   217→
+   218→   218→   218→```ts
+   219→   219→   219→export const jobCategoryData = [
+   220→   220→   220→  // 1. TECHNOLOGY
+   221→   221→   221→  {
+   222→   222→   222→    value: "TECHNOLOGY",
+   223→   223→   223→    label: "Technology & IT",
+   224→   224→   224→    subcategories: [
+   225→   225→   225→      { value: "SOFTWARE_ENGINEERING", label: "Software Engineering" },
+   226→   226→   226→      { value: "WEB_DEVELOPMENT", label: "Web Development" },
+   227→   227→   227→      { value: "MOBILE_DEVELOPMENT", label: "Mobile Development" },
+   228→   228→   228→      { value: "DATA_SCIENCE", label: "Data Science & Analytics" },
+   229→   229→   229→      { value: "CYBER_SECURITY", label: "Cybersecurity" },
+   230→   230→   230→      { value: "DEVOPS_CLOUD", label: "DevOps & Cloud Infrastructure" },
+   231→   231→   231→      { value: "IT_SUPPORT", label: "IT Support & Helpdesk" },
+   232→   232→   232→      { value: "NETWORK_ADMIN", label: "Network Administration" },
+   233→   233→   233→      { value: "QA_TESTING", label: "Quality Assurance & Testing" },
+   234→   234→   234→      { value: "DATABASE_ADMIN", label: "Database Administration" },
+   235→   235→   235→      { value: "SYSTEMS_ARCHITECTURE", label: "Systems Architecture" },
+   236→   236→   236→      { value: "AI_MACHINE_LEARNING", label: "AI & Machine Learning" },
+   237→   237→   237→      { value: "BLOCKCHAIN", label: "Blockchain Development" },
+   238→   238→   238→      { value: "GAME_DEVELOPMENT", label: "Game Development" },
+   239→   239→   239→      { value: "EMBEDDED_SYSTEMS", label: "Embedded Systems" },
+   240→   240→   240→      { value: "TECH_PROJECT_MANAGEMENT", label: "Technical Project Management" },
+   241→   241→   241→      { value: "IT_AUDIT", label: "IT Audit" },
+   242→   242→   242→      { value: "TECH_SUPPORT_ENGINEER", label: "Technical Support Engineering" }
+   243→   243→   243→    ]
+   244→   244→   244→  },
+   245→   245→   245→  // 2. FINANCE_ACCOUNTING
+   246→   246→   246→  {
+   247→   247→   247→    value: "FINANCE_ACCOUNTING",
+   248→   248→   248→    label: "Finance & Accounting",
+   249→   249→   249→    subcategories: [
+   250→   250→   250→      { value: "ACCOUNTING", label: "Accounting" },
+   251→   251→   251→      { value: "FINANCIAL_ANALYSIS", label: "Financial Analysis" },
+   252→   252→   252→      { value: "AUDIT", label: "Audit" },
+   253→   253→   253→      { value: "TAX", label: "Taxation" },
+   254→   254→   254→      { value: "TREASURY", label: "Treasury Management" },
+   255→   255→   255→      { value: "RISK_COMPLIANCE", label: "Risk & Compliance" },
+   256→   256→   256→      { value: "INVESTMENT_BANKING", label: "Investment Banking" },
+   257→   257→   257→      { value: "WEALTH_MANAGEMENT", label: "Wealth Management" },
+   258→   258→   258→      { value: "FINANCIAL_PLANNING", label: "Financial Planning" },
+   259→   259→   259→      { value: "PAYROLL", label: "Payroll Management" },
+   260→   260→   260→      { value: "CORPORATE_FINANCE", label: "Corporate Finance" },
+   261→   261→   261→      { value: "HEDGE_FUNDS", label: "Hedge Funds" },
+   262→   262→   262→      { value: "PRIVATE_EQUITY", label: "Private Equity" },
+   263→   263→   263→      { value: "VENTURE_CAPITAL", label: "Venture Capital" },
+   264→   264→   264→      { value: "FINANCIAL_REPORTING", label: "Financial Reporting" },
+   265→   265→   265→      { value: "CREDIT_ANALYSIS", label: "Credit Analysis" },
+   266→   266→   266→      { value: "MERCHANT_BANKING", label: "Merchant Banking" }
+   267→   267→   267→    ]
+   268→   268→   268→  },
+   269→   269→   269→  // 3. SALES_BUSINESS
+   270→   270→   270→  {
+   271→   271→   271→    value: "SALES_BUSINESS",
+   272→   272→   272→    label: "Sales & Business Development",
+   273→   273→   273→    subcategories: [
+   274→   274→   274→      { value: "BUSINESS_DEVELOPMENT", label: "Business Development" },
+   275→   275→   275→      { value: "ACCOUNT_MANAGEMENT", label: "Account Management" },
+   276→   276→   276→      { value: "SALES_REPRESENTATIVE", label: "Sales Representative" },
+   277→   277→   277→      { value: "CHANNEL_SALES", label: "Channel Sales" },
+   278→   278→   278→      { value: "CUSTOMER_SUCCESS", label: "Customer Success" },
+   279→   279→   279→      { value: "CORPORATE_SALES", label: "Corporate Sales" },
+   280→   280→   280→      { value: "RETAIL_SALES", label: "Retail Sales" },
+   281→   281→   281→      { value: "SALES_OPERATIONS", label: "Sales Operations" },
+   282→   282→   282→      { value: "SALES_TRAINING", label: "Sales Training" },
+   283→   283→   283→      { value: "KEY_ACCOUNT_MANAGEMENT", label: "Key Account Management" },
+   284→   284→   284→      { value: "TECHNICAL_SALES", label: "Technical Sales" },
+   285→   285→   285→      { value: "SALES_ENGINEERING", label: "Sales Engineering" },
+   286→   286→   286→      { value: "INSIDE_SALES", label: "Inside Sales" },
+   287→   287→   287→      { value: "FIELD_SALES", label: "Field Sales" },
+   288→   288→   288→      { value: "B2B_SALES", label: "B2B Sales" },
+   289→   289→   289→      { value: "B2C_SALES", label: "B2C Sales" },
+   290→   290→   290→      { value: "SALES_MANAGEMENT", label: "Sales Management" },
+   291→   291→   291→      { value: "SALES_ENABLEMENT", label: "Sales Enablement" }
+   292→   292→   292→    ]
+   293→   293→   293→  },
+   294→   294→   294→  // 4. MARKETING_COMMUNICATIONS
+   295→   295→   295→  {
+   296→   296→   296→    value: "MARKETING_COMMUNICATIONS",
+   297→   297→   297→    label: "Marketing & Communications",
+   298→   298→   298→    subcategories: [
+   299→   299→   299→      { value: "DIGITAL_MARKETING", label: "Digital Marketing" },
+   300→   300→   300→      { value: "CONTENT_MARKETING", label: "Content Marketing" },
+   301→   301→   301→      { value: "BRAND_MANAGEMENT", label: "Brand Management" },
+   302→   302→   302→      { value: "PUBLIC_RELATIONS", label: "Public Relations" },
+   303→   303→   303→      { value: "SOCIAL_MEDIA", label: "Social Media Management" },
+   304→   304→   304→      { value: "SEO_SEM", label: "SEO & Search Marketing" },
+   305→   305→   305→      { value: "MARKET_RESEARCH", label: "Market Research" },
+   306→   306→   306→      { value: "PRODUCT_MARKETING", label: "Product Marketing" },
+   307→   307→   307→      { value: "EVENT_MARKETING", label: "Event Marketing" },
+   308→   308→   308→      { value: "AFFILIATE_MARKETING", label: "Affiliate Marketing" },
+   309→   309→   309→      { value: "MARKETING_AUTOMATION", label: "Marketing Automation" },
+   310→   310→   310→      { value: "COPYWRITING", label: "Copywriting" },
+   311→   311→   311→      { value: "INFLUENCER_MARKETING", label: "Influencer Marketing" },
+   312→   312→   312→      { value: "EMAIL_MARKETING", label: "Email Marketing" },
+   313→   313→   313→      { value: "VIDEO_MARKETING", label: "Video Marketing" },
+   314→   314→   314→      { value: "GUERRILLA_MARKETING", label: "Guerrilla Marketing" },
+   315→   315→   315→      { value: "GROWTH_MARKETING", label: "Growth Marketing" },
+   316→   316→   316→      { value: "PERFORMANCE_MARKETING", label: "Performance Marketing" }
+   317→   317→   317→    ]
+   318→   318→   318→  },
+   319→   319→   319→  // 5. HUMAN_RESOURCES
+   320→   320→   320→  {
+   321→   321→   321→    value: "HUMAN_RESOURCES",
+   322→   322→   322→    label: "Human Resources",
+   323→   323→   323→    subcategories: [
+   324→   324→   324→      { value: "RECRUITMENT", label: "Recruitment & Talent Acquisition" },
+   325→   325→   325→      { value: "HR_GENERALIST", label: "HR Generalist" },
+   326→   326→   326→      { value: "PAYROLL", label: "Payroll & Compensation" },
+   327→   327→   327→      { value: "LEARNING_DEVELOPMENT", label: "Learning & Development" },
+   328→   328→   328→      { value: "HR_ANALYTICS", label: "HR Analytics" },
+   329→   329→   329→      { value: "EMPLOYEE_RELATIONS", label: "Employee Relations" },
+   330→   330→   330→      { value: "HR_OPERATIONS", label: "HR Operations" },
+   331→   331→   331→      { value: "TALENT_MANAGEMENT", label: "Talent Management" },
+   332→   332→   332→      { value: "ORGANIZATIONAL_DEVELOPMENT", label: "Organizational Development" },
+   333→   333→   333→      { value: "HRIS", label: "HR Information Systems" },
+   334→   334→   334→      { value: "COMPENSATION_BENEFITS", label: "Compensation & Benefits" },
+   335→   335→   335→      { value: "DIVERSITY_INCLUSION", label: "Diversity & Inclusion" },
+   336→   336→   336→      { value: "EMPLOYER_BRANDING", label: "Employer Branding" },
+   337→   337→   337→      { value: "HR_CONSULTING", label: "HR Consulting" },
+   338→   338→   338→      { value: "LABOR_RELATIONS", label: "Labor Relations" },
+   339→   339→   339→      { value: "HR_COMPLIANCE", label: "HR Compliance" },
+   340→   340→   340→      { value: "WORKPLACE_SAFETY", label: "Workplace Safety" }
+   341→   341→   341→    ]
+   342→   342→   342→  },
+   343→   343→   343→  // 6. ENGINEERING
+   344→   344→   344→  {
+   345→   345→   345→    value: "ENGINEERING",
+   346→   346→   346→    label: "Engineering",
+   347→   347→   347→    subcategories: [
+   348→   348→   348→      { value: "CIVIL_ENGINEERING", label: "Civil Engineering" },
+   349→   349→   349→      { value: "MECHANICAL_ENGINEERING", label: "Mechanical Engineering" },
+   350→   350→   350→      { value: "ELECTRICAL_ENGINEERING", label: "Electrical Engineering" },
+   351→   351→   351→      { value: "INDUSTRIAL_ENGINEERING", label: "Industrial Engineering" },
+   352→   352→   352→      { value: "PROJECT_ENGINEERING", label: "Project Engineering" },
+   353→   353→   353→      { value: "CHEMICAL_ENGINEERING", label: "Chemical Engineering" },
+   354→   354→   354→      { value: "AEROSPACE_ENGINEERING", label: "Aerospace Engineering" },
+   355→   355→   355→      { value: "BIOMEDICAL_ENGINEERING", label: "Biomedical Engineering" },
+   356→   356→   356→      { value: "ENVIRONMENTAL_ENGINEERING", label: "Environmental Engineering" },
+   357→   357→   357→      { value: "MATERIALS_ENGINEERING", label: "Materials Engineering" },
+   358→   358→   358→      { value: "STRUCTURAL_ENGINEERING", label: "Structural Engineering" },
+   359→   359→   359→      { value: "GEOTECHNICAL_ENGINEERING", label: "Geotechnical Engineering" },
+   360→   360→   360→      { value: "PETROLEUM_ENGINEERING", label: "Petroleum Engineering" },
+   361→   361→   361→      { value: "MARINE_ENGINEERING", label: "Marine Engineering" },
+   362→   362→   362→      { value: "AUTOMOTIVE_ENGINEERING", label: "Automotive Engineering" },
+   363→   363→   363→      { value: "NUCLEAR_ENGINEERING", label: "Nuclear Engineering" },
+   364→   364→   364→      { value: "MECHATRONICS", label: "Mechatronics" }
+   365→   365→   365→    ]
+   366→   366→   366→  },
+   367→   367→   367→  // 7. HEALTHCARE
+   368→   368→   368→  {
+   369→   369→   369→    value: "HEALTHCARE",
+   370→   370→   370→    label: "Healthcare & Medical",
+   371→   371→   371→    subcategories: [
+   372→   372→   372→      { value: "NURSING", label: "Nursing" },
+   373→   373→   373→      { value: "PHARMACY", label: "Pharmacy" },
+   374→   374→   374→      { value: "MEDICAL_DOCTOR", label: "Medical Doctor" },
+   375→   375→   375→      { value: "LAB_TECHNOLOGY", label: "Laboratory Technology" },
+   376→   376→   376→      { value: "PUBLIC_HEALTH", label: "Public Health" },
+   377→   377→   377→      { value: "HEALTH_ADMIN", label: "Healthcare Administration" },
+   378→   378→   378→      { value: "PHYSIOTHERAPY", label: "Physiotherapy" },
+   379→   379→   379→      { value: "OCCUPATIONAL_THERAPY", label: "Occupational Therapy" },
+   380→   380→   380→      { value: "RADIOLOGY", label: "Radiology & Imaging" },
+   381→   381→   381→      { value: "MEDICAL_RESEARCH", label: "Medical Research" },
+   382→   382→   382→      { value: "HEALTH_INFORMATICS", label: "Health Informatics" },
+   383→   383→   383→      { value: "CARDIOLOGY", label: "Cardiology" },
+   384→   384→   384→      { value: "NEUROLOGY", label: "Neurology" },
+   385→   385→   385→      { value: "PEDIATRICS", label: "Pediatrics" },
+   386→   386→   386→      { value: "ONCOLOGY", label: "Oncology" },
+   387→   387→   387→      { value: "EMERGENCY_MEDICINE", label: "Emergency Medicine" },
+   388→   388→   388→      { value: "ANESTHESIOLOGY", label: "Anesthesiology" },
+   389→   389→   389→      { value: "PSYCHIATRY", label: "Psychiatry" }
+   390→   390→   390→    ]
+   391→   391→   391→  },
+   392→   392→   392→  // 8. EDUCATION
+   393→   393→   393→  {
+   394→   394→   394→    value: "EDUCATION",
+   395→   395→   395→    label: "Education & Training",
+   396→   396→   396→    subcategories: [
+   397→   397→   397→      { value: "TEACHING", label: "Teaching" },
+   398→   398→   398→      { value: "LECTURING", label: "Lecturing" },
+   399→   399→   399→      { value: "EDUCATION_ADMIN", label: "Education Administration" },
+   400→   400→   400→      { value: "CURRICULUM_DEVELOPMENT", label: "Curriculum Development" },
+   401→   401→   401→      { value: "TRAINING", label: "Training & Facilitation" },
+   402→   402→   402→      { value: "E_LEARNING", label: "E-Learning & Instructional Design" },
+   403→   403→   403→      { value: "SPECIAL_EDUCATION", label: "Special Education" },
+   404→   404→   404→      { value: "EDUCATIONAL_TECHNOLOGY", label: "Educational Technology" },
+   405→   405→   405→      { value: "STUDENT_COUNSELING", label: "Student Counseling" },
+   406→   406→   406→      { value: "ACADEMIC_RESEARCH", label: "Academic Research" },
+   407→   407→   407→      { value: "EARLY_CHILDHOOD", label: "Early Childhood Education" },
+   408→   408→   408→      { value: "PRIMARY_EDUCATION", label: "Primary Education" },
+   409→   409→   409→      { value: "SECONDARY_EDUCATION", label: "Secondary Education" },
+   410→   410→   410→      { value: "HIGHER_EDUCATION", label: "Higher Education" },
+   411→   411→   411→      { value: "VOCATIONAL_TRAINING", label: "Vocational Training" },
+   412→   412→   412→      { value: "LANGUAGE_TEACHING", label: "Language Teaching" },
+   413→   413→   413→      { value: "EDUCATIONAL_PSYCHOLOGY", label: "Educational Psychology" }
+   414→   414→   414→    ]
+   415→   415→   415→  },
+   416→   416→   416→  // 9. OPERATIONS_ADMIN
+   417→   417→   417→  {
+   418→   418→   418→    value: "OPERATIONS_ADMIN",
+   419→   419→   419→    label: "Operations & Administration",
+   420→   420→   420→    subcategories: [
+   421→   421→   421→      { value: "OFFICE_ADMIN", label: "Office Administration" },
+   422→   422→   422→      { value: "OPERATIONS_MANAGEMENT", label: "Operations Management" },
+   423→   423→   423→      { value: "PROJECT_MANAGEMENT", label: "Project Management" },
+   424→   424→   424→      { value: "EXECUTIVE_ASSISTANT", label: "Executive Assistant" },
+   425→   425→   425→      { value: "PROGRAM_MANAGEMENT", label: "Program Management" },
+   426→   426→   426→      { value: "BUSINESS_OPERATIONS", label: "Business Operations" },
+   427→   427→   427→      { value: "FACILITIES_MANAGEMENT", label: "Facilities Management" },
+   428→   428→   428→      { value: "ADMINISTRATIVE_SUPPORT", label: "Administrative Support" },
+   429→   429→   429→      { value: "DATA_ENTRY", label: "Data Entry" },
+   430→   430→   430→      { value: "PROCESS_IMPROVEMENT", label: "Process Improvement" },
+   431→   431→   431→      { value: "OFFICE_MANAGER", label: "Office Manager" },
+   432→   432→   432→      { value: "ADMINISTRATIVE_COORDINATOR", label: "Administrative Coordinator" },
+   433→   433→   433→      { value: "RECEPTIONIST", label: "Receptionist" },
+   434→   434→   434→      { value: "PROJECT_COORDINATION", label: "Project Coordination" },
+   435→   435→   435→      { value: "BUSINESS_SUPPORT", label: "Business Support" },
+   436→   436→   436→      { value: "ADMINISTRATIVE_MANAGEMENT", label: "Administrative Management" }
+   437→   437→   437→    ]
+   438→   438→   438→  },
+   439→   439→   439→  // 10. SUPPLY_CHAIN
+   440→   440→   440→  {
+   441→   441→   441→    value: "SUPPLY_CHAIN",
+   442→   442→   442→    label: "Logistics & Supply Chain",
+   443→   443→   443→    subcategories: [
+   444→   444→   444→      { value: "PROCUREMENT", label: "Procurement" },
+   445→   445→   445→      { value: "WAREHOUSING", label: "Warehousing" },
+   446→   446→   446→      { value: "DISTRIBUTION", label: "Distribution & Logistics" },
+   447→   447→   447→      { value: "INVENTORY_MANAGEMENT", label: "Inventory Management" },
+   448→   448→   448→      { value: "TRANSPORT_COORDINATION", label: "Transport Coordination" },
+   449→   449→   449→      { value: "SUPPLY_CHAIN_PLANNING", label: "Supply Chain Planning" },
+   450→   450→   450→      { value: "FREIGHT_FORWARDING", label: "Freight Forwarding" },
+   451→   451→   451→      { value: "CUSTOMS_BROKERAGE", label: "Customs Brokerage" },
+   452→   452→   452→      { value: "DEMAND_PLANNING", label: "Demand Planning" },
+   453→   453→   453→      { value: "LOGISTICS_ANALYTICS", label: "Logistics Analytics" },
+   454→   454→   454→      { value: "FLEET_MANAGEMENT", label: "Fleet Management" },
+   455→   455→   455→      { value: "RETURN_LOGISTICS", label: "Return Logistics" },
+   456→   456→   456→      { value: "WAREHOUSE_OPERATIONS", label: "Warehouse Operations" },
+   457→   457→   457→      { value: "MATERIALS_MANAGEMENT", label: "Materials Management" },
+   458→   458→   458→      { value: "GLOBAL_LOGISTICS", label: "Global Logistics" },
+   459→   459→   459→      { value: "SHIPPING_RECEIVING", label: "Shipping & Receiving" }
+   460→   460→   460→    ]
+   461→   461→   461→  },
+   462→   462→   462→  // 11. HOSPITALITY
+   463→   463→   463→  {
+   464→   464→   464→    value: "HOSPITALITY",
+   465→   465→   465→    label: "Hospitality & Tourism",
+   466→   466→   466→    subcategories: [
+   467→   467→   467→      { value: "HOTEL_MANAGEMENT", label: "Hotel Management" },
+   468→   468→   468→      { value: "CHEF_COOKING", label: "Chef & Culinary" },
+   469→   469→   469→      { value: "TOURISM_OPERATIONS", label: "Tourism Operations" },
+   470→   470→   470→      { value: "FRONT_OFFICE", label: "Front Office" },
+   471→   471→   471→      { value: "HOUSEKEEPING", label: "Housekeeping" },
+   472→   472→   472→      { value: "FOOD_BEVERAGE", label: "Food & Beverage" },
+   473→   473→   473→      { value: "EVENT_PLANNING", label: "Event Planning" },
+   474→   474→   474→      { value: "TRAVEL_AGENCY", label: "Travel Agency" },
+   475→   475→   475→      { value: "CASINO_GAMING", label: "Casino & Gaming" },
+   476→   476→   476→      { value: "RESORT_MANAGEMENT", label: "Resort Management" },
+   477→   477→   477→      { value: "CONCIERGE", label: "Concierge Services" },
+   478→   478→   478→      { value: "BARTENDING", label: "Bartending" },
+   479→   479→   479→      { value: "RESTAURANT_MANAGEMENT", label: "Restaurant Management" },
+   480→   480→   480→      { value: "CATERING", label: "Catering" },
+   481→   481→   481→      { value: "SPA_MANAGEMENT", label: "Spa Management" },
+   482→   482→   482→      { value: "CRUISE_SHIP_STAFF", label: "Cruise Ship Staff" }
+   483→   483→   483→    ]
+   484→   484→   484→  },
+   485→   485→   485→  // 12. SPECIALISED_SERVICES
+   486→   486→   486→  {
+   487→   487→   487→    value: "SPECIALISED_SERVICES",
+   488→   488→   488→    label: "Specialised Services",
+   489→   489→   489→    subcategories: [
+   490→   490→   490→      { value: "PROJECT_MANAGEMENT", label: "Project Management" },
+   491→   491→   491→      { value: "OPERATIONS_MANAGER", label: "Operations Manager" },
+   492→   492→   492→      { value: "TECHNICAL_PROJECT_MANAGER", label: "Technical Project Manager" },
+   493→   493→   493→      { value: "TRANSLATION_INTERPRETATION", label: "Translation & Interpretation" }
+   494→   494→   494→    ]
+   495→   495→   495→  },
+   496→   496→   496→  // 13. AGRICULTURE
+   497→   497→   497→  {
+   498→   498→   498→    value: "AGRICULTURE",
+   499→   499→   499→    label: "Agriculture & Agribusiness",
+   500→   500→   500→    subcategories: [
+
+[showing lines 1-500 of 1607; use offset=501 with limit to continue reading]
