@@ -196,3 +196,41 @@ export function generateOpportunityJsonLd(opp: {
     url: `${SITE_URL}/opportunities/${opp.slug}`,
   };
 }
+
+export function generateArticleJsonLd(post: {
+  title: string;
+  excerpt: string;
+  slug: string;
+  datePublished: Date | null;
+  datePosted: Date;
+  authorName: string;
+  authorAvatarUrl: string | null;
+  coverImageUrl: string | null;
+  category: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    identifier: { '@type': 'PropertyValue', name: 'JobBoard Kenya', value: post.slug },
+    datePublished: (post.datePublished || post.datePosted).toISOString(),
+    dateModified: post.datePosted.toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: post.authorName,
+      ...(post.authorAvatarUrl ? { image: post.authorAvatarUrl } : {}),
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'JobBoard Kenya',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/default-og.jpg` },
+    },
+    ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
+    articleSection: post.category,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/blog/${post.slug}`,
+    },
+  };
+}

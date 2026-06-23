@@ -156,6 +156,56 @@ enum FundingDisclosure {
 }
 
 // ============================================
+// 📝 BLOG-SPECIFIC ENUMS & MODEL
+// ============================================
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model BlogPost {
+  id            String          @id @default(cuid())
+  title         String
+  slug          String          @unique
+  excerpt       String                           // Short description for cards (max 200 chars)
+  content       String                           // Full article body (Markdown or HTML)
+  coverImageUrl String?
+
+  seoTitle       String?
+  seoDescription String?
+
+  authorName    String          @default("JobBoard Kenya")
+  authorAvatarUrl String?
+
+  category      String                           // e.g. "Career Advice", "Industry Insights", "How-To", "Kenya Job Market"
+  tags          String?                          // Comma-separated tags for SEO
+
+  readTimeMinutes Int             @default(5)
+
+  status        BlogPostStatus  @default(DRAFT)
+  featured      Boolean         @default(false)
+
+  datePublished DateTime?
+  datePosted    DateTime        @default(now())
+
+  deletedAt     DateTime?
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([status])
+  @@index([featured])
+  @@index([category])
+  @@index([datePosted])
+  @@index([status, featured])
+  @@index([deletedAt])
+
+  @@map("blog_posts")
+}
+
+// ============================================
 // 📍 LOCATION MODEL (47 Kenyan Counties)
 // ============================================
 

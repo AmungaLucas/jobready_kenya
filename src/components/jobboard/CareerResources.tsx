@@ -12,13 +12,13 @@ export default function CareerResources() {
               Practical guides to help you write better CVs, prepare for interviews, and negotiate salaries.
             </p>
           </div>
-          <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+          <Link href="/blog" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
             Read All Articles →
           </Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <Link href="#" className="group relative overflow-hidden rounded-xl border border-white/60 hover:border-emerald-400 transition block">
+            <Link href="/blog" className="group relative overflow-hidden rounded-xl border border-white/60 hover:border-emerald-400 transition block">
               <Image
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop&crop=center"
                 alt="Team collaboration"
@@ -67,7 +67,7 @@ export default function CareerResources() {
               <ul className="space-y-3">
                 {['CV Writing Tips', 'Interview Questions', 'Salary Trends 2026', 'Remote Work Guide', 'Reskilling for 2026'].map((topic) => (
                   <li key={topic}>
-                    <Link href="#" className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
+                    <Link href="/blog" className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
                       <span>{topic}</span>
                       <span className="text-xs text-gray-400 group-hover:text-emerald-600">→</span>
                     </Link>

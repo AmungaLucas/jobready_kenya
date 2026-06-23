@@ -198,3 +198,26 @@ Stage Summary:
 - 0 opportunities in DB currently — all content served via 5-layer empty fallback
 - Test script: scripts/test-phase6.js (100/100 passing)
 
+---
+Task ID: 7
+Agent: main
+Task: Phase 7 - Blog Pages
+
+Work Log:
+- Added BlogPost model to Prisma schema (title, slug, excerpt, content, coverImageUrl, category, tags, authorName, readTimeMinutes, featured, datePublished, seoTitle, seoDescription)
+- Created prisma/seed-blog.ts — 10 comprehensive blog posts across 4 categories (Career Advice 4, Kenya Job Market 3, How-To 2, Industry Insights 1)
+- Created src/lib/blog.ts service layer (getBlogPosts, getBlogPostBySlug, getAllBlogPostSlugs, getBlogPostCounts, getRelatedPosts, getFeaturedPosts, formatDate)
+- Added 4 BLOG_CATEGORY_DESCRIPTIONS (100+ words each for SEO)
+- Added generateArticleJsonLd to jsonld.ts (schema.org Article type with headline, publisher, articleSection, mainEntityOfPage)
+- Created /blog/page.tsx (dynamic, ?category= filter, 4 tabs, featured hero card, 5-layer empty fallback, CollectionPage + BreadcrumbList JSON-LD)
+- Created /blog/[slug]/page.tsx (SSG+ISR, Article JSON-LD, related posts, tags, CTA, sidebar)
+- Updated CareerResources.tsx to link to /blog instead of #
+- Build: 645 routes (640 pre-rendered HTML including 10 blog posts)
+- Test script: scripts/test-phase7.js — 69/69 passing
+
+Stage Summary:
+- /blog: Dynamic listing page with 4 category tabs and featured hero card
+- /blog/[slug]: SSG detail page with Article JSON-LD, related posts by category, tags
+- 10 blog posts seeded with 1000+ word articles on CV writing, salaries, interviews, government jobs, remote work, etc.
+- Test script: scripts/test-phase7.js (69/69 passing)
+
