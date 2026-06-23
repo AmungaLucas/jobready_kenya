@@ -1,0 +1,502 @@
+     1→  2000→      el.removeEventListener('scroll', updateButtons);
+     2→  2001→      window.removeEventListener('resize', updateButtons);
+     3→  2002→    };
+     4→  2003→  }, []);
+     5→  2004→
+     6→  2005→  return (
+     7→  2006→    <section className="section-bg py-10 border-t border-gray-200/50">
+     8→  2007→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     9→  2008→        <div className="flex items-center justify-between mb-6">
+    10→  2009→          <div>
+    11→  2010→            <h2 className="text-2xl font-extrabold text-gray-800">Browse by Category</h2>
+    12→  2011→            <p className="text-sm text-gray-500 font-light">Explore opportunities based on your field, interests, and experience.</p>
+    13→  2012→          </div>
+    14→  2013→          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+    15→  2014→            View All Categories →
+    16→  2015→          </Link>
+    17→  2016→        </div>
+    18→  2017→        <div className="relative flex items-center">
+    19→  2018→          <button
+    20→  2019→            onClick={() => scroll(-1)}
+    21→  2020→            className={`scroll-btn absolute left-0 ml-1 z-10 hidden md:flex ${!canScrollLeft && 'disabled'}`}
+    22→  2021→          >
+    23→  2022→            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-5 h-5">
+    24→  2023→              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+    25→  2024→            </svg>
+    26→  2025→          </button>
+    27→  2026→          <div
+    28→  2027→            ref={containerRef}
+    29→  2028→            className="flex flex-nowrap gap-4 overflow-x-auto no-scrollbar py-4 px-8 sm:px-10 w-full"
+    30→  2029→          >
+    31→  2030→            {categories.map((cat) => (
+    32→  2031→              <Link
+    33→  2032→                key={cat.slug}
+    34→  2033→                href={`/jobs?category=${cat.slug}`}
+    35→  2034→                className="category-item flex-shrink-0 w-[160px] sm:w-[170px] bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/60 hover:border-emerald-400 transition"
+    36→  2035→              >
+    37→  2036→                <div className="cat-icon text-4xl mb-2">{cat.icon}</div>
+    38→  2037→                <p className="text-sm font-semibold text-gray-800">{cat.name}</p>
+    39→  2038→                <span className="text-xs text-gray-400">{cat.count} jobs</span>
+    40→  2039→              </Link>
+    41→  2040→            ))}
+    42→  2041→          </div>
+    43→  2042→          <button
+    44→  2043→            onClick={() => scroll(1)}
+    45→  2044→            className={`scroll-btn absolute right-0 mr-1 z-10 hidden md:flex ${!canScrollRight && 'disabled'}`}
+    46→  2045→          >
+    47→  2046→            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-5 h-5">
+    48→  2047→              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    49→  2048→            </svg>
+    50→  2049→          </button>
+    51→  2050→        </div>
+    52→  2051→      </div>
+    53→  2052→    </section>
+    54→  2053→  );
+    55→  2054→}
+    56→  2055→```
+    57→  2056→
+    58→  2057→---
+    59→  2058→
+    60→  2059→#### `components/OpportunitiesTabs.jsx`
+    61→  2060→
+    62→  2061→```jsx
+    63→  2062→'use client';
+    64→  2063→
+    65→  2064→import { useState } from 'react';
+    66→  2065→import Link from 'next/link';
+    67→  2066→
+    68→  2067→const tabData = {
+    69→  2068→  entry: {
+    70→  2069→    label: 'Entry Level',
+    71→  2070→    items: [
+    72→  2071→      { title: 'Graduate Trainee', company: 'Safaricom · Nairobi', time: '5d ago' },
+    73→  2072→      { title: 'Assistant Accountant', company: 'KPMG · Nairobi', time: '2d ago' },
+    74→  2073→      { title: 'Field Officer', company: 'World Food Programme · Kisumu', time: '1w ago' },
+    75→  2074→      { title: 'Sales Representative', company: 'Twiga Foods · Mombasa', time: '3d ago' },
+    76→  2075→    ],
+    77→  2076→  },
+    78→  2077→  internships: {
+    79→  2078→    label: 'Internships',
+    80→  2079→    items: [
+    81→  2080→      { title: 'Software Dev Intern', company: 'Google · Remote', time: '4d ago' },
+    82→  2081→      { title: 'Data Science Intern', company: 'UN Habitat · Nairobi', time: '1d ago' },
+    83→  2082→      { title: 'Audit Intern', company: 'EY · Nairobi', time: '2w ago' },
+    84→  2083→      { title: 'Communications Intern', company: 'Red Cross · Nairobi', time: '5d ago' },
+    85→  2084→    ],
+    86→  2085→  },
+    87→  2086→  scholarships: {
+    88→  2087→    label: 'Scholarships',
+    89→  2088→    items: [
+    90→  2089→      { title: 'Mastercard Foundation Scholars Program', company: 'Full Tuition', time: 'Closes 15 Jun' },
+    91→  2090→      { title: 'DAAD Kenya Scholarships', company: 'Partial Tuition', time: 'Closes 30 Jun' },
+    92→  2091→      { title: 'KCB Foundation Scholarships', company: 'Full Tuition', time: 'Closes 10 Jul' },
+    93→  2092→      { title: 'Equity Group Wings to Fly', company: 'Full Tuition', time: 'Closes 25 Jun' },
+    94→  2093→    ],
+    95→  2094→  },
+    96→  2095→};
+    97→  2096→
+    98→  2097→export default function OpportunitiesTabs() {
+    99→  2098→  const [activeTab, setActiveTab] = useState('entry');
+   100→  2099→
+   101→  2100→  return (
+   102→  2101→    <section className="section-bg py-10 border-t border-gray-200/50">
+   103→  2102→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   104→  2103→        <div className="flex items-center justify-between mb-6">
+   105→  2104→          <div>
+   106→  2105→            <h2 className="text-2xl font-extrabold text-gray-800">🚀 Opportunities Hub</h2>
+   107→  2106→            <p className="text-sm text-gray-500 font-light">
+   108→  2107→              Discover internships, scholarships, graduate programs, and career opportunities.
+   109→  2108→            </p>
+   110→  2109→          </div>
+   111→  2110→          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+   112→  2111→            View All →
+   113→  2112→          </Link>
+   114→  2113→        </div>
+   115→  2114→        <div className="flex flex-wrap items-center gap-2 border-b border-gray-200/60 pb-3 mb-6">
+   116→  2115→          {Object.entries(tabData).map(([key, { label }]) => (
+   117→  2116→            <button
+   118→  2117→              key={key}
+   119→  2118→              className={`tab-btn px-5 py-2 text-sm font-semibold rounded-full shadow-sm ${activeTab === key ? 'active' : 'inactive'}`}
+   120→  2119→              onClick={() => setActiveTab(key)}
+   121→  2120→            >
+   122→  2121→              {label}{' '}
+   123→  2122→              <span className={`tab-count ${activeTab === key ? 'text-emerald-200' : 'text-gray-400'}`}>
+   124→  2123→                ({tabData[key].items.length})
+   125→  2124→              </span>
+   126→  2125→            </button>
+   127→  2126→          ))}
+   128→  2127→        </div>
+   129→  2128→        <div>
+   130→  2129→          {Object.entries(tabData).map(([key, { items }]) => (
+   131→  2130→            <div key={key} className={`tab-content ${activeTab === key ? 'active' : ''}`}>
+   132→  2131→              <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 px-4">
+   133→  2132→                {items.map((item, idx) => (
+   134→  2133→                  <li key={idx} className="py-3 flex flex-wrap items-center justify-between gap-2">
+   135→  2134→                    <div>
+   136→  2135→                      <span className="text-sm font-semibold text-gray-800">{item.title}</span>
+   137→  2136→                      <span className="text-sm text-gray-400 ml-2">{item.company}</span>
+   138→  2137→                    </div>
+   139→  2138→                    <span className="text-xs text-gray-300">{item.time}</span>
+   140→  2139→                  </li>
+   141→  2140→                ))}
+   142→  2141→              </ul>
+   143→  2142→            </div>
+   144→  2143→          ))}
+   145→  2144→        </div>
+   146→  2145→      </div>
+   147→  2146→    </section>
+   148→  2147→  );
+   149→  2148→}
+   150→  2149→```
+   151→  2150→
+   152→  2151→---
+   153→  2152→
+   154→  2153→#### `components/GovernmentJobs.jsx`
+   155→  2154→
+   156→  2155→```jsx
+   157→  2156→import Link from 'next/link';
+   158→  2157→
+   159→  2158→const nationalJobs = [
+   160→  2159→  { title: 'Tax Officer', org: 'KRA · Nairobi', closes: 'Closes 30 Jun' },
+   161→  2160→  { title: 'ICT Officer', org: 'ICT Authority · Nairobi', closes: 'Closes 5 Jul' },
+   162→  2161→  { title: 'Customs Officer', org: 'KRA · Mombasa', closes: 'Closes 15 Jul' },
+   163→  2162→  { title: 'Public Health Officer', org: 'MOH · Nairobi', closes: 'Closes 20 Jul' },
+   164→  2163→];
+   165→  2164→
+   166→  2165→const countyJobs = [
+   167→  2166→  { title: 'Agricultural Officer', org: 'County Gov. Nakuru', closes: 'Closes 25 Jun' },
+   168→  2167→  { title: 'Public Health Officer', org: 'County Gov. Mombasa', closes: 'Closes 2 Jul' },
+   169→  2168→  { title: 'Water Engineer', org: 'County Gov. Kisumu', closes: 'Closes 10 Jul' },
+   170→  2169→  { title: 'Community Development Officer', org: 'County Gov. Machakos', closes: 'Closes 18 Jul' },
+   171→  2170→];
+   172→  2171→
+   173→  2172→export default function GovernmentJobs() {
+   174→  2173→  return (
+   175→  2174→    <section className="section-bg py-10 border-t border-gray-200/50">
+   176→  2175→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   177→  2176→        <div className="flex items-center justify-between mb-6">
+   178→  2177→          <div>
+   179→  2178→            <h2 className="text-2xl font-extrabold text-gray-800">🏛️ Public Sector Opportunities</h2>
+   180→  2179→            <p className="text-sm text-gray-500 font-light">
+   181→  2180→              National and county government vacancies, internships, shortlisting updates, and recruitment notices.
+   182→  2181→            </p>
+   183→  2182→          </div>
+   184→  2183→          <Link href="/jobs?type=government" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+   185→  2184→            View All →
+   186→  2185→          </Link>
+   187→  2186→        </div>
+   188→  2187→        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+   189→  2188→          <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 overflow-hidden">
+   190→  2189→            <div className="flex items-center gap-3 px-4 py-3 bg-blue-50/50 border-b border-blue-100/60">
+   191→  2190→              <span className="gov-badge national">National</span>
+   192→  2191→              <span className="text-sm font-semibold text-gray-800">Government of Kenya</span>
+   193→  2192→            </div>
+   194→  2193→            <ul className="divide-y divide-gray-200/50 px-4">
+   195→  2194→              {nationalJobs.map((job, idx) => (
+   196→  2195→                <li key={idx} className="gov-item py-3 flex flex-wrap items-center justify-between gap-2">
+   197→  2196→                  <div>
+   198→  2197→                    <Link href={`/jobs/${idx + 1}`} className="gov-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+   199→  2198→                      {job.title}
+   200→  2199→                    </Link>
+   201→  2200→                    <span className="gov-org text-sm text-gray-400 ml-2 transition">{job.org}</span>
+   202→  2201→                  </div>
+   203→  2202→                  <span className="text-xs text-gray-300">{job.closes}</span>
+   204→  2203→                </li>
+   205→  2204→              ))}
+   206→  2205→            </ul>
+   207→  2206→            <div className="px-4 py-2 border-t border-gray-200/50 bg-white/30">
+   208→  2207→              <Link href="/jobs?type=government" className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition inline-flex items-center gap-1">
+   209→  2208→                View all national jobs
+   210→  2209→                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   211→  2210→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+   212→  2211→                </svg>
+   213→  2212→              </Link>
+   214→  2213→            </div>
+   215→  2214→          </div>
+   216→  2215→          <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 overflow-hidden">
+   217→  2216→            <div className="flex items-center gap-3 px-4 py-3 bg-green-50/50 border-b border-green-100/60">
+   218→  2217→              <span className="gov-badge county">County</span>
+   219→  2218→              <span className="text-sm font-semibold text-gray-800">County Governments</span>
+   220→  2219→            </div>
+   221→  2220→            <ul className="divide-y divide-gray-200/50 px-4">
+   222→  2221→              {countyJobs.map((job, idx) => (
+   223→  2222→                <li key={idx} className="gov-item py-3 flex flex-wrap items-center justify-between gap-2">
+   224→  2223→                  <div>
+   225→  2224→                    <Link href={`/jobs/${idx + 10}`} className="gov-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+   226→  2225→                      {job.title}
+   227→  2226→                    </Link>
+   228→  2227→                    <span className="gov-org text-sm text-gray-400 ml-2 transition">{job.org}</span>
+   229→  2228→                  </div>
+   230→  2229→                  <span className="text-xs text-gray-300">{job.closes}</span>
+   231→  2230→                </li>
+   232→  2231→              ))}
+   233→  2232→            </ul>
+   234→  2233→            <div className="px-4 py-2 border-t border-gray-200/50 bg-white/30">
+   235→  2234→              <Link href="/jobs?type=county" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1">
+   236→  2235→                View all county jobs
+   237→  2236→                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   238→  2237→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+   239→  2238→                </svg>
+   240→  2239→              </Link>
+   241→  2240→            </div>
+   242→  2241→          </div>
+   243→  2242→        </div>
+   244→  2243→      </div>
+   245→  2244→    </section>
+   246→  2245→  );
+   247→  2246→}
+   248→  2247→```
+   249→  2248→
+   250→  2249→---
+   251→  2250→
+   252→  2251→#### `components/MatchingCard.jsx`
+   253→  2252→
+   254→  2253→```jsx
+   255→  2254→import Link from 'next/link';
+   256→  2255→
+   257→  2256→export default function MatchingCard() {
+   258→  2257→  return (
+   259→  2258→    <section className="section-bg py-10 border-t border-gray-200/50">
+   260→  2259→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   261→  2260→        <div className="matching-card p-6 md:p-8 relative overflow-hidden">
+   262→  2261→          <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-200/30 rounded-full blur-3xl"></div>
+   263→  2262→          <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-teal-200/30 rounded-full blur-3xl"></div>
+   264→  2263→          <div className="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
+   265→  2264→            <div className="flex-1">
+   266→  2265→              <div className="flex items-center gap-3 mb-2">
+   267→  2266→                <span className="text-3xl">🧠</span>
+   268→  2267→                <span className="premium-badge">⭐ Premium</span>
+   269→  2268→                <span className="highlight">AI-Powered</span>
+   270→  2269→              </div>
+   271→  2270→              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800">Smart Job Matching</h2>
+   272→  2271→              <p className="text-sm text-gray-600 mt-1 max-w-xl leading-relaxed">
+   273→  2272→                Upload your CV — our AI extracts your skills, experience, and preferences, then matches you to the most relevant jobs. No more endless scrolling.
+   274→  2273→              </p>
+   275→  2274→              <div className="mt-3 flex flex-wrap items-center gap-4">
+   276→  2275→                <div className="feature-item"><span className="check">✓</span> CV parsing &amp; skill extraction</div>
+   277→  2276→                <div className="feature-item"><span className="check">✓</span> AI-powered job matching</div>
+   278→  2277→                <div className="feature-item"><span className="check">✓</span> Real-time match scores</div>
+   279→  2278→                <div className="feature-item"><span className="check">✓</span> Personalized job alerts</div>
+   280→  2279→              </div>
+   281→  2280→            </div>
+   282→  2281→            <div className="flex flex-col items-start md:items-end gap-3 w-full md:w-auto">
+   283→  2282→              <Link href="#" className="cta-btn text-sm md:text-base w-full md:w-auto text-center">
+   284→  2283→                Upload CV &amp; Get Matched →
+   285→  2284→              </Link>
+   286→  2285→              <p className="text-[10px] text-gray-400 text-center md:text-right">Free trial · No credit card required</p>
+   287→  2286→              <div className="w-full md:w-64 mt-2 space-y-1.5">
+   288→  2287→                <div className="match-result flex items-center justify-between">
+   289→  2288→                  <div>
+   290→  2289→                    <span className="text-xs font-semibold text-gray-800">Senior Software Engineer</span>
+   291→  2290→                    <span className="text-[10px] text-gray-400 ml-1">Safaricom</span>
+   292→  2291→                  </div>
+   293→  2292→                  <span className="match-score high">92% Match</span>
+   294→  2293→                </div>
+   295→  2294→                <div className="match-result flex items-center justify-between">
+   296→  2295→                  <div>
+   297→  2296→                    <span className="text-xs font-semibold text-gray-800">Data Analyst</span>
+   298→  2297→                    <span className="text-[10px] text-gray-400 ml-1">KRA</span>
+   299→  2298→                  </div>
+   300→  2299→                  <span className="match-score medium">78% Match</span>
+   301→  2300→                </div>
+   302→  2301→              </div>
+   303→  2302→            </div>
+   304→  2303→          </div>
+   305→  2304→        </div>
+   306→  2305→      </div>
+   307→  2306→    </section>
+   308→  2307→  );
+   309→  2308→}
+   310→  2309→```
+   311→  2310→
+   312→  2311→---
+   313→  2312→
+   314→  2313→#### `components/FlexibleJobs.jsx`
+   315→  2314→
+   316→  2315→```jsx
+   317→  2316→import Link from 'next/link';
+   318→  2317→
+   319→  2318→const flexibleJobs = [
+   320→  2319→  { icon: '🛍️', title: 'Retail Sales Assistant', location: 'Nairobi', type: 'Part-time', salary: 'KSh 15k/mo' },
+   321→  2320→  { icon: '✍️', title: 'Freelance Writer', location: 'Remote', type: 'Freelance', salary: 'KSh 2k/article' },
+   322→  2321→  { icon: '🎪', title: 'Event Staff', location: 'Mombasa', type: 'Casual', salary: 'KSh 1.5k/day' },
+   323→  2322→  { icon: '📋', title: 'Temporary Admin', location: 'Kisumu', type: 'Temporary', salary: 'KSh 25k/mo' },
+   324→  2323→];
+   325→  2324→
+   326→  2325→const locations = [
+   327→  2326→  { name: 'Nairobi', count: 234 },
+   328→  2327→  { name: 'Mombasa', count: 98 },
+   329→  2328→  { name: 'Kisumu', count: 76 },
+   330→  2329→  { name: 'Nakuru', count: 63 },
+   331→  2330→  { name: 'Eldoret', count: 52 },
+   332→  2331→  { name: 'Thika', count: 41 },
+   333→  2332→  { name: 'Kakamega', count: 29 },
+   334→  2333→  { name: 'Machakos', count: 33 },
+   335→  2334→];
+   336→  2335→
+   337→  2336→export default function FlexibleJobs() {
+   338→  2337→  const typeColors = {
+   339→  2338→    'Part-time': 'bg-blue-50 text-blue-700',
+   340→  2339→    Freelance: 'bg-purple-50 text-purple-700',
+   341→  2340→    Casual: 'bg-orange-50 text-orange-700',
+   342→  2341→    Temporary: 'bg-yellow-50 text-yellow-700',
+   343→  2342→  };
+   344→  2343→
+   345→  2344→  return (
+   346→  2345→    <section className="section-bg py-10 border-t border-gray-200/50">
+   347→  2346→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   348→  2347→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+   349→  2348→          <div className="lg:col-span-2">
+   350→  2349→            <div className="flex items-center justify-between mb-6">
+   351→  2350→              <div>
+   352→  2351→                <h2 className="text-2xl font-extrabold text-gray-800">🧩 Flexible Work Opportunities</h2>
+   353→  2352→                <p className="text-sm text-gray-500 font-light">Browse casual, temporary, freelance, and part-time jobs.</p>
+   354→  2353→              </div>
+   355→  2354→              <Link href="/jobs?type=flexible" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+   356→  2355→                Browse All →
+   357→  2356→              </Link>
+   358→  2357→            </div>
+   359→  2358→            <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
+   360→  2359→              {flexibleJobs.map((job, idx) => (
+   361→  2360→                <div key={idx} className="flex flex-wrap items-center justify-between py-4 px-5 hover:bg-emerald-50/30 transition rounded-t-xl">
+   362→  2361→                  <div className="flex items-center gap-3">
+   363→  2362→                    <span className="text-xl">{job.icon}</span>
+   364→  2363→                    <div>
+   365→  2364→                      <Link href={`/jobs/${idx + 20}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+   366→  2365→                        {job.title}
+   367→  2366→                      </Link>
+   368→  2367→                      <p className="text-xs text-gray-500">{job.location}</p>
+   369→  2368→                    </div>
+   370→  2369→                  </div>
+   371→  2370→                  <div className="flex items-center gap-3 mt-1 sm:mt-0">
+   372→  2371→                    <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${typeColors[job.type]}`}>
+   373→  2372→                      {job.type}
+   374→  2373→                    </span>
+   375→  2374→                    <span className="text-sm font-medium text-gray-700">{job.salary}</span>
+   376→  2375→                  </div>
+   377→  2376→                </div>
+   378→  2377→              ))}
+   379→  2378→            </div>
+   380→  2379→          </div>
+   381→  2380→          <div className="lg:col-span-1">
+   382→  2381→            <div className="flex items-center justify-between mb-4">
+   383→  2382→              <h3 className="text-lg font-extrabold text-gray-800 flex items-center gap-2">
+   384→  2383→                <span>📍</span> Across Kenya
+   385→  2384→              </h3>
+   386→  2385→              <Link href="/jobs" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition">
+   387→  2386→                View All →
+   388→  2387→              </Link>
+   389→  2388→            </div>
+   390→  2389→            <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+   391→  2390→              <div className="space-y-1">
+   392→  2391→                {locations.map((loc) => (
+   393→  2392→                  <Link
+   394→  2393→                    key={loc.name}
+   395→  2394→                    href={`/jobs?location=${loc.name.toLowerCase()}`}
+   396→  2395→                    className="location-item flex items-center justify-between p-2.5 rounded-lg transition"
+   397→  2396→                  >
+   398→  2397→                    <span className="loc-name text-sm font-medium text-gray-700 transition">{loc.name}</span>
+   399→  2398→                    <span className="text-xs font-medium text-emerald-600 bg-emerald-100/60 px-2 py-0.5 rounded-full">
+   400→  2399→                      {loc.count} jobs
+   401→  2400→                    </span>
+   402→  2401→                  </Link>
+   403→  2402→                ))}
+   404→  2403→              </div>
+   405→  2404→            </div>
+   406→  2405→          </div>
+   407→  2406→        </div>
+   408→  2407→      </div>
+   409→  2408→    </section>
+   410→  2409→  );
+   411→  2410→}
+   412→  2411→```
+   413→  2412→
+   414→  2413→---
+   415→  2414→
+   416→  2415→#### `components/CareerResources.jsx`
+   417→  2416→
+   418→  2417→```jsx
+   419→  2418→import Link from 'next/link';
+   420→  2419→import Image from 'next/image';
+   421→  2420→
+   422→  2421→export default function CareerResources() {
+   423→  2422→  return (
+   424→  2423→    <section className="section-bg py-10 border-t border-gray-200/50">
+   425→  2424→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   426→  2425→        <div className="flex items-center justify-between mb-6">
+   427→  2426→          <div>
+   428→  2427→            <h2 className="text-2xl font-extrabold text-gray-800">📖 Career Advice &amp; Resources</h2>
+   429→  2428→            <p className="text-sm text-gray-500 font-light">
+   430→  2429→              Practical guides to help you write better CVs, prepare for interviews, and negotiate salaries.
+   431→  2430→            </p>
+   432→  2431→          </div>
+   433→  2432→          <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+   434→  2433→            Read All Articles →
+   435→  2434→          </Link>
+   436→  2435→        </div>
+   437→  2436→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+   438→  2437→          <div className="lg:col-span-2 space-y-6">
+   439→  2438→            <Link href="#" className="group relative overflow-hidden rounded-xl border border-white/60 hover:border-emerald-400 transition block">
+   440→  2439→              <Image
+   441→  2440→                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop&crop=center"
+   442→  2441→                alt="Team collaboration"
+   443→  2442→                width={800}
+   444→  2443→                height={400}
+   445→  2444→                className="w-full h-64 md:h-72 object-cover"
+   446→  2445→              />
+   447→  2446→              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+   448→  2447→              <div className="absolute bottom-0 left-0 p-6 md:p-8">
+   449→  2448→                <span className="inline-block text-xs font-bold text-emerald-300 bg-black/30 px-3 py-1 rounded-full mb-3">⭐ Featured</span>
+   450→  2449→                <h3 className="text-xl md:text-2xl font-extrabold text-white leading-snug group-hover:text-emerald-200 transition">
+   451→  2450→                  The Ultimate CV Checklist for 2026
+   452→  2451→                </h3>
+   453→  2452→                <p className="text-sm text-white/80 mt-2 max-w-md">
+   454→  2453→                  From formatting to keywords – everything you need to get past ATS filters and land interviews.
+   455→  2454→                </p>
+   456→  2455→                <div className="flex items-center gap-4 mt-4 text-xs text-white/60">
+   457→  2456→                  <span>📅 15 Jun 2026</span>
+   458→  2457→                  <span>⏱️ 8 min read</span>
+   459→  2458→                </div>
+   460→  2459→              </div>
+   461→  2460→            </Link>
+   462→  2461→            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+   463→  2462→              {[
+   464→  2463→                { img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=200&fit=crop&crop=center', label: 'Writing Tips', title: 'Cover Letter Secrets', desc: 'How to make yours stand out.', time: '5 min read' },
+   465→  2464→                { img: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=200&fit=crop&crop=center', label: 'Interview Tips', title: 'Ace Your Virtual Interview', desc: 'Prepare with confidence.', time: '4 min read' },
+   466→  2465→                { img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=200&fit=crop&crop=center', label: 'Salary Guide', title: 'Salary Negotiation in Kenya', desc: 'Tactics that work.', time: '6 min read' },
+   467→  2466→              ].map((article, idx) => (
+   468→  2467→                <Link key={idx} href="#" className="group bg-white/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/60 hover:border-emerald-400 hover:bg-emerald-50/30 transition">
+   469→  2468→                  <Image src={article.img} alt={article.title} width={400} height={200} className="w-full h-32 object-cover" />
+   470→  2469→                  <div className="p-4">
+   471→  2470→                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wide">{article.label}</span>
+   472→  2471→                    <h4 className="text-sm font-semibold text-gray-800 group-hover:text-emerald-600 transition">{article.title}</h4>
+   473→  2472→                    <p className="text-xs text-gray-500 mt-0.5">{article.desc}</p>
+   474→  2473→                    <span className="text-[10px] text-gray-400">{article.time}</span>
+   475→  2474→                  </div>
+   476→  2475→                </Link>
+   477→  2476→              ))}
+   478→  2477→            </div>
+   479→  2478→          </div>
+   480→  2479→          <div className="lg:col-span-1 space-y-6">
+   481→  2480→            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/60 shadow-sm">
+   482→  2481→              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2 border-b border-gray-200/60 pb-3 mb-4">
+   483→  2482→                <span>🔥</span> Trending Topics
+   484→  2483→              </h4>
+   485→  2484→              <ul className="space-y-3">
+   486→  2485→                {['CV Writing Tips', 'Interview Questions', 'Salary Trends 2026', 'Remote Work Guide', 'Reskilling for 2026'].map((topic) => (
+   487→  2486→                  <li key={topic}>
+   488→  2487→                    <Link href="#" className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
+   489→  2488→                      <span>{topic}</span>
+   490→  2489→                      <span className="text-xs text-gray-400 group-hover:text-emerald-600">→</span>
+   491→  2490→                    </Link>
+   492→  2491→                  </li>
+   493→  2492→                ))}
+   494→  2493→              </ul>
+   495→  2494→              <div className="mt-6 pt-4 border-t border-gray-200/60">
+   496→  2495→                <div className="bg-gradient-to-br from-emerald-50 to-teal-50/70 rounded-lg p-4 text-center">
+   497→  2496→                  <p className="text-xs font-semibold text-gray-600">Get weekly career tips</p>
+   498→  2497→                  <button className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-1.5 rounded-full transition">
+   499→  2498→                    Subscribe →
+   500→  2499→                  </button>
+
+[showing lines 1-500 of 602; use offset=501 with limit to continue reading]

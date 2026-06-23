@@ -1,0 +1,702 @@
+  1200→    flex-wrap: wrap;
+  1201→    justify-content: center;
+  1202→    gap: 0.8rem 1.2rem;
+  1203→  }
+  1204→  .footer-newsletter form {
+  1205→    flex-direction: column;
+  1206→  }
+  1207→  .footer-newsletter button {
+  1208→    width: 100%;
+  1209→    justify-content: center;
+  1210→  }
+  1211→}
+  1212→
+  1213→@media (max-width: 480px) {
+  1214→  .navbar-actions .btn-primary span {
+  1215→    display: none;
+  1216→  }
+  1217→  .navbar-actions .btn-primary {
+  1218→    padding: 0.35rem 0.7rem;
+  1219→  }
+  1220→  .footer-middle-col ul {
+  1221→    gap: 0.2rem 0.6rem;
+  1222→  }
+  1223→  .footer-middle-col ul li a {
+  1224→    font-size: 0.8rem;
+  1225→  }
+  1226→}
+  1227→
+  1228→@media (min-width: 901px) {
+  1229→  .mobile-overlay,
+  1230→  .mobile-drawer {
+  1231→    display: none !important;
+  1232→  }
+  1233→}
+  1234→```
+  1235→
+  1236→---
+  1237→
+  1238→### 4. `app/layout.js`
+  1239→
+  1240→```jsx
+  1241→import './globals.css';
+  1242→import { Nunito } from 'next/font/google';
+  1243→import Script from 'next/script';
+  1244→
+  1245→const nunito = Nunito({
+  1246→  subsets: ['latin'],
+  1247→  weight: ['300', '400', '600', '700', '800'],
+  1248→  display: 'swap',
+  1249→  variable: '--font-nunito',
+  1250→});
+  1251→
+  1252→export const metadata = {
+  1253→  title: 'JobBoard Kenya – Complete Demo',
+  1254→  description: 'Find verified jobs, internships, and opportunities across Kenya.',
+  1255→};
+  1256→
+  1257→export default function RootLayout({ children }) {
+  1258→  return (
+  1259→    <html lang="en" className={nunito.variable}>
+  1260→      <head>
+  1261→        {/* Font Awesome CDN */}
+  1262→        <link
+  1263→          rel="stylesheet"
+  1264→          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  1265→        />
+  1266→      </head>
+  1267→      <body className="font-nunito bg-[#faf9f6]">
+  1268→        {children}
+  1269→      </body>
+  1270→    </html>
+  1271→  );
+  1272→}
+  1273→```
+  1274→
+  1275→---
+  1276→
+  1277→### 5. `app/page.js` (Homepage)
+  1278→
+  1279→We'll import all section components. I'll create each component shortly.
+  1280→
+  1281→```jsx
+  1282→import Navbar from '@/components/Navbar';
+  1283→import Footer from '@/components/Footer';
+  1284→import Hero from '@/components/Hero';
+  1285→import OfficialUpdates from '@/components/OfficialUpdates';
+  1286→import ClosingSoon from '@/components/ClosingSoon';
+  1287→import CategoryScroll from '@/components/CategoryScroll';
+  1288→import OpportunitiesTabs from '@/components/OpportunitiesTabs';
+  1289→import GovernmentJobs from '@/components/GovernmentJobs';
+  1290→import MatchingCard from '@/components/MatchingCard';
+  1291→import FlexibleJobs from '@/components/FlexibleJobs';
+  1292→import CareerResources from '@/components/CareerResources';
+  1293→import Newsletter from '@/components/Newsletter';
+  1294→
+  1295→export default function Home() {
+  1296→  return (
+  1297→    <>
+  1298→      <Navbar />
+  1299→      <main>
+  1300→        <Hero />
+  1301→        <OfficialUpdates />
+  1302→        <ClosingSoon />
+  1303→        <CategoryScroll />
+  1304→        <OpportunitiesTabs />
+  1305→        <GovernmentJobs />
+  1306→        <MatchingCard />
+  1307→        <FlexibleJobs />
+  1308→        <CareerResources />
+  1309→        <Newsletter />
+  1310→        {/* Bottom Ad */}
+  1311→        <div className="section-bg pb-6">
+  1312→          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1313→            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-20 md:h-24 border border-gray-200 text-gray-400 text-sm">
+  1314→              📢 Google Ad – 728x90 (Bottom Leaderboard)
+  1315→            </div>
+  1316→          </div>
+  1317→        </div>
+  1318→      </main>
+  1319→      <Footer />
+  1320→    </>
+  1321→  );
+  1322→}
+  1323→```
+  1324→
+  1325→---
+  1326→
+  1327→### 6. Components
+  1328→
+  1329→I'll now provide each component file in `/components/`.
+  1330→
+  1331→---
+  1332→
+  1333→#### `components/Navbar.jsx`
+  1334→
+  1335→```jsx
+  1336→'use client';
+  1337→
+  1338→import Link from 'next/link';
+  1339→import { useState, useEffect } from 'react';
+  1340→import MobileDrawer from './MobileDrawer';
+  1341→
+  1342→export default function Navbar() {
+  1343→  const [scrolled, setScrolled] = useState(false);
+  1344→  const [drawerOpen, setDrawerOpen] = useState(false);
+  1345→
+  1346→  useEffect(() => {
+  1347→    const handleScroll = () => {
+  1348→      setScrolled(window.scrollY > 20);
+  1349→    };
+  1350→    window.addEventListener('scroll', handleScroll);
+  1351→    return () => window.removeEventListener('scroll', handleScroll);
+  1352→  }, []);
+  1353→
+  1354→  return (
+  1355→    <>
+  1356→      <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+  1357→        <div className="navbar-inner">
+  1358→          <Link href="/" className="navbar-logo">
+  1359→            <span className="logo-icon">JB</span>
+  1360→            <span className="logo-badge">KE</span>
+  1361→          </Link>
+  1362→
+  1363→          <ul className="navbar-links">
+  1364→            <li>
+  1365→              <Link href="/">Home</Link>
+  1366→            </li>
+  1367→            <li className="group relative">
+  1368→              <button className="flex items-center gap-1">
+  1369→                Jobs
+  1370→                <i className="fas fa-chevron-down dropdown-arrow"></i>
+  1371→              </button>
+  1372→              <div className="dropdown-menu">
+  1373→                <Link href="/jobs" className="nav-link">
+  1374→                  <i className="fas fa-briefcase"></i> All Jobs
+  1375→                </Link>
+  1376→                <Link href="/jobs?category=it" className="nav-link">
+  1377→                  <i className="fas fa-th-large"></i> Browse by Category
+  1378→                </Link>
+  1379→                <Link href="/jobs?location=nairobi" className="nav-link">
+  1380→                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+  1381→                </Link>
+  1382→                <Link href="/jobs?type=government" className="nav-link">
+  1383→                  <i className="fas fa-landmark"></i> Govt Jobs
+  1384→                </Link>
+  1385→                <Link href="/jobs?type=county" className="nav-link">
+  1386→                  <i className="fas fa-city"></i> County Jobs
+  1387→                </Link>
+  1388→              </div>
+  1389→            </li>
+  1390→            <li className="group relative">
+  1391→              <button className="flex items-center gap-1">
+  1392→                Opportunities
+  1393→                <i className="fas fa-chevron-down dropdown-arrow"></i>
+  1394→              </button>
+  1395→              <div className="dropdown-menu">
+  1396→                <div className="dropdown-label">Explore</div>
+  1397→                <Link href="#">
+  1398→                  <i className="fas fa-graduation-cap"></i> Scholarships
+  1399→                </Link>
+  1400→                <Link href="#">
+  1401→                  <i className="fas fa-briefcase"></i> Internships
+  1402→                </Link>
+  1403→                <Link href="#">
+  1404→                  <i className="fas fa-users"></i> Fellowships
+  1405→                </Link>
+  1406→                <Link href="#">
+  1407→                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+  1408→                </Link>
+  1409→                <div className="dropdown-divider"></div>
+  1410→                <Link href="#">
+  1411→                  <i className="fas fa-th-large"></i> <strong>All Opportunities →</strong>
+  1412→                </Link>
+  1413→              </div>
+  1414→            </li>
+  1415→            <li>
+  1416→              <Link href="#">Resources</Link>
+  1417→            </li>
+  1418→            <li>
+  1419→              <Link href="#">Internships</Link>
+  1420→            </li>
+  1421→            <li>
+  1422→              <Link href="#">Updates</Link>
+  1423→            </li>
+  1424→          </ul>
+  1425→
+  1426→          <div className="navbar-actions">
+  1427→            <Link href="#" className="btn-outline">
+  1428→              <i className="fas fa-plus-circle"></i> <span>Post a Job</span>
+  1429→            </Link>
+  1430→            <Link href="#" className="btn-primary">
+  1431→              <i className="fas fa-cloud-upload-alt"></i> <span>Upload CV</span>
+  1432→            </Link>
+  1433→            <button className="btn-icon avatar">JD</button>
+  1434→            <button
+  1435→              className="navbar-toggle"
+  1436→              onClick={() => setDrawerOpen(!drawerOpen)}
+  1437→              aria-label="Toggle navigation"
+  1438→            >
+  1439→              <span></span>
+  1440→              <span></span>
+  1441→              <span></span>
+  1442→            </button>
+  1443→          </div>
+  1444→        </div>
+  1445→      </header>
+  1446→      <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+  1447→    </>
+  1448→  );
+  1449→}
+  1450→```
+  1451→
+  1452→---
+  1453→
+  1454→#### `components/MobileDrawer.jsx`
+  1455→
+  1456→```jsx
+  1457→'use client';
+  1458→
+  1459→import Link from 'next/link';
+  1460→import { useState } from 'react';
+  1461→
+  1462→export default function MobileDrawer({ isOpen, onClose }) {
+  1463→  const [jobsOpen, setJobsOpen] = useState(false);
+  1464→  const [oppOpen, setOppOpen] = useState(false);
+  1465→
+  1466→  if (!isOpen) return null;
+  1467→
+  1468→  return (
+  1469→    <>
+  1470→      <div className={`mobile-overlay open`} onClick={onClose}></div>
+  1471→      <div className={`mobile-drawer open`}>
+  1472→        <div className="mobile-drawer-header">
+  1473→          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+  1474→            <span className="logo-icon">JB</span>
+  1475→            <span className="logo-badge">KE</span>
+  1476→          </span>
+  1477→          <button className="mobile-drawer-close" onClick={onClose}>
+  1478→            <i className="fas fa-times"></i>
+  1479→          </button>
+  1480→        </div>
+  1481→
+  1482→        <ul className="mobile-nav-list">
+  1483→          <li>
+  1484→            <Link href="/" onClick={onClose}>
+  1485→              Home
+  1486→            </Link>
+  1487→          </li>
+  1488→          <li>
+  1489→            <button
+  1490→              onClick={() => setJobsOpen(!jobsOpen)}
+  1491→              className="w-full flex justify-between items-center"
+  1492→            >
+  1493→              <span>Jobs</span>
+  1494→              <i className={`fas fa-chevron-down sub-toggle ${jobsOpen ? 'open' : ''}`}></i>
+  1495→            </button>
+  1496→            <ul className={`mobile-sub ${jobsOpen ? 'open' : ''}`}>
+  1497→              <li>
+  1498→                <Link href="/jobs" onClick={onClose}>
+  1499→                  <i className="fas fa-briefcase"></i> All Jobs
+  1500→                </Link>
+  1501→              </li>
+  1502→              <li>
+  1503→                <Link href="/jobs?category=it" onClick={onClose}>
+  1504→                  <i className="fas fa-th-large"></i> Browse by Category
+  1505→                </Link>
+  1506→              </li>
+  1507→              <li>
+  1508→                <Link href="/jobs?location=nairobi" onClick={onClose}>
+  1509→                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+  1510→                </Link>
+  1511→              </li>
+  1512→              <li>
+  1513→                <Link href="/jobs?type=government" onClick={onClose}>
+  1514→                  <i className="fas fa-landmark"></i> Govt Jobs
+  1515→                </Link>
+  1516→              </li>
+  1517→              <li>
+  1518→                <Link href="/jobs?type=county" onClick={onClose}>
+  1519→                  <i className="fas fa-city"></i> County Jobs
+  1520→                </Link>
+  1521→              </li>
+  1522→            </ul>
+  1523→          </li>
+  1524→          <li>
+  1525→            <button
+  1526→              onClick={() => setOppOpen(!oppOpen)}
+  1527→              className="w-full flex justify-between items-center"
+  1528→            >
+  1529→              <span>Opportunities</span>
+  1530→              <i className={`fas fa-chevron-down sub-toggle ${oppOpen ? 'open' : ''}`}></i>
+  1531→            </button>
+  1532→            <ul className={`mobile-sub ${oppOpen ? 'open' : ''}`}>
+  1533→              <li>
+  1534→                <Link href="#" onClick={onClose}>
+  1535→                  <i className="fas fa-graduation-cap"></i> Scholarships
+  1536→                </Link>
+  1537→              </li>
+  1538→              <li>
+  1539→                <Link href="#" onClick={onClose}>
+  1540→                  <i className="fas fa-briefcase"></i> Internships
+  1541→                </Link>
+  1542→              </li>
+  1543→              <li>
+  1544→                <Link href="#" onClick={onClose}>
+  1545→                  <i className="fas fa-users"></i> Fellowships
+  1546→                </Link>
+  1547→              </li>
+  1548→              <li>
+  1549→                <Link href="#" onClick={onClose}>
+  1550→                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+  1551→                </Link>
+  1552→              </li>
+  1553→              <li style={{ marginTop: '0.3rem' }}>
+  1554→                <Link href="#" onClick={onClose}>
+  1555→                  <strong>All Opportunities →</strong>
+  1556→                </Link>
+  1557→              </li>
+  1558→            </ul>
+  1559→          </li>
+  1560→          <li>
+  1561→            <Link href="#" onClick={onClose}>
+  1562→              Resources
+  1563→            </Link>
+  1564→          </li>
+  1565→          <li>
+  1566→            <Link href="#" onClick={onClose}>
+  1567→              Internships
+  1568→            </Link>
+  1569→          </li>
+  1570→          <li>
+  1571→            <Link href="#" onClick={onClose}>
+  1572→              Updates
+  1573→            </Link>
+  1574→          </li>
+  1575→        </ul>
+  1576→
+  1577→        <div className="mobile-actions">
+  1578→          <Link href="#" className="btn-outline" onClick={onClose}>
+  1579→            <i className="fas fa-plus-circle"></i> Post a Job
+  1580→          </Link>
+  1581→          <Link href="#" className="btn-primary" onClick={onClose}>
+  1582→            <i className="fas fa-cloud-upload-alt"></i> Upload CV
+  1583→          </Link>
+  1584→          <Link href="#" className="btn-outline" style={{ borderColor: 'transparent', background: 'rgba(0,0,0,0.03)' }}>
+  1585→            <i className="fas fa-user-circle"></i> Sign In
+  1586→          </Link>
+  1587→        </div>
+  1588→      </div>
+  1589→    </>
+  1590→  );
+  1591→}
+  1592→```
+  1593→
+  1594→---
+  1595→
+  1596→#### `components/Footer.jsx`
+  1597→
+  1598→```jsx
+  1599→import Link from 'next/link';
+  1600→
+  1601→export default function Footer() {
+  1602→  return (
+  1603→    <footer className="footer">
+  1604→      <div className="footer-inner">
+  1605→        <div className="footer-grid">
+  1606→          <div className="footer-brand">
+  1607→            <div className="logo-icon">JB</div>
+  1608→            <div className="brand-name">
+  1609→              Job<span>Board</span> <span style={{ fontWeight: 400, color: '#6a6a6a', fontSize: '0.8rem' }}>KE</span>
+  1610→            </div>
+  1611→            <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
+  1612→            <div className="footer-social">
+  1613→              <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
+  1614→              <a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
+  1615→              <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
+  1616→              <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+  1617→              <a href="#" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
+  1618→            </div>
+  1619→          </div>
+  1620→
+  1621→          <div>
+  1622→            <h4>Jobs</h4>
+  1623→            <ul>
+  1624→              <li><Link href="/jobs">Browse Jobs</Link></li>
+  1625→              <li><Link href="/jobs?type=government">Government Jobs</Link></li>
+  1626→              <li><Link href="#">Internships</Link></li>
+  1627→              <li><Link href="#">Casual &amp; Part-time</Link></li>
+  1628→              <li><Link href="#">Remote Jobs</Link></li>
+  1629→            </ul>
+  1630→          </div>
+  1631→
+  1632→          <div>
+  1633→            <h4>Resources</h4>
+  1634→            <ul>
+  1635→              <li><Link href="#">Career Advice</Link></li>
+  1636→              <li><Link href="#">CV Writing</Link></li>
+  1637→              <li><Link href="#">Interview Tips</Link></li>
+  1638→              <li><Link href="#">Salary Guide</Link></li>
+  1639→              <li><Link href="#">Skill Assessments</Link></li>
+  1640→            </ul>
+  1641→          </div>
+  1642→
+  1643→          <div className="footer-newsletter">
+  1644→            <h4>Stay Updated</h4>
+  1645→            <p>Get new jobs, deadlines, and career opportunities delivered to your inbox.</p>
+  1646→            <form action="#" method="POST">
+  1647→              <input type="email" placeholder="Your email address" required />
+  1648→              <button type="submit">Subscribe</button>
+  1649→            </form>
+  1650→            <p style={{ fontSize: '0.65rem', color: '#5a5a5a', marginTop: '0.6rem' }}>No spam, unsubscribe anytime.</p>
+  1651→          </div>
+  1652→        </div>
+  1653→
+  1654→        <div className="footer-middle">
+  1655→          <div className="footer-middle-col">
+  1656→            <h4>Popular Locations</h4>
+  1657→            <ul>
+  1658→              <li><Link href="/jobs?location=nairobi">Nairobi</Link></li>
+  1659→              <li><Link href="/jobs?location=mombasa">Mombasa</Link></li>
+  1660→              <li><Link href="/jobs?location=kisumu">Kisumu</Link></li>
+  1661→              <li><Link href="/jobs?location=nakuru">Nakuru</Link></li>
+  1662→              <li><Link href="/jobs?location=eldoret">Eldoret</Link></li>
+  1663→              <li><Link href="/jobs?location=thika">Thika</Link></li>
+  1664→              <li><Link href="/jobs?location=malindi">Malindi</Link></li>
+  1665→              <li><Link href="/jobs?location=kitale">Kitale</Link></li>
+  1666→              <li><Link href="/jobs?location=nyeri">Nyeri</Link></li>
+  1667→              <li><Link href="/jobs?location=machakos">Machakos</Link></li>
+  1668→            </ul>
+  1669→          </div>
+  1670→          <div className="footer-middle-col">
+  1671→            <h4>Popular Categories</h4>
+  1672→            <ul>
+  1673→              <li><Link href="/jobs?category=it">Technology &amp; IT</Link></li>
+  1674→              <li><Link href="/jobs?category=health">Healthcare &amp; Medical</Link></li>
+  1675→              <li><Link href="/jobs?category=finance">Finance &amp; Accounting</Link></li>
+  1676→              <li><Link href="/jobs?category=engineering">Engineering</Link></li>
+  1677→              <li><Link href="/jobs?category=education">Education &amp; Training</Link></li>
+  1678→              <li><Link href="/jobs?category=sales">Sales &amp; Business</Link></li>
+  1679→              <li><Link href="/jobs?category=legal">Legal &amp; Compliance</Link></li>
+  1680→              <li><Link href="/jobs?category=hospitality">Hospitality &amp; Tourism</Link></li>
+  1681→              <li><Link href="/jobs?category=agriculture">Agriculture</Link></li>
+  1682→              <li><Link href="/jobs?category=logistics">Logistics &amp; Supply Chain</Link></li>
+  1683→            </ul>
+  1684→          </div>
+  1685→        </div>
+  1686→
+  1687→        <div className="footer-bottom">
+  1688→          <span>&copy; 2026 JobBoard Kenya. All rights reserved.</span>
+  1689→          <div className="footer-bottom-links">
+  1690→            <Link href="#">Privacy Policy</Link>
+  1691→            <Link href="#">Terms of Service</Link>
+  1692→            <Link href="#">Contact</Link>
+  1693→            <Link href="#">About</Link>
+  1694→          </div>
+  1695→        </div>
+  1696→      </div>
+  1697→    </footer>
+  1698→  );
+  1699→}
+  1700→```
+  1701→
+  1702→---
+  1703→
+  1704→#### `components/Hero.jsx`
+  1705→
+  1706→```jsx
+  1707→import Link from 'next/link';
+  1708→
+  1709→export default function Hero() {
+  1710→  return (
+  1711→    <section className="section-bg py-12 md:py-16" style={{ marginTop: 0 }}>
+  1712→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1713→        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+  1714→          <div className="space-y-5">
+  1715→            <p className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">
+  1716→              Stop Searching. Start Matching.
+  1717→            </p>
+  1718→            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-800 leading-[1.15]">
+  1719→              Find Jobs That Fit You, <br />
+  1720→              <span className="text-emerald-600">Not Just Your Keywords</span>
+  1721→            </h1>
+  1722→            <p className="text-base sm:text-lg text-gray-600 font-light leading-relaxed max-w-lg">
+  1723→              Discover verified jobs, internships, and opportunities matched to your skills and experience.
+  1724→              Get real-time alerts and apply directly to trusted employers across Kenya.
+  1725→            </p>
+  1726→            <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-2xl pt-1">
+  1727→              <input
+  1728→                type="text"
+  1729→                placeholder="Job title, skill, or company"
+  1730→                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-emerald-600"
+  1731→              />
+  1732→              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+  1733→                Find Matching Jobs
+  1734→              </button>
+  1735→            </div>
+  1736→            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
+  1737→              <Link
+  1738→                href="#"
+  1739→                className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition border border-gray-300 hover:border-emerald-500 px-4 py-1.5 rounded-full bg-white/50"
+  1740→              >
+  1741→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1742→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+  1743→                </svg>
+  1744→                Upload Your CV
+  1745→              </Link>
+  1746→              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+  1747→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Verified employers</span>
+  1748→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Daily updates</span>
+  1749→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> WhatsApp alerts</span>
+  1750→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Free CV upload</span>
+  1751→              </div>
+  1752→            </div>
+  1753→          </div>
+  1754→          <div>
+  1755→            <div className="flex items-center justify-between border-b border-gray-200/70 pb-2 mb-3">
+  1756→              <div className="flex items-center gap-2">
+  1757→                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+  1758→                <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Recently Posted</h2>
+  1759→              </div>
+  1760→              <Link href="/jobs" className="text-xs font-medium text-gray-400 hover:text-emerald-600 transition">
+  1761→                View all →
+  1762→              </Link>
+  1763→            </div>
+  1764→            <ul className="divide-y divide-gray-200/50">
+  1765→              {[
+  1766→                { title: 'Senior Software Engineer', company: 'Safaricom', time: '2h' },
+  1767→                { title: 'Public Health Officer', company: 'County Gov. Mombasa', time: '4h' },
+  1768→                { title: 'IT Support Intern', company: 'Equity Bank', time: '1d' },
+  1769→                { title: 'Project Coordinator', company: 'UNICEF', time: '2d' },
+  1770→                { title: 'Retail Sales Assistant', company: 'Naivas', time: '3h' },
+  1771→              ].map((job, idx) => (
+  1772→                <li key={idx} className="py-2.5 flex items-center justify-between">
+  1773→                  <div>
+  1774→                    <Link href={`/jobs/${idx + 1}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+  1775→                      {job.title}
+  1776→                    </Link>
+  1777→                    <span className="text-sm text-gray-400 ml-2">{job.company}</span>
+  1778→                  </div>
+  1779→                  <span className="text-xs text-gray-300">{job.time}</span>
+  1780→                </li>
+  1781→              ))}
+  1782→            </ul>
+  1783→            <div className="mt-4 pt-1 border-t border-gray-200/50 flex justify-start">
+  1784→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1.5">
+  1785→                Browse all latest jobs
+  1786→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1787→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  1788→                </svg>
+  1789→              </Link>
+  1790→            </div>
+  1791→          </div>
+  1792→        </div>
+  1793→      </div>
+  1794→    </section>
+  1795→  );
+  1796→}
+  1797→```
+  1798→
+  1799→---
+  1800→
+  1801→#### `components/OfficialUpdates.jsx`
+  1802→
+  1803→```jsx
+  1804→import Link from 'next/link';
+  1805→
+  1806→export default function OfficialUpdates() {
+  1807→  const updates = [
+  1808→    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago' },
+  1809→    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago' },
+  1810→    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago' },
+  1811→    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago' },
+  1812→  ];
+  1813→
+  1814→  return (
+  1815→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1816→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1817→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1818→          <div className="lg:col-span-2">
+  1819→            <div className="flex items-center justify-between mb-6">
+  1820→              <div>
+  1821→                <h2 className="text-2xl font-extrabold text-gray-800">Official Updates</h2>
+  1822→                <p className="text-sm text-gray-500 font-light">
+  1823→                  Stay informed with recruitment notices, shortlisting updates, and application announcements.
+  1824→                </p>
+  1825→              </div>
+  1826→              <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+  1827→                View all →
+  1828→              </Link>
+  1829→            </div>
+  1830→            <div className="bg-white/50 backdrop-blur-sm rounded-xl divide-y divide-gray-200/60 border border-white/60">
+  1831→              {updates.map((item, idx) => (
+  1832→                <div key={idx} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
+  1833→                  <span className="text-xl mt-0.5">{item.icon}</span>
+  1834→                  <div>
+  1835→                    <p className="text-sm font-semibold text-gray-800">{item.title}</p>
+  1836→                    <div className="flex items-center gap-3 mt-0.5">
+  1837→                      <span className="text-xs text-gray-400">{item.tag}</span>
+  1838→                      <span className="text-xs text-gray-300">•</span>
+  1839→                      <span className="text-xs text-gray-300">{item.time}</span>
+  1840→                    </div>
+  1841→                  </div>
+  1842→                </div>
+  1843→              ))}
+  1844→            </div>
+  1845→          </div>
+  1846→          <div className="lg:col-span-1 space-y-6">
+  1847→            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
+  1848→              📢 Google Ad (300x250)
+  1849→            </div>
+  1850→            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100/60">
+  1851→              <div className="flex items-center gap-2">
+  1852→                <span className="text-xl">📬</span>
+  1853→                <h3 className="text-sm font-bold text-gray-800">Get alerts</h3>
+  1854→              </div>
+  1855→              <p className="text-xs text-gray-600 mt-0.5">Receive WhatsApp notifications for new jobs.</p>
+  1856→              <button className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
+  1857→                Subscribe
+  1858→              </button>
+  1859→            </div>
+  1860→          </div>
+  1861→        </div>
+  1862→      </div>
+  1863→    </section>
+  1864→  );
+  1865→}
+  1866→```
+  1867→
+  1868→---
+  1869→
+  1870→#### `components/ClosingSoon.jsx`
+  1871→
+  1872→```jsx
+  1873→import Link from 'next/link';
+  1874→
+  1875→const closingJobs = [
+  1876→  { title: 'Marketing Manager', company: 'Co-op Bank', days: '2 days' },
+  1877→  { title: 'Data Analyst', company: 'KRA', days: '4 days' },
+  1878→  { title: 'Nurse', company: 'County Gov. Kisumu', days: '5 days' },
+  1879→  { title: 'Civil Engineer', company: 'KURA', days: '6 days' },
+  1880→  { title: 'Finance Officer', company: 'UNICEF', days: '7 days' },
+  1881→  { title: 'Retail Sales Assistant', company: 'Naivas', days: '8 days' },
+  1882→];
+  1883→
+  1884→export default function ClosingSoon() {
+  1885→  return (
+  1886→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1887→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1888→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1889→          <div className="lg:col-span-2">
+  1890→            <div className="flex items-center justify-between mb-6">
+  1891→              <div>
+  1892→                <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+  1893→                  ⏳ Don't Miss These Deadlines
+  1894→                </h2>
+  1895→                <p className="text-sm text-gray-500 font-light">
+  1896→                  Applications closing soon. Submit your application before time runs out.
+  1897→                </p>
+  1898→              </div>
+  1899→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+
+[showing lines 1200-1899 of 3255; use offset=1900 with limit to continue reading]

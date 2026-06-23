@@ -1,0 +1,502 @@
+     1→  2600→import Navbar from '@/components/Navbar';
+     2→  2601→import Footer from '@/components/Footer';
+     3→  2602→
+     4→  2603→export default function JobsPage({ searchParams }) {
+     5→  2604→  const { category, location, type, page = 1 } = searchParams;
+     6→  2605→  const perPage = 20;
+     7→  2606→
+     8→  2607→  let filtered = [...jobs];
+     9→  2608→  if (category) filtered = filtered.filter(j => j.category === category);
+    10→  2609→  if (location) filtered = filtered.filter(j => j.location.toLowerCase() === location);
+    11→  2610→  if (type) filtered = filtered.filter(j => j.type.toLowerCase() === type || (type === 'government' && j.company.includes('Gov')));
+    12→  2611→
+    13→  2612→  const total = filtered.length;
+    14→  2613→  const start = (page - 1) * perPage;
+    15→  2614→  const end = start + perPage;
+    16→  2615→  const paginated = filtered.slice(start, end);
+    17→  2616→
+    18→  2617→  return (
+    19→  2618→    <>
+    20→  2619→      <Navbar />
+    21→  2620→      <section className="section-bg py-8 border-b border-gray-200/50">
+    22→  2621→        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    23→  2622→          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    24→  2623→            <div>
+    25→  2624→              <h1 className="text-2xl font-extrabold text-gray-800">Browse Jobs</h1>
+    26→  2625→              <p className="text-sm text-gray-500">
+    27→  2626→                Showing <span className="font-semibold text-emerald-600">{total}</span> opportunities
+    28→  2627→              </p>
+    29→  2628→            </div>
+    30→  2629→            <div className="flex flex-col sm:flex-row items-stretch gap-3 w-full md:w-auto">
+    31→  2630→              <div className="relative flex-1 md:w-72">
+    32→  2631→                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    33→  2632→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    34→  2633→                </svg>
+    35→  2634→                <input
+    36→  2635→                  type="text"
+    37→  2636→                  placeholder="Search jobs, companies, or keywords"
+    38→  2637→                  className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600"
+    39→  2638→                />
+    40→  2639→              </div>
+    41→  2640→              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+    42→  2641→                Search
+    43→  2642→              </button>
+    44→  2643→            </div>
+    45→  2644→          </div>
+    46→  2645→          <FilterChips />
+    47→  2646→        </div>
+    48→  2647→      </section>
+    49→  2648→
+    50→  2649→      <section className="section-bg py-10">
+    51→  2650→        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    52→  2651→          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    53→  2652→            <div className="lg:col-span-2 space-y-4">
+    54→  2653→              {paginated.map(job => (
+    55→  2654→                <JobCard key={job.id} job={job} />
+    56→  2655→              ))}
+    57→  2656→              <Pagination total={total} perPage={perPage} currentPage={Number(page)} />
+    58→  2657→            </div>
+    59→  2658→            <Sidebar />
+    60→  2659→          </div>
+    61→  2660→        </div>
+    62→  2661→      </section>
+    63→  2662→      <Footer />
+    64→  2663→    </>
+    65→  2664→  );
+    66→  2665→}
+    67→  2666→```
+    68→  2667→
+    69→  2668→---
+    70→  2669→
+    71→  2670→#### `components/JobCard.jsx`
+    72→  2671→
+    73→  2672→```jsx
+    74→  2673→import Link from 'next/link';
+    75→  2674→
+    76→  2675→export default function JobCard({ job }) {
+    77→  2676→  return (
+    78→  2677→    <Link href={`/jobs/${job.id}`} className="job-card block bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 transition">
+    79→  2678→      <div className="flex flex-wrap items-start justify-between gap-3">
+    80→  2679→        <div>
+    81→  2680→          <h3 className="job-title text-lg font-extrabold text-gray-800 transition">{job.title}</h3>
+    82→  2681→          <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+    83→  2682→            <span className="font-medium text-gray-700">{job.company}</span>
+    84→  2683→            <span className="text-gray-300">•</span>
+    85→  2684→            <span>{job.location}</span>
+    86→  2685→          </p>
+    87→  2686→        </div>
+    88→  2687→        <div className="flex flex-wrap items-center gap-2">
+    89→  2688→          <span className="text-xs font-medium text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full flex items-center gap-1">
+    90→  2689→            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {job.match}% Match
+    91→  2690→          </span>
+    92→  2691→          <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{job.type}</span>
+    93→  2692→        </div>
+    94→  2693→      </div>
+    95→  2694→      <p className="text-sm text-gray-500 mt-2 line-clamp-2">{job.description}</p>
+    96→  2695→      <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-400">
+    97→  2696→        <span>💰 {job.salary}</span>
+    98→  2697→        <span>•</span>
+    99→  2698→        <span>📅 Posted {job.posted}</span>
+   100→  2699→        <span>•</span>
+   101→  2700→        <span>⏳ Closes {job.deadline}</span>
+   102→  2701→      </div>
+   103→  2702→    </Link>
+   104→  2703→  );
+   105→  2704→}
+   106→  2705→```
+   107→  2706→
+   108→  2707→---
+   109→  2708→
+   110→  2709→#### `components/FilterChips.jsx`
+   111→  2710→
+   112→  2711→```jsx
+   113→  2712→'use client';
+   114→  2713→
+   115→  2714→import { useRouter, useSearchParams } from 'next/navigation';
+   116→  2715→import { useState } from 'react';
+   117→  2716→
+   118→  2717→const filters = ['All Jobs', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote', 'Government'];
+   119→  2718→
+   120→  2719→export default function FilterChips() {
+   121→  2720→  const router = useRouter();
+   122→  2721→  const searchParams = useSearchParams();
+   123→  2722→  const [active, setActive] = useState('All Jobs');
+   124→  2723→
+   125→  2724→  const handleFilter = (filter) => {
+   126→  2725→    setActive(filter);
+   127→  2726→    const params = new URLSearchParams(searchParams);
+   128→  2727→    if (filter === 'All Jobs') {
+   129→  2728→      params.delete('type');
+   130→  2729→    } else {
+   131→  2730→      params.set('type', filter.toLowerCase());
+   132→  2731→    }
+   133→  2732→    router.push(`/jobs?${params.toString()}`);
+   134→  2733→  };
+   135→  2734→
+   136→  2735→  return (
+   137→  2736→    <div className="flex flex-wrap items-center gap-2 mt-4">
+   138→  2737→      <span className="text-xs font-medium text-gray-400 uppercase tracking-wider mr-1">Filters:</span>
+   139→  2738→      {filters.map((label) => (
+   140→  2739→        <button
+   141→  2740→          key={label}
+   142→  2741→          className={`filter-chip ${active === label ? 'active' : 'inactive'} px-4 py-1.5 rounded-full border text-sm font-medium`}
+   143→  2742→          onClick={() => handleFilter(label)}
+   144→  2743→        >
+   145→  2744→          {label}
+   146→  2745→        </button>
+   147→  2746→      ))}
+   148→  2747→      <select className="ml-2 px-3 py-1.5 rounded-full border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600">
+   149→  2748→        <option>Sort by: Relevance</option>
+   150→  2749→        <option>Sort by: Newest</option>
+   151→  2750→        <option>Sort by: Deadline</option>
+   152→  2751→        <option>Sort by: Salary</option>
+   153→  2752→      </select>
+   154→  2753→    </div>
+   155→  2754→  );
+   156→  2755→}
+   157→  2756→```
+   158→  2757→
+   159→  2758→---
+   160→  2759→
+   161→  2760→#### `components/Pagination.jsx`
+   162→  2761→
+   163→  2762→```jsx
+   164→  2763→'use client';
+   165→  2764→
+   166→  2765→import { useRouter, useSearchParams } from 'next/navigation';
+   167→  2766→
+   168→  2767→export default function Pagination({ total, perPage, currentPage }) {
+   169→  2768→  const router = useRouter();
+   170→  2769→  const searchParams = useSearchParams();
+   171→  2770→  const totalPages = Math.ceil(total / perPage);
+   172→  2771→
+   173→  2772→  const goToPage = (page) => {
+   174→  2773→    const params = new URLSearchParams(searchParams);
+   175→  2774→    params.set('page', page);
+   176→  2775→    router.push(`/jobs?${params.toString()}`);
+   177→  2776→  };
+   178→  2777→
+   179→  2778→  if (totalPages <= 1) return null;
+   180→  2779→
+   181→  2780→  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+   182→  2781→  const visible = pages.slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 1));
+   183→  2782→
+   184→  2783→  return (
+   185→  2784→    <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-200/50">
+   186→  2785→      <div className="flex flex-wrap items-center gap-4">
+   187→  2786→        <p className="text-sm text-gray-500">
+   188→  2787→          Showing <span className="font-medium text-gray-700">{(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, total)}</span> of <span className="font-medium text-gray-700">{total}</span> jobs
+   189→  2788→        </p>
+   190→  2789→        <div className="flex items-center gap-2">
+   191→  2790→          <label htmlFor="per-page" className="text-sm text-gray-500">Show:</label>
+   192→  2791→          <select id="per-page" className="px-2 py-1.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600">
+   193→  2792→            <option value="20" selected>20</option>
+   194→  2793→            <option value="30">30</option>
+   195→  2794→            <option value="40">40</option>
+   196→  2795→            <option value="50">50</option>
+   197→  2796→          </select>
+   198→  2797→        </div>
+   199→  2798→      </div>
+   200→  2799→      <div className="flex items-center gap-2">
+   201→  2800→        <button
+   202→  2801→          className="page-btn inactive px-3 py-1.5 rounded-lg border text-sm font-medium"
+   203→  2802→          onClick={() => goToPage(currentPage - 1)}
+   204→  2803→          disabled={currentPage === 1}
+   205→  2804→        >
+   206→  2805→          ←
+   207→  2806→        </button>
+   208→  2807→        {visible.map(p => (
+   209→  2808→          <button
+   210→  2809→            key={p}
+   211→  2810→            className={`page-btn ${p === currentPage ? 'active' : 'inactive'} px-3 py-1.5 rounded-lg border text-sm font-medium`}
+   212→  2811→            onClick={() => goToPage(p)}
+   213→  2812→          >
+   214→  2813→            {p}
+   215→  2814→          </button>
+   216→  2815→        ))}
+   217→  2816→        {totalPages > 3 && currentPage < totalPages - 1 && <span className="text-sm text-gray-400">…</span>}
+   218→  2817→        {currentPage < totalPages - 1 && (
+   219→  2818→          <button className="page-btn inactive px-3 py-1.5 rounded-lg border text-sm font-medium" onClick={() => goToPage(totalPages)}>
+   220→  2819→            {totalPages}
+   221→  2820→          </button>
+   222→  2821→        )}
+   223→  2822→        <button
+   224→  2823→          className="page-btn inactive px-3 py-1.5 rounded-lg border text-sm font-medium"
+   225→  2824→          onClick={() => goToPage(currentPage + 1)}
+   226→  2825→          disabled={currentPage === totalPages}
+   227→  2826→        >
+   228→  2827→          →
+   229→  2828→        </button>
+   230→  2829→      </div>
+   231→  2830→    </div>
+   232→  2831→  );
+   233→  2832→}
+   234→  2833→```
+   235→  2834→
+   236→  2835→---
+   237→  2836→
+   238→  2837→#### `components/Sidebar.jsx`
+   239→  2838→
+   240→  2839→```jsx
+   241→  2840→import Link from 'next/link';
+   242→  2841→
+   243→  2842→export default function Sidebar() {
+   244→  2843→  return (
+   245→  2844→    <div className="lg:col-span-1 space-y-6 sidebar-sticky">
+   246→  2845→      {/* Smart Job Matching */}
+   247→  2846→      <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
+   248→  2847→        <div className="flex items-center gap-2">
+   249→  2848→          <span className="text-xl">🧠</span>
+   250→  2849→          <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">Premium</span>
+   251→  2850→        </div>
+   252→  2851→        <h4 className="text-base font-extrabold text-gray-800 mt-1">Smart Job Matching</h4>
+   253→  2852→        <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+   254→  2853→          Upload your CV and let our AI find the perfect roles for you, tailored to your skills and experience.
+   255→  2854→        </p>
+   256→  2855→        <Link href="#" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+   257→  2856→          Upload CV &amp; Get Matched →
+   258→  2857→        </Link>
+   259→  2858→      </div>
+   260→  2859→
+   261→  2860→      {/* Google Ad */}
+   262→  2861→      <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
+   263→  2862→        <div className="text-center">
+   264→  2863→          <div>📢 Google Ad</div>
+   265→  2864→          <div className="text-xs">(300x250)</div>
+   266→  2865→        </div>
+   267→  2866→      </div>
+   268→  2867→
+   269→  2868→      {/* Browse by Category */}
+   270→  2869→      <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   271→  2870→        <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
+   272→  2871→          Browse by Category
+   273→  2872→        </h4>
+   274→  2873→        <ul className="space-y-3">
+   275→  2874→          {[
+   276→  2875→            { name: '💻 IT & Software', count: 124, slug: 'it' },
+   277→  2876→            { name: '🏥 Health & Medical', count: 87, slug: 'health' },
+   278→  2877→            { name: '📊 Finance & Accounting', count: 63, slug: 'finance' },
+   279→  2878→            { name: '🏗️ Engineering', count: 52, slug: 'engineering' },
+   280→  2879→          ].map((cat) => (
+   281→  2880→            <li key={cat.slug}>
+   282→  2881→              <Link href={`/jobs?category=${cat.slug}`} className="flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-emerald-600 transition">
+   283→  2882→                <span>{cat.name}</span>
+   284→  2883→                <span className="text-xs text-gray-400 font-normal">({cat.count})</span>
+   285→  2884→              </Link>
+   286→  2885→            </li>
+   287→  2886→          ))}
+   288→  2887→        </ul>
+   289→  2888→      </div>
+   290→  2889→
+   291→  2890→      {/* Trending Searches */}
+   292→  2891→      <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   293→  2892→        <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2 border-b border-gray-200/60 pb-3 mb-4">
+   294→  2893→          <span>🔥</span> Trending Searches
+   295→  2894→        </h4>
+   296→  2895→        <ul className="space-y-2">
+   297→  2896→          {['Teaching', 'Nursing', 'IT & Software', 'Driving', 'Accounting'].map((term) => (
+   298→  2897→            <li key={term}>
+   299→  2898→              <Link href={`/jobs?search=${term}`} className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
+   300→  2899→                <span>{term}</span>
+   301→  2900→                <span className="text-xs text-gray-400">→</span>
+   302→  2901→              </Link>
+   303→  2902→            </li>
+   304→  2903→          ))}
+   305→  2904→        </ul>
+   306→  2905→      </div>
+   307→  2906→
+   308→  2907→      {/* CV Ad */}
+   309→  2908→      <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
+   310→  2909→        <div className="flex items-center gap-2 mb-2">
+   311→  2910→          <span className="text-xl">📄</span>
+   312→  2911→          <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">Internal Ad</span>
+   313→  2912→        </div>
+   314→  2913→        <h4 className="text-base font-extrabold text-gray-800">Your CV Opens Doors</h4>
+   315→  2914→        <p className="text-sm text-gray-600 mt-1">
+   316→  2915→          Professional CV writing, cover letters, and LinkedIn optimization. From <span className="font-bold text-emerald-600">KSh 1,500</span>.
+   317→  2916→        </p>
+   318→  2917→        <Link href="#" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+   319→  2918→          Improve My CV →
+   320→  2919→        </Link>
+   321→  2920→      </div>
+   322→  2921→
+   323→  2922→      {/* Job Alerts */}
+   324→  2923→      <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   325→  2924→        <div className="flex items-center gap-2 mb-2">
+   326→  2925→          <span className="text-xl">📬</span>
+   327→  2926→          <h4 className="text-sm font-bold text-gray-700">Get Job Alerts</h4>
+   328→  2927→        </div>
+   329→  2928→        <p className="text-xs text-gray-600">Get new jobs matching your profile delivered to your inbox.</p>
+   330→  2929→        <div className="mt-3 flex flex-col gap-2">
+   331→  2930→          <input type="email" placeholder="Your email" className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
+   332→  2931→          <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition text-sm">
+   333→  2932→            Subscribe
+   334→  2933→          </button>
+   335→  2934→        </div>
+   336→  2935→      </div>
+   337→  2936→    </div>
+   338→  2937→  );
+   339→  2938→}
+   340→  2939→```
+   341→  2940→
+   342→  2941→---
+   343→  2942→
+   344→  2943→### 9. `app/jobs/[id]/page.js` (Job Details)
+   345→  2944→
+   346→  2945→```jsx
+   347→  2946→import { jobs } from '@/data/jobs';
+   348→  2947→import { notFound } from 'next/navigation';
+   349→  2948→import JobDetailsContent from '@/components/JobDetailsContent';
+   350→  2949→import Navbar from '@/components/Navbar';
+   351→  2950→import Footer from '@/components/Footer';
+   352→  2951→
+   353→  2952→export default function JobDetailsPage({ params }) {
+   354→  2953→  const job = jobs.find(j => j.id === params.id);
+   355→  2954→  if (!job) notFound();
+   356→  2955→
+   357→  2956→  const similar = jobs.filter(j => j.id !== job.id && j.category === job.category).slice(0, 3);
+   358→  2957→
+   359→  2958→  return (
+   360→  2959→    <>
+   361→  2960→      <Navbar />
+   362→  2961→      <JobDetailsContent job={job} similar={similar} />
+   363→  2962→      <Footer />
+   364→  2963→    </>
+   365→  2964→  );
+   366→  2965→}
+   367→  2966→```
+   368→  2967→
+   369→  2968→---
+   370→  2969→
+   371→  2970→#### `components/JobDetailsContent.jsx`
+   372→  2971→
+   373→  2972→```jsx
+   374→  2973→'use client';
+   375→  2974→
+   376→  2975→import Link from 'next/link';
+   377→  2976→import { useState } from 'react';
+   378→  2977→
+   379→  2978→export default function JobDetailsContent({ job, similar }) {
+   380→  2979→  const [saved, setSaved] = useState(false);
+   381→  2980→
+   382→  2981→  return (
+   383→  2982→    <section className="section-bg py-4 border-b border-gray-200/50">
+   384→  2983→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   385→  2984→        <nav className="flex items-center gap-2 text-sm text-gray-500">
+   386→  2985→          <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
+   387→  2986→          <span>/</span>
+   388→  2987→          <Link href="/jobs" className="hover:text-emerald-600 transition">Browse Jobs</Link>
+   389→  2988→          <span>/</span>
+   390→  2989→          <span className="text-gray-700 font-medium">{job.title}</span>
+   391→  2990→        </nav>
+   392→  2991→      </div>
+   393→  2992→
+   394→  2993→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+   395→  2994→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+   396→  2995→          <div className="lg:col-span-2 space-y-6">
+   397→  2996→            {/* Job Header */}
+   398→  2997→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   399→  2998→              <div className="flex flex-wrap items-start justify-between gap-4">
+   400→  2999→                <div>
+   401→  3000→                  <div className="flex items-center gap-4">
+   402→  3001→                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm">
+   403→  3002→                      {job.company.charAt(0)}
+   404→  3003→                    </div>
+   405→  3004→                    <div>
+   406→  3005→                      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{job.title}</h1>
+   407→  3006→                      <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+   408→  3007→                        <span className="font-semibold text-gray-700">{job.company}</span>
+   409→  3008→                        <span className="text-gray-300">•</span>
+   410→  3009→                        <span>{job.location}</span>
+   411→  3010→                      </p>
+   412→  3011→                    </div>
+   413→  3012→                  </div>
+   414→  3013→                </div>
+   415→  3014→                <div className="flex flex-wrap items-center gap-2">
+   416→  3015→                  <span className="text-xs font-medium text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full flex items-center gap-1">
+   417→  3016→                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {job.match}% Match
+   418→  3017→                  </span>
+   419→  3018→                  <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{job.type}</span>
+   420→  3019→                </div>
+   421→  3020→              </div>
+   422→  3021→              <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-200/50 text-xs text-gray-500">
+   423→  3022→                <span className="flex items-center gap-1.5">💰 <span className="font-medium text-gray-700">{job.salary}</span></span>
+   424→  3023→                <span className="text-gray-300">|</span>
+   425→  3024→                <span className="flex items-center gap-1.5">📅 Posted <span className="font-medium text-gray-700">{job.posted}</span></span>
+   426→  3025→                <span className="text-gray-300">|</span>
+   427→  3026→                <span className="flex items-center gap-1.5">⏳ Closes <span className="font-medium text-red-600">{job.deadline}</span></span>
+   428→  3027→              </div>
+   429→  3028→            </div>
+   430→  3029→
+   431→  3030→            {/* Description */}
+   432→  3031→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   433→  3032→              <h2 className="text-lg font-extrabold text-gray-800">Job Description</h2>
+   434→  3033→              <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
+   435→  3034→              <h3 className="text-md font-extrabold text-gray-800 mt-5">Key Responsibilities</h3>
+   436→  3035→              <ul className="mt-2 space-y-1.5 text-sm text-gray-600 list-disc list-inside">
+   437→  3036→                {job.responsibilities.map((item, idx) => (
+   438→  3037→                  <li key={idx}>{item}</li>
+   439→  3038→                ))}
+   440→  3039→              </ul>
+   441→  3040→              <h3 className="text-md font-extrabold text-gray-800 mt-5">Requirements</h3>
+   442→  3041→              <ul className="mt-2 space-y-1.5 text-sm text-gray-600 list-disc list-inside">
+   443→  3042→                {job.requirements.map((item, idx) => (
+   444→  3043→                  <li key={idx}>{item}</li>
+   445→  3044→                ))}
+   446→  3045→              </ul>
+   447→  3046→            </div>
+   448→  3047→
+   449→  3048→            {/* Application */}
+   450→  3049→            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60 shadow-sm">
+   451→  3050→              <div className="flex flex-wrap items-center justify-between gap-4">
+   452→  3051→                <div>
+   453→  3052→                  <h3 className="text-lg font-extrabold text-gray-800">Ready to apply?</h3>
+   454→  3053→                  <p className="text-sm text-gray-600">Submit your application before the deadline.</p>
+   455→  3054→                  <p className="text-xs text-red-600 font-medium mt-1">⏳ Closes in 10 days</p>
+   456→  3055→                </div>
+   457→  3056→                <div className="flex flex-wrap items-center gap-3">
+   458→  3057→                  <Link href="#" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
+   459→  3058→                    Apply Now
+   460→  3059→                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   461→  3060→                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+   462→  3061→                    </svg>
+   463→  3062→                  </Link>
+   464→  3063→                  <button
+   465→  3064→                    className="bg-white/70 text-gray-700 hover:text-emerald-600 border border-gray-300 hover:border-emerald-400 font-medium px-4 py-2.5 rounded-lg transition text-sm flex items-center gap-2"
+   466→  3065→                    onClick={() => setSaved(!saved)}
+   467→  3066→                  >
+   468→  3067→                    <svg className="w-4 h-4" fill={saved ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+   469→  3068→                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+   470→  3069→                    </svg>
+   471→  3070→                    {saved ? 'Saved' : 'Save'}
+   472→  3071→                  </button>
+   473→  3072→                </div>
+   474→  3073→              </div>
+   475→  3074→            </div>
+   476→  3075→
+   477→  3076→            {/* Company Info */}
+   478→  3077→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   479→  3078→              <h2 className="text-lg font-extrabold text-gray-800">About the Company</h2>
+   480→  3079→              <div className="flex items-start gap-4 mt-3">
+   481→  3080→                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
+   482→  3081→                  {job.company.charAt(0)}
+   483→  3082→                </div>
+   484→  3083→                <div>
+   485→  3084→                  <h3 className="text-md font-bold text-gray-800">{job.company}</h3>
+   486→  3085→                  <p className="text-sm text-gray-500">Telecommunications · Nairobi, Kenya</p>
+   487→  3086→                  <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
+   488→  3087→                  <Link href="#" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+   489→  3088→                    Visit company website →
+   490→  3089→                  </Link>
+   491→  3090→                </div>
+   492→  3091→              </div>
+   493→  3092→            </div>
+   494→  3093→
+   495→  3094→            {/* Share & Report */}
+   496→  3095→            <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-500">
+   497→  3096→              <div className="flex items-center gap-3">
+   498→  3097→                <span className="font-medium">Share:</span>
+   499→  3098→                <a href="#" className="hover:text-emerald-600 transition">📧</a>
+   500→  3099→                <a href="#" className="hover:text-emerald-600 transition">🐦</a>
+
+[showing lines 1-500 of 656; use offset=501 with limit to continue reading]

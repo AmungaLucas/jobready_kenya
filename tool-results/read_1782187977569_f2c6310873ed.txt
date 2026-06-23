@@ -1,0 +1,2002 @@
+     1→I'll provide the complete Next.js project code. Since the original HTML is large, I'll structure it into reusable components, but I'll include all the necessary pieces so you can copy-paste and run the project.
+     2→
+     3→**Project setup** (as described) – I'll give you the exact code for each file.
+     4→
+     5→---
+     6→
+     7→## File Structure
+     8→
+     9→```
+    10→my-jobboard/
+    11→├── app/
+    12→│   ├── layout.js
+    13→│   ├── page.js
+    14→│   ├── jobs/
+    15→│   │   ├── page.js
+    16→│   │   └── [id]/
+    17→│   │       └── page.js
+    18→│   ├── globals.css
+    19→│   └── favicon.ico
+    20→├── components/
+    21→│   ├── Navbar.jsx
+    22→│   ├── MobileDrawer.jsx
+    23→│   ├── Footer.jsx
+    24→│   ├── Hero.jsx
+    25→│   ├── OfficialUpdates.jsx
+    26→│   ├── ClosingSoon.jsx
+    27→│   ├── CategoryScroll.jsx
+    28→│   ├── OpportunitiesTabs.jsx
+    29→│   ├── GovernmentJobs.jsx
+    30→│   ├── MatchingCard.jsx
+    31→│   ├── FlexibleJobs.jsx
+    32→│   ├── CareerResources.jsx
+    33→│   ├── Newsletter.jsx
+    34→│   ├── JobCard.jsx
+    35→│   ├── Sidebar.jsx
+    36→│   ├── FilterChips.jsx
+    37→│   ├── Pagination.jsx
+    38→│   └── JobDetailsContent.jsx
+    39→├── data/
+    40→│   └── jobs.js
+    41→├── public/
+    42→│   └── (optional images)
+    43→├── next.config.js
+    44→├── tailwind.config.js
+    45→├── postcss.config.js
+    46→└── package.json
+    47→```
+    48→
+    49→I'll provide each file content below.
+    50→
+    51→---
+    52→
+    53→### 1. `next.config.js`
+    54→
+    55→```javascript
+    56→/** @type {import('next').NextConfig} */
+    57→const nextConfig = {
+    58→  images: {
+    59→    domains: ['images.unsplash.com'],
+    60→  },
+    61→};
+    62→
+    63→module.exports = nextConfig;
+    64→```
+    65→
+    66→---
+    67→
+    68→### 2. `tailwind.config.js` (default, but we need to add custom font family)
+    69→
+    70→```javascript
+    71→/** @type {import('tailwindcss').Config} */
+    72→module.exports = {
+    73→  content: [
+    74→    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    75→    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    76→    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    77→  ],
+    78→  theme: {
+    79→    extend: {
+    80→      fontFamily: {
+    81→        nunito: ['Nunito', 'sans-serif'],
+    82→      },
+    83→    },
+    84→  },
+    85→  plugins: [],
+    86→};
+    87→```
+    88→
+    89→---
+    90→
+    91→### 3. `app/globals.css`
+    92→
+    93→We'll copy all custom styles from the original HTML (the `<style>` block) and add Tailwind's directives.
+    94→
+    95→```css
+    96→@tailwind base;
+    97→@tailwind components;
+    98→@tailwind utilities;
+    99→
+   100→/* ----- GLOBAL STYLES (from original) ----- */
+   101→body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #faf9f6; }
+   102→.section-bg { background: #faf9f6; }
+   103→
+   104→/* Hide scrollbar */
+   105→.no-scrollbar::-webkit-scrollbar { display: none; }
+   106→.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+   107→
+   108→/* Scroll buttons */
+   109→.scroll-btn {
+   110→  background: white;
+   111→  border: 1px solid #e5e7eb;
+   112→  border-radius: 9999px;
+   113→  width: 44px;
+   114→  height: 44px;
+   115→  display: flex;
+   116→  align-items: center;
+   117→  justify-content: center;
+   118→  cursor: pointer;
+   119→  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+   120→  transition: all 0.2s ease;
+   121→  z-index: 20;
+   122→  color: #374151;
+   123→}
+   124→.scroll-btn:hover {
+   125→  background: #ecfdf5;
+   126→  border-color: #15803d;
+   127→  color: #15803d;
+   128→}
+   129→.scroll-btn.disabled {
+   130→  opacity: 0.3;
+   131→  pointer-events: none;
+   132→}
+   133→
+   134→/* Category items */
+   135→.category-item {
+   136→  transition: all 0.15s ease;
+   137→  cursor: default;
+   138→}
+   139→.category-item:hover {
+   140→  background: #ecfdf5;
+   141→  border-color: #15803d;
+   142→}
+   143→.category-item:hover .cat-icon {
+   144→  transform: scale(1.05);
+   145→}
+   146→.cat-icon { transition: transform 0.15s ease; }
+   147→
+   148→/* Location items */
+   149→.location-item {
+   150→  transition: all 0.15s ease;
+   151→  cursor: default;
+   152→}
+   153→.location-item:hover {
+   154→  background: #ecfdf5;
+   155→}
+   156→.location-item:hover .loc-name {
+   157→  color: #15803d;
+   158→}
+   159→
+   160→/* Closing items */
+   161→.closing-item {
+   162→  transition: all 0.1s ease;
+   163→  cursor: default;
+   164→}
+   165→.closing-item:hover .closing-title {
+   166→  color: #15803d;
+   167→}
+   168→.closing-item:hover .closing-company {
+   169→  color: #374151;
+   170→}
+   171→
+   172→/* Government items */
+   173→.gov-item {
+   174→  transition: all 0.1s ease;
+   175→  cursor: default;
+   176→}
+   177→.gov-item:hover .gov-title {
+   178→  color: #15803d;
+   179→}
+   180→.gov-item:hover .gov-org {
+   181→  color: #374151;
+   182→}
+   183→
+   184→/* Tabs */
+   185→.tab-btn {
+   186→  transition: all 0.15s ease;
+   187→}
+   188→.tab-btn.active {
+   189→  background: #15803d;
+   190→  color: white;
+   191→  box-shadow: 0 4px 6px -1px rgba(21,128,61,0.2);
+   192→}
+   193→.tab-btn.active .tab-count { color: #a7f3d0; }
+   194→.tab-btn.inactive {
+   195→  background: transparent;
+   196→  color: #6b7280;
+   197→}
+   198→.tab-btn.inactive:hover {
+   199→  background: #f3f4f6;
+   200→  color: #374151;
+   201→}
+   202→.tab-content {
+   203→  display: none;
+   204→  animation: fadeIn 0.2s ease;
+   205→}
+   206→.tab-content.active { display: block; }
+   207→@keyframes fadeIn {
+   208→  0% { opacity: 0; transform: translateY(4px); }
+   209→  100% { opacity: 1; transform: translateY(0); }
+   210→}
+   211→
+   212→/* Badges */
+   213→.gov-badge.national { background: #dbeafe; color: #1d4ed8; }
+   214→.gov-badge.county { background: #d1fae5; color: #065f46; }
+   215→
+   216→/* Job Matching Premium Card */
+   217→.matching-card {
+   218→  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 40%, #d1fae5 100%);
+   219→  border: 1px solid #86efac;
+   220→  border-radius: 1rem;
+   221→}
+   222→.matching-card .highlight {
+   223→  background: linear-gradient(135deg, #15803d, #0d9488);
+   224→  color: white;
+   225→  border-radius: 9999px;
+   226→  padding: 0.2rem 1rem;
+   227→  font-size: 0.65rem;
+   228→  font-weight: 700;
+   229→  text-transform: uppercase;
+   230→  letter-spacing: 0.04em;
+   231→  display: inline-block;
+   232→}
+   233→.matching-card .premium-badge {
+   234→  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+   235→  color: #78350f;
+   236→  font-size: 0.6rem;
+   237→  font-weight: 800;
+   238→  text-transform: uppercase;
+   239→  padding: 0.15rem 0.6rem;
+   240→  border-radius: 9999px;
+   241→  letter-spacing: 0.04em;
+   242→  display: inline-block;
+   243→  box-shadow: 0 2px 4px rgba(245,158,11,0.3);
+   244→}
+   245→.matching-card .cta-btn {
+   246→  background: linear-gradient(135deg, #15803d, #0d9488);
+   247→  color: white;
+   248→  font-weight: 700;
+   249→  padding: 0.75rem 2rem;
+   250→  border-radius: 9999px;
+   251→  transition: all 0.2s ease;
+   252→  box-shadow: 0 4px 12px rgba(21,128,61,0.3);
+   253→  display: inline-block;
+   254→  border: none;
+   255→  cursor: pointer;
+   256→}
+   257→.matching-card .cta-btn:hover {
+   258→  transform: translateY(-2px);
+   259→  box-shadow: 0 6px 20px rgba(21,128,61,0.4);
+   260→}
+   261→.feature-item {
+   262→  display: flex;
+   263→  align-items: center;
+   264→  gap: 0.5rem;
+   265→  font-size: 0.875rem;
+   266→  color: #374151;
+   267→}
+   268→.feature-item .check {
+   269→  color: #15803d;
+   270→  font-weight: 800;
+   271→  font-size: 1.1rem;
+   272→}
+   273→.match-result {
+   274→  background: rgba(255,255,255,0.7);
+   275→  backdrop-filter: blur(4px);
+   276→  border: 1px solid #d1fae5;
+   277→  border-radius: 0.75rem;
+   278→  padding: 0.75rem 1rem;
+   279→  transition: all 0.15s ease;
+   280→}
+   281→.match-result:hover {
+   282→  border-color: #15803d;
+   283→  background: rgba(255,255,255,0.9);
+   284→}
+   285→.match-score {
+   286→  font-size: 0.65rem;
+   287→  font-weight: 800;
+   288→  color: #15803d;
+   289→  background: #d1fae5;
+   290→  padding: 0.15rem 0.6rem;
+   291→  border-radius: 9999px;
+   292→  white-space: nowrap;
+   293→}
+   294→.match-score.high {
+   295→  background: #d1fae5;
+   296→  color: #065f46;
+   297→}
+   298→.match-score.medium {
+   299→  background: #fef3c7;
+   300→  color: #92400e;
+   301→}
+   302→
+   303→/* Job card hover */
+   304→.job-card {
+   305→  transition: all 0.15s ease;
+   306→}
+   307→.job-card:hover {
+   308→  border-color: #15803d;
+   309→  background: #ecfdf5;
+   310→}
+   311→.job-card:hover .job-title {
+   312→  color: #15803d;
+   313→}
+   314→
+   315→/* Filter chips */
+   316→.filter-chip {
+   317→  transition: all 0.15s ease;
+   318→  cursor: default;
+   319→}
+   320→.filter-chip.active {
+   321→  background: #15803d;
+   322→  color: white;
+   323→  border-color: #15803d;
+   324→}
+   325→.filter-chip.active:hover {
+   326→  background: #166534;
+   327→}
+   328→.filter-chip.inactive {
+   329→  background: transparent;
+   330→  color: #6b7280;
+   331→  border-color: #e5e7eb;
+   332→}
+   333→.filter-chip.inactive:hover {
+   334→  background: #f3f4f6;
+   335→  color: #374151;
+   336→}
+   337→
+   338→/* Pagination */
+   339→.page-btn {
+   340→  transition: all 0.15s ease;
+   341→}
+   342→.page-btn.active {
+   343→  background: #15803d;
+   344→  color: white;
+   345→  border-color: #15803d;
+   346→}
+   347→.page-btn.inactive {
+   348→  background: transparent;
+   349→  color: #6b7280;
+   350→  border-color: #e5e7eb;
+   351→}
+   352→.page-btn.inactive:hover {
+   353→  background: #f3f4f6;
+   354→  color: #374151;
+   355→}
+   356→
+   357→/* Sidebar sticky */
+   358→.sidebar-sticky {
+   359→  position: sticky;
+   360→  top: 2rem;
+   361→}
+   362→@media (max-width: 1023px) {
+   363→  .sidebar-sticky { position: static; }
+   364→}
+   365→
+   366→/* Similar job item */
+   367→.similar-item {
+   368→  transition: all 0.1s ease;
+   369→  cursor: default;
+   370→}
+   371→.similar-item:hover .similar-title {
+   372→  color: #15803d;
+   373→}
+   374→.similar-item:hover .similar-company {
+   375→  color: #374151;
+   376→}
+   377→
+   378→/* Page sections */
+   379→.page-section {
+   380→  display: none;
+   381→}
+   382→.page-section.active {
+   383→  display: block;
+   384→}
+   385→
+   386→/* ----- NEW NAVBAR / FOOTER STYLES (from refactor) ----- */
+   387→/* Navbar */
+   388→.navbar {
+   389→  position: fixed;
+   390→  top: 0;
+   391→  left: 0;
+   392→  right: 0;
+   393→  z-index: 1000;
+   394→  background: rgba(255, 255, 255, 0.88);
+   395→  backdrop-filter: blur(14px) saturate(1.2);
+   396→  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+   397→  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+   398→  transition: box-shadow 0.25s ease, background 0.25s ease;
+   399→  height: 72px;
+   400→  display: flex;
+   401→  align-items: center;
+   402→}
+   403→
+   404→.navbar.scrolled {
+   405→  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+   406→  background: rgba(255, 255, 255, 0.96);
+   407→}
+   408→
+   409→.navbar-inner {
+   410→  max-width: 1280px;
+   411→  width: 100%;
+   412→  margin: 0 auto;
+   413→  padding: 0 1.5rem;
+   414→  display: flex;
+   415→  align-items: center;
+   416→  justify-content: space-between;
+   417→  gap: 1.5rem;
+   418→}
+   419→
+   420→.navbar-logo {
+   421→  display: flex;
+   422→  align-items: center;
+   423→  gap: 0.4rem;
+   424→  text-decoration: none;
+   425→  flex-shrink: 0;
+   426→}
+   427→
+   428→.navbar-logo .logo-icon {
+   429→  width: 38px;
+   430→  height: 38px;
+   431→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   432→  border-radius: 10px;
+   433→  display: flex;
+   434→  align-items: center;
+   435→  justify-content: center;
+   436→  color: white;
+   437→  font-weight: 800;
+   438→  font-size: 1.05rem;
+   439→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.25);
+   440→  transition: transform 0.2s ease;
+   441→}
+   442→
+   443→.navbar-logo:hover .logo-icon {
+   444→  transform: scale(1.03);
+   445→}
+   446→
+   447→.navbar-logo .logo-badge {
+   448→  font-size: 0.55rem;
+   449→  font-weight: 700;
+   450→  text-transform: uppercase;
+   451→  background: #e7f3ee;
+   452→  color: #0b7e4a;
+   453→  padding: 0.1rem 0.5rem;
+   454→  border-radius: 100px;
+   455→  letter-spacing: 0.03em;
+   456→  border: 1px solid rgba(11, 126, 74, 0.12);
+   457→}
+   458→
+   459→.navbar-links {
+   460→  display: flex;
+   461→  align-items: center;
+   462→  gap: 0.15rem;
+   463→  list-style: none;
+   464→  margin: 0;
+   465→  padding: 0;
+   466→}
+   467→
+   468→.navbar-links>li {
+   469→  position: relative;
+   470→}
+   471→
+   472→.navbar-links>li>a,
+   473→.navbar-links>li>button {
+   474→  display: flex;
+   475→  align-items: center;
+   476→  gap: 0.3rem;
+   477→  padding: 0.5rem 0.9rem;
+   478→  border-radius: 8px;
+   479→  font-size: 0.875rem;
+   480→  font-weight: 500;
+   481→  color: #3d3d3d;
+   482→  text-decoration: none;
+   483→  background: transparent;
+   484→  border: none;
+   485→  cursor: pointer;
+   486→  transition: background 0.15s ease, color 0.15s ease;
+   487→  font-family: inherit;
+   488→  line-height: 1.4;
+   489→  white-space: nowrap;
+   490→}
+   491→
+   492→.navbar-links>li>a:hover,
+   493→.navbar-links>li>button:hover {
+   494→  background: rgba(11, 126, 74, 0.06);
+   495→  color: #0b7e4a;
+   496→}
+   497→
+   498→.navbar-links .dropdown-arrow {
+   499→  font-size: 0.55rem;
+   500→  opacity: 0.5;
+   501→  transition: transform 0.2s ease;
+   502→  margin-left: 0.1rem;
+   503→}
+   504→
+   505→.navbar-links>li:hover .dropdown-arrow {
+   506→  transform: rotate(180deg);
+   507→}
+   508→
+   509→.dropdown-menu {
+   510→  position: absolute;
+   511→  top: calc(100% + 8px);
+   512→  left: 50%;
+   513→  transform: translateX(-50%) translateY(4px);
+   514→  min-width: 220px;
+   515→  background: rgba(255, 255, 255, 0.98);
+   516→  backdrop-filter: blur(12px);
+   517→  -webkit-backdrop-filter: blur(12px);
+   518→  border-radius: 14px;
+   519→  border: 1px solid rgba(0, 0, 0, 0.06);
+   520→  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+   521→  padding: 0.6rem 0;
+   522→  opacity: 0;
+   523→  visibility: hidden;
+   524→  pointer-events: none;
+   525→  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+   526→  z-index: 100;
+   527→}
+   528→
+   529→.navbar-links>li:hover .dropdown-menu {
+   530→  opacity: 1;
+   531→  visibility: visible;
+   532→  pointer-events: auto;
+   533→  transform: translateX(-50%) translateY(0);
+   534→}
+   535→
+   536→.dropdown-menu a {
+   537→  display: flex;
+   538→  align-items: center;
+   539→  gap: 0.6rem;
+   540→  padding: 0.55rem 1.2rem;
+   541→  font-size: 0.82rem;
+   542→  font-weight: 450;
+   543→  color: #2d2d2d;
+   544→  text-decoration: none;
+   545→  transition: background 0.12s ease, color 0.12s ease;
+   546→  border-left: 2px solid transparent;
+   547→}
+   548→
+   549→.dropdown-menu a:hover {
+   550→  background: rgba(11, 126, 74, 0.05);
+   551→  color: #0b7e4a;
+   552→  border-left-color: #0b7e4a;
+   553→}
+   554→
+   555→.dropdown-menu a i {
+   556→  width: 1.1rem;
+   557→  text-align: center;
+   558→  color: #6b6b6b;
+   559→  font-size: 0.8rem;
+   560→}
+   561→
+   562→.dropdown-menu a:hover i {
+   563→  color: #0b7e4a;
+   564→}
+   565→
+   566→.dropdown-divider {
+   567→  height: 1px;
+   568→  background: rgba(0, 0, 0, 0.05);
+   569→  margin: 0.3rem 0.8rem;
+   570→}
+   571→
+   572→.dropdown-label {
+   573→  font-size: 0.6rem;
+   574→  font-weight: 700;
+   575→  text-transform: uppercase;
+   576→  letter-spacing: 0.04em;
+   577→  color: #8f8f8f;
+   578→  padding: 0.4rem 1.2rem 0.2rem;
+   579→}
+   580→
+   581→.navbar-actions {
+   582→  display: flex;
+   583→  align-items: center;
+   584→  gap: 0.5rem;
+   585→  flex-shrink: 0;
+   586→}
+   587→
+   588→.btn-outline {
+   589→  display: inline-flex;
+   590→  align-items: center;
+   591→  gap: 0.4rem;
+   592→  padding: 0.45rem 1.1rem;
+   593→  border-radius: 100px;
+   594→  font-size: 0.8rem;
+   595→  font-weight: 600;
+   596→  border: 1px solid #d0cdc7;
+   597→  background: transparent;
+   598→  color: #2d2d2d;
+   599→  cursor: pointer;
+   600→  transition: all 0.18s ease;
+   601→  text-decoration: none;
+   602→  font-family: inherit;
+   603→  white-space: nowrap;
+   604→}
+   605→
+   606→.btn-outline:hover {
+   607→  background: rgba(11, 126, 74, 0.04);
+   608→  border-color: #0b7e4a;
+   609→  color: #0b7e4a;
+   610→}
+   611→
+   612→.btn-primary {
+   613→  display: inline-flex;
+   614→  align-items: center;
+   615→  gap: 0.4rem;
+   616→  padding: 0.45rem 1.3rem;
+   617→  border-radius: 100px;
+   618→  font-size: 0.8rem;
+   619→  font-weight: 600;
+   620→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   621→  border: none;
+   622→  color: white;
+   623→  cursor: pointer;
+   624→  transition: all 0.2s ease;
+   625→  text-decoration: none;
+   626→  font-family: inherit;
+   627→  white-space: nowrap;
+   628→  box-shadow: 0 4px 12px rgba(11, 126, 74, 0.22);
+   629→}
+   630→
+   631→.btn-primary:hover {
+   632→  transform: translateY(-1px);
+   633→  box-shadow: 0 6px 20px rgba(11, 126, 74, 0.30);
+   634→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+   635→}
+   636→
+   637→.btn-icon {
+   638→  width: 38px;
+   639→  height: 38px;
+   640→  border-radius: 50%;
+   641→  border: 1px solid #e2dfda;
+   642→  background: transparent;
+   643→  color: #3d3d3d;
+   644→  display: flex;
+   645→  align-items: center;
+   646→  justify-content: center;
+   647→  cursor: pointer;
+   648→  transition: all 0.18s ease;
+   649→  font-size: 0.95rem;
+   650→}
+   651→
+   652→.btn-icon:hover {
+   653→  border-color: #0b7e4a;
+   654→  color: #0b7e4a;
+   655→  background: rgba(11, 126, 74, 0.04);
+   656→}
+   657→
+   658→.btn-icon.avatar {
+   659→  background: #e7f3ee;
+   660→  border-color: transparent;
+   661→  font-weight: 700;
+   662→  font-size: 0.7rem;
+   663→  color: #0b7e4a;
+   664→  width: 38px;
+   665→  height: 38px;
+   666→}
+   667→
+   668→.btn-icon.avatar:hover {
+   669→  background: #d0e8de;
+   670→  border-color: transparent;
+   671→}
+   672→
+   673→.navbar-toggle {
+   674→  display: none;
+   675→  flex-direction: column;
+   676→  gap: 4px;
+   677→  background: transparent;
+   678→  border: none;
+   679→  padding: 0.3rem;
+   680→  cursor: pointer;
+   681→  border-radius: 6px;
+   682→  transition: background 0.15s ease;
+   683→}
+   684→
+   685→.navbar-toggle:hover {
+   686→  background: rgba(0, 0, 0, 0.04);
+   687→}
+   688→
+   689→.navbar-toggle span {
+   690→  display: block;
+   691→  width: 24px;
+   692→  height: 2.5px;
+   693→  background: #1a1a1a;
+   694→  border-radius: 4px;
+   695→  transition: all 0.25s ease;
+   696→  transform-origin: center;
+   697→}
+   698→
+   699→.navbar-toggle.active span:nth-child(1) {
+   700→  transform: translateY(6.5px) rotate(45deg);
+   701→}
+   702→
+   703→.navbar-toggle.active span:nth-child(2) {
+   704→  opacity: 0;
+   705→  transform: scaleX(0);
+   706→}
+   707→
+   708→.navbar-toggle.active span:nth-child(3) {
+   709→  transform: translateY(-6.5px) rotate(-45deg);
+   710→}
+   711→
+   712→.mobile-overlay {
+   713→  position: fixed;
+   714→  inset: 0;
+   715→  z-index: 999;
+   716→  background: rgba(0, 0, 0, 0.25);
+   717→  backdrop-filter: blur(4px);
+   718→  -webkit-backdrop-filter: blur(4px);
+   719→  opacity: 0;
+   720→  visibility: hidden;
+   721→  transition: opacity 0.3s ease, visibility 0.3s ease;
+   722→}
+   723→
+   724→.mobile-overlay.open {
+   725→  opacity: 1;
+   726→  visibility: visible;
+   727→}
+   728→
+   729→.mobile-drawer {
+   730→  position: fixed;
+   731→  top: 0;
+   732→  right: -100%;
+   733→  width: 88%;
+   734→  max-width: 380px;
+   735→  height: 100%;
+   736→  z-index: 1001;
+   737→  background: white;
+   738→  padding: 1.5rem 1.5rem 2rem;
+   739→  overflow-y: auto;
+   740→  transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+   741→  display: flex;
+   742→  flex-direction: column;
+   743→  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.06);
+   744→}
+   745→
+   746→.mobile-drawer.open {
+   747→  right: 0;
+   748→}
+   749→
+   750→.mobile-drawer-header {
+   751→  display: flex;
+   752→  align-items: center;
+   753→  justify-content: space-between;
+   754→  padding-bottom: 1rem;
+   755→  border-bottom: 1px solid #efedea;
+   756→  margin-bottom: 1.5rem;
+   757→}
+   758→
+   759→.mobile-drawer-header .logo-icon {
+   760→  width: 36px;
+   761→  height: 36px;
+   762→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   763→  border-radius: 10px;
+   764→  display: flex;
+   765→  align-items: center;
+   766→  justify-content: center;
+   767→  color: white;
+   768→  font-weight: 800;
+   769→  font-size: 0.95rem;
+   770→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.2);
+   771→}
+   772→
+   773→.mobile-drawer-header .logo-badge {
+   774→  font-size: 0.5rem;
+   775→  font-weight: 700;
+   776→  text-transform: uppercase;
+   777→  background: #e7f3ee;
+   778→  color: #0b7e4a;
+   779→  padding: 0.05rem 0.5rem;
+   780→  border-radius: 100px;
+   781→  margin-left: 0.3rem;
+   782→}
+   783→
+   784→.mobile-drawer-close {
+   785→  background: transparent;
+   786→  border: none;
+   787→  font-size: 1.4rem;
+   788→  color: #4b4b4b;
+   789→  cursor: pointer;
+   790→  padding: 0.2rem 0.5rem;
+   791→  border-radius: 6px;
+   792→  transition: background 0.15s ease;
+   793→}
+   794→
+   795→.mobile-drawer-close:hover {
+   796→  background: rgba(0, 0, 0, 0.04);
+   797→}
+   798→
+   799→.mobile-nav-list {
+   800→  list-style: none;
+   801→  margin: 0;
+   802→  padding: 0;
+   803→  flex: 1;
+   804→}
+   805→
+   806→.mobile-nav-list>li {
+   807→  border-bottom: 1px solid #f0eeeb;
+   808→}
+   809→
+   810→.mobile-nav-list>li>a,
+   811→.mobile-nav-list>li>button {
+   812→  display: flex;
+   813→  align-items: center;
+   814→  justify-content: space-between;
+   815→  width: 100%;
+   816→  padding: 0.85rem 0;
+   817→  font-size: 0.95rem;
+   818→  font-weight: 500;
+   819→  color: #1a1a1a;
+   820→  background: transparent;
+   821→  border: none;
+   822→  cursor: pointer;
+   823→  font-family: inherit;
+   824→  text-decoration: none;
+   825→  transition: color 0.15s ease;
+   826→}
+   827→
+   828→.mobile-nav-list>li>a:hover,
+   829→.mobile-nav-list>li>button:hover {
+   830→  color: #0b7e4a;
+   831→}
+   832→
+   833→.mobile-nav-list .sub-toggle {
+   834→  font-size: 0.65rem;
+   835→  opacity: 0.5;
+   836→  transition: transform 0.2s ease;
+   837→}
+   838→
+   839→.mobile-nav-list .sub-toggle.open {
+   840→  transform: rotate(180deg);
+   841→}
+   842→
+   843→.mobile-sub {
+   844→  list-style: none;
+   845→  margin: 0;
+   846→  padding: 0 0 0.5rem 0.5rem;
+   847→  display: none;
+   848→}
+   849→
+   850→.mobile-sub.open {
+   851→  display: block;
+   852→}
+   853→
+   854→.mobile-sub li a {
+   855→  display: flex;
+   856→  align-items: center;
+   857→  gap: 0.6rem;
+   858→  padding: 0.4rem 0.5rem;
+   859→  font-size: 0.82rem;
+   860→  color: #4b4b4b;
+   861→  text-decoration: none;
+   862→  border-radius: 6px;
+   863→  transition: background 0.12s ease, color 0.12s ease;
+   864→}
+   865→
+   866→.mobile-sub li a:hover {
+   867→  background: rgba(11, 126, 74, 0.04);
+   868→  color: #0b7e4a;
+   869→}
+   870→
+   871→.mobile-sub li a i {
+   872→  width: 1.1rem;
+   873→  text-align: center;
+   874→  color: #8a8a8a;
+   875→  font-size: 0.75rem;
+   876→}
+   877→
+   878→.mobile-actions {
+   879→  display: flex;
+   880→  flex-direction: column;
+   881→  gap: 0.6rem;
+   882→  margin-top: 1.5rem;
+   883→  padding-top: 1.5rem;
+   884→  border-top: 1px solid #efedea;
+   885→}
+   886→
+   887→.mobile-actions .btn-primary,
+   888→.mobile-actions .btn-outline {
+   889→  justify-content: center;
+   890→  width: 100%;
+   891→  padding: 0.65rem;
+   892→  font-size: 0.85rem;
+   893→}
+   894→
+   895→/* Footer */
+   896→.footer {
+   897→  background: #1a1a1a;
+   898→  color: #cfcfcf;
+   899→  padding: 4rem 1.5rem 2rem;
+   900→  border-top: 1px solid rgba(255, 255, 255, 0.04);
+   901→}
+   902→
+   903→.footer-inner {
+   904→  max-width: 1280px;
+   905→  margin: 0 auto;
+   906→}
+   907→
+   908→.footer-grid {
+   909→  display: grid;
+   910→  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+   911→  gap: 2.5rem 2rem;
+   912→  padding-bottom: 2.5rem;
+   913→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+   914→}
+   915→
+   916→.footer-brand .logo-icon {
+   917→  width: 42px;
+   918→  height: 42px;
+   919→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   920→  border-radius: 10px;
+   921→  display: flex;
+   922→  align-items: center;
+   923→  justify-content: center;
+   924→  color: white;
+   925→  font-weight: 800;
+   926→  font-size: 1.1rem;
+   927→  margin-bottom: 0.75rem;
+   928→}
+   929→
+   930→.footer-brand .brand-name {
+   931→  font-size: 1.25rem;
+   932→  font-weight: 800;
+   933→  color: white;
+   934→  letter-spacing: -0.02em;
+   935→}
+   936→
+   937→.footer-brand .brand-name span {
+   938→  color: #4cdb8a;
+   939→}
+   940→
+   941→.footer-brand .brand-tagline {
+   942→  font-size: 0.85rem;
+   943→  color: #9a9a9a;
+   944→  margin-top: 0.3rem;
+   945→  max-width: 280px;
+   946→  line-height: 1.6;
+   947→}
+   948→
+   949→.footer-social {
+   950→  display: flex;
+   951→  gap: 0.6rem;
+   952→  margin-top: 1.2rem;
+   953→}
+   954→
+   955→.footer-social a {
+   956→  display: flex;
+   957→  align-items: center;
+   958→  justify-content: center;
+   959→  width: 36px;
+   960→  height: 36px;
+   961→  border-radius: 50%;
+   962→  background: rgba(255, 255, 255, 0.05);
+   963→  color: #afafaf;
+   964→  text-decoration: none;
+   965→  transition: all 0.18s ease;
+   966→  font-size: 0.95rem;
+   967→}
+   968→
+   969→.footer-social a:hover {
+   970→  background: #0b7e4a;
+   971→  color: white;
+   972→  transform: translateY(-2px);
+   973→}
+   974→
+   975→.footer h4 {
+   976→  font-size: 0.8rem;
+   977→  font-weight: 700;
+   978→  text-transform: uppercase;
+   979→  letter-spacing: 0.04em;
+   980→  color: #ffffff;
+   981→  margin-bottom: 1rem;
+   982→  opacity: 0.7;
+   983→}
+   984→
+   985→.footer ul {
+   986→  list-style: none;
+   987→  margin: 0;
+   988→  padding: 0;
+   989→}
+   990→
+   991→.footer ul li {
+   992→  margin-bottom: 0.4rem;
+   993→}
+   994→
+   995→.footer ul li a {
+   996→  color: #b0b0b0;
+   997→  text-decoration: none;
+   998→  font-size: 0.85rem;
+   999→  transition: color 0.15s ease;
+  1000→  display: inline-block;
+  1001→}
+  1002→
+  1003→.footer ul li a:hover {
+  1004→  color: #4cdb8a;
+  1005→}
+  1006→
+  1007→.footer-newsletter p {
+  1008→  font-size: 0.85rem;
+  1009→  color: #9a9a9a;
+  1010→  margin-bottom: 0.8rem;
+  1011→  line-height: 1.5;
+  1012→}
+  1013→
+  1014→.footer-newsletter form {
+  1015→  display: flex;
+  1016→  gap: 0.4rem;
+  1017→}
+  1018→
+  1019→.footer-newsletter input {
+  1020→  flex: 1;
+  1021→  padding: 0.5rem 0.8rem;
+  1022→  border-radius: 100px;
+  1023→  border: 1px solid rgba(255, 255, 255, 0.1);
+  1024→  background: rgba(255, 255, 255, 0.04);
+  1025→  color: white;
+  1026→  font-size: 0.8rem;
+  1027→  font-family: inherit;
+  1028→  outline: none;
+  1029→  transition: border-color 0.2s ease, background 0.2s ease;
+  1030→  min-width: 0;
+  1031→}
+  1032→
+  1033→.footer-newsletter input::placeholder {
+  1034→  color: #6a6a6a;
+  1035→}
+  1036→
+  1037→.footer-newsletter input:focus {
+  1038→  border-color: #0b7e4a;
+  1039→  background: rgba(255, 255, 255, 0.06);
+  1040→}
+  1041→
+  1042→.footer-newsletter button {
+  1043→  padding: 0.5rem 1.2rem;
+  1044→  border-radius: 100px;
+  1045→  border: none;
+  1046→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+  1047→  color: white;
+  1048→  font-weight: 600;
+  1049→  font-size: 0.8rem;
+  1050→  cursor: pointer;
+  1051→  transition: all 0.18s ease;
+  1052→  white-space: nowrap;
+  1053→  font-family: inherit;
+  1054→}
+  1055→
+  1056→.footer-newsletter button:hover {
+  1057→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+  1058→  transform: translateY(-1px);
+  1059→  box-shadow: 0 4px 16px rgba(11, 126, 74, 0.30);
+  1060→}
+  1061→
+  1062→.footer-middle {
+  1063→  display: grid;
+  1064→  grid-template-columns: 1.5fr 2fr;
+  1065→  gap: 2rem;
+  1066→  padding: 2.5rem 0;
+  1067→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  1068→}
+  1069→
+  1070→.footer-middle-col h4 {
+  1071→  font-size: 0.8rem;
+  1072→  font-weight: 700;
+  1073→  text-transform: uppercase;
+  1074→  letter-spacing: 0.04em;
+  1075→  color: #ffffff;
+  1076→  margin-bottom: 0.8rem;
+  1077→  opacity: 0.7;
+  1078→}
+  1079→
+  1080→.footer-middle-col ul {
+  1081→  list-style: none;
+  1082→  padding: 0;
+  1083→  margin: 0;
+  1084→  display: flex;
+  1085→  flex-wrap: wrap;
+  1086→  gap: 0.2rem 1.2rem;
+  1087→}
+  1088→
+  1089→.footer-middle-col ul li {
+  1090→  display: inline;
+  1091→  margin: 0;
+  1092→  padding: 0;
+  1093→}
+  1094→
+  1095→.footer-middle-col ul li a {
+  1096→  color: #b0b0b0;
+  1097→  text-decoration: none;
+  1098→  font-size: 0.85rem;
+  1099→  transition: color 0.15s ease;
+  1100→  padding: 0.1rem 0;
+  1101→}
+  1102→
+  1103→.footer-middle-col ul li a:hover {
+  1104→  color: #4cdb8a;
+  1105→}
+  1106→
+  1107→.footer-bottom {
+  1108→  display: flex;
+  1109→  flex-wrap: wrap;
+  1110→  justify-content: space-between;
+  1111→  align-items: center;
+  1112→  gap: 0.8rem;
+  1113→  padding-top: 1.8rem;
+  1114→  font-size: 0.75rem;
+  1115→  color: #6a6a6a;
+  1116→}
+  1117→
+  1118→.footer-bottom-links {
+  1119→  display: flex;
+  1120→  gap: 1.2rem;
+  1121→}
+  1122→
+  1123→.footer-bottom-links a {
+  1124→  color: #7a7a7a;
+  1125→  text-decoration: none;
+  1126→  transition: color 0.15s ease;
+  1127→}
+  1128→
+  1129→.footer-bottom-links a:hover {
+  1130→  color: #4cdb8a;
+  1131→}
+  1132→
+  1133→/* Responsive overrides for navbar/footer */
+  1134→@media (max-width: 900px) {
+  1135→  .navbar-links,
+  1136→  .navbar-actions .btn-outline {
+  1137→    display: none;
+  1138→  }
+  1139→  .navbar-toggle {
+  1140→    display: flex;
+  1141→  }
+  1142→  .navbar-actions .btn-primary {
+  1143→    padding: 0.4rem 1rem;
+  1144→    font-size: 0.75rem;
+  1145→  }
+  1146→  .navbar-actions .btn-icon.avatar {
+  1147→    display: flex;
+  1148→  }
+  1149→}
+  1150→
+  1151→@media (max-width: 640px) {
+  1152→  body {
+  1153→    padding-top: 64px;
+  1154→  }
+  1155→  .navbar {
+  1156→    height: 64px;
+  1157→  }
+  1158→  .navbar-inner {
+  1159→    padding: 0 1rem;
+  1160→  }
+  1161→  .navbar-logo .logo-icon {
+  1162→    width: 32px;
+  1163→    height: 32px;
+  1164→    font-size: 0.85rem;
+  1165→  }
+  1166→  .navbar-logo .logo-badge {
+  1167→    font-size: 0.45rem;
+  1168→    padding: 0.05rem 0.4rem;
+  1169→  }
+  1170→  .navbar-actions .btn-primary {
+  1171→    padding: 0.35rem 0.8rem;
+  1172→    font-size: 0.7rem;
+  1173→  }
+  1174→  .navbar-actions .btn-icon.avatar {
+  1175→    width: 32px;
+  1176→    height: 32px;
+  1177→    font-size: 0.6rem;
+  1178→  }
+  1179→  .navbar-actions .btn-icon {
+  1180→    width: 32px;
+  1181→    height: 32px;
+  1182→    font-size: 0.8rem;
+  1183→  }
+  1184→  .footer-grid {
+  1185→    grid-template-columns: 1fr;
+  1186→    gap: 1.8rem;
+  1187→  }
+  1188→  .footer-middle {
+  1189→    grid-template-columns: 1fr;
+  1190→    gap: 1.8rem;
+  1191→  }
+  1192→  .footer-middle-col ul {
+  1193→    gap: 0.2rem 0.8rem;
+  1194→  }
+  1195→  .footer-bottom {
+  1196→    flex-direction: column;
+  1197→    text-align: center;
+  1198→  }
+  1199→  .footer-bottom-links {
+  1200→    flex-wrap: wrap;
+  1201→    justify-content: center;
+  1202→    gap: 0.8rem 1.2rem;
+  1203→  }
+  1204→  .footer-newsletter form {
+  1205→    flex-direction: column;
+  1206→  }
+  1207→  .footer-newsletter button {
+  1208→    width: 100%;
+  1209→    justify-content: center;
+  1210→  }
+  1211→}
+  1212→
+  1213→@media (max-width: 480px) {
+  1214→  .navbar-actions .btn-primary span {
+  1215→    display: none;
+  1216→  }
+  1217→  .navbar-actions .btn-primary {
+  1218→    padding: 0.35rem 0.7rem;
+  1219→  }
+  1220→  .footer-middle-col ul {
+  1221→    gap: 0.2rem 0.6rem;
+  1222→  }
+  1223→  .footer-middle-col ul li a {
+  1224→    font-size: 0.8rem;
+  1225→  }
+  1226→}
+  1227→
+  1228→@media (min-width: 901px) {
+  1229→  .mobile-overlay,
+  1230→  .mobile-drawer {
+  1231→    display: none !important;
+  1232→  }
+  1233→}
+  1234→```
+  1235→
+  1236→---
+  1237→
+  1238→### 4. `app/layout.js`
+  1239→
+  1240→```jsx
+  1241→import './globals.css';
+  1242→import { Nunito } from 'next/font/google';
+  1243→import Script from 'next/script';
+  1244→
+  1245→const nunito = Nunito({
+  1246→  subsets: ['latin'],
+  1247→  weight: ['300', '400', '600', '700', '800'],
+  1248→  display: 'swap',
+  1249→  variable: '--font-nunito',
+  1250→});
+  1251→
+  1252→export const metadata = {
+  1253→  title: 'JobBoard Kenya – Complete Demo',
+  1254→  description: 'Find verified jobs, internships, and opportunities across Kenya.',
+  1255→};
+  1256→
+  1257→export default function RootLayout({ children }) {
+  1258→  return (
+  1259→    <html lang="en" className={nunito.variable}>
+  1260→      <head>
+  1261→        {/* Font Awesome CDN */}
+  1262→        <link
+  1263→          rel="stylesheet"
+  1264→          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  1265→        />
+  1266→      </head>
+  1267→      <body className="font-nunito bg-[#faf9f6]">
+  1268→        {children}
+  1269→      </body>
+  1270→    </html>
+  1271→  );
+  1272→}
+  1273→```
+  1274→
+  1275→---
+  1276→
+  1277→### 5. `app/page.js` (Homepage)
+  1278→
+  1279→We'll import all section components. I'll create each component shortly.
+  1280→
+  1281→```jsx
+  1282→import Navbar from '@/components/Navbar';
+  1283→import Footer from '@/components/Footer';
+  1284→import Hero from '@/components/Hero';
+  1285→import OfficialUpdates from '@/components/OfficialUpdates';
+  1286→import ClosingSoon from '@/components/ClosingSoon';
+  1287→import CategoryScroll from '@/components/CategoryScroll';
+  1288→import OpportunitiesTabs from '@/components/OpportunitiesTabs';
+  1289→import GovernmentJobs from '@/components/GovernmentJobs';
+  1290→import MatchingCard from '@/components/MatchingCard';
+  1291→import FlexibleJobs from '@/components/FlexibleJobs';
+  1292→import CareerResources from '@/components/CareerResources';
+  1293→import Newsletter from '@/components/Newsletter';
+  1294→
+  1295→export default function Home() {
+  1296→  return (
+  1297→    <>
+  1298→      <Navbar />
+  1299→      <main>
+  1300→        <Hero />
+  1301→        <OfficialUpdates />
+  1302→        <ClosingSoon />
+  1303→        <CategoryScroll />
+  1304→        <OpportunitiesTabs />
+  1305→        <GovernmentJobs />
+  1306→        <MatchingCard />
+  1307→        <FlexibleJobs />
+  1308→        <CareerResources />
+  1309→        <Newsletter />
+  1310→        {/* Bottom Ad */}
+  1311→        <div className="section-bg pb-6">
+  1312→          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1313→            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-20 md:h-24 border border-gray-200 text-gray-400 text-sm">
+  1314→              📢 Google Ad – 728x90 (Bottom Leaderboard)
+  1315→            </div>
+  1316→          </div>
+  1317→        </div>
+  1318→      </main>
+  1319→      <Footer />
+  1320→    </>
+  1321→  );
+  1322→}
+  1323→```
+  1324→
+  1325→---
+  1326→
+  1327→### 6. Components
+  1328→
+  1329→I'll now provide each component file in `/components/`.
+  1330→
+  1331→---
+  1332→
+  1333→#### `components/Navbar.jsx`
+  1334→
+  1335→```jsx
+  1336→'use client';
+  1337→
+  1338→import Link from 'next/link';
+  1339→import { useState, useEffect } from 'react';
+  1340→import MobileDrawer from './MobileDrawer';
+  1341→
+  1342→export default function Navbar() {
+  1343→  const [scrolled, setScrolled] = useState(false);
+  1344→  const [drawerOpen, setDrawerOpen] = useState(false);
+  1345→
+  1346→  useEffect(() => {
+  1347→    const handleScroll = () => {
+  1348→      setScrolled(window.scrollY > 20);
+  1349→    };
+  1350→    window.addEventListener('scroll', handleScroll);
+  1351→    return () => window.removeEventListener('scroll', handleScroll);
+  1352→  }, []);
+  1353→
+  1354→  return (
+  1355→    <>
+  1356→      <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+  1357→        <div className="navbar-inner">
+  1358→          <Link href="/" className="navbar-logo">
+  1359→            <span className="logo-icon">JB</span>
+  1360→            <span className="logo-badge">KE</span>
+  1361→          </Link>
+  1362→
+  1363→          <ul className="navbar-links">
+  1364→            <li>
+  1365→              <Link href="/">Home</Link>
+  1366→            </li>
+  1367→            <li className="group relative">
+  1368→              <button className="flex items-center gap-1">
+  1369→                Jobs
+  1370→                <i className="fas fa-chevron-down dropdown-arrow"></i>
+  1371→              </button>
+  1372→              <div className="dropdown-menu">
+  1373→                <Link href="/jobs" className="nav-link">
+  1374→                  <i className="fas fa-briefcase"></i> All Jobs
+  1375→                </Link>
+  1376→                <Link href="/jobs?category=it" className="nav-link">
+  1377→                  <i className="fas fa-th-large"></i> Browse by Category
+  1378→                </Link>
+  1379→                <Link href="/jobs?location=nairobi" className="nav-link">
+  1380→                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+  1381→                </Link>
+  1382→                <Link href="/jobs?type=government" className="nav-link">
+  1383→                  <i className="fas fa-landmark"></i> Govt Jobs
+  1384→                </Link>
+  1385→                <Link href="/jobs?type=county" className="nav-link">
+  1386→                  <i className="fas fa-city"></i> County Jobs
+  1387→                </Link>
+  1388→              </div>
+  1389→            </li>
+  1390→            <li className="group relative">
+  1391→              <button className="flex items-center gap-1">
+  1392→                Opportunities
+  1393→                <i className="fas fa-chevron-down dropdown-arrow"></i>
+  1394→              </button>
+  1395→              <div className="dropdown-menu">
+  1396→                <div className="dropdown-label">Explore</div>
+  1397→                <Link href="#">
+  1398→                  <i className="fas fa-graduation-cap"></i> Scholarships
+  1399→                </Link>
+  1400→                <Link href="#">
+  1401→                  <i className="fas fa-briefcase"></i> Internships
+  1402→                </Link>
+  1403→                <Link href="#">
+  1404→                  <i className="fas fa-users"></i> Fellowships
+  1405→                </Link>
+  1406→                <Link href="#">
+  1407→                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+  1408→                </Link>
+  1409→                <div className="dropdown-divider"></div>
+  1410→                <Link href="#">
+  1411→                  <i className="fas fa-th-large"></i> <strong>All Opportunities →</strong>
+  1412→                </Link>
+  1413→              </div>
+  1414→            </li>
+  1415→            <li>
+  1416→              <Link href="#">Resources</Link>
+  1417→            </li>
+  1418→            <li>
+  1419→              <Link href="#">Internships</Link>
+  1420→            </li>
+  1421→            <li>
+  1422→              <Link href="#">Updates</Link>
+  1423→            </li>
+  1424→          </ul>
+  1425→
+  1426→          <div className="navbar-actions">
+  1427→            <Link href="#" className="btn-outline">
+  1428→              <i className="fas fa-plus-circle"></i> <span>Post a Job</span>
+  1429→            </Link>
+  1430→            <Link href="#" className="btn-primary">
+  1431→              <i className="fas fa-cloud-upload-alt"></i> <span>Upload CV</span>
+  1432→            </Link>
+  1433→            <button className="btn-icon avatar">JD</button>
+  1434→            <button
+  1435→              className="navbar-toggle"
+  1436→              onClick={() => setDrawerOpen(!drawerOpen)}
+  1437→              aria-label="Toggle navigation"
+  1438→            >
+  1439→              <span></span>
+  1440→              <span></span>
+  1441→              <span></span>
+  1442→            </button>
+  1443→          </div>
+  1444→        </div>
+  1445→      </header>
+  1446→      <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+  1447→    </>
+  1448→  );
+  1449→}
+  1450→```
+  1451→
+  1452→---
+  1453→
+  1454→#### `components/MobileDrawer.jsx`
+  1455→
+  1456→```jsx
+  1457→'use client';
+  1458→
+  1459→import Link from 'next/link';
+  1460→import { useState } from 'react';
+  1461→
+  1462→export default function MobileDrawer({ isOpen, onClose }) {
+  1463→  const [jobsOpen, setJobsOpen] = useState(false);
+  1464→  const [oppOpen, setOppOpen] = useState(false);
+  1465→
+  1466→  if (!isOpen) return null;
+  1467→
+  1468→  return (
+  1469→    <>
+  1470→      <div className={`mobile-overlay open`} onClick={onClose}></div>
+  1471→      <div className={`mobile-drawer open`}>
+  1472→        <div className="mobile-drawer-header">
+  1473→          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+  1474→            <span className="logo-icon">JB</span>
+  1475→            <span className="logo-badge">KE</span>
+  1476→          </span>
+  1477→          <button className="mobile-drawer-close" onClick={onClose}>
+  1478→            <i className="fas fa-times"></i>
+  1479→          </button>
+  1480→        </div>
+  1481→
+  1482→        <ul className="mobile-nav-list">
+  1483→          <li>
+  1484→            <Link href="/" onClick={onClose}>
+  1485→              Home
+  1486→            </Link>
+  1487→          </li>
+  1488→          <li>
+  1489→            <button
+  1490→              onClick={() => setJobsOpen(!jobsOpen)}
+  1491→              className="w-full flex justify-between items-center"
+  1492→            >
+  1493→              <span>Jobs</span>
+  1494→              <i className={`fas fa-chevron-down sub-toggle ${jobsOpen ? 'open' : ''}`}></i>
+  1495→            </button>
+  1496→            <ul className={`mobile-sub ${jobsOpen ? 'open' : ''}`}>
+  1497→              <li>
+  1498→                <Link href="/jobs" onClick={onClose}>
+  1499→                  <i className="fas fa-briefcase"></i> All Jobs
+  1500→                </Link>
+  1501→              </li>
+  1502→              <li>
+  1503→                <Link href="/jobs?category=it" onClick={onClose}>
+  1504→                  <i className="fas fa-th-large"></i> Browse by Category
+  1505→                </Link>
+  1506→              </li>
+  1507→              <li>
+  1508→                <Link href="/jobs?location=nairobi" onClick={onClose}>
+  1509→                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+  1510→                </Link>
+  1511→              </li>
+  1512→              <li>
+  1513→                <Link href="/jobs?type=government" onClick={onClose}>
+  1514→                  <i className="fas fa-landmark"></i> Govt Jobs
+  1515→                </Link>
+  1516→              </li>
+  1517→              <li>
+  1518→                <Link href="/jobs?type=county" onClick={onClose}>
+  1519→                  <i className="fas fa-city"></i> County Jobs
+  1520→                </Link>
+  1521→              </li>
+  1522→            </ul>
+  1523→          </li>
+  1524→          <li>
+  1525→            <button
+  1526→              onClick={() => setOppOpen(!oppOpen)}
+  1527→              className="w-full flex justify-between items-center"
+  1528→            >
+  1529→              <span>Opportunities</span>
+  1530→              <i className={`fas fa-chevron-down sub-toggle ${oppOpen ? 'open' : ''}`}></i>
+  1531→            </button>
+  1532→            <ul className={`mobile-sub ${oppOpen ? 'open' : ''}`}>
+  1533→              <li>
+  1534→                <Link href="#" onClick={onClose}>
+  1535→                  <i className="fas fa-graduation-cap"></i> Scholarships
+  1536→                </Link>
+  1537→              </li>
+  1538→              <li>
+  1539→                <Link href="#" onClick={onClose}>
+  1540→                  <i className="fas fa-briefcase"></i> Internships
+  1541→                </Link>
+  1542→              </li>
+  1543→              <li>
+  1544→                <Link href="#" onClick={onClose}>
+  1545→                  <i className="fas fa-users"></i> Fellowships
+  1546→                </Link>
+  1547→              </li>
+  1548→              <li>
+  1549→                <Link href="#" onClick={onClose}>
+  1550→                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+  1551→                </Link>
+  1552→              </li>
+  1553→              <li style={{ marginTop: '0.3rem' }}>
+  1554→                <Link href="#" onClick={onClose}>
+  1555→                  <strong>All Opportunities →</strong>
+  1556→                </Link>
+  1557→              </li>
+  1558→            </ul>
+  1559→          </li>
+  1560→          <li>
+  1561→            <Link href="#" onClick={onClose}>
+  1562→              Resources
+  1563→            </Link>
+  1564→          </li>
+  1565→          <li>
+  1566→            <Link href="#" onClick={onClose}>
+  1567→              Internships
+  1568→            </Link>
+  1569→          </li>
+  1570→          <li>
+  1571→            <Link href="#" onClick={onClose}>
+  1572→              Updates
+  1573→            </Link>
+  1574→          </li>
+  1575→        </ul>
+  1576→
+  1577→        <div className="mobile-actions">
+  1578→          <Link href="#" className="btn-outline" onClick={onClose}>
+  1579→            <i className="fas fa-plus-circle"></i> Post a Job
+  1580→          </Link>
+  1581→          <Link href="#" className="btn-primary" onClick={onClose}>
+  1582→            <i className="fas fa-cloud-upload-alt"></i> Upload CV
+  1583→          </Link>
+  1584→          <Link href="#" className="btn-outline" style={{ borderColor: 'transparent', background: 'rgba(0,0,0,0.03)' }}>
+  1585→            <i className="fas fa-user-circle"></i> Sign In
+  1586→          </Link>
+  1587→        </div>
+  1588→      </div>
+  1589→    </>
+  1590→  );
+  1591→}
+  1592→```
+  1593→
+  1594→---
+  1595→
+  1596→#### `components/Footer.jsx`
+  1597→
+  1598→```jsx
+  1599→import Link from 'next/link';
+  1600→
+  1601→export default function Footer() {
+  1602→  return (
+  1603→    <footer className="footer">
+  1604→      <div className="footer-inner">
+  1605→        <div className="footer-grid">
+  1606→          <div className="footer-brand">
+  1607→            <div className="logo-icon">JB</div>
+  1608→            <div className="brand-name">
+  1609→              Job<span>Board</span> <span style={{ fontWeight: 400, color: '#6a6a6a', fontSize: '0.8rem' }}>KE</span>
+  1610→            </div>
+  1611→            <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
+  1612→            <div className="footer-social">
+  1613→              <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
+  1614→              <a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
+  1615→              <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
+  1616→              <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+  1617→              <a href="#" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
+  1618→            </div>
+  1619→          </div>
+  1620→
+  1621→          <div>
+  1622→            <h4>Jobs</h4>
+  1623→            <ul>
+  1624→              <li><Link href="/jobs">Browse Jobs</Link></li>
+  1625→              <li><Link href="/jobs?type=government">Government Jobs</Link></li>
+  1626→              <li><Link href="#">Internships</Link></li>
+  1627→              <li><Link href="#">Casual &amp; Part-time</Link></li>
+  1628→              <li><Link href="#">Remote Jobs</Link></li>
+  1629→            </ul>
+  1630→          </div>
+  1631→
+  1632→          <div>
+  1633→            <h4>Resources</h4>
+  1634→            <ul>
+  1635→              <li><Link href="#">Career Advice</Link></li>
+  1636→              <li><Link href="#">CV Writing</Link></li>
+  1637→              <li><Link href="#">Interview Tips</Link></li>
+  1638→              <li><Link href="#">Salary Guide</Link></li>
+  1639→              <li><Link href="#">Skill Assessments</Link></li>
+  1640→            </ul>
+  1641→          </div>
+  1642→
+  1643→          <div className="footer-newsletter">
+  1644→            <h4>Stay Updated</h4>
+  1645→            <p>Get new jobs, deadlines, and career opportunities delivered to your inbox.</p>
+  1646→            <form action="#" method="POST">
+  1647→              <input type="email" placeholder="Your email address" required />
+  1648→              <button type="submit">Subscribe</button>
+  1649→            </form>
+  1650→            <p style={{ fontSize: '0.65rem', color: '#5a5a5a', marginTop: '0.6rem' }}>No spam, unsubscribe anytime.</p>
+  1651→          </div>
+  1652→        </div>
+  1653→
+  1654→        <div className="footer-middle">
+  1655→          <div className="footer-middle-col">
+  1656→            <h4>Popular Locations</h4>
+  1657→            <ul>
+  1658→              <li><Link href="/jobs?location=nairobi">Nairobi</Link></li>
+  1659→              <li><Link href="/jobs?location=mombasa">Mombasa</Link></li>
+  1660→              <li><Link href="/jobs?location=kisumu">Kisumu</Link></li>
+  1661→              <li><Link href="/jobs?location=nakuru">Nakuru</Link></li>
+  1662→              <li><Link href="/jobs?location=eldoret">Eldoret</Link></li>
+  1663→              <li><Link href="/jobs?location=thika">Thika</Link></li>
+  1664→              <li><Link href="/jobs?location=malindi">Malindi</Link></li>
+  1665→              <li><Link href="/jobs?location=kitale">Kitale</Link></li>
+  1666→              <li><Link href="/jobs?location=nyeri">Nyeri</Link></li>
+  1667→              <li><Link href="/jobs?location=machakos">Machakos</Link></li>
+  1668→            </ul>
+  1669→          </div>
+  1670→          <div className="footer-middle-col">
+  1671→            <h4>Popular Categories</h4>
+  1672→            <ul>
+  1673→              <li><Link href="/jobs?category=it">Technology &amp; IT</Link></li>
+  1674→              <li><Link href="/jobs?category=health">Healthcare &amp; Medical</Link></li>
+  1675→              <li><Link href="/jobs?category=finance">Finance &amp; Accounting</Link></li>
+  1676→              <li><Link href="/jobs?category=engineering">Engineering</Link></li>
+  1677→              <li><Link href="/jobs?category=education">Education &amp; Training</Link></li>
+  1678→              <li><Link href="/jobs?category=sales">Sales &amp; Business</Link></li>
+  1679→              <li><Link href="/jobs?category=legal">Legal &amp; Compliance</Link></li>
+  1680→              <li><Link href="/jobs?category=hospitality">Hospitality &amp; Tourism</Link></li>
+  1681→              <li><Link href="/jobs?category=agriculture">Agriculture</Link></li>
+  1682→              <li><Link href="/jobs?category=logistics">Logistics &amp; Supply Chain</Link></li>
+  1683→            </ul>
+  1684→          </div>
+  1685→        </div>
+  1686→
+  1687→        <div className="footer-bottom">
+  1688→          <span>&copy; 2026 JobBoard Kenya. All rights reserved.</span>
+  1689→          <div className="footer-bottom-links">
+  1690→            <Link href="#">Privacy Policy</Link>
+  1691→            <Link href="#">Terms of Service</Link>
+  1692→            <Link href="#">Contact</Link>
+  1693→            <Link href="#">About</Link>
+  1694→          </div>
+  1695→        </div>
+  1696→      </div>
+  1697→    </footer>
+  1698→  );
+  1699→}
+  1700→```
+  1701→
+  1702→---
+  1703→
+  1704→#### `components/Hero.jsx`
+  1705→
+  1706→```jsx
+  1707→import Link from 'next/link';
+  1708→
+  1709→export default function Hero() {
+  1710→  return (
+  1711→    <section className="section-bg py-12 md:py-16" style={{ marginTop: 0 }}>
+  1712→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1713→        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+  1714→          <div className="space-y-5">
+  1715→            <p className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">
+  1716→              Stop Searching. Start Matching.
+  1717→            </p>
+  1718→            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-800 leading-[1.15]">
+  1719→              Find Jobs That Fit You, <br />
+  1720→              <span className="text-emerald-600">Not Just Your Keywords</span>
+  1721→            </h1>
+  1722→            <p className="text-base sm:text-lg text-gray-600 font-light leading-relaxed max-w-lg">
+  1723→              Discover verified jobs, internships, and opportunities matched to your skills and experience.
+  1724→              Get real-time alerts and apply directly to trusted employers across Kenya.
+  1725→            </p>
+  1726→            <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-2xl pt-1">
+  1727→              <input
+  1728→                type="text"
+  1729→                placeholder="Job title, skill, or company"
+  1730→                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-emerald-600"
+  1731→              />
+  1732→              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+  1733→                Find Matching Jobs
+  1734→              </button>
+  1735→            </div>
+  1736→            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
+  1737→              <Link
+  1738→                href="#"
+  1739→                className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition border border-gray-300 hover:border-emerald-500 px-4 py-1.5 rounded-full bg-white/50"
+  1740→              >
+  1741→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1742→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+  1743→                </svg>
+  1744→                Upload Your CV
+  1745→              </Link>
+  1746→              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+  1747→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Verified employers</span>
+  1748→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Daily updates</span>
+  1749→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> WhatsApp alerts</span>
+  1750→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Free CV upload</span>
+  1751→              </div>
+  1752→            </div>
+  1753→          </div>
+  1754→          <div>
+  1755→            <div className="flex items-center justify-between border-b border-gray-200/70 pb-2 mb-3">
+  1756→              <div className="flex items-center gap-2">
+  1757→                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+  1758→                <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Recently Posted</h2>
+  1759→              </div>
+  1760→              <Link href="/jobs" className="text-xs font-medium text-gray-400 hover:text-emerald-600 transition">
+  1761→                View all →
+  1762→              </Link>
+  1763→            </div>
+  1764→            <ul className="divide-y divide-gray-200/50">
+  1765→              {[
+  1766→                { title: 'Senior Software Engineer', company: 'Safaricom', time: '2h' },
+  1767→                { title: 'Public Health Officer', company: 'County Gov. Mombasa', time: '4h' },
+  1768→                { title: 'IT Support Intern', company: 'Equity Bank', time: '1d' },
+  1769→                { title: 'Project Coordinator', company: 'UNICEF', time: '2d' },
+  1770→                { title: 'Retail Sales Assistant', company: 'Naivas', time: '3h' },
+  1771→              ].map((job, idx) => (
+  1772→                <li key={idx} className="py-2.5 flex items-center justify-between">
+  1773→                  <div>
+  1774→                    <Link href={`/jobs/${idx + 1}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+  1775→                      {job.title}
+  1776→                    </Link>
+  1777→                    <span className="text-sm text-gray-400 ml-2">{job.company}</span>
+  1778→                  </div>
+  1779→                  <span className="text-xs text-gray-300">{job.time}</span>
+  1780→                </li>
+  1781→              ))}
+  1782→            </ul>
+  1783→            <div className="mt-4 pt-1 border-t border-gray-200/50 flex justify-start">
+  1784→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1.5">
+  1785→                Browse all latest jobs
+  1786→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1787→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  1788→                </svg>
+  1789→              </Link>
+  1790→            </div>
+  1791→          </div>
+  1792→        </div>
+  1793→      </div>
+  1794→    </section>
+  1795→  );
+  1796→}
+  1797→```
+  1798→
+  1799→---
+  1800→
+  1801→#### `components/OfficialUpdates.jsx`
+  1802→
+  1803→```jsx
+  1804→import Link from 'next/link';
+  1805→
+  1806→export default function OfficialUpdates() {
+  1807→  const updates = [
+  1808→    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago' },
+  1809→    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago' },
+  1810→    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago' },
+  1811→    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago' },
+  1812→  ];
+  1813→
+  1814→  return (
+  1815→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1816→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1817→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1818→          <div className="lg:col-span-2">
+  1819→            <div className="flex items-center justify-between mb-6">
+  1820→              <div>
+  1821→                <h2 className="text-2xl font-extrabold text-gray-800">Official Updates</h2>
+  1822→                <p className="text-sm text-gray-500 font-light">
+  1823→                  Stay informed with recruitment notices, shortlisting updates, and application announcements.
+  1824→                </p>
+  1825→              </div>
+  1826→              <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+  1827→                View all →
+  1828→              </Link>
+  1829→            </div>
+  1830→            <div className="bg-white/50 backdrop-blur-sm rounded-xl divide-y divide-gray-200/60 border border-white/60">
+  1831→              {updates.map((item, idx) => (
+  1832→                <div key={idx} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
+  1833→                  <span className="text-xl mt-0.5">{item.icon}</span>
+  1834→                  <div>
+  1835→                    <p className="text-sm font-semibold text-gray-800">{item.title}</p>
+  1836→                    <div className="flex items-center gap-3 mt-0.5">
+  1837→                      <span className="text-xs text-gray-400">{item.tag}</span>
+  1838→                      <span className="text-xs text-gray-300">•</span>
+  1839→                      <span className="text-xs text-gray-300">{item.time}</span>
+  1840→                    </div>
+  1841→                  </div>
+  1842→                </div>
+  1843→              ))}
+  1844→            </div>
+  1845→          </div>
+  1846→          <div className="lg:col-span-1 space-y-6">
+  1847→            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
+  1848→              📢 Google Ad (300x250)
+  1849→            </div>
+  1850→            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100/60">
+  1851→              <div className="flex items-center gap-2">
+  1852→                <span className="text-xl">📬</span>
+  1853→                <h3 className="text-sm font-bold text-gray-800">Get alerts</h3>
+  1854→              </div>
+  1855→              <p className="text-xs text-gray-600 mt-0.5">Receive WhatsApp notifications for new jobs.</p>
+  1856→              <button className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
+  1857→                Subscribe
+  1858→              </button>
+  1859→            </div>
+  1860→          </div>
+  1861→        </div>
+  1862→      </div>
+  1863→    </section>
+  1864→  );
+  1865→}
+  1866→```
+  1867→
+  1868→---
+  1869→
+  1870→#### `components/ClosingSoon.jsx`
+  1871→
+  1872→```jsx
+  1873→import Link from 'next/link';
+  1874→
+  1875→const closingJobs = [
+  1876→  { title: 'Marketing Manager', company: 'Co-op Bank', days: '2 days' },
+  1877→  { title: 'Data Analyst', company: 'KRA', days: '4 days' },
+  1878→  { title: 'Nurse', company: 'County Gov. Kisumu', days: '5 days' },
+  1879→  { title: 'Civil Engineer', company: 'KURA', days: '6 days' },
+  1880→  { title: 'Finance Officer', company: 'UNICEF', days: '7 days' },
+  1881→  { title: 'Retail Sales Assistant', company: 'Naivas', days: '8 days' },
+  1882→];
+  1883→
+  1884→export default function ClosingSoon() {
+  1885→  return (
+  1886→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1887→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1888→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1889→          <div className="lg:col-span-2">
+  1890→            <div className="flex items-center justify-between mb-6">
+  1891→              <div>
+  1892→                <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+  1893→                  ⏳ Don't Miss These Deadlines
+  1894→                </h2>
+  1895→                <p className="text-sm text-gray-500 font-light">
+  1896→                  Applications closing soon. Submit your application before time runs out.
+  1897→                </p>
+  1898→              </div>
+  1899→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+  1900→                View All Deadlines →
+  1901→              </Link>
+  1902→            </div>
+  1903→            <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 px-4">
+  1904→              {closingJobs.map((job, idx) => (
+  1905→                <li key={idx} className="closing-item py-3 flex items-center justify-between">
+  1906→                  <div>
+  1907→                    <Link href={`/jobs/${idx + 1}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+  1908→                      {job.title}
+  1909→                    </Link>
+  1910→                    <span className="closing-company text-sm text-gray-400 ml-2 transition">{job.company}</span>
+  1911→                  </div>
+  1912→                  <span className="text-xs font-medium text-red-600">{job.days}</span>
+  1913→                </li>
+  1914→              ))}
+  1915→            </ul>
+  1916→            <div className="mt-6 pt-2 flex justify-center">
+  1917→              <Link href="/jobs" className="text-sm font-medium text-gray-400 hover:text-emerald-600 transition inline-flex items-center gap-1.5">
+  1918→                View all urgent deadlines
+  1919→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1920→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  1921→                </svg>
+  1922→              </Link>
+  1923→            </div>
+  1924→          </div>
+  1925→          <div className="lg:col-span-1 space-y-6">
+  1926→            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-emerald-100/60 shadow-sm">
+  1927→              <div className="text-4xl mb-3">📄</div>
+  1928→              <h3 className="text-xl font-extrabold text-gray-800">Professional CV & Cover Letter</h3>
+  1929→              <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+  1930→                Stand out to Kenyan employers with a professionally written CV and cover letter tailored to your industry.
+  1931→              </p>
+  1932→              <ul className="mt-4 space-y-2 text-sm text-gray-600">
+  1933→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> ATS-friendly formatting</li>
+  1934→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Industry-specific keywords</li>
+  1935→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Cover letter included</li>
+  1936→              </ul>
+  1937→              <div className="mt-4 flex items-baseline gap-1">
+  1938→                <span className="text-sm font-medium text-gray-500">From</span>
+  1939→                <span className="text-2xl font-extrabold text-emerald-600">KSh 1,500</span>
+  1940→              </div>
+  1941→              <Link href="#" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
+  1942→                Improve My CV →
+  1943→              </Link>
+  1944→              <p className="mt-3 text-xs text-gray-400 text-center">100% satisfaction guarantee</p>
+  1945→            </div>
+  1946→          </div>
+  1947→        </div>
+  1948→      </div>
+  1949→    </section>
+  1950→  );
+  1951→}
+  1952→```
+  1953→
+  1954→---
+  1955→
+  1956→#### `components/CategoryScroll.jsx`
+  1957→
+  1958→```jsx
+  1959→'use client';
+  1960→
+  1961→import Link from 'next/link';
+  1962→import { useRef, useState, useEffect } from 'react';
+  1963→
+  1964→const categories = [
+  1965→  { name: 'IT & Software', icon: '💻', count: 124, slug: 'it' },
+  1966→  { name: 'Health & Medical', icon: '🏥', count: 87, slug: 'health' },
+  1967→  { name: 'Finance & Accounting', icon: '📊', count: 63, slug: 'finance' },
+  1968→  { name: 'Engineering', icon: '🏗️', count: 52, slug: 'engineering' },
+  1969→  { name: 'Education', icon: '📚', count: 41, slug: 'education' },
+  1970→  { name: 'Administration', icon: '🏢', count: 38, slug: 'administration' },
+  1971→  { name: 'Legal', icon: '⚖️', count: 24, slug: 'legal' },
+  1972→  { name: 'Logistics', icon: '🚛', count: 19, slug: 'logistics' },
+  1973→  { name: 'Creative & Design', icon: '🎨', count: 16, slug: 'creative' },
+  1974→  { name: 'NGO & Social Work', icon: '🤝', count: 28, slug: 'ngo' },
+  1975→];
+  1976→
+  1977→export default function CategoryScroll() {
+  1978→  const containerRef = useRef(null);
+  1979→  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  1980→  const [canScrollRight, setCanScrollRight] = useState(true);
+  1981→
+  1982→  const updateButtons = () => {
+  1983→    const el = containerRef.current;
+  1984→    if (!el) return;
+  1985→    setCanScrollLeft(el.scrollLeft > 0);
+  1986→    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+  1987→  };
+  1988→
+  1989→  const scroll = (dir) => {
+  1990→    containerRef.current?.scrollBy({ left: dir * 300, behavior: 'smooth' });
+  1991→  };
+  1992→
+  1993→  useEffect(() => {
+  1994→    const el = containerRef.current;
+  1995→    if (!el) return;
+  1996→    el.addEventListener('scroll', updateButtons);
+  1997→    window.addEventListener('resize', updateButtons);
+  1998→    updateButtons();
+  1999→    return () => {
+  2000→      el.removeEventListener('scroll', updateButtons);
+
+[showing lines 1-2000 of 3255; use offset=2001 with limit to continue reading]

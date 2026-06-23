@@ -1,0 +1,502 @@
+  1501→  1501→  1501→              </li>
+  1502→  1502→  1502→              <li>
+  1503→  1503→  1503→                <Link href="/jobs?category=it" onClick={onClose}>
+  1504→  1504→  1504→                  <i className="fas fa-th-large"></i> Browse by Category
+  1505→  1505→  1505→                </Link>
+  1506→  1506→  1506→              </li>
+  1507→  1507→  1507→              <li>
+  1508→  1508→  1508→                <Link href="/jobs?location=nairobi" onClick={onClose}>
+  1509→  1509→  1509→                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+  1510→  1510→  1510→                </Link>
+  1511→  1511→  1511→              </li>
+  1512→  1512→  1512→              <li>
+  1513→  1513→  1513→                <Link href="/jobs?type=government" onClick={onClose}>
+  1514→  1514→  1514→                  <i className="fas fa-landmark"></i> Govt Jobs
+  1515→  1515→  1515→                </Link>
+  1516→  1516→  1516→              </li>
+  1517→  1517→  1517→              <li>
+  1518→  1518→  1518→                <Link href="/jobs?type=county" onClick={onClose}>
+  1519→  1519→  1519→                  <i className="fas fa-city"></i> County Jobs
+  1520→  1520→  1520→                </Link>
+  1521→  1521→  1521→              </li>
+  1522→  1522→  1522→            </ul>
+  1523→  1523→  1523→          </li>
+  1524→  1524→  1524→          <li>
+  1525→  1525→  1525→            <button
+  1526→  1526→  1526→              onClick={() => setOppOpen(!oppOpen)}
+  1527→  1527→  1527→              className="w-full flex justify-between items-center"
+  1528→  1528→  1528→            >
+  1529→  1529→  1529→              <span>Opportunities</span>
+  1530→  1530→  1530→              <i className={`fas fa-chevron-down sub-toggle ${oppOpen ? 'open' : ''}`}></i>
+  1531→  1531→  1531→            </button>
+  1532→  1532→  1532→            <ul className={`mobile-sub ${oppOpen ? 'open' : ''}`}>
+  1533→  1533→  1533→              <li>
+  1534→  1534→  1534→                <Link href="#" onClick={onClose}>
+  1535→  1535→  1535→                  <i className="fas fa-graduation-cap"></i> Scholarships
+  1536→  1536→  1536→                </Link>
+  1537→  1537→  1537→              </li>
+  1538→  1538→  1538→              <li>
+  1539→  1539→  1539→                <Link href="#" onClick={onClose}>
+  1540→  1540→  1540→                  <i className="fas fa-briefcase"></i> Internships
+  1541→  1541→  1541→                </Link>
+  1542→  1542→  1542→              </li>
+  1543→  1543→  1543→              <li>
+  1544→  1544→  1544→                <Link href="#" onClick={onClose}>
+  1545→  1545→  1545→                  <i className="fas fa-users"></i> Fellowships
+  1546→  1546→  1546→                </Link>
+  1547→  1547→  1547→              </li>
+  1548→  1548→  1548→              <li>
+  1549→  1549→  1549→                <Link href="#" onClick={onClose}>
+  1550→  1550→  1550→                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+  1551→  1551→  1551→                </Link>
+  1552→  1552→  1552→              </li>
+  1553→  1553→  1553→              <li style={{ marginTop: '0.3rem' }}>
+  1554→  1554→  1554→                <Link href="#" onClick={onClose}>
+  1555→  1555→  1555→                  <strong>All Opportunities →</strong>
+  1556→  1556→  1556→                </Link>
+  1557→  1557→  1557→              </li>
+  1558→  1558→  1558→            </ul>
+  1559→  1559→  1559→          </li>
+  1560→  1560→  1560→          <li>
+  1561→  1561→  1561→            <Link href="#" onClick={onClose}>
+  1562→  1562→  1562→              Resources
+  1563→  1563→  1563→            </Link>
+  1564→  1564→  1564→          </li>
+  1565→  1565→  1565→          <li>
+  1566→  1566→  1566→            <Link href="#" onClick={onClose}>
+  1567→  1567→  1567→              Internships
+  1568→  1568→  1568→            </Link>
+  1569→  1569→  1569→          </li>
+  1570→  1570→  1570→          <li>
+  1571→  1571→  1571→            <Link href="#" onClick={onClose}>
+  1572→  1572→  1572→              Updates
+  1573→  1573→  1573→            </Link>
+  1574→  1574→  1574→          </li>
+  1575→  1575→  1575→        </ul>
+  1576→  1576→  1576→
+  1577→  1577→  1577→        <div className="mobile-actions">
+  1578→  1578→  1578→          <Link href="#" className="btn-outline" onClick={onClose}>
+  1579→  1579→  1579→            <i className="fas fa-plus-circle"></i> Post a Job
+  1580→  1580→  1580→          </Link>
+  1581→  1581→  1581→          <Link href="#" className="btn-primary" onClick={onClose}>
+  1582→  1582→  1582→            <i className="fas fa-cloud-upload-alt"></i> Upload CV
+  1583→  1583→  1583→          </Link>
+  1584→  1584→  1584→          <Link href="#" className="btn-outline" style={{ borderColor: 'transparent', background: 'rgba(0,0,0,0.03)' }}>
+  1585→  1585→  1585→            <i className="fas fa-user-circle"></i> Sign In
+  1586→  1586→  1586→          </Link>
+  1587→  1587→  1587→        </div>
+  1588→  1588→  1588→      </div>
+  1589→  1589→  1589→    </>
+  1590→  1590→  1590→  );
+  1591→  1591→  1591→}
+  1592→  1592→  1592→```
+  1593→  1593→  1593→
+  1594→  1594→  1594→---
+  1595→  1595→  1595→
+  1596→  1596→  1596→#### `components/Footer.jsx`
+  1597→  1597→  1597→
+  1598→  1598→  1598→```jsx
+  1599→  1599→  1599→import Link from 'next/link';
+  1600→  1600→  1600→
+  1601→  1601→  1601→export default function Footer() {
+  1602→  1602→  1602→  return (
+  1603→  1603→  1603→    <footer className="footer">
+  1604→  1604→  1604→      <div className="footer-inner">
+  1605→  1605→  1605→        <div className="footer-grid">
+  1606→  1606→  1606→          <div className="footer-brand">
+  1607→  1607→  1607→            <div className="logo-icon">JB</div>
+  1608→  1608→  1608→            <div className="brand-name">
+  1609→  1609→  1609→              Job<span>Board</span> <span style={{ fontWeight: 400, color: '#6a6a6a', fontSize: '0.8rem' }}>KE</span>
+  1610→  1610→  1610→            </div>
+  1611→  1611→  1611→            <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
+  1612→  1612→  1612→            <div className="footer-social">
+  1613→  1613→  1613→              <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
+  1614→  1614→  1614→              <a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
+  1615→  1615→  1615→              <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
+  1616→  1616→  1616→              <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+  1617→  1617→  1617→              <a href="#" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
+  1618→  1618→  1618→            </div>
+  1619→  1619→  1619→          </div>
+  1620→  1620→  1620→
+  1621→  1621→  1621→          <div>
+  1622→  1622→  1622→            <h4>Jobs</h4>
+  1623→  1623→  1623→            <ul>
+  1624→  1624→  1624→              <li><Link href="/jobs">Browse Jobs</Link></li>
+  1625→  1625→  1625→              <li><Link href="/jobs?type=government">Government Jobs</Link></li>
+  1626→  1626→  1626→              <li><Link href="#">Internships</Link></li>
+  1627→  1627→  1627→              <li><Link href="#">Casual &amp; Part-time</Link></li>
+  1628→  1628→  1628→              <li><Link href="#">Remote Jobs</Link></li>
+  1629→  1629→  1629→            </ul>
+  1630→  1630→  1630→          </div>
+  1631→  1631→  1631→
+  1632→  1632→  1632→          <div>
+  1633→  1633→  1633→            <h4>Resources</h4>
+  1634→  1634→  1634→            <ul>
+  1635→  1635→  1635→              <li><Link href="#">Career Advice</Link></li>
+  1636→  1636→  1636→              <li><Link href="#">CV Writing</Link></li>
+  1637→  1637→  1637→              <li><Link href="#">Interview Tips</Link></li>
+  1638→  1638→  1638→              <li><Link href="#">Salary Guide</Link></li>
+  1639→  1639→  1639→              <li><Link href="#">Skill Assessments</Link></li>
+  1640→  1640→  1640→            </ul>
+  1641→  1641→  1641→          </div>
+  1642→  1642→  1642→
+  1643→  1643→  1643→          <div className="footer-newsletter">
+  1644→  1644→  1644→            <h4>Stay Updated</h4>
+  1645→  1645→  1645→            <p>Get new jobs, deadlines, and career opportunities delivered to your inbox.</p>
+  1646→  1646→  1646→            <form action="#" method="POST">
+  1647→  1647→  1647→              <input type="email" placeholder="Your email address" required />
+  1648→  1648→  1648→              <button type="submit">Subscribe</button>
+  1649→  1649→  1649→            </form>
+  1650→  1650→  1650→            <p style={{ fontSize: '0.65rem', color: '#5a5a5a', marginTop: '0.6rem' }}>No spam, unsubscribe anytime.</p>
+  1651→  1651→  1651→          </div>
+  1652→  1652→  1652→        </div>
+  1653→  1653→  1653→
+  1654→  1654→  1654→        <div className="footer-middle">
+  1655→  1655→  1655→          <div className="footer-middle-col">
+  1656→  1656→  1656→            <h4>Popular Locations</h4>
+  1657→  1657→  1657→            <ul>
+  1658→  1658→  1658→              <li><Link href="/jobs?location=nairobi">Nairobi</Link></li>
+  1659→  1659→  1659→              <li><Link href="/jobs?location=mombasa">Mombasa</Link></li>
+  1660→  1660→  1660→              <li><Link href="/jobs?location=kisumu">Kisumu</Link></li>
+  1661→  1661→  1661→              <li><Link href="/jobs?location=nakuru">Nakuru</Link></li>
+  1662→  1662→  1662→              <li><Link href="/jobs?location=eldoret">Eldoret</Link></li>
+  1663→  1663→  1663→              <li><Link href="/jobs?location=thika">Thika</Link></li>
+  1664→  1664→  1664→              <li><Link href="/jobs?location=malindi">Malindi</Link></li>
+  1665→  1665→  1665→              <li><Link href="/jobs?location=kitale">Kitale</Link></li>
+  1666→  1666→  1666→              <li><Link href="/jobs?location=nyeri">Nyeri</Link></li>
+  1667→  1667→  1667→              <li><Link href="/jobs?location=machakos">Machakos</Link></li>
+  1668→  1668→  1668→            </ul>
+  1669→  1669→  1669→          </div>
+  1670→  1670→  1670→          <div className="footer-middle-col">
+  1671→  1671→  1671→            <h4>Popular Categories</h4>
+  1672→  1672→  1672→            <ul>
+  1673→  1673→  1673→              <li><Link href="/jobs?category=it">Technology &amp; IT</Link></li>
+  1674→  1674→  1674→              <li><Link href="/jobs?category=health">Healthcare &amp; Medical</Link></li>
+  1675→  1675→  1675→              <li><Link href="/jobs?category=finance">Finance &amp; Accounting</Link></li>
+  1676→  1676→  1676→              <li><Link href="/jobs?category=engineering">Engineering</Link></li>
+  1677→  1677→  1677→              <li><Link href="/jobs?category=education">Education &amp; Training</Link></li>
+  1678→  1678→  1678→              <li><Link href="/jobs?category=sales">Sales &amp; Business</Link></li>
+  1679→  1679→  1679→              <li><Link href="/jobs?category=legal">Legal &amp; Compliance</Link></li>
+  1680→  1680→  1680→              <li><Link href="/jobs?category=hospitality">Hospitality &amp; Tourism</Link></li>
+  1681→  1681→  1681→              <li><Link href="/jobs?category=agriculture">Agriculture</Link></li>
+  1682→  1682→  1682→              <li><Link href="/jobs?category=logistics">Logistics &amp; Supply Chain</Link></li>
+  1683→  1683→  1683→            </ul>
+  1684→  1684→  1684→          </div>
+  1685→  1685→  1685→        </div>
+  1686→  1686→  1686→
+  1687→  1687→  1687→        <div className="footer-bottom">
+  1688→  1688→  1688→          <span>&copy; 2026 JobBoard Kenya. All rights reserved.</span>
+  1689→  1689→  1689→          <div className="footer-bottom-links">
+  1690→  1690→  1690→            <Link href="#">Privacy Policy</Link>
+  1691→  1691→  1691→            <Link href="#">Terms of Service</Link>
+  1692→  1692→  1692→            <Link href="#">Contact</Link>
+  1693→  1693→  1693→            <Link href="#">About</Link>
+  1694→  1694→  1694→          </div>
+  1695→  1695→  1695→        </div>
+  1696→  1696→  1696→      </div>
+  1697→  1697→  1697→    </footer>
+  1698→  1698→  1698→  );
+  1699→  1699→  1699→}
+  1700→  1700→  1700→```
+  1701→  1701→  1701→
+  1702→  1702→  1702→---
+  1703→  1703→  1703→
+  1704→  1704→  1704→#### `components/Hero.jsx`
+  1705→  1705→  1705→
+  1706→  1706→  1706→```jsx
+  1707→  1707→  1707→import Link from 'next/link';
+  1708→  1708→  1708→
+  1709→  1709→  1709→export default function Hero() {
+  1710→  1710→  1710→  return (
+  1711→  1711→  1711→    <section className="section-bg py-12 md:py-16" style={{ marginTop: 0 }}>
+  1712→  1712→  1712→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1713→  1713→  1713→        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+  1714→  1714→  1714→          <div className="space-y-5">
+  1715→  1715→  1715→            <p className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">
+  1716→  1716→  1716→              Stop Searching. Start Matching.
+  1717→  1717→  1717→            </p>
+  1718→  1718→  1718→            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-800 leading-[1.15]">
+  1719→  1719→  1719→              Find Jobs That Fit You, <br />
+  1720→  1720→  1720→              <span className="text-emerald-600">Not Just Your Keywords</span>
+  1721→  1721→  1721→            </h1>
+  1722→  1722→  1722→            <p className="text-base sm:text-lg text-gray-600 font-light leading-relaxed max-w-lg">
+  1723→  1723→  1723→              Discover verified jobs, internships, and opportunities matched to your skills and experience.
+  1724→  1724→  1724→              Get real-time alerts and apply directly to trusted employers across Kenya.
+  1725→  1725→  1725→            </p>
+  1726→  1726→  1726→            <div className="flex flex-col sm:flex-row items-stretch gap-2 w-full max-w-2xl pt-1">
+  1727→  1727→  1727→              <input
+  1728→  1728→  1728→                type="text"
+  1729→  1729→  1729→                placeholder="Job title, skill, or company"
+  1730→  1730→  1730→                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:border-emerald-600"
+  1731→  1731→  1731→              />
+  1732→  1732→  1732→              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+  1733→  1733→  1733→                Find Matching Jobs
+  1734→  1734→  1734→              </button>
+  1735→  1735→  1735→            </div>
+  1736→  1736→  1736→            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
+  1737→  1737→  1737→              <Link
+  1738→  1738→  1738→                href="#"
+  1739→  1739→  1739→                className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition border border-gray-300 hover:border-emerald-500 px-4 py-1.5 rounded-full bg-white/50"
+  1740→  1740→  1740→              >
+  1741→  1741→  1741→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1742→  1742→  1742→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+  1743→  1743→  1743→                </svg>
+  1744→  1744→  1744→                Upload Your CV
+  1745→  1745→  1745→              </Link>
+  1746→  1746→  1746→              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+  1747→  1747→  1747→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Verified employers</span>
+  1748→  1748→  1748→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Daily updates</span>
+  1749→  1749→  1749→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> WhatsApp alerts</span>
+  1750→  1750→  1750→                <span className="flex items-center"><span className="text-emerald-600 font-bold mr-1">✓</span> Free CV upload</span>
+  1751→  1751→  1751→              </div>
+  1752→  1752→  1752→            </div>
+  1753→  1753→  1753→          </div>
+  1754→  1754→  1754→          <div>
+  1755→  1755→  1755→            <div className="flex items-center justify-between border-b border-gray-200/70 pb-2 mb-3">
+  1756→  1756→  1756→              <div className="flex items-center gap-2">
+  1757→  1757→  1757→                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+  1758→  1758→  1758→                <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Recently Posted</h2>
+  1759→  1759→  1759→              </div>
+  1760→  1760→  1760→              <Link href="/jobs" className="text-xs font-medium text-gray-400 hover:text-emerald-600 transition">
+  1761→  1761→  1761→                View all →
+  1762→  1762→  1762→              </Link>
+  1763→  1763→  1763→            </div>
+  1764→  1764→  1764→            <ul className="divide-y divide-gray-200/50">
+  1765→  1765→  1765→              {[
+  1766→  1766→  1766→                { title: 'Senior Software Engineer', company: 'Safaricom', time: '2h' },
+  1767→  1767→  1767→                { title: 'Public Health Officer', company: 'County Gov. Mombasa', time: '4h' },
+  1768→  1768→  1768→                { title: 'IT Support Intern', company: 'Equity Bank', time: '1d' },
+  1769→  1769→  1769→                { title: 'Project Coordinator', company: 'UNICEF', time: '2d' },
+  1770→  1770→  1770→                { title: 'Retail Sales Assistant', company: 'Naivas', time: '3h' },
+  1771→  1771→  1771→              ].map((job, idx) => (
+  1772→  1772→  1772→                <li key={idx} className="py-2.5 flex items-center justify-between">
+  1773→  1773→  1773→                  <div>
+  1774→  1774→  1774→                    <Link href={`/jobs/${idx + 1}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+  1775→  1775→  1775→                      {job.title}
+  1776→  1776→  1776→                    </Link>
+  1777→  1777→  1777→                    <span className="text-sm text-gray-400 ml-2">{job.company}</span>
+  1778→  1778→  1778→                  </div>
+  1779→  1779→  1779→                  <span className="text-xs text-gray-300">{job.time}</span>
+  1780→  1780→  1780→                </li>
+  1781→  1781→  1781→              ))}
+  1782→  1782→  1782→            </ul>
+  1783→  1783→  1783→            <div className="mt-4 pt-1 border-t border-gray-200/50 flex justify-start">
+  1784→  1784→  1784→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1.5">
+  1785→  1785→  1785→                Browse all latest jobs
+  1786→  1786→  1786→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1787→  1787→  1787→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  1788→  1788→  1788→                </svg>
+  1789→  1789→  1789→              </Link>
+  1790→  1790→  1790→            </div>
+  1791→  1791→  1791→          </div>
+  1792→  1792→  1792→        </div>
+  1793→  1793→  1793→      </div>
+  1794→  1794→  1794→    </section>
+  1795→  1795→  1795→  );
+  1796→  1796→  1796→}
+  1797→  1797→  1797→```
+  1798→  1798→  1798→
+  1799→  1799→  1799→---
+  1800→  1800→  1800→
+  1801→  1801→  1801→#### `components/OfficialUpdates.jsx`
+  1802→  1802→  1802→
+  1803→  1803→  1803→```jsx
+  1804→  1804→  1804→import Link from 'next/link';
+  1805→  1805→  1805→
+  1806→  1806→  1806→export default function OfficialUpdates() {
+  1807→  1807→  1807→  const updates = [
+  1808→  1808→  1808→    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago' },
+  1809→  1809→  1809→    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago' },
+  1810→  1810→  1810→    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago' },
+  1811→  1811→  1811→    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago' },
+  1812→  1812→  1812→  ];
+  1813→  1813→  1813→
+  1814→  1814→  1814→  return (
+  1815→  1815→  1815→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1816→  1816→  1816→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1817→  1817→  1817→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1818→  1818→  1818→          <div className="lg:col-span-2">
+  1819→  1819→  1819→            <div className="flex items-center justify-between mb-6">
+  1820→  1820→  1820→              <div>
+  1821→  1821→  1821→                <h2 className="text-2xl font-extrabold text-gray-800">Official Updates</h2>
+  1822→  1822→  1822→                <p className="text-sm text-gray-500 font-light">
+  1823→  1823→  1823→                  Stay informed with recruitment notices, shortlisting updates, and application announcements.
+  1824→  1824→  1824→                </p>
+  1825→  1825→  1825→              </div>
+  1826→  1826→  1826→              <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+  1827→  1827→  1827→                View all →
+  1828→  1828→  1828→              </Link>
+  1829→  1829→  1829→            </div>
+  1830→  1830→  1830→            <div className="bg-white/50 backdrop-blur-sm rounded-xl divide-y divide-gray-200/60 border border-white/60">
+  1831→  1831→  1831→              {updates.map((item, idx) => (
+  1832→  1832→  1832→                <div key={idx} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
+  1833→  1833→  1833→                  <span className="text-xl mt-0.5">{item.icon}</span>
+  1834→  1834→  1834→                  <div>
+  1835→  1835→  1835→                    <p className="text-sm font-semibold text-gray-800">{item.title}</p>
+  1836→  1836→  1836→                    <div className="flex items-center gap-3 mt-0.5">
+  1837→  1837→  1837→                      <span className="text-xs text-gray-400">{item.tag}</span>
+  1838→  1838→  1838→                      <span className="text-xs text-gray-300">•</span>
+  1839→  1839→  1839→                      <span className="text-xs text-gray-300">{item.time}</span>
+  1840→  1840→  1840→                    </div>
+  1841→  1841→  1841→                  </div>
+  1842→  1842→  1842→                </div>
+  1843→  1843→  1843→              ))}
+  1844→  1844→  1844→            </div>
+  1845→  1845→  1845→          </div>
+  1846→  1846→  1846→          <div className="lg:col-span-1 space-y-6">
+  1847→  1847→  1847→            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
+  1848→  1848→  1848→              📢 Google Ad (300x250)
+  1849→  1849→  1849→            </div>
+  1850→  1850→  1850→            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100/60">
+  1851→  1851→  1851→              <div className="flex items-center gap-2">
+  1852→  1852→  1852→                <span className="text-xl">📬</span>
+  1853→  1853→  1853→                <h3 className="text-sm font-bold text-gray-800">Get alerts</h3>
+  1854→  1854→  1854→              </div>
+  1855→  1855→  1855→              <p className="text-xs text-gray-600 mt-0.5">Receive WhatsApp notifications for new jobs.</p>
+  1856→  1856→  1856→              <button className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
+  1857→  1857→  1857→                Subscribe
+  1858→  1858→  1858→              </button>
+  1859→  1859→  1859→            </div>
+  1860→  1860→  1860→          </div>
+  1861→  1861→  1861→        </div>
+  1862→  1862→  1862→      </div>
+  1863→  1863→  1863→    </section>
+  1864→  1864→  1864→  );
+  1865→  1865→  1865→}
+  1866→  1866→  1866→```
+  1867→  1867→  1867→
+  1868→  1868→  1868→---
+  1869→  1869→  1869→
+  1870→  1870→  1870→#### `components/ClosingSoon.jsx`
+  1871→  1871→  1871→
+  1872→  1872→  1872→```jsx
+  1873→  1873→  1873→import Link from 'next/link';
+  1874→  1874→  1874→
+  1875→  1875→  1875→const closingJobs = [
+  1876→  1876→  1876→  { title: 'Marketing Manager', company: 'Co-op Bank', days: '2 days' },
+  1877→  1877→  1877→  { title: 'Data Analyst', company: 'KRA', days: '4 days' },
+  1878→  1878→  1878→  { title: 'Nurse', company: 'County Gov. Kisumu', days: '5 days' },
+  1879→  1879→  1879→  { title: 'Civil Engineer', company: 'KURA', days: '6 days' },
+  1880→  1880→  1880→  { title: 'Finance Officer', company: 'UNICEF', days: '7 days' },
+  1881→  1881→  1881→  { title: 'Retail Sales Assistant', company: 'Naivas', days: '8 days' },
+  1882→  1882→  1882→];
+  1883→  1883→  1883→
+  1884→  1884→  1884→export default function ClosingSoon() {
+  1885→  1885→  1885→  return (
+  1886→  1886→  1886→    <section className="section-bg py-10 border-t border-gray-200/50">
+  1887→  1887→  1887→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  1888→  1888→  1888→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  1889→  1889→  1889→          <div className="lg:col-span-2">
+  1890→  1890→  1890→            <div className="flex items-center justify-between mb-6">
+  1891→  1891→  1891→              <div>
+  1892→  1892→  1892→                <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+  1893→  1893→  1893→                  ⏳ Don't Miss These Deadlines
+  1894→  1894→  1894→                </h2>
+  1895→  1895→  1895→                <p className="text-sm text-gray-500 font-light">
+  1896→  1896→  1896→                  Applications closing soon. Submit your application before time runs out.
+  1897→  1897→  1897→                </p>
+  1898→  1898→  1898→              </div>
+  1899→  1899→  1899→              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+  1900→  1900→  1900→                View All Deadlines →
+  1901→  1901→  1901→              </Link>
+  1902→  1902→  1902→            </div>
+  1903→  1903→  1903→            <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 px-4">
+  1904→  1904→  1904→              {closingJobs.map((job, idx) => (
+  1905→  1905→  1905→                <li key={idx} className="closing-item py-3 flex items-center justify-between">
+  1906→  1906→  1906→                  <div>
+  1907→  1907→  1907→                    <Link href={`/jobs/${idx + 1}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+  1908→  1908→  1908→                      {job.title}
+  1909→  1909→  1909→                    </Link>
+  1910→  1910→  1910→                    <span className="closing-company text-sm text-gray-400 ml-2 transition">{job.company}</span>
+  1911→  1911→  1911→                  </div>
+  1912→  1912→  1912→                  <span className="text-xs font-medium text-red-600">{job.days}</span>
+  1913→  1913→  1913→                </li>
+  1914→  1914→  1914→              ))}
+  1915→  1915→  1915→            </ul>
+  1916→  1916→  1916→            <div className="mt-6 pt-2 flex justify-center">
+  1917→  1917→  1917→              <Link href="/jobs" className="text-sm font-medium text-gray-400 hover:text-emerald-600 transition inline-flex items-center gap-1.5">
+  1918→  1918→  1918→                View all urgent deadlines
+  1919→  1919→  1919→                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  1920→  1920→  1920→                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  1921→  1921→  1921→                </svg>
+  1922→  1922→  1922→              </Link>
+  1923→  1923→  1923→            </div>
+  1924→  1924→  1924→          </div>
+  1925→  1925→  1925→          <div className="lg:col-span-1 space-y-6">
+  1926→  1926→  1926→            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-emerald-100/60 shadow-sm">
+  1927→  1927→  1927→              <div className="text-4xl mb-3">📄</div>
+  1928→  1928→  1928→              <h3 className="text-xl font-extrabold text-gray-800">Professional CV & Cover Letter</h3>
+  1929→  1929→  1929→              <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+  1930→  1930→  1930→                Stand out to Kenyan employers with a professionally written CV and cover letter tailored to your industry.
+  1931→  1931→  1931→              </p>
+  1932→  1932→  1932→              <ul className="mt-4 space-y-2 text-sm text-gray-600">
+  1933→  1933→  1933→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> ATS-friendly formatting</li>
+  1934→  1934→  1934→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Industry-specific keywords</li>
+  1935→  1935→  1935→                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Cover letter included</li>
+  1936→  1936→  1936→              </ul>
+  1937→  1937→  1937→              <div className="mt-4 flex items-baseline gap-1">
+  1938→  1938→  1938→                <span className="text-sm font-medium text-gray-500">From</span>
+  1939→  1939→  1939→                <span className="text-2xl font-extrabold text-emerald-600">KSh 1,500</span>
+  1940→  1940→  1940→              </div>
+  1941→  1941→  1941→              <Link href="#" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
+  1942→  1942→  1942→                Improve My CV →
+  1943→  1943→  1943→              </Link>
+  1944→  1944→  1944→              <p className="mt-3 text-xs text-gray-400 text-center">100% satisfaction guarantee</p>
+  1945→  1945→  1945→            </div>
+  1946→  1946→  1946→          </div>
+  1947→  1947→  1947→        </div>
+  1948→  1948→  1948→      </div>
+  1949→  1949→  1949→    </section>
+  1950→  1950→  1950→  );
+  1951→  1951→  1951→}
+  1952→  1952→  1952→```
+  1953→  1953→  1953→
+  1954→  1954→  1954→---
+  1955→  1955→  1955→
+  1956→  1956→  1956→#### `components/CategoryScroll.jsx`
+  1957→  1957→  1957→
+  1958→  1958→  1958→```jsx
+  1959→  1959→  1959→'use client';
+  1960→  1960→  1960→
+  1961→  1961→  1961→import Link from 'next/link';
+  1962→  1962→  1962→import { useRef, useState, useEffect } from 'react';
+  1963→  1963→  1963→
+  1964→  1964→  1964→const categories = [
+  1965→  1965→  1965→  { name: 'IT & Software', icon: '💻', count: 124, slug: 'it' },
+  1966→  1966→  1966→  { name: 'Health & Medical', icon: '🏥', count: 87, slug: 'health' },
+  1967→  1967→  1967→  { name: 'Finance & Accounting', icon: '📊', count: 63, slug: 'finance' },
+  1968→  1968→  1968→  { name: 'Engineering', icon: '🏗️', count: 52, slug: 'engineering' },
+  1969→  1969→  1969→  { name: 'Education', icon: '📚', count: 41, slug: 'education' },
+  1970→  1970→  1970→  { name: 'Administration', icon: '🏢', count: 38, slug: 'administration' },
+  1971→  1971→  1971→  { name: 'Legal', icon: '⚖️', count: 24, slug: 'legal' },
+  1972→  1972→  1972→  { name: 'Logistics', icon: '🚛', count: 19, slug: 'logistics' },
+  1973→  1973→  1973→  { name: 'Creative & Design', icon: '🎨', count: 16, slug: 'creative' },
+  1974→  1974→  1974→  { name: 'NGO & Social Work', icon: '🤝', count: 28, slug: 'ngo' },
+  1975→  1975→  1975→];
+  1976→  1976→  1976→
+  1977→  1977→  1977→export default function CategoryScroll() {
+  1978→  1978→  1978→  const containerRef = useRef(null);
+  1979→  1979→  1979→  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  1980→  1980→  1980→  const [canScrollRight, setCanScrollRight] = useState(true);
+  1981→  1981→  1981→
+  1982→  1982→  1982→  const updateButtons = () => {
+  1983→  1983→  1983→    const el = containerRef.current;
+  1984→  1984→  1984→    if (!el) return;
+  1985→  1985→  1985→    setCanScrollLeft(el.scrollLeft > 0);
+  1986→  1986→  1986→    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+  1987→  1987→  1987→  };
+  1988→  1988→  1988→
+  1989→  1989→  1989→  const scroll = (dir) => {
+  1990→  1990→  1990→    containerRef.current?.scrollBy({ left: dir * 300, behavior: 'smooth' });
+  1991→  1991→  1991→  };
+  1992→  1992→  1992→
+  1993→  1993→  1993→  useEffect(() => {
+  1994→  1994→  1994→    const el = containerRef.current;
+  1995→  1995→  1995→    if (!el) return;
+  1996→  1996→  1996→    el.addEventListener('scroll', updateButtons);
+  1997→  1997→  1997→    window.addEventListener('resize', updateButtons);
+  1998→  1998→  1998→    updateButtons();
+  1999→  1999→  1999→    return () => {
+  2000→  2000→  2000→      el.removeEventListener('scroll', updateButtons);
+
+[showing lines 1501-2000 of 2002; use offset=2001 with limit to continue reading]
