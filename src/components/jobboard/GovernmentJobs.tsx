@@ -15,12 +15,12 @@ export default async function GovernmentJobs() {
     take: 4,
   });
 
-  // County jobs - for now use jobs at non-Nairobi locations or county gov
+  // County government jobs
   const countyJobs = await prisma.job.findMany({
     where: {
       status: 'ACTIVE',
       deletedAt: null,
-      locationCounty: { not: 'Nairobi' },
+      organization: { orgType: 'COUNTY_GOVERNMENT' },
     },
     select: { slug: true, title: true, locationCounty: true, organization: { select: { orgName: true } }, deadline: true },
     orderBy: { datePosted: 'desc' },
@@ -37,7 +37,7 @@ export default async function GovernmentJobs() {
               National and county government vacancies, internships, shortlisting updates, and recruitment notices.
             </p>
           </div>
-          <Link href="/government" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+          <Link href="/government-jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
             View All →
           </Link>
         </div>
@@ -64,7 +64,7 @@ export default async function GovernmentJobs() {
               )}
             </ul>
             <div className="px-4 py-2 border-t border-gray-200/50 bg-white/30">
-              <Link href="/government" className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition inline-flex items-center gap-1">
+              <Link href="/government-jobs?type=NATIONAL_GOVERNMENT" className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition inline-flex items-center gap-1">
                 View all national jobs
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -94,7 +94,7 @@ export default async function GovernmentJobs() {
               )}
             </ul>
             <div className="px-4 py-2 border-t border-gray-200/50 bg-white/30">
-              <Link href="/jobs?type=full-time" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1">
+              <Link href="/government-jobs?type=COUNTY_GOVERNMENT" className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1">
                 View all county jobs
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />

@@ -1,4 +1,4 @@
-const SITE_URL = 'https://jobboard.ke';
+export const SITE_URL = 'https://jobboard.ke';
 
 export function generateJobPostingJsonLd(job: {
   title: string;

@@ -38,16 +38,16 @@ export default function Navbar() {
                 <Link href="/jobs">
                   <i className="fas fa-briefcase"></i> All Jobs
                 </Link>
-                <Link href="/jobs?category=it">
+                <Link href="/categories/technology">
                   <i className="fas fa-th-large"></i> Browse by Category
                 </Link>
-                <Link href="/jobs?location=nairobi">
+                <Link href="/locations/nairobi">
                   <i className="fas fa-map-marker-alt"></i> Browse by Location
                 </Link>
-                <Link href="/jobs?type=government">
+                <Link href="/government-jobs">
                   <i className="fas fa-landmark"></i> Govt Jobs
                 </Link>
-                <Link href="/jobs?type=county">
+                <Link href="/government-jobs?type=COUNTY_GOVERNMENT">
                   <i className="fas fa-city"></i> County Jobs
                 </Link>
               </div>

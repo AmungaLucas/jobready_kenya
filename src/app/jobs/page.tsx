@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { getJobs } from '@/lib/jobs';
 import { employmentTypeLabels, formatSalary, timeAgo, formatDate } from '@/lib/jobs';
-import { generateBreadcrumbJsonLd } from '@/lib/jsonld';
+import { generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
@@ -74,12 +74,12 @@ export async function generateMetadata({ searchParams }: JobsPageProps): Promise
   return {
     title: titleSuffix,
     description: descriptionBase,
-    alternates: { canonical: canonicalPath },
+    alternates: { canonical: `${SITE_URL}${canonicalPath}` },
     robots: page > 1 ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       title: titleSuffix,
       description: descriptionBase,
-      url: canonicalPath,
+      url: `${SITE_URL}${canonicalPath}`,
       siteName: 'JobBoard Kenya',
     },
     twitter: {

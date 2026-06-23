@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getLocationBySlug, getLocationJobs, getLocationCategories, getOtherLocations, getAllLocationSlugs, getPopularLocations } from '@/lib/locations';
 import { getAllCategories } from '@/lib/categories';
-import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
+import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
 import Navbar from '@/components/jobboard/Navbar';
@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: description.substring(0, 160),
-    alternates: { canonical: `/locations/${location.slug}` },
+    alternates: { canonical: `${SITE_URL}/locations/${location.slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
       description: description.substring(0, 160),
-      url: `/locations/${location.slug}`,
+      url: `${SITE_URL}/locations/${location.slug}`,
       siteName: 'JobBoard Kenya',
     },
     twitter: {

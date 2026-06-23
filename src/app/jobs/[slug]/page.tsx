@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getJobBySlug, getSimilarJobs, getAllJobSlugs, formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
-import { generateJobPostingJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
+import { generateJobPostingJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import JobDetailsContent from '@/components/jobboard/JobDetailsContent';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: description.substring(0, 160),
-    alternates: { canonical: `/jobs/${job.slug}` },
+    alternates: { canonical: `${SITE_URL}/jobs/${job.slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       publishedTime: job.datePosted.toISOString(),
       modifiedTime: job.datePosted.toISOString(),
-      url: `/jobs/${job.slug}`,
+      url: `${SITE_URL}/jobs/${job.slug}`,
       siteName: 'JobBoard Kenya',
       images: job.organization?.orgLogoUrl ? [{ url: job.organization.orgLogoUrl, width: 1200, height: 630, alt: `${job.title} at ${orgName}` }] : [],
     },

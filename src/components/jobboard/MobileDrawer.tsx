@@ -60,12 +60,12 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 </Link>
               </li>
               <li>
-                <Link href="/jobs?type=government" onClick={onClose}>
+                <Link href="/government-jobs" onClick={onClose}>
                   <i className="fas fa-landmark"></i> Govt Jobs
                 </Link>
               </li>
               <li>
-                <Link href="/jobs?type=county" onClick={onClose}>
+                <Link href="/government-jobs?type=COUNTY_GOVERNMENT" onClick={onClose}>
                   <i className="fas fa-city"></i> County Jobs
                 </Link>
               </li>

@@ -138,3 +138,22 @@ Stage Summary:
 - Sidebar: location overview stats, popular locations, top categories, job alerts
 - Cross-linking: location pages link to /categories/?county=, jobs page breadcrumb links to /locations/
 - Total pre-rendered pages across Phases 2-4: 581 (24 jobs + 43 categories + 468 subcategories + 46 locations)
+---
+Task ID: 5
+Agent: main
+Task: Phase 5 - Government Jobs page + canonical URL fix across all pages
+
+Work Log:
+- Discovered existing stubs: /government-jobs/page.tsx, GovernmentJobs.tsx component, government.ts service layer
+- Fixed Bug #1: Canonical URLs were relative across ALL 6 page routes (jobs, jobs/[slug], categories/[slug], categories/[category]/[slug], locations/[slug], government-jobs) — now fully qualified with SITE_URL
+- Fixed Bug #2: Breadcrumb ordering on /government-jobs was wrong (type filter appeared before "Government Jobs") — reordered so Government Jobs comes first, type filter is last
+- Fixed Bug #3: GovernmentJobs.tsx county jobs used wrong filter (locationCounty: { not: Nairobi }) instead of orgType: COUNTY_GOVERNMENT
+- Exported SITE_URL from jsonld.ts (was private const, now shared across all pages)
+- Build succeeded: 587 pages generated
+- All 24 tests passed
+
+Stage Summary:
+- /government-jobs is a dynamic (ƒ) route with searchParams for type filtering and pagination
+- Canonical URLs are now fully qualified (https://jobboard.ke/...) across ALL pre-rendered and dynamic pages
+- Test script: scripts/test-phase5.js (24/24 passing)
+
