@@ -109,7 +109,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   ];
   if (county) {
     const loc = await prisma.location.findFirst({ where: { slug: county }, select: { county: true } });
-    if (loc) breadcrumbItems.push({ name: loc.county, url: `/jobs?county=${county}` });
+    if (loc) breadcrumbItems.push({ name: loc.county, url: `/locations/${county}` });
   }
   if (category) {
     const cat = await prisma.jobCategory.findFirst({

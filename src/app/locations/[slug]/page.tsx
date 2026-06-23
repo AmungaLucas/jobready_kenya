@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getSubcategoryBySlug, getSubcategoryJobs, getCategorySubcategories, getAllSubcategorySlugs, getSiblingCategoryJobs, getPopularLocations, getAllCategories, getCategoryBySlug, getCachedSubcategorySlugs } from '@/lib/categories';
+import { getLocationBySlug, getLocationJobs, getLocationCategories, getOtherLocations, getAllLocationSlugs, getPopularLocations } from '@/lib/locations';
+import { getAllCategories } from '@/lib/categories';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
@@ -11,26 +12,26 @@ import Footer from '@/components/jobboard/Footer';
 export const revalidate = 60;
 
 interface Props {
-  params: Promise<{ category: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category: categorySlug, slug } = await params;
-  const sub = await getSubcategoryBySlug(categorySlug, slug);
-  if (!sub) return { title: 'Subcategory Not Found' };
+  const { slug } = await params;
+  const location = await getLocationBySlug(slug);
+  if (!location) return { title: 'Location Not Found' };
 
-  const title = sub.seoTitle || `${sub.label} Jobs in Kenya - ${sub.category.label} | JobBoard Kenya`;
-  const description = sub.seoDescription || `Browse ${sub._count.jobs}+ ${sub.label.toLowerCase()} job vacancies in Kenya. Find the latest ${sub.label.toLowerCase()} opportunities in ${sub.category.label}. Updated daily.`;
+  const title = location.seoTitle || `Jobs in ${location.county} - Latest Vacancies & Career Opportunities | JobBoard Kenya`;
+  const description = location.seoDescription || `Browse ${location.jobCount}+ job vacancies in ${location.county}, Kenya. Find the latest jobs from top employers in ${location.county}. Updated daily.`;
 
   return {
     title,
     description: description.substring(0, 160),
-    alternates: { canonical: `/categories/${categorySlug}/${slug}` },
+    alternates: { canonical: `/locations/${location.slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
       description: description.substring(0, 160),
-      url: `/categories/${categorySlug}/${slug}`,
+      url: `/locations/${location.slug}`,
       siteName: 'JobBoard Kenya',
     },
     twitter: {
@@ -42,33 +43,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  // Use sync cache (warmed by /categories/[slug] generateStaticParams)
-  // to avoid Next.js 16/Turbopack bug with Prisma in nested route generateStaticParams
-  const slugs = getCachedSubcategorySlugs();
-  if (slugs.length === 0) {
-    // Fallback: if cache not warmed, try async (may silently fail on Turbopack)
-    const asyncSlugs = await getAllSubcategorySlugs();
-    return asyncSlugs;
-  }
-  return slugs;
+  const slugs = await getAllLocationSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export default async function SubcategoryPage({ params }: Props) {
-  const { category: categorySlug, slug } = await params;
-
-  const subcategory = await getSubcategoryBySlug(categorySlug, slug);
-  if (!subcategory) notFound();
-
-  // Get parent category for sidebar and context
-  const category = await getCategoryBySlug(categorySlug);
-
+export default async function LocationPage({ params }: Props) {
+  const { slug } = await params;
   const page = 1;
   const perPage = 20;
 
-  const [jobsData, subcategories, siblingJobs, locations, allCategories] = await Promise.all([
-    getSubcategoryJobs(subcategory.id, page, perPage),
-    category ? getCategorySubcategories(category.id, categorySlug) : [],
-    category ? getSiblingCategoryJobs(category.id, 6) : [],
+  const location = await getLocationBySlug(slug);
+  if (!location) notFound();
+
+  const [jobsData, categories, otherLocations, popularLocations, allCategories] = await Promise.all([
+    getLocationJobs(location.county, page, perPage),
+    getLocationCategories(location.county),
+    getOtherLocations(slug, 12),
     getPopularLocations(8),
     getAllCategories(),
   ]);
@@ -78,17 +68,16 @@ export default async function SubcategoryPage({ params }: Props) {
 
   // JSON-LD
   const collectionLd = generateCollectionPageJsonLd({
-    name: `${subcategory.label} Jobs in Kenya`,
-    description: subcategory.seoDescription || subcategory.description || `${subcategory.label} job listings in Kenya`,
-    url: `/categories/${categorySlug}/${slug}`,
+    name: `Jobs in ${location.county}, Kenya`,
+    description: location.seoDescription || location.description || `Job listings in ${location.county}, Kenya`,
+    url: `/locations/${location.slug}`,
     itemCount: total,
   });
 
   const breadcrumbLd = generateBreadcrumbJsonLd([
     { name: 'Home', url: '/' },
-    { name: 'Job Categories', url: '/categories' },
-    { name: subcategory.category.label, url: `/categories/${categorySlug}` },
-    { name: subcategory.label, url: `/categories/${categorySlug}/${slug}` },
+    { name: 'Jobs', url: '/jobs' },
+    { name: location.county, url: `/locations/${location.slug}` },
   ]);
 
   return (
@@ -100,14 +89,12 @@ export default async function SubcategoryPage({ params }: Props) {
       {/* Breadcrumb */}
       <section className="section-bg py-4 border-b border-gray-200/50" style={{ paddingTop: '88px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
+          <nav className="flex items-center gap-2 text-sm text-gray-500">
             <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
             <span>/</span>
-            <Link href="/categories" className="hover:text-emerald-600 transition">Job Categories</Link>
+            <Link href="/jobs" className="hover:text-emerald-600 transition">Jobs</Link>
             <span>/</span>
-            <Link href={`/categories/${categorySlug}`} className="hover:text-emerald-600 transition">{subcategory.category.label}</Link>
-            <span>/</span>
-            <span className="text-gray-700 font-medium">{subcategory.label}</span>
+            <span className="text-gray-700 font-medium">{location.county}</span>
           </nav>
         </div>
       </section>
@@ -117,17 +104,16 @@ export default async function SubcategoryPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-xs text-emerald-600 font-medium mb-1">{subcategory.category.label}</p>
               <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">
-                {subcategory.label} Jobs in Kenya
+                Jobs in {location.county}
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                <span className="font-semibold text-emerald-600">{total}</span> active vacancies
+                <span className="font-semibold text-emerald-600">{total}</span> active vacancies in {location.county} County
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href={`/categories/${categorySlug}`} className="text-sm font-medium text-gray-500 hover:text-emerald-600 transition">
-                &larr; All {subcategory.category.label}
+              <Link href={`/jobs?county=${location.slug}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                View as list &rarr;
               </Link>
             </div>
           </div>
@@ -142,19 +128,15 @@ export default async function SubcategoryPage({ params }: Props) {
             <div className="lg:col-span-3 space-y-8">
 
               {/* LAYER 1: SEO Description */}
-              {(subcategory.description || category?.description) && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {subcategory.description || category?.description}
-                  </p>
-                </div>
-              )}
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+                <p className="text-sm text-gray-600 leading-relaxed">{location.description}</p>
+              </div>
 
               {/* Job listings or empty fallback */}
               {jobs.length > 0 ? (
                 <div>
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                    Latest {subcategory.label} Vacancies
+                    Latest Jobs in {location.county}
                   </h2>
                   <div className="space-y-3">
                     {jobs.map((job) => (
@@ -163,10 +145,10 @@ export default async function SubcategoryPage({ params }: Props) {
                   </div>
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2 mt-6">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((p) => (
                         <Link
                           key={p}
-                          href={`/categories/${categorySlug}/${slug}?page=${p}`}
+                          href={`/locations/${location.slug}?page=${p}`}
                           className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
                             p === page
                               ? 'bg-emerald-600 text-white'
@@ -183,77 +165,82 @@ export default async function SubcategoryPage({ params }: Props) {
                 /* 5-LAYER EMPTY PAGE FALLBACK */
                 <div className="space-y-6">
 
-                  {/* Layer 2: Other subcategories in parent */}
-                  {subcategories.length > 0 && (
+                  {/* Layer 2: Categories available in this county */}
+                  {categories.length > 0 && (
                     <div>
                       <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                        Other {subcategory.category.label} Specializations
+                        Popular Job Categories in {location.county}
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {subcategories
-                          .filter((s) => s.urlSlug !== slug)
-                          .slice(0, 9)
-                          .map((sub) => (
-                            <Link
-                              key={sub.urlSlug}
-                              href={`/categories/${categorySlug}/${sub.urlSlug}`}
-                              className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
-                            >
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition">{sub.label}</span>
-                              <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{sub.jobCount}</span>
-                            </Link>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Layer 3: Sibling jobs from same category */}
-                  {siblingJobs.length > 0 && (
-                    <div>
-                      <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                        Related {subcategory.category.label} Opportunities
-                      </h2>
-                      <div className="space-y-3">
-                        {siblingJobs.slice(0, 6).map((job) => (
-                          <JobCard key={job.id} job={job} />
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat.categorySlug}
+                            href={`/categories/${cat.categorySlug}?county=${location.slug}`}
+                            className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
+                          >
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition">{cat.categoryLabel}</span>
+                            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{cat.jobCount}</span>
+                          </Link>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Layer 4: Browse by location */}
+                  {/* Layer 3: All categories for this county (cross-link) */}
                   <div>
                     <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                      Browse {subcategory.label} Jobs by County
+                      Browse All Categories in {location.county}
                     </h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {locations.map((loc) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                      {allCategories.slice(0, 12).map((cat) => (
+                        <Link
+                          key={cat.slug}
+                          href={`/categories/${cat.slug}?county=${location.slug}`}
+                          className="flex items-center justify-between p-3 bg-white/70 backdrop-blur-sm rounded-lg border border-white/60 hover:border-emerald-300 transition text-sm"
+                        >
+                          <span className="text-gray-700 font-medium truncate mr-2">{cat.label}</span>
+                          <span className="text-xs text-gray-400 flex-shrink-0">{cat.jobCount}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Layer 4: Other locations */}
+                  <div>
+                    <h2 className="text-lg font-extrabold text-gray-800 mb-4">
+                      Browse Jobs in Other Counties
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {otherLocations.map((loc) => (
                         <Link
                           key={loc.slug}
                           href={`/locations/${loc.slug}`}
                           className="text-center p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
                         >
                           <span className="text-sm font-medium text-gray-700">{loc.county}</span>
+                          {loc.jobCount > 0 && (
+                            <span className="block text-xs text-emerald-600 mt-0.5">{loc.jobCount} jobs</span>
+                          )}
                         </Link>
                       ))}
                     </div>
                   </div>
 
-                  {/* Layer 5: CTA + explore */}
+                  {/* Layer 5: CTA + Job alert signup */}
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60">
                     <h2 className="text-lg font-extrabold text-gray-800 mb-2">
-                      No {subcategory.label} jobs right now
+                      No jobs in {location.county} right now
                     </h2>
                     <p className="text-sm text-gray-600">
-                      New {subcategory.label.toLowerCase()} positions are posted regularly. Set up an alert and be the first to apply.
+                      New positions in {location.county} are posted regularly. Set up an alert and be the first to apply when they appear.
                     </p>
                     <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
-                      <Link href={`/categories/${categorySlug}`} className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm shadow-md shadow-emerald-200">
-                        View All {subcategory.category.label} Jobs &rarr;
-                      </Link>
-                      <Link href="/jobs" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                      <Link href="/jobs" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm shadow-md shadow-emerald-200">
                         Browse All Jobs &rarr;
                       </Link>
+                      <p className="text-xs text-gray-500">
+                        Get notified when new {location.county} jobs are posted.
+                      </p>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
                       <input type="email" placeholder="Your email address" className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
@@ -268,23 +255,50 @@ export default async function SubcategoryPage({ params }: Props) {
 
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Subcategory nav */}
-              {subcategories.length > 0 && (
+
+              {/* Quick stats */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Location Overview</h3>
+                <div className="space-y-2.5 text-sm">
+                  <div className="flex justify-between"><span className="text-gray-500">Active Jobs</span><span className="font-medium text-emerald-600">{total}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">County</span><span className="font-medium text-gray-700">{location.county}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Categories</span><span className="font-medium text-gray-700">{categories.length}</span></div>
+                </div>
+              </div>
+
+              {/* Popular locations */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Popular Locations</h3>
+                <ul className="space-y-1">
+                  {popularLocations.map((loc) => (
+                    <li key={loc.slug}>
+                      <Link
+                        href={`/locations/${loc.slug}`}
+                        className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
+                          loc.slug === location.slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
+                        }`}
+                      >
+                        <span>{loc.county}</span>
+                        <span className="text-xs text-gray-400">{loc.jobCount}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Categories in this location */}
+              {categories.length > 0 && (
                 <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
-                    {subcategory.category.label}
-                  </h3>
-                  <ul className="space-y-1 max-h-80 overflow-y-auto">
-                    {subcategories.map((sub) => (
-                      <li key={sub.urlSlug}>
+                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Top Categories</h3>
+                  <ul className="space-y-1">
+                    {categories.slice(0, 6).map((cat) => (
+                      <li key={cat.categorySlug}>
                         <Link
-                          href={`/categories/${categorySlug}/${sub.urlSlug}`}
-                          className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
-                            sub.urlSlug === slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
-                          }`}
+                          href={`/categories/${cat.categorySlug}?county=${location.slug}`}
+                          className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition text-gray-700"
                         >
-                          <span className="truncate mr-2">{sub.label}</span>
-                          <span className="text-xs text-gray-400 flex-shrink-0">{sub.jobCount}</span>
+                          <span className="truncate mr-2">{cat.categoryLabel}</span>
+                          <span className="text-xs text-gray-400 flex-shrink-0">{cat.jobCount}</span>
                         </Link>
                       </li>
                     ))}
@@ -292,35 +306,15 @@ export default async function SubcategoryPage({ params }: Props) {
                 </div>
               )}
 
-              {/* All categories */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">All Categories</h3>
-                <ul className="space-y-1 max-h-60 overflow-y-auto">
-                  {allCategories.map((c) => (
-                    <li key={c.slug}>
-                      <Link
-                        href={`/categories/${c.slug}`}
-                        className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
-                          c.slug === categorySlug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
-                        }`}
-                      >
-                        <span className="truncate mr-2">{c.label}</span>
-                        <span className="text-xs text-gray-400 flex-shrink-0">{c.jobCount}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
               {/* Job alerts CTA */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xl">📬</span>
-                  <h4 className="text-sm font-bold text-gray-700">Get {subcategory.label} Alerts</h4>
+                  <h4 className="text-sm font-bold text-gray-700">Get {location.county} Job Alerts</h4>
                 </div>
-                <p className="text-xs text-gray-600">New {subcategory.label.toLowerCase()} jobs sent to your inbox.</p>
+                <p className="text-xs text-gray-600">Be the first to know when new jobs in {location.county} are posted.</p>
                 <div className="mt-3 flex flex-col gap-2">
-                  <input type="email" placeholder="Your email" className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
+                  <input type="email" placeholder="Your email" className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
                   <button type="button" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition text-sm">Subscribe</button>
                 </div>
               </div>
@@ -333,6 +327,7 @@ export default async function SubcategoryPage({ params }: Props) {
   );
 }
 
+// Shared job card component
 function JobCard({ job }: { job: JobListItem }) {
   return (
     <Link
@@ -363,6 +358,9 @@ function JobCard({ job }: { job: JobListItem }) {
           </span>
         </div>
       </div>
+      {job.category && (
+        <p className="text-xs text-gray-400 mt-1">{job.category.label}</p>
+      )}
       <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-400">
         <span>{formatSalary(job)}</span>
         <span>&middot;</span>

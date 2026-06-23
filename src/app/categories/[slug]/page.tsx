@@ -208,7 +208,7 @@ export default async function CategoryPage({ params }: Props) {
                       {locations.map((loc) => (
                         <Link
                           key={loc.slug}
-                          href={`/jobs?category=${category.slug}&county=${loc.slug}`}
+                          href={`/locations/${loc.slug}`}
                           className="text-center p-3 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
                         >
                           <span className="text-sm font-medium text-gray-700">{loc.county}</span>

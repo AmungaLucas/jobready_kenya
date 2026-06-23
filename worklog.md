@@ -116,3 +116,25 @@ Stage Summary:
 - 5-layer empty fallback working: (1) SEO description, (2) subcategory grid, (3) sibling jobs, (4) county links, (5) explore categories + CTA + job alerts
 - Fixed 2 critical bugs (slug key mismatch, URL double-prefixing)
 - Cleaned up test routes and debug logs
+
+---
+Task ID: 4
+Agent: main
+Task: Phase 4 — Location Pages with generateMetadata, JSON-LD, ISR, 5-layer empty fallback
+
+Work Log:
+- Discovered both src/lib/locations.ts service layer and src/app/locations/[slug]/page.tsx already existed as complete stubs
+- Fixed breadcrumb inconsistency: JSON-LD had "Job Locations" (linking to non-existent /locations index) but visual breadcrumb had "Jobs". Aligned both to Home > Jobs > County
+- Build: 586 total static pages (46 locations + 43 categories + 468 subcategories + 24 jobs + 5 other), zero errors
+- Wrote scripts/test-phase4.js — 33 tests covering: DB count, slug lookup, pre-rendered HTML, job listings, JSON-LD, SEO metadata, 5-layer empty fallback, breadcrumb consistency, sidebar elements, cross-links, ISR settings
+- All 33 tests passed
+
+Stage Summary:
+- Phase 4 complete. 46 county pages pre-rendered with ISR (revalidate = 60s)
+- Service layer: getLocationBySlug, getLocationJobs, getLocationCategories (groupBy + batch label fetch), getOtherLocations, getAllLocationSlugs, getPopularLocations — all with job counts
+- SEO: generateMetadata with seoTitle/seoDescription from DB, OG tags, canonical, robots, twitter cards
+- JSON-LD: CollectionPage + BreadcrumbList (aligned with visual breadcrumb)
+- 5-layer empty fallback: (1) SEO description, (2) categories with jobs in county, (3) all categories grid, (4) other counties, (5) CTA + job alert signup
+- Sidebar: location overview stats, popular locations, top categories, job alerts
+- Cross-linking: location pages link to /categories/?county=, jobs page breadcrumb links to /locations/
+- Total pre-rendered pages across Phases 2-4: 581 (24 jobs + 43 categories + 468 subcategories + 46 locations)
