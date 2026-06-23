@@ -83,10 +83,18 @@ export async function getJobs(params?: {
     ];
   }
   if (county) {
-    where.locationCounty = county;
+    // county param is a slug (e.g. "nairobi"), but DB stores county name (e.g. "Nairobi")
+    // Look up the county name from Location table
+    const locationRecord = await prisma.location.findUnique({ where: { slug: county }, select: { county: true } });
+    if (locationRecord) {
+      where.locationCounty = locationRecord.county;
+    } else {
+      // Fallback: try direct match (might be the name itself)
+      where.locationCounty = county.charAt(0).toUpperCase() + county.slice(1);
+    }
   }
   if (location) {
-    where.locationCity = { contains: location, mode: 'insensitive' };
+    where.locationCity = { contains: location };
   }
   if (type) {
     where.employmentType = type.toUpperCase().replace('-', '_');
