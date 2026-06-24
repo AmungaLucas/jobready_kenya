@@ -26,7 +26,7 @@ export default function MatchingCard() {
               </div>
             </div>
             <div className="flex flex-col items-start md:items-end gap-3 w-full md:w-auto">
-              <Link href="/cv-services" className="cta-btn text-sm md:text-base w-full md:w-auto text-center">
+              <Link href="/cv-matching" className="cta-btn text-sm md:text-base w-full md:w-auto text-center">
                 Upload CV &amp; Get Matched →
               </Link>
               <p className="text-[10px] text-gray-400 text-center md:text-right">Free trial · No credit card required</p>

@@ -20,7 +20,7 @@ export default function OfficialUpdates() {
                   Stay informed with recruitment notices, shortlisting updates, and application announcements.
                 </p>
               </div>
-              <Link href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+              <Link href="/government-jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
                 View all →
               </Link>
             </div>
@@ -50,9 +50,9 @@ export default function OfficialUpdates() {
                 <h3 className="text-sm font-bold text-gray-800">Get alerts</h3>
               </div>
               <p className="text-xs text-gray-600 mt-0.5">Receive WhatsApp notifications for new jobs.</p>
-              <button type="button" className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
+              <Link href="/cv-matching" className="mt-2 inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
                 Subscribe
-              </button>
+              </Link>
             </div>
           </div>
         </div>

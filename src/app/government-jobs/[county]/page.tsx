@@ -191,7 +191,7 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
               </div>
 
               {/* LAYER 1: SEO Description */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60 space-y-3">
                 <p className="text-sm text-gray-600 leading-relaxed">
                   Government jobs in {county} County include positions from the {county} County Government,
                   national government ministries and agencies operating in {county}, state corporations with offices
@@ -199,6 +199,9 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                   salaries, pension benefits, job security, and structured career progression under the Commission
                   for Public Service and the County Public Service Board. Browse all current government vacancies
                   in {county} below, or use the tabs to filter by organization type.
+                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  The {county} County Government, established under the 2010 Constitution, employs professionals across departments including health, education, infrastructure, agriculture, finance, and administration. National government agencies such as the Teachers Service Commission (TSC), Kenya Revenue Authority (KRA), and National Police Service also recruit for positions based in {county}. To apply for government jobs in {county}, you will typically need to create an account on the Public Service Commission portal or the respective county&apos;s recruitment platform, and ensure your application is submitted before the stated deadline with all required documents including your CV, academic certificates, and national ID.
                 </p>
               </div>
 
@@ -361,14 +364,6 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                   ))}
                 </ul>
               </div>
-
-              )}
-
-              )}
-
-              )}
-
-              )}
 
               {/* Job alerts CTA */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">

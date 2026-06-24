@@ -12,11 +12,11 @@ export default function Footer() {
             </div>
             <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
             <div className="footer-social">
-              <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
-              <a href="#" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-              <a href="#" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
-              <a href="#" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
+              <a href="https://twitter.com/jobboardke" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
+              <a href="https://linkedin.com/company/jobboard-kenya" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
+              <a href="https://facebook.com/jobboardkenya" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
+              <a href="https://youtube.com/@jobboardkenya" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+              <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
             </div>
           </div>
 

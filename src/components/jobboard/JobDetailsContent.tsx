@@ -26,6 +26,7 @@ interface FormattedJob {
   experienceLevel?: string | null;
   description: string;
   isRemote: boolean;
+  externalUrl?: string | null;
   featured?: boolean;
   match: number;
   requirements: string[];
@@ -131,12 +132,21 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <Link href="#" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
+                  {job.externalUrl ? (
+                  <a href={job.externalUrl} target="_blank" rel="noopener noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
                     Apply Now
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
+                  </a>
+                ) : (
+                  <Link href="/contact" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
+                    Apply via Contact
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
                   </Link>
+                )}
                   <button
                     type="button"
                     className="bg-white/70 text-gray-700 hover:text-emerald-600 border border-gray-300 hover:border-emerald-400 font-medium px-4 py-2.5 rounded-lg transition text-sm flex items-center gap-2"
@@ -181,12 +191,38 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-500">
               <div className="flex items-center gap-3">
                 <span className="font-medium">Share:</span>
-                <a href="#" className="hover:text-emerald-600 transition">📧</a>
-                <a href="#" className="hover:text-emerald-600 transition">🐦</a>
-                <a href="#" className="hover:text-emerald-600 transition">💼</a>
-                <a href="#" className="hover:text-emerald-600 transition">📱</a>
+                <a
+                  href={`mailto:?subject=${encodeURIComponent(job.title + ' - JobBoard Kenya')}&body=${encodeURIComponent(`Check out this job: ${job.title} at ${job.company} in ${job.location}. Apply before ${job.deadline}.\n\nhttps://jobboard.ke/jobs/${job.slug}`)}`}
+                  className="hover:text-emerald-600 transition"
+                  aria-label="Share via email"
+                  title="Share via email"
+                >📧</a>
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(job.title + ' - ' + job.company)}&url=${encodeURIComponent(`https://jobboard.ke/jobs/${job.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-emerald-600 transition"
+                  aria-label="Share on Twitter"
+                  title="Share on Twitter"
+                >🐦</a>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://jobboard.ke/jobs/${job.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-emerald-600 transition"
+                  aria-label="Share on LinkedIn"
+                  title="Share on LinkedIn"
+                >💼</a>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`${job.title} - ${job.company}\nhttps://jobboard.ke/jobs/${job.slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-emerald-600 transition"
+                  aria-label="Share on WhatsApp"
+                  title="Share on WhatsApp"
+                >📱</a>
               </div>
-              <a href="#" className="text-xs text-gray-400 hover:text-red-500 transition">Report this job</a>
+              <a href={`/contact?subject=report&job=${job.slug}`} className="text-xs text-gray-400 hover:text-red-500 transition">Report this job</a>
             </div>
 
             {/* Similar Jobs */}
@@ -221,7 +257,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <h4 className="text-base font-extrabold text-gray-800 mt-1">Smart Job Matching</h4>
               <p className="text-sm text-gray-600 mt-1 leading-relaxed">Upload your CV and let our AI find the perfect roles for you.</p>
-              <Link href="/cv-services" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+              <Link href="/cv-matching" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
                 Upload CV &amp; Get Matched →
               </Link>
             </div>

@@ -64,6 +64,32 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* SEO Content Block */}
+      <section className="section-bg py-8 border-b border-gray-200/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+              <h3 className="text-sm font-bold text-gray-800 mb-2">For Job Seekers</h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Whether you need help finding the right job category, understanding how to apply for government positions, have questions about our CV writing service, or want to report an issue with a listing, our support team is here to assist. We can also help you set up job alerts and navigate our platform features to make your job search more effective.
+              </p>
+            </div>
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+              <h3 className="text-sm font-bold text-gray-800 mb-2">For Employers</h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Looking to post job vacancies and reach thousands of qualified Kenyan professionals? Contact us for employer account setup, bulk job posting options, featured listing packages, and partnership opportunities. We work with government agencies, multinational corporations, NGOs, startups, and SMEs across all 47 counties.
+              </p>
+            </div>
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+              <h3 className="text-sm font-bold text-gray-800 mb-2">Partnerships &amp; Advertising</h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Interested in partnering with JobBoard Kenya or advertising to our audience of active job seekers? We offer targeted advertising solutions, content sponsorship, branded job alerts, and co-marketing opportunities. Reach us through this form or email us directly at info@jobboard.ke and our partnerships team will respond within one business day.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section-bg py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -174,16 +200,16 @@ export default function ContactPage() {
                 <h3 className="text-sm font-bold text-gray-700 mb-3">Follow Us</h3>
                 <p className="text-xs text-gray-600 mb-4">Stay connected for the latest job alerts, career tips, and platform updates.</p>
                 <div className="flex gap-3">
-                  <a href="#" aria-label="Twitter" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
+                  <a href="https://twitter.com/jobboardke" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
                     <i className="fab fa-twitter text-sm" />
                   </a>
-                  <a href="#" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
+                  <a href="https://linkedin.com/company/jobboard-kenya" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
                     <i className="fab fa-linkedin-in text-sm" />
                   </a>
-                  <a href="#" aria-label="Facebook" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
+                  <a href="https://facebook.com/jobboardkenya" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
                     <i className="fab fa-facebook-f text-sm" />
                   </a>
-                  <a href="#" aria-label="WhatsApp" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
+                  <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-9 h-9 rounded-lg bg-white/70 border border-white/60 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:border-emerald-300 transition">
                     <i className="fab fa-whatsapp text-sm" />
                   </a>
                 </div>

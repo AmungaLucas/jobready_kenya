@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 import Hero from '@/components/jobboard/Hero';
@@ -11,6 +12,24 @@ import MatchingCard from '@/components/jobboard/MatchingCard';
 import FlexibleJobs from '@/components/jobboard/FlexibleJobs';
 import CareerResources from '@/components/jobboard/CareerResources';
 import Newsletter from '@/components/jobboard/Newsletter';
+
+export const metadata: Metadata = {
+  title: 'JobBoard Kenya - Find Verified Jobs & Opportunities in Kenya',
+  description: 'Find verified jobs, internships, and opportunities across Kenya. Browse 43+ job categories, 468 subcategories, and opportunities in all 47 counties. Updated daily with government, NGO, and private sector vacancies.',
+  alternates: { canonical: 'https://jobboard.ke' },
+  openGraph: {
+    title: 'JobBoard Kenya - Find Verified Jobs & Opportunities in Kenya',
+    description: 'Find verified jobs, internships, and opportunities across Kenya. Browse 43+ job categories, 468 subcategories, and opportunities in all 47 counties. Updated daily.',
+    url: 'https://jobboard.ke',
+    siteName: 'JobBoard Kenya',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'JobBoard Kenya - Find Verified Jobs & Opportunities in Kenya',
+    description: 'Find verified jobs, internships, and opportunities across Kenya. Updated daily with government, NGO, and private sector vacancies.',
+  },
+};
 
 export default function Home() {
   return (

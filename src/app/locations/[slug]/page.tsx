@@ -128,8 +128,11 @@ export default async function LocationPage({ params }: Props) {
             <div className="lg:col-span-3 space-y-8">
 
               {/* LAYER 1: SEO Description */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60 space-y-3">
                 <p className="text-sm text-gray-600 leading-relaxed">{location.description}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {location.county} is one of Kenya&apos;s 47 counties, and our platform lists verified job vacancies from employers headquartered or operating in the region. Whether you are searching for government positions within the {location.county} county government, private sector roles at local businesses and branches of national companies, or remote opportunities that accept applicants from {location.county}, JobBoard Kenya provides a comprehensive listing of current openings. Use the filters on this page to narrow results by employment type, experience level, or category to find the perfect match for your skills and career goals.
+                </p>
               </div>
 
               {/* Job listings or empty fallback */}

@@ -47,7 +47,7 @@ export default function CareerResources() {
                 { img: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=200&fit=crop&crop=center', label: 'Interview Tips', title: 'Ace Your Virtual Interview', desc: 'Prepare with confidence.', time: '4 min read' },
                 { img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=200&fit=crop&crop=center', label: 'Salary Guide', title: 'Salary Negotiation in Kenya', desc: 'Tactics that work.', time: '6 min read' },
               ].map((article, idx) => (
-                <Link key={idx} href="#" className="group bg-white/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/60 hover:border-emerald-400 hover:bg-emerald-50/30 transition">
+                <Link key={idx} href="/blog" className="group bg-white/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/60 hover:border-emerald-400 hover:bg-emerald-50/30 transition">
                   <Image src={article.img} alt={article.title} width={400} height={200} className="w-full h-32 object-cover" />
                   <div className="p-4">
                     <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wide">{article.label}</span>
