@@ -81,8 +81,8 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                     <div>
                       <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{job.title}</h1>
                       <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
-                        {job.companySlug ? (
-                          <Link href={`/organizations/${job.companySlug}`} className="font-semibold text-gray-700 hover:text-emerald-600 transition">{job.company}</Link>
+                        {job.companyWebsite ? (
+                          <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-700 hover:text-emerald-600 transition">{job.company}</a>
                         ) : (
                           <span className="font-semibold text-gray-700">{job.company}</span>
                         )}
@@ -160,8 +160,8 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                 </div>
                 <div>
                   <h3 className="text-md font-bold text-gray-800">
-                    {job.companySlug ? (
-                      <Link href={`/organizations/${job.companySlug}`} className="hover:text-emerald-600 transition">{job.company}</Link>
+                    {job.companyWebsite ? (
+                      <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition">{job.company}</a>
                     ) : job.company}
                   </h3>
                   <p className="text-sm text-gray-500">{job.location}, Kenya</p>
@@ -221,7 +221,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <h4 className="text-base font-extrabold text-gray-800 mt-1">Smart Job Matching</h4>
               <p className="text-sm text-gray-600 mt-1 leading-relaxed">Upload your CV and let our AI find the perfect roles for you.</p>
-              <Link href="/upload-cv" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+              <Link href="/cv-services" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
                 Upload CV &amp; Get Matched →
               </Link>
             </div>
@@ -273,7 +273,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <h4 className="text-base font-extrabold text-gray-800">Your CV Opens Doors</h4>
               <p className="text-sm text-gray-600 mt-1">Professional CV writing, cover letters, and LinkedIn optimization. From <span className="font-bold text-emerald-600">KSh 1,500</span>.</p>
-              <Link href="/upload-cv" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+              <Link href="/cv-services" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
                 Improve My CV →
               </Link>
             </div>

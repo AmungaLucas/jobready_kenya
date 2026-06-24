@@ -38,7 +38,7 @@ export default function Navbar() {
                 <Link href="/jobs">
                   <i className="fas fa-briefcase"></i> All Jobs
                 </Link>
-                <Link href="/categories/technology">
+                <Link href="/categories">
                   <i className="fas fa-th-large"></i> Browse by Category
                 </Link>
                 <Link href="/locations/nairobi">
@@ -59,40 +59,40 @@ export default function Navbar() {
               </button>
               <div className="dropdown-menu">
                 <div className="dropdown-label">Explore</div>
-                <Link href="#">
+                <Link href="/opportunities?type=SCHOLARSHIP">
                   <i className="fas fa-graduation-cap"></i> Scholarships
                 </Link>
-                <Link href="#">
+                <Link href="/jobs?type=INTERNSHIP">
                   <i className="fas fa-briefcase"></i> Internships
                 </Link>
-                <Link href="#">
+                <Link href="/opportunities?type=FELLOWSHIP">
                   <i className="fas fa-users"></i> Fellowships
                 </Link>
-                <Link href="#">
+                <Link href="/opportunities?type=VOLUNTEER">
                   <i className="fas fa-hand-holding-heart"></i> Volunteering
                 </Link>
                 <div className="dropdown-divider"></div>
-                <Link href="#">
-                  <i className="fas fa-th-large"></i> <strong>All Opportunities →</strong>
+                <Link href="/opportunities">
+                  <i className="fas fa-th-large"></i> <strong>All Opportunities &rarr;</strong>
                 </Link>
               </div>
             </li>
             <li>
-              <Link href="#">Resources</Link>
+              <Link href="/blog">Resources</Link>
             </li>
             <li>
-              <Link href="#">Internships</Link>
+              <Link href="/cv-services">CV Services</Link>
             </li>
             <li>
-              <Link href="#">Updates</Link>
+              <Link href="/faq">FAQ</Link>
             </li>
           </ul>
 
           <div className="navbar-actions">
-            <Link href="#" className="btn-outline">
+            <Link href="/contact" className="btn-outline">
               <i className="fas fa-plus-circle"></i> <span>Post a Job</span>
             </Link>
-            <Link href="#" className="btn-primary">
+            <Link href="/cv-services" className="btn-primary">
               <i className="fas fa-cloud-upload-alt"></i> <span>Upload CV</span>
             </Link>
             <button type="button" className="btn-icon avatar">JD</button>

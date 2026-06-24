@@ -24,10 +24,10 @@ export default function Footer() {
             <h4>Jobs</h4>
             <ul>
               <li><Link href="/jobs">Browse Jobs</Link></li>
-              <li><Link href="/jobs?type=government">Government Jobs</Link></li>
-              <li><Link href="#">Internships</Link></li>
-              <li><Link href="#">Casual &amp; Part-time</Link></li>
-              <li><Link href="#">Remote Jobs</Link></li>
+              <li><Link href="/government-jobs">Government Jobs</Link></li>
+              <li><Link href="/jobs?type=INTERNSHIP">Internships</Link></li>
+              <li><Link href="/jobs?type=PART_TIME">Part-time Jobs</Link></li>
+              <li><Link href="/jobs?type=FREELANCE">Freelance Jobs</Link></li>
             </ul>
           </div>
 
@@ -35,7 +35,7 @@ export default function Footer() {
             <h4>Resources</h4>
             <ul>
               <li><Link href="/blog?category=Career Advice">Career Advice</Link></li>
-              <li><Link href="/blog?category=How-To">CV Writing</Link></li>
+              <li><Link href="/cv-services">CV Writing Services</Link></li>
               <li><Link href="/blog?category=How-To">Interview Tips</Link></li>
               <li><Link href="/blog?category=Kenya Job Market">Salary Guide</Link></li>
               <li><Link href="/blog">All Articles</Link></li>
@@ -45,7 +45,7 @@ export default function Footer() {
           <div className="footer-newsletter">
             <h4>Stay Updated</h4>
             <p>Get new jobs, deadlines, and career opportunities delivered to your inbox.</p>
-            <form action="#" method="POST">
+            <form action="/api/subscribe" method="POST">
               <input type="email" placeholder="Your email address" required />
               <button type="submit">Subscribe</button>
             </form>
@@ -72,16 +72,16 @@ export default function Footer() {
           <div className="footer-middle-col">
             <h4>Popular Categories</h4>
             <ul>
-              <li><Link href="/jobs?category=it">Technology &amp; IT</Link></li>
-              <li><Link href="/jobs?category=health">Healthcare &amp; Medical</Link></li>
-              <li><Link href="/jobs?category=finance">Finance &amp; Accounting</Link></li>
-              <li><Link href="/jobs?category=engineering">Engineering</Link></li>
-              <li><Link href="/jobs?category=education">Education &amp; Training</Link></li>
-              <li><Link href="/jobs?category=sales">Sales &amp; Business</Link></li>
-              <li><Link href="/jobs?category=legal">Legal &amp; Compliance</Link></li>
-              <li><Link href="/jobs?category=hospitality">Hospitality &amp; Tourism</Link></li>
-              <li><Link href="/jobs?category=agriculture">Agriculture</Link></li>
-              <li><Link href="/jobs?category=logistics">Logistics &amp; Supply Chain</Link></li>
+              <li><Link href="/categories/technology">Technology &amp; IT</Link></li>
+              <li><Link href="/categories/healthcare">Healthcare &amp; Medical</Link></li>
+              <li><Link href="/categories/finance">Finance &amp; Accounting</Link></li>
+              <li><Link href="/categories/engineering">Engineering</Link></li>
+              <li><Link href="/categories/education">Education &amp; Training</Link></li>
+              <li><Link href="/categories/marketing">Marketing &amp; Sales</Link></li>
+              <li><Link href="/categories/legal">Legal &amp; Compliance</Link></li>
+              <li><Link href="/categories/hospitality-tourism">Hospitality &amp; Tourism</Link></li>
+              <li><Link href="/categories/agriculture">Agriculture</Link></li>
+              <li><Link href="/categories/logistics">Logistics &amp; Supply Chain</Link></li>
             </ul>
           </div>
         </div>

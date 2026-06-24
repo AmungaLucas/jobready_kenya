@@ -20,7 +20,7 @@ export default async function Sidebar() {
         <p className="text-sm text-gray-600 mt-1 leading-relaxed">
           Upload your CV and let our AI find the perfect roles for you, tailored to your skills and experience.
         </p>
-        <Link href="#" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+        <Link href="/cv-services" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
           Upload CV &amp; Get Matched →
         </Link>
       </div>
@@ -49,7 +49,7 @@ export default async function Sidebar() {
           ))}
         </ul>
         <Link href="/categories" className="mt-3 block text-center text-xs font-medium text-emerald-600 hover:text-emerald-700 transition">
-          View all 43 categories →
+          View all categories →
         </Link>
       </div>
 
@@ -80,7 +80,7 @@ export default async function Sidebar() {
         <p className="text-sm text-gray-600 mt-1">
           Professional CV writing, cover letters, and LinkedIn optimization. From <span className="font-bold text-emerald-600">KSh 1,500</span>.
         </p>
-        <Link href="#" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+        <Link href="/cv-services" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
           Improve My CV →
         </Link>
       </div>

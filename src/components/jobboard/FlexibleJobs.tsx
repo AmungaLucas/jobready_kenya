@@ -20,13 +20,20 @@ export default async function FlexibleJobs() {
   });
 
   // Get job counts per county for sidebar
-  const countyCounts = await prisma.job.groupBy({
+  const countyData = await prisma.job.groupBy({
     by: ['locationCounty'],
     where: { status: 'ACTIVE', deletedAt: null, locationCounty: { not: null } },
     _count: { id: true },
     orderBy: { _count: { id: 'desc' } },
     take: 8,
   });
+
+  // Resolve county names to slugs via location table
+  const countySlugs = await prisma.location.findMany({
+    where: { county: { in: countyData.map(c => c.locationCounty!) } },
+    select: { county: true, slug: true },
+  });
+  const slugMap = Object.fromEntries(countySlugs.map(l => [l.county, l.slug]));
 
   const typeColors: Record<string, string> = {
     'Part-time': 'bg-blue-50 text-blue-700',
@@ -91,10 +98,10 @@ export default async function FlexibleJobs() {
             </div>
             <div className="bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/60">
               <div className="space-y-1">
-                {countyCounts.map((loc) => (
+                {countyData.map((loc) => (
                   <Link
                     key={loc.locationCounty}
-                    href={`/location/${loc.locationCounty!.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`/locations/${slugMap[loc.locationCounty!] || loc.locationCounty!.toLowerCase().replace(/\s+/g, '-')}`}
                     className="location-item flex items-center justify-between p-2.5 rounded-lg transition"
                   >
                     <span className="loc-name text-sm font-medium text-gray-700 transition">{loc.locationCounty}</span>

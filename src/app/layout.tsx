@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito } from 'next/font/google';
 import "./globals.css";
+import CookieConsent from '@/components/jobboard/CookieConsent';
+import WhatsAppButton from '@/components/jobboard/WhatsAppButton';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -83,6 +85,8 @@ export default function RootLayout({
       </head>
       <body className="font-sans bg-[#faf9f6]">
         {children}
+        <CookieConsent />
+        <WhatsAppButton />
       </body>
     </html>
   );

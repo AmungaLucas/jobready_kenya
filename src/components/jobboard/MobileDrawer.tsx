@@ -50,23 +50,18 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                 </Link>
               </li>
               <li>
-                <Link href="/jobs?category=it" onClick={onClose}>
+                <Link href="/categories" onClick={onClose}>
                   <i className="fas fa-th-large"></i> Browse by Category
                 </Link>
               </li>
               <li>
-                <Link href="/jobs?location=nairobi" onClick={onClose}>
+                <Link href="/locations/nairobi" onClick={onClose}>
                   <i className="fas fa-map-marker-alt"></i> Browse by Location
                 </Link>
               </li>
               <li>
                 <Link href="/government-jobs" onClick={onClose}>
                   <i className="fas fa-landmark"></i> Govt Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/government-jobs?type=COUNTY_GOVERNMENT" onClick={onClose}>
-                  <i className="fas fa-city"></i> County Jobs
                 </Link>
               </li>
             </ul>
@@ -82,58 +77,55 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             </button>
             <ul className={`mobile-sub ${oppOpen ? 'open' : ''}`}>
               <li>
-                <Link href="#" onClick={onClose}>
+                <Link href="/opportunities?type=SCHOLARSHIP" onClick={onClose}>
                   <i className="fas fa-graduation-cap"></i> Scholarships
                 </Link>
               </li>
               <li>
-                <Link href="#" onClick={onClose}>
+                <Link href="/jobs?type=INTERNSHIP" onClick={onClose}>
                   <i className="fas fa-briefcase"></i> Internships
                 </Link>
               </li>
               <li>
-                <Link href="#" onClick={onClose}>
+                <Link href="/opportunities?type=FELLOWSHIP" onClick={onClose}>
                   <i className="fas fa-users"></i> Fellowships
                 </Link>
               </li>
               <li>
-                <Link href="#" onClick={onClose}>
+                <Link href="/opportunities?type=VOLUNTEER" onClick={onClose}>
                   <i className="fas fa-hand-holding-heart"></i> Volunteering
                 </Link>
               </li>
               <li style={{ marginTop: '0.3rem' }}>
-                <Link href="#" onClick={onClose}>
-                  <strong>All Opportunities →</strong>
+                <Link href="/opportunities" onClick={onClose}>
+                  <strong>All Opportunities &rarr;</strong>
                 </Link>
               </li>
             </ul>
           </li>
           <li>
-            <Link href="#" onClick={onClose}>
+            <Link href="/blog" onClick={onClose}>
               Resources
             </Link>
           </li>
           <li>
-            <Link href="#" onClick={onClose}>
-              Internships
+            <Link href="/cv-services" onClick={onClose}>
+              CV Services
             </Link>
           </li>
           <li>
-            <Link href="#" onClick={onClose}>
-              Updates
+            <Link href="/faq" onClick={onClose}>
+              FAQ
             </Link>
           </li>
         </ul>
 
         <div className="mobile-actions">
-          <Link href="#" className="btn-outline" onClick={onClose}>
+          <Link href="/contact" className="btn-outline" onClick={onClose}>
             <i className="fas fa-plus-circle"></i> Post a Job
           </Link>
-          <Link href="#" className="btn-primary" onClick={onClose}>
+          <Link href="/cv-services" className="btn-primary" onClick={onClose}>
             <i className="fas fa-cloud-upload-alt"></i> Upload CV
-          </Link>
-          <Link href="#" className="btn-outline" style={{ borderColor: 'transparent', background: 'rgba(0,0,0,0.03)' }}>
-            <i className="fas fa-user-circle"></i> Sign In
           </Link>
         </div>
       </div>

@@ -98,12 +98,15 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
     take: 12,
   });
 
-  // Filter gov orgs to those in this county
+  // Filter gov orgs: match by org name containing county name
   const countyOrgs = orgs.filter(o => {
-    // We check if the org name contains the county name as a heuristic,
-    // or just show all gov orgs since jobs are already filtered by county
-    return true;
+    const countyLower = county.toLowerCase();
+    const orgLower = o.orgName.toLowerCase();
+    return orgLower.includes(countyLower) || o.orgType === 'COUNTY_GOVERNMENT';
   }).slice(0, 10);
+
+  // Fallback: if no matching orgs, don't show the section
+  const showOrgs = countyOrgs.length > 0;
 
   // Tabs
   const tabs = [
@@ -216,10 +219,10 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                 <div className="space-y-6">
 
                   {/* Layer 2: Government organizations */}
-                  {countyOrgs.length > 0 && (
+                  {showOrgs && (
                     <div>
                       <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                        Government Employers on JobBoard Kenya
+                        Government Employers in {county}
                       </h2>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {countyOrgs.map((org) => (
@@ -322,9 +325,10 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Government orgs */}
+              {/* Gov counties sidebar */}
+              {showOrgs && (
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Employers</h3>
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Employers in {county}</h3>
                 <ul className="space-y-1 max-h-48 overflow-y-auto">
                   {countyOrgs.map((org) => (
                     <li key={org.orgSlug}>
@@ -339,6 +343,7 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                   ))}
                 </ul>
               </div>
+              )}
 
               {/* Other counties */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
@@ -356,6 +361,14 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
                   ))}
                 </ul>
               </div>
+
+              )}
+
+              )}
+
+              )}
+
+              )}
 
               {/* Job alerts CTA */}
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">

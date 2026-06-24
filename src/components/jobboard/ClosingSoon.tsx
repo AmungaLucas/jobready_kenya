@@ -73,7 +73,7 @@ export default async function ClosingSoon() {
                 <span className="text-sm font-medium text-gray-500">From</span>
                 <span className="text-2xl font-extrabold text-emerald-600">KSh 1,500</span>
               </div>
-              <Link href="/upload-cv" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
+              <Link href="/cv-services" className="mt-4 inline-block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-md shadow-emerald-200">
                 Improve My CV →
               </Link>
               <p className="mt-3 text-xs text-gray-400 text-center">100% satisfaction guarantee</p>

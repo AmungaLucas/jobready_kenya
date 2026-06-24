@@ -1,0 +1,384 @@
+    46→      {/* Breadcrumb */}
+    47→      <section className="section-bg py-4 border-b border-gray-200/50" style={{ paddingTop: '88px' }}>
+    48→        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    49→          <nav className="flex items-center gap-2 text-sm text-gray-500">
+    50→            <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
+    51→            <span className="text-gray-300">/</span>
+    52→            <span className="text-gray-700 font-medium">CV Services</span>
+    53→          </nav>
+    54→        </div>
+    55→      </section>
+    56→
+    57→      {/* Hero */}
+    58→      <section className="section-bg py-12 md:py-16 border-b border-gray-200/50">
+    59→        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    60→          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
+    61→            Professional CV Writing Services in Kenya
+    62→          </h1>
+    63→          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-6">
+    64→            Stand out from thousands of applicants with a professionally written, ATS-optimised CV. Trusted by over 5,000 Kenyan job seekers across all industries and career levels.
+    65→          </p>
+    66→          <div className="inline-flex items-baseline gap-2 bg-emerald-50 px-6 py-3 rounded-full border border-emerald-200/60 mb-6">
+    67→            <span className="text-sm text-gray-600">Starting from</span>
+    68→            <span className="text-2xl font-extrabold text-emerald-600">KSh 1,500</span>
+    69→          </div>
+    70→          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+    71→            <a href="#pricing" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition text-sm shadow-md shadow-emerald-200">
+    72→              View Pricing Plans
+    73→            </a>
+    74→            <Link href="/blog" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+    75→              Read Free CV Tips &rarr;
+    76→            </Link>
+    77→          </div>
+    78→        </div>
+    79→      </section>
+    80→
+    81→      <section className="section-bg py-12">
+    82→        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    83→
+    84→          {/* What You Get */}
+    85→          <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+    86→            <h2 className="text-2xl font-extrabold text-gray-800 mb-6">What You Get</h2>
+    87→            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+    88→              Our CV writing service is designed specifically for the Kenyan job market. Every document we produce is crafted by professional writers who understand what Kenyan recruiters and hiring managers look for. We don&apos;t just rewrite your CV — we transform it into a powerful marketing tool that showcases your achievements, aligns with industry expectations, and passes through Applicant Tracking Systems with ease. Our team has helped thousands of job seekers across Nairobi, Mombasa, Kisumu, Nakuru, and all 47 counties land interviews at top employers including Safaricom, Equity Bank, KCB, UN agencies, and government ministries.
+    89→            </p>
+    90→            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    91→              <div className="flex gap-4">
+    92→                <span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+    93→                  <i className="fas fa-file-alt text-lg"></i>
+    94→                </span>
+    95→                <div>
+    96→                  <h3 className="text-sm font-bold text-gray-800 mb-1">Professional CV Rewrite</h3>
+    97→                  <p className="text-sm text-gray-600 leading-relaxed">
+    98→                    We completely restructure and rewrite your CV using modern, achievement-focused formatting. Your new CV will highlight measurable accomplishments, use powerful action verbs, and present your career history in a way that immediately captures a recruiter&apos;s attention. We eliminate generic language, optimise keyword density for ATS compatibility, and ensure the layout is clean and easy to scan in under 10 seconds.
+    99→                  </p>
+   100→                </div>
+   101→              </div>
+   102→              <div className="flex gap-4">
+   103→                <span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+   104→                  <i className="fas fa-envelope-open-text text-lg"></i>
+   105→                </span>
+   106→                <div>
+   107→                  <h3 className="text-sm font-bold text-gray-800 mb-1">Custom Cover Letter</h3>
+   108→                  <p className="text-sm text-gray-600 leading-relaxed">
+   109→                    Every job application in Kenya deserves a tailored cover letter that connects your specific experience to the role. Our writers craft a custom cover letter that addresses the employer&apos;s needs, demonstrates your understanding of the organisation, and positions you as the ideal candidate. We write in a professional yet engaging tone that reflects Kenyan business communication standards.
+   110→                  </p>
+   111→                </div>
+   112→              </div>
+   113→              <div className="flex gap-4">
+   114→                <span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+   115→                  <i className="fab fa-linkedin text-lg"></i>
+   116→                </span>
+   117→                <div>
+   118→                  <h3 className="text-sm font-bold text-gray-800 mb-1">LinkedIn Profile Optimisation</h3>
+   119→                  <p className="text-sm text-gray-600 leading-relaxed">
+   120→                    LinkedIn is increasingly used by Kenyan recruiters to source candidates, especially for mid-level and senior positions. We optimise your LinkedIn headline, summary, experience descriptions, and skills section to improve your visibility in recruiter searches. Your profile will be transformed from a digital resume into a compelling professional brand that attracts inbound opportunities from hiring managers across East Africa.
+   121→                  </p>
+   122→                </div>
+   123→              </div>
+   124→              <div className="flex gap-4">
+   125→                <span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+   126→                  <i className="fas fa-robot text-lg"></i>
+   127→                </span>
+   128→                <div>
+   129→                  <h3 className="text-sm font-bold text-gray-800 mb-1">ATS Optimisation</h3>
+   130→                  <p className="text-sm text-gray-600 leading-relaxed">
+   131→                    Over 75% of Kenyan employers now use Applicant Tracking Systems to filter CVs before a human ever reads them. Our ATS optimisation ensures your CV contains the right keywords, formatting, and structure to pass through systems like Workday, Greenhouse, and Taleo. We test your CV against common ATS algorithms used by Kenyan companies, government agencies, and international organisations operating in the country.
+   132→                  </p>
+   133→                </div>
+   134→              </div>
+   135→            </div>
+   136→          </div>
+   137→
+   138→          {/* How It Works */}
+   139→          <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+   140→            <h2 className="text-2xl font-extrabold text-gray-800 mb-6">How It Works</h2>
+   141→            <p className="text-sm text-gray-600 leading-relaxed mb-8">
+   142→              Getting a professionally written CV has never been easier. Our streamlined three-step process is designed to be hassle-free, so you can focus on preparing for your next interview while we handle the paperwork. We&apos;ve served thousands of clients across Kenya and refined our process to be as efficient and convenient as possible, whether you&apos;re in Nairobi CBD or a remote part of the country.
+   143→            </p>
+   144→            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+   145→              <div className="text-center">
+   146→                <span className="w-12 h-12 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-extrabold mb-4">1</span>
+   147→                <h3 className="text-sm font-bold text-gray-800 mb-2">Upload Your Current CV</h3>
+   148→                <p className="text-sm text-gray-600 leading-relaxed">
+   149→                  Upload your existing CV through our secure portal along with any target job descriptions you&apos;re interested in. If you don&apos;t have a CV yet, simply fill out a short questionnaire about your education, work experience, skills, and career goals. The more information you provide, the better we can tailor your documents. You can also share your LinkedIn profile URL for additional context about your professional background.
+   150→                </p>
+   151→              </div>
+   152→              <div className="text-center">
+   153→                <span className="w-12 h-12 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-extrabold mb-4">2</span>
+   154→                <h3 className="text-sm font-bold text-gray-800 mb-2">Expert Review &amp; Writing</h3>
+   155→                <p className="text-sm text-gray-600 leading-relaxed">
+   156→                  A professional writer specialising in your industry reviews your information and crafts your new CV, cover letter, and LinkedIn profile. Our writers are experienced professionals with backgrounds in recruitment, HR, and career coaching across the Kenyan market. They understand the nuances of different industries — from banking and telecoms to NGOs and government — and tailor each document accordingly.
+   157→                </p>
+   158→              </div>
+   159→              <div className="text-center">
+   160→                <span className="w-12 h-12 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-extrabold mb-4">3</span>
+   161→                <h3 className="text-sm font-bold text-gray-800 mb-2">Receive &amp; Revise</h3>
+   162→                <p className="text-sm text-gray-600 leading-relaxed">
+   163→                  Receive your professionally written documents via email within 48 hours. Review everything and request up to two rounds of revisions at no extra cost. We want you to be completely satisfied with the final product. Once approved, you&apos;ll receive your CV in both PDF and Word formats, ready to submit to employers. Many of our clients report receiving interview calls within the first week of using their new CVs.
+   164→                </p>
+   165→              </div>
+   166→            </div>
+   167→          </div>
+   168→
+   169→          {/* Who It's For */}
+   170→          <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+   171→            <h2 className="text-2xl font-extrabold text-gray-800 mb-6">Who It&apos;s For</h2>
+   172→            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+   173→              Whether you&apos;re entering the Kenyan job market for the first time or you&apos;re a seasoned executive looking to take the next step, our CV writing service is tailored to your specific career stage. We understand that a fresh graduate&apos;s CV looks fundamentally different from a CEO&apos;s, and our writers are trained to adapt their approach based on where you are in your professional journey.
+   174→            </p>
+   175→            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+   176→              <div>
+   177→                <h3 className="text-sm font-bold text-gray-800 mb-2">Fresh Graduates</h3>
+   178→                <p className="text-sm text-gray-600 leading-relaxed">
+   179→                  If you&apos;ve just completed your degree, diploma, or certificate from a Kenyan university, college, or technical institution, we&apos;ll help you create a CV that highlights your education, internships, volunteer work, and transferable skills. Many Kenyan graduates struggle to stand out because their CVs focus on responsibilities rather than achievements. We&apos;ll reposition your academic projects, campus leadership roles, and any part-time work to show employers your potential and readiness to contribute.
+   180→                </p>
+   181→              </div>
+   182→              <div>
+   183→                <h3 className="text-sm font-bold text-gray-800 mb-2">Mid-Career Professionals</h3>
+   184→                <p className="text-sm text-gray-600 leading-relaxed">
+   185→                  With 3 to 15 years of experience, your CV needs to demonstrate progressive responsibility, leadership, and measurable impact. We&apos;ll restructure your CV to emphasise career growth, quantify your achievements with specific metrics, and position you for senior roles. Whether you&apos;re aiming for a promotion internally or looking to switch employers for better opportunities, a professionally written CV can make the difference between being overlooked and getting the interview.
+   186→                </p>
+   187→              </div>
+   188→              <div>
+   189→                <h3 className="text-sm font-bold text-gray-800 mb-2">Senior Executives</h3>
+   190→                <p className="text-sm text-gray-600 leading-relaxed">
+   191→                  Executive-level CVs require a fundamentally different approach. We create a compelling narrative around your leadership philosophy, strategic vision, and board-level contributions. Your executive CV will be designed for C-suite roles, director positions, and senior management opportunities in Kenya&apos;s top organisations. We also prepare you with an executive bio and a tailored cover letter that speaks to boards and search firms.
+   192→                </p>
+   193→              </div>
+   194→              <div>
+   195→                <h3 className="text-sm font-bold text-gray-800 mb-2">Career Changers</h3>
+   196→                <p className="text-sm text-gray-600 leading-relaxed">
+   197→                  Transitioning to a new industry or role is one of the most challenging CV writing tasks. We specialise in repositioning your existing experience to highlight transferable skills relevant to your target field. Whether you&apos;re moving from teaching to corporate training, from engineering to product management, or from the public sector to private industry, we&apos;ll craft a CV that bridges the gap and makes your career change feel like a natural, logical progression.
+   198→                </p>
+   199→              </div>
+   200→            </div>
+   201→          </div>
+   202→
+   203→          {/* Pricing Table */}
+   204→          <div id="pricing" className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+   205→            <h2 className="text-2xl font-extrabold text-gray-800 mb-2">Pricing Plans</h2>
+   206→            <p className="text-sm text-gray-600 leading-relaxed mb-8">
+   207→              We offer three transparent pricing tiers designed to fit every budget. All plans include ATS optimisation and delivery within 48 hours. Choose the plan that best matches your career needs. Every plan comes with a satisfaction guarantee — if you&apos;re not happy with the results, we&apos;ll revise your documents until you are. Payment is easy via M-Pesa, bank transfer, or card.
+   208→            </p>
+   209→            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+   210→              {/* Basic */}
+   211→              <div className="rounded-xl border border-gray-200/60 p-6 flex flex-col">
+   212→                <h3 className="text-lg font-bold text-gray-800 mb-1">Basic</h3>
+   213→                <div className="flex items-baseline gap-1 mb-4">
+   214→                  <span className="text-2xl font-extrabold text-gray-800">KSh 1,500</span>
+   215→                </div>
+   216→                <ul className="text-sm text-gray-600 space-y-3 mb-6 flex-1">
+   217→                  <li className="flex items-start gap-2">
+   218→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   219→                    <span>Professional CV rewrite (1-2 pages)</span>
+   220→                  </li>
+   221→                  <li className="flex items-start gap-2">
+   222→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   223→                    <span>ATS keyword optimisation</span>
+   224→                  </li>
+   225→                  <li className="flex items-start gap-2">
+   226→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   227→                    <span>PDF and Word delivery</span>
+   228→                  </li>
+   229→                  <li className="flex items-start gap-2">
+   230→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   231→                    <span>1 round of revisions</span>
+   232→                  </li>
+   233→                  <li className="flex items-start gap-2">
+   234→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   235→                    <span>48-hour turnaround</span>
+   236→                  </li>
+   237→                </ul>
+   238→                <p className="text-xs text-gray-400 mb-4">Best for entry-level and fresh graduates</p>
+   239→                <a href="#cta" className="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm">
+   240→                  Get Started
+   241→                </a>
+   242→              </div>
+   243→
+   244→              {/* Standard */}
+   245→              <div className="rounded-xl border-2 border-emerald-600 p-6 flex flex-col relative">
+   246→                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>
+   247→                <h3 className="text-lg font-bold text-gray-800 mb-1">Standard</h3>
+   248→                <div className="flex items-baseline gap-1 mb-4">
+   249→                  <span className="text-2xl font-extrabold text-gray-800">KSh 3,000</span>
+   250→                </div>
+   251→                <ul className="text-sm text-gray-600 space-y-3 mb-6 flex-1">
+   252→                  <li className="flex items-start gap-2">
+   253→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   254→                    <span>Professional CV rewrite (2-3 pages)</span>
+   255→                  </li>
+   256→                  <li className="flex items-start gap-2">
+   257→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   258→                    <span>Custom cover letter</span>
+   259→                  </li>
+   260→                  <li className="flex items-start gap-2">
+   261→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   262→                    <span>ATS keyword optimisation</span>
+   263→                  </li>
+   264→                  <li className="flex items-start gap-2">
+   265→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   266→                    <span>PDF and Word delivery</span>
+   267→                  </li>
+   268→                  <li className="flex items-start gap-2">
+   269→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   270→                    <span>2 rounds of revisions</span>
+   271→                  </li>
+   272→                  <li className="flex items-start gap-2">
+   273→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   274→                    <span>48-hour turnaround</span>
+   275→                  </li>
+   276→                </ul>
+   277→                <p className="text-xs text-gray-400 mb-4">Best for mid-career professionals</p>
+   278→                <a href="#cta" className="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm">
+   279→                  Get Started
+   280→                </a>
+   281→              </div>
+   282→
+   283→              {/* Premium */}
+   284→              <div className="rounded-xl border border-gray-200/60 p-6 flex flex-col">
+   285→                <h3 className="text-lg font-bold text-gray-800 mb-1">Premium</h3>
+   286→                <div className="flex items-baseline gap-1 mb-4">
+   287→                  <span className="text-2xl font-extrabold text-gray-800">KSh 5,000</span>
+   288→                </div>
+   289→                <ul className="text-sm text-gray-600 space-y-3 mb-6 flex-1">
+   290→                  <li className="flex items-start gap-2">
+   291→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   292→                    <span>Executive CV rewrite (3+ pages)</span>
+   293→                  </li>
+   294→                  <li className="flex items-start gap-2">
+   295→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   296→                    <span>Custom cover letter</span>
+   297→                  </li>
+   298→                  <li className="flex items-start gap-2">
+   299→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   300→                    <span>LinkedIn profile optimisation</span>
+   301→                  </li>
+   302→                  <li className="flex items-start gap-2">
+   303→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   304→                    <span>ATS keyword optimisation</span>
+   305→                  </li>
+   306→                  <li className="flex items-start gap-2">
+   307→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   308→                    <span>PDF, Word, and plain text delivery</span>
+   309→                  </li>
+   310→                  <li className="flex items-start gap-2">
+   311→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   312→                    <span>Unlimited revisions for 7 days</span>
+   313→                  </li>
+   314→                  <li className="flex items-start gap-2">
+   315→                    <i className="fas fa-check text-emerald-600 mt-0.5"></i>
+   316→                    <span>48-hour turnaround</span>
+   317→                  </li>
+   318→                </ul>
+   319→                <p className="text-xs text-gray-400 mb-4">Best for senior executives and managers</p>
+   320→                <a href="#cta" className="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm">
+   321→                  Get Started
+   322→                </a>
+   323→              </div>
+   324→            </div>
+   325→          </div>
+   326→
+   327→          {/* Why JobBoard Kenya */}
+   328→          <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+   329→            <h2 className="text-2xl font-extrabold text-gray-800 mb-6">Why Choose JobBoard Kenya for Your CV</h2>
+   330→            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+   331→              Not all CV writing services are created equal. Many generic online services produce CVs that look professional but fail to account for the specific expectations of Kenyan employers, government hiring processes, and the unique dynamics of the local job market. At JobBoard Kenya, we combine deep local knowledge with international best practices to deliver CVs that actually get results.
+   332→            </p>
+   333→            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+   334→              <div>
+   335→                <h3 className="text-sm font-bold text-gray-800 mb-2">ATS-Tested Templates</h3>
+   336→                <p className="text-sm text-gray-600 leading-relaxed">
+   337→                  Every CV template we use has been tested against the most common Applicant Tracking Systems used by Kenyan employers, including Workday, Oracle Taleo, SAP SuccessFactors, and BambooHR. We avoid graphics, tables, and complex formatting that cause ATS parsing errors. The result is a CV that looks great to human recruiters and passes automated screening with flying colours, giving you the best possible chance of reaching the interview stage.
+   338→                </p>
+   339→              </div>
+   340→              <div>
+   341→                <h3 className="text-sm font-bold text-gray-800 mb-2">Industry-Specific Writers</h3>
+   342→                <p className="text-sm text-gray-600 leading-relaxed">
+   343→                  Our team includes writers with direct experience in technology, healthcare, finance, engineering, education, NGOs, government, hospitality, and more. When you order, we match you with a writer who understands your industry&apos;s terminology, hiring norms, and what recruiters in that sector value most. This ensures your CV speaks the language of your target employers and demonstrates genuine domain expertise.
+   344→                </p>
+   345→              </div>
+   346→              <div>
+   347→                <h3 className="text-sm font-bold text-gray-800 mb-2">Kenya Market Knowledge</h3>
+   348→                <p className="text-sm text-gray-600 leading-relaxed">
+   349→                  We understand the Kenyan job market inside and out — from the specific formats preferred by government recruitment agencies like the Public Service Commission to the expectations of multinational companies operating in Nairobi. We know what salary ranges to suggest, which professional certifications carry weight locally, and how to position international experience for Kenyan employers. This local expertise is something no generic CV writing service can replicate.
+   350→                </p>
+   351→              </div>
+   352→              <div>
+   353→                <h3 className="text-sm font-bold text-gray-800 mb-2">48-Hour Turnaround</h3>
+   354→                <p className="text-sm text-gray-600 leading-relaxed">
+   355→                  We know that job opportunities in Kenya move quickly, and a delayed application can mean missing out entirely. That&apos;s why we guarantee delivery within 48 hours of receiving your information. For urgent requests, we also offer a 24-hour expedited service. Our efficient process and dedicated team ensure that speed never comes at the expense of quality — every CV we deliver meets the same high professional standards.
+   356→                </p>
+   357→              </div>
+   358→            </div>
+   359→          </div>
+   360→
+   361→          {/* CTA with Email Input */}
+   362→          <div id="cta" className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 md:p-8 border border-emerald-200/60 text-center">
+   363→            <h2 className="text-2xl font-extrabold text-gray-800 mb-3">Ready to Transform Your CV?</h2>
+   364→            <p className="text-sm text-gray-600 mb-6 max-w-lg mx-auto">
+   365→              Join thousands of Kenyan professionals who&apos;ve landed their dream jobs with a professionally written CV. Enter your email below to get started, and our team will reach out within 24 hours with next steps. You can also <Link href="/jobs" className="text-emerald-600 hover:text-emerald-700 font-medium">browse current job openings</Link> while we prepare your documents.
+   366→            </p>
+   367→            <form action="/api/subscribe" method="POST" className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+   368→              <input
+   369→                type="email"
+   370→                name="email"
+   371→                placeholder="Enter your email address"
+   372→                required
+   373→                className="flex-1 w-full px-4 py-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+   374→              />
+   375→              <button
+   376→                type="submit"
+   377→                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition text-sm whitespace-nowrap shadow-md shadow-emerald-200"
+   378→              >
+   379→                Get Started
+   380→              </button>
+   381→            </form>
+   382→            <p className="text-xs text-gray-400 mt-3">
+   383→              No spam. We&apos;ll only contact you about your CV service request.
+   384→            </p>
+   385→          </div>
+   386→
+   387→          {/* Related Blog Links */}
+   388→          <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
+   389→            <h2 className="text-2xl font-extrabold text-gray-800 mb-4">Related Career Resources</h2>
+   390→            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+   391→              While your CV is being prepared, explore our free career resources to sharpen your job search skills. Our blog features in-depth guides written specifically for the Kenyan job market, covering everything from interview preparation to salary negotiation strategies. These articles complement our CV writing service and help you present yourself confidently at every stage of the hiring process.
+   392→            </p>
+   393→            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+   394→              <Link href="/blog" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
+   395→                <i className="fas fa-newspaper text-emerald-600"></i>
+   396→                <div>
+   397→                  <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Browse All Career Articles</span>
+   398→                  <p className="text-xs text-gray-500">Tips, guides, and Kenya job market insights</p>
+   399→                </div>
+   400→              </Link>
+   401→              <Link href="/blog?category=Career Advice" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
+   402→                <i className="fas fa-lightbulb text-emerald-600"></i>
+   403→                <div>
+   404→                  <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Career Advice for Kenyans</span>
+   405→                  <p className="text-xs text-gray-500">Expert guidance for every career stage</p>
+   406→                </div>
+   407→              </Link>
+   408→              <Link href="/faq" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
+   409→                <i className="fas fa-question-circle text-emerald-600"></i>
+   410→                <div>
+   411→                  <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Frequently Asked Questions</span>
+   412→                  <p className="text-xs text-gray-500">Answers about jobs, applications, and more</p>
+   413→                </div>
+   414→              </Link>
+   415→              <Link href="/jobs" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
+   416→                <i className="fas fa-search text-emerald-600"></i>
+   417→                <div>
+   418→                  <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Browse Current Job Openings</span>
+   419→                  <p className="text-xs text-gray-500">Thousands of verified listings across Kenya</p>
+   420→                </div>
+   421→              </Link>
+   422→            </div>
+   423→          </div>
+   424→        </div>
+   425→      </section>
+   426→      <Footer />
+   427→    </>
+   428→  );
+   429→}

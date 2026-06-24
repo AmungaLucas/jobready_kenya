@@ -36,7 +36,7 @@ export default async function Hero() {
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
               <Link
-                href="/upload-cv"
+                href="/cv-services"
                 className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition border border-gray-300 hover:border-emerald-500 px-4 py-1.5 rounded-full bg-white/50"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
