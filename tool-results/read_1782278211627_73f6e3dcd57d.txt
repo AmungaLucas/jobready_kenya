@@ -1,0 +1,814 @@
+     1→     1→export const jobCategoryData = [
+     2→     2→  {
+     3→     3→    value: "TECHNOLOGY",
+     4→     4→    label: "Technology & IT",
+     5→     5→    icon: "fas fa-laptop-code",
+     6→     6→    subcategories: [
+     7→     7→      { value: "SOFTWARE_ENGINEERING", label: "Software Engineering" },
+     8→     8→      { value: "WEB_DEVELOPMENT", label: "Web Development" },
+     9→     9→      { value: "MOBILE_DEVELOPMENT", label: "Mobile Development" },
+    10→    10→      { value: "DATA_SCIENCE", label: "Data Science & Analytics" },
+    11→    11→      { value: "CYBER_SECURITY", label: "Cybersecurity" },
+    12→    12→      { value: "DEVOPS_CLOUD", label: "DevOps & Cloud Infrastructure" },
+    13→    13→      { value: "IT_SUPPORT", label: "IT Support & Helpdesk" },
+    14→    14→      { value: "NETWORK_ADMIN", label: "Network Administration" },
+    15→    15→      { value: "AI_ML", label: "Artificial Intelligence & Machine Learning" },
+    16→    16→      { value: "QA_TESTING", label: "QA & Testing" },
+    17→    17→      { value: "UI_UX_DESIGN", label: "UI/UX Design" },
+    18→    18→      { value: "DATABASE_ADMIN", label: "Database Administration" },
+    19→    19→      { value: "SYSTEM_ADMIN", label: "Systems Administration" },
+    20→    20→      { value: "PRODUCT_MANAGEMENT", label: "Product Management (Tech)" },
+    21→    21→      { value: "TECHNICAL_WRITING", label: "Technical Writing" }
+    22→    22→    ],
+    23→    23→    seoDescription: "The technology and IT sector in Kenya is one of the fastest-growing industries in East Africa, driven by Nairobi's status as a leading tech hub commonly referred to as 'Silicon Savannah.' With the presence of global tech companies, innovative startups, and a thriving developer community, Kenya offers abundant career opportunities for software engineers, data scientists, cybersecurity professionals, and IT specialists. Major employers include Safaricom, KCB Group, and international firms like Microsoft, Google, and Amazon which have established offices in Nairobi. The Kenyan government's digital transformation agenda continues to create demand for IT professionals across both public and private sectors, making technology one of the most lucrative and in-demand career paths in the country."
+    24→    24→  },
+    25→    25→  {
+    26→    26→    value: "HEALTHCARE",
+    27→    27→    label: "Healthcare & Medical",
+    28→    28→    icon: "fas fa-heartbeat",
+    29→    29→    subcategories: [
+    30→    30→      { value: "MEDICAL_DOCTOR", label: "Medical Doctor" },
+    31→    31→      { value: "NURSING", label: "Nursing" },
+    32→    32→      { value: "CLINICAL_OFFICER", label: "Clinical Officer" },
+    33→    33→      { value: "PHARMACY", label: "Pharmacy & Pharmacology" },
+    34→    34→      { value: "MEDICAL_LAB", label: "Medical Laboratory" },
+    35→    35→      { value: "PUBLIC_HEALTH", label: "Public Health" },
+    36→    36→      { value: "DENTISTRY", label: "Dentistry" },
+    37→    37→      { value: "RADIOLOGY", label: "Radiology" },
+    38→    38→      { value: "PHYSIOTHERAPY", label: "Physiotherapy" },
+    39→    39→      { value: "HEALTH_ADMIN", label: "Healthcare Administration" },
+    40→    40→      { value: "NUTRITION", label: "Nutrition & Dietetics" },
+    41→    41→      { value: "HEALTH_RECORDS", label: "Health Records & Information" },
+    42→    42→      { value: "COMMUNITY_HEALTH", label: "Community Health" },
+    43→    43→      { value: "MENTAL_HEALTH", label: "Mental Health" }
+    44→    44→    ],
+    45→    45→    seoDescription: "Kenya's healthcare sector provides extensive career opportunities for medical professionals across the country, from major referral hospitals in Nairobi to county-level health facilities in all 47 counties. The sector employs hundreds of thousands of workers including doctors, nurses, clinical officers, pharmacists, and public health specialists. With the devolution of healthcare services to county governments and the implementation of Universal Health Coverage, demand for qualified healthcare professionals continues to grow. Key employers include the Ministry of Health, Kenyatta National Hospital, Moi Teaching and Referral Hospital, and numerous private hospital networks such as Nairobi Hospital, Aga Khan Hospital, and Avenue Healthcare."
+    46→    46→  },
+    47→    47→  {
+    48→    48→    value: "FINANCE",
+    49→    49→    label: "Finance & Banking",
+    50→    50→    icon: "fas fa-chart-line",
+    51→    51→    subcategories: [
+    52→    52→      { value: "ACCOUNTING", label: "Accounting & Auditing" },
+    53→    53→      { value: "BANKING", label: "Banking & Retail Banking" },
+    54→    54→      { value: "INVESTMENT", label: "Investment & Asset Management" },
+    55→    55→      { value: "INSURANCE", label: "Insurance" },
+    56→    56→      { value: "FINANCIAL_ANALYSIS", label: "Financial Analysis" },
+    57→    57→      { value: "RISK_MANAGEMENT", label: "Risk Management" },
+    58→    58→      { value: "TAXATION", label: "Taxation & Compliance" },
+    59→    59→      { value: "MICROFINANCE", label: "Microfinance" },
+    60→    60→      { value: "FINTECH", label: "FinTech & Digital Payments" },
+    61→    61→      { value: "CREDIT_ANALYSIS", label: "Credit Analysis" },
+    62→    62→      { value: "TREASURY", label: "Treasury Operations" },
+    63→    63→      { value: "FINANCIAL_PLANNING", label: "Financial Planning" },
+    64→    64→      { value: "MORTGAGE", label: "Mortgage & Lending" },
+    65→    65→      { value: "FOREX", label: "Forex & International Trade Finance" }
+    66→    66→    ],
+    67→    67→    seoDescription: "Kenya's financial services sector is the largest and most developed in East Africa, with Nairobi serving as the region's premier financial hub. The country hosts the Nairobi Securities Exchange, numerous commercial banks, insurance companies, investment firms, and a rapidly growing fintech ecosystem led by innovations like M-Pesa. Career opportunities span banking, accounting, investment analysis, risk management, and emerging areas like blockchain and digital lending. Major employers include Equity Bank, KCB Group, Cooperative Bank, Standard Chartered, Absa, and fintech companies like Cellulant and Copia Global. The sector offers competitive salaries and strong career progression paths."
+    68→    68→  },
+    69→    69→  {
+    70→    70→    value: "EDUCATION",
+    71→    71→    label: "Education & Training",
+    72→    72→    icon: "fas fa-graduation-cap",
+    73→    73→    subcategories: [
+    74→    74→      { value: "TEACHING_PRIMARY", label: "Primary School Teaching" },
+    75→    75→      { value: "TEACHING_SECONDARY", label: "Secondary School Teaching" },
+    76→    76→      { value: "UNIVERSITY_LECTURER", label: "University Lecturer" },
+    77→    77→      { value: "TVET_INSTRUCTOR", label: "TVET Instructor" },
+    78→    78→      { value: "EARLY_CHILDHOOD", label: "Early Childhood Education" },
+    79→    79→      { value: "CURRICULUM_DEVELOP", label: "Curriculum Development" },
+    80→    80→      { value: "EDUCATION_ADMIN", label: "Education Administration" },
+    81→    81→      { value: "SPECIAL_NEEDS", label: "Special Needs Education" },
+    82→    82→      { value: "GUIDANCE_COUNSELING", label: "Guidance & Counseling" },
+    83→    83→      { value: "E_LEARNING", label: "E-Learning & EdTech" },
+    84→    84→      { value: "RESEARCH_ACADEMIC", label: "Academic Research" },
+    85→    85→      { value: "LIBRARY", label: "Library & Information Science" },
+    86→    86→      { value: "ADULT_EDUCATION", label: "Adult Education" },
+    87→    87→      { value: "SCHOOL_MANAGEMENT", label: "School Management" }
+    88→    88→    ],
+    89→    89→    seoDescription: "Education is one of Kenya's largest employment sectors, with opportunities spanning early childhood development centres, primary and secondary schools, TVET institutions, universities, and private training centres. The Teachers Service Commission (TSC) is the largest single employer of teachers in the country, managing over 300,000 educators. Beyond teaching, the sector offers roles in curriculum development, educational administration, ICT integration in education, and research. With Kenya's commitment to achieving 100% transition from primary to secondary school and the expansion of TVET institutions under the Big Four Agenda, demand for qualified educators and education professionals remains consistently high across all 47 counties."
+    90→    90→  },
+    91→    91→  {
+    92→    92→    value: "ENGINEERING",
+    93→    93→    label: "Engineering",
+    94→    94→    icon: "fas fa-cogs",
+    95→    95→    subcategories: [
+    96→    96→      { value: "CIVIL_ENGINEERING", label: "Civil Engineering" },
+    97→    97→      { value: "MECHANICAL_ENGINEERING", label: "Mechanical Engineering" },
+    98→    98→      { value: "ELECTRICAL_ENGINEERING", label: "Electrical Engineering" },
+    99→    99→      { value: "CHEMICAL_ENGINEERING", label: "Chemical Engineering" },
+   100→   100→      { value: "ENVIRONMENTAL_ENGINEERING", label: "Environmental Engineering" },
+   101→   101→      { value: "STRUCTURAL_ENGINEERING", label: "Structural Engineering" },
+   102→   102→      { value: "GEOTECHNICAL", label: "Geotechnical Engineering" },
+   103→   103→      { value: "MECHATRONICS", label: "Mechatronics" },
+   104→   104→      { value: "PETROLEUM_ENGINEERING", label: "Petroleum Engineering" },
+   105→   105→      { value: "MINING_ENGINEERING", label: "Mining Engineering" },
+   106→   106→      { value: "BIOMEDICAL_ENGINEERING", label: "Biomedical Engineering" },
+   107→   107→      { value: "AUTOMOTIVE_ENGINEERING", label: "Automotive Engineering" },
+   108→   108→      { value: "MARINE_ENGINEERING", label: "Marine Engineering" },
+   109→   109→      { value: "PROJECT_MANAGEMENT_ENG", label: "Engineering Project Management" }
+   110→   110→    ],
+   111→   111→    seoDescription: "Engineering is a cornerstone of Kenya's infrastructure development and industrial growth. The country's ambitious Vision 2030 development agenda, the Big Four Agenda, and ongoing county-level infrastructure projects have created sustained demand for civil, mechanical, electrical, and environmental engineers. Major infrastructure projects including the Standard Gauge Railway, Nairobi Expressway, and various county road networks provide extensive employment opportunities. Key employers include the Ministry of Transport and Infrastructure, Kenya National Highways Authority, Kenya Rural Roads Authority, consulting firms like SMEC, Norken, and Nippon Koei, and construction companies such as China Road and Bridge Corporation and local firms like H Young and Spencon."
+   112→   112→  },
+   113→   113→  {
+   114→   114→    value: "MARKETING",
+   115→   115→    label: "Marketing & Communications",
+   116→   116→    icon: "fas fa-bullhorn",
+   117→   117→    subcategories: [
+   118→   118→      { value: "DIGITAL_MARKETING", label: "Digital Marketing" },
+   119→   119→      { value: "BRAND_MANAGEMENT", label: "Brand Management" },
+   120→   120→      { value: "PUBLIC_RELATIONS", label: "Public Relations" },
+   121→   121→      { value: "CONTENT_MARKETING", label: "Content Marketing & Copywriting" },
+   122→   122→      { value: "SOCIAL_MEDIA", label: "Social Media Management" },
+   123→   123→      { value: "SEO_SEM", label: "SEO & SEM" },
+   124→   124→      { value: "EVENT_MANAGEMENT", label: "Event Management" },
+   125→   125→      { value: "MEDIA_BUYING", label: "Media Buying & Planning" },
+   126→   126→      { value: "CORP_COMMUNICATIONS", label: "Corporate Communications" },
+   127→   127→      { value: "ADVERTISING", label: "Advertising" },
+   128→   128→      { value: "MARKET_RESEARCH", label: "Market Research & Insights" },
+   129→   129→      { value: "GRAPHIC_DESIGN", label: "Graphic Design" },
+   130→   130→      { value: "VIDEO_PRODUCTION", label: "Video Production" },
+   131→   131→      { value: "INFLUENCER_MARKETING", label: "Influencer Marketing" }
+   132→   132→    ],
+   133→   133→    seoDescription: "Kenya's marketing and communications industry has experienced explosive growth, driven by rapid digital adoption, a young and connected population, and increasing competition among brands. Nairobi is the advertising and media hub of East Africa, hosting leading agencies like Scanad, Ogilvy, and Kenya's own creative powerhouses. With over 20 million internet users and growing social media penetration, digital marketing skills are in especially high demand. Career opportunities span digital marketing, brand strategy, public relations, content creation, social media management, and market research. The sector serves clients across banking, telecom, FMCG, hospitality, and technology industries."
+   134→   134→  },
+   135→   135→  {
+   136→   136→    value: "HUMAN_RESOURCES",
+   137→   137→    label: "Human Resources",
+   138→   138→    icon: "fas fa-users",
+   139→   139→    subcategories: [
+   140→   140→      { value: "HR_GENERALIST", label: "HR Generalist" },
+   141→   141→      { value: "RECRUITMENT", label: "Recruitment & Talent Acquisition" },
+   142→   142→      { value: "HR_BUSINESS_PARTNER", label: "HR Business Partner" },
+   143→   143→      { value: "COMPENSATION_BENEFITS", label: "Compensation & Benefits" },
+   144→   144→      { value: "TRAINING_DEVELOPMENT", label: "Training & Development" },
+   145→   145→      { value: "PERFORMANCE_MANAGEMENT", label: "Performance Management" },
+   146→   146→      { value: "EMPLOYEE_RELATIONS", label: "Employee Relations" },
+   147→   147→      { value: "LABOR_RELATIONS", label: "Labor Relations" },
+   148→   148→      { value: "HR_ANALYTICS", label: "HR Analytics" },
+   149→   149→      { value: "ORG_DEVELOPMENT", label: "Organizational Development" },
+   150→   150→      { value: "PAYROLL", label: "Payroll Administration" },
+   151→   151→      { value: "HR_COMPLIANCE", label: "HR Compliance & Legal" }
+   152→   152→    ],
+   153→   153→    seoDescription: "Human resources professionals play a critical role in Kenya's growing economy, as organizations across all sectors seek to attract, retain, and develop top talent. The Kenyan labour market is dynamic and regulated by the Employment Act, making HR compliance expertise particularly valuable. With the growth of multinational companies setting up regional headquarters in Nairobi, and the expansion of local enterprises, demand for skilled HR professionals in recruitment, talent management, compensation and benefits, and HR analytics continues to rise. Professional certification through bodies like the Institute of Human Resource Management (IHRM) of Kenya is increasingly important for career advancement in this field."
+   154→   154→  },
+   155→   155→  {
+   156→   156→    value: "LEGAL",
+   157→   157→    label: "Legal & Compliance",
+   158→   158→    icon: "fas fa-gavel",
+   159→   159→    subcategories: [
+   160→   160→      { value: "CORPORATE_LAW", label: "Corporate & Commercial Law" },
+   161→   161→      { value: "LITIGATION", label: "Litigation & Dispute Resolution" },
+   162→   162→      { value: "CONVEYANCING", label: "Conveyancing & Property Law" },
+   163→   163→      { value: "COMPLIANCE", label: "Compliance & Regulatory Affairs" },
+   164→   164→      { value: "LEGAL_AID", label: "Legal Aid & Public Interest" },
+   165→   165→      { value: "COMPANY_SECRETARY", label: "Company Secretarial" },
+   166→   166→      { value: "INTELLECTUAL_PROPERTY", label: "Intellectual Property Law" },
+   167→   167→      { value: "TAX_LAW", label: "Tax Law" },
+   168→   168→      { value: "EMPLOYMENT_LAW", label: "Employment & Labour Law" },
+   169→   169→      { value: "ENVIRONMENTAL_LAW", label: "Environmental Law" },
+   170→   170→      { value: "INTERNATIONAL_LAW", label: "International Law" },
+   171→   171→      { value: "LEGAL_RESEARCH", label: "Legal Research" }
+   172→   172→    ],
+   173→   173→    seoDescription: "Kenya's legal profession offers diverse career opportunities in corporate law, litigation, public interest law, and regulatory compliance. As the financial and legal hub of East Africa, Nairobi hosts the headquarters of numerous law firms, multinational corporations, and international organizations that require legal expertise. The Judiciary, the Office of the Attorney General, and various regulatory bodies provide public sector opportunities. Key areas of growth include corporate commercial law driven by foreign investment, compliance and anti-money laundering regulation, and technology law. Admission to the Roll of Advocates requires completion of a law degree and the Advocates Training Programme at the Kenya School of Law."
+   174→   174→  },
+   175→   175→  {
+   176→   176→    value: "GOVERNMENT",
+   177→   177→    label: "Government & Public Sector",
+   178→   178→    icon: "fas fa-landmark",
+   179→   179→    subcategories: [
+   180→   180→      { value: "CIVIL_SERVICE", label: "Civil Service & Administration" },
+   181→   181→      { value: "COUNTY_GOVERNMENT", label: "County Government" },
+   182→   182→      { value: "POLICE_SECURITY", label: "Police & Security Services" },
+   183→   183→      { value: "DEFENSE", label: "Defense & Military" },
+   184→   184→      { value: "FOREIGN Affairs", label: "Foreign Affairs & Diplomacy" },
+   185→   185→      { value: "PUBLIC_POLICY", label: "Public Policy & Research" },
+   186→   186→      { value: "REVENUE_COLLECTION", label: "Revenue & Tax Administration" },
+   187→   187→      { value: "PROCUREMENT", label: "Public Procurement" },
+   188→   188→      { value: "AUDIT", label: "Public Audit & Accountability" },
+   189→   189→      { value: "IMMIGRATION", label: "Immigration & Citizenship" },
+   190→   190→      { value: "LANDS", label: "Lands & Physical Planning" },
+   191→   191→      { value: "SOCIAL_PROTECTION", label: "Social Protection & Welfare" }
+   192→   192→    ],
+   193→   193→    seoDescription: "The Government of Kenya is the single largest employer in the country, providing jobs at national and county government levels across all 47 counties. Following the 2010 Constitution and devolution, county governments have become significant employers, creating thousands of new positions in administration, health, education, infrastructure, and social services. National government opportunities exist across ministries, departments, and agencies including the Kenya Revenue Authority, the National Police Service, the Kenya Defence Forces, and various state corporations. Government jobs are highly sought after for their job security, benefits, and pension schemes. Recruitment is coordinated through the Public Service Commission for national positions and County Public Service Boards for county roles."
+   194→   194→  },
+   195→   195→  {
+   196→   196→    value: "CONSTRUCTION",
+   197→   197→    label: "Construction & Real Estate",
+   198→   198→    icon: "fas fa-hard-hat",
+   199→   199→    subcategories: [
+   200→   200→      { value: "SITE_MANAGEMENT", label: "Site Management & Supervision" },
+   201→   201→      { value: "ARCHITECTURE", label: "Architecture" },
+   202→   202→      { value: "QUANTITY_SURVEYING", label: "Quantity Surveying" },
+   203→   203→      { value: "BUILDING_INSPECTION", label: "Building Inspection & Quality" },
+   204→   204→      { value: "INTERIOR_DESIGN", label: "Interior Design" },
+   205→   205→      { value: "REAL_ESTATE", label: "Real Estate & Property Management" },
+   206→   206→      { value: "LAND_SURVEYING", label: "Land Surveying" },
+   207→   207→      { value: "CONSTRUCTION_SAFETY", label: "Health & Safety (Construction)" },
+   208→   208→      { value: "PROJECT_MANAGEMENT_CON", label: "Construction Project Management" },
+   209→   209→      { value: "ESTATE_AGENCY", label: "Estate Agency & Valuation" },
+   210→   210→      { value: "FACILITIES_MANAGEMENT", label: "Facilities Management" },
+   211→   211→      { value: "URBAN_PLANNING", label: "Urban & Regional Planning" }
+   212→   212→    ],
+   213→   213→    seoDescription: "Kenya's construction and real estate sector is a major economic driver, contributing approximately 7% to GDP and employing hundreds of thousands of workers. Nairobi's skyline continues to transform with new commercial and residential developments, while county capitals across the country are experiencing their own construction booms. The Kenya Vision 2030 blueprint identifies housing as a key pillar under the Big Four Agenda, targeting the delivery of 500,000 affordable housing units. This has created massive demand for architects, quantity surveyors, project managers, site supervisors, and real estate professionals. Major developments like the Nairobi-Mombasa Expressway, Konza Technopolis, and various Special Economic Zones continue to generate employment opportunities."
+   214→   214→  },
+   215→   215→  {
+   216→   216→    value: "AGRICULTURE",
+   217→   217→    label: "Agriculture & Agribusiness",
+   218→   218→    icon: "fas fa-seedling",
+   219→   219→    subcategories: [
+   220→   220→      { value: "AGRONOMY", label: "Agronomy & Crop Science" },
+   221→   221→      { value: "ANIMAL_HUSBANDRY", label: "Animal Husbandry & Veterinary" },
+   222→   222→      { value: "AGRI_BUSINESS", label: "Agribusiness Management" },
+   223→   223→      { value: "HORTICULTURE", label: "Horticulture & Floriculture" },
+   224→   224→      { value: "AGRICULTURAL_ENGINEERING", label: "Agricultural Engineering" },
+   225→   225→      { value: "FOOD_SCIENCE", label: "Food Science & Technology" },
+   226→   226→      { value: "FISHERIES", label: "Fisheries & Aquaculture" },
+   227→   227→      { value: "FORESTRY", label: "Forestry & Natural Resources" },
+   228→   228→      { value: "SOIL_SCIENCE", label: "Soil Science & Conservation" },
+   229→   229→      { value: "AGRI_EXTENSION", label: "Agricultural Extension Services" },
+   230→   230→      { value: "DAIRY", label: "Dairy Farming & Processing" },
+   231→   231→      { value: "AGRI_ECONOMICS", label: "Agricultural Economics" },
+   232→   232→      { value: "TEA_COFFEE", label: "Tea & Coffee Production" },
+   233→   233→      { value: "SEED_TECHNOLOGY", label: "Seed Technology" }
+   234→   234→    ],
+   235→   235→    seoDescription: "Agriculture remains the backbone of Kenya's economy, contributing approximately 20-25% of GDP and employing over 40% of the total population. The sector offers diverse career opportunities from large-scale commercial farming to smallholder support services, agribusiness management, and agricultural research. Kenya is a leading exporter of tea, coffee, horticultural products, and cut flowers, with major markets in Europe and the Middle East. The sector is undergoing significant modernization through precision agriculture, agro-processing, and digital farming solutions. Key employers include the Kenya Agricultural and Livestock Research Organization (KALRO), the Tea Board of Kenya, Kenya Flower Council, and numerous private agribusiness companies and international NGOs working in agricultural development."
+   236→   236→  },
+   237→   237→  {
+   238→   238→    value: "MANUFACTURING",
+   239→   239→    label: "Manufacturing & Production",
+   240→   240→    icon: "fas fa-industry",
+   241→   241→    subcategories: [
+   242→   242→      { value: "PRODUCTION_MANAGEMENT", label: "Production Management" },
+   243→   243→      { value: "QUALITY_ASSURANCE", label: "Quality Assurance & Control" },
+   244→   244→      { value: "MAINTENANCE", label: "Plant Maintenance & Engineering" },
+   245→   245→      { value: "SUPPLY_CHAIN", label: "Supply Chain & Logistics" },
+   246→   246→      { value: "PROCESS_ENGINEERING", label: "Process Engineering" },
+   247→   247→      { value: "PACKAGING", label: "Packaging Technology" },
+   248→   248→      { value: "LEAN_MANUFACTURING", label: "Lean Manufacturing" },
+   249→   249→      { value: "HEALTH_SAFETY", label: "Health, Safety & Environment" },
+   250→   250→      { value: "TEXTILE_MANUFACTURING", label: "Textile & Apparel Manufacturing" },
+   251→   251→      { value: "FOOD_BEVERAGE_PROD", label: "Food & Beverage Production" },
+   252→   252→      { value: "PHARMA_MANUFACTURING", label: "Pharmaceutical Manufacturing" },
+   253→   253→      { value: "AUTOMOTIVE_MANUFACTURING", label: "Automotive Manufacturing" },
+   254→   254→      { value: "COSMETICS_MANUFACTURING", label: "Cosmetics & Chemical Manufacturing" }
+   255→   255→    ],
+   256→   256→    seoDescription: "Kenya's manufacturing sector is a key pillar of economic development, contributing approximately 8% to GDP. The government's industrialization agenda aims to raise manufacturing's contribution to 15% of GDP by 2030, creating significant employment opportunities. The country has established Export Processing Zones (EPZs) and Special Economic Zones (SEZs) to attract manufacturing investment. Major manufacturing hubs are located in Nairobi, Mombasa, Thika, Nakuru, and Eldoret. Key industries include food and beverage processing, pharmaceuticals, textiles and apparel, cement, motor vehicle assembly, and consumer goods. Major employers include East African Breweries, Bidco Africa, Unilever, Bamburi Cement, and numerous export-oriented manufacturers in the EPZs."
+   257→   257→  },
+   258→   258→  {
+   259→   259→    value: "HOSPITALITY_TOURISM",
+   260→   260→    label: "Hospitality & Tourism",
+   261→   261→    icon: "fas fa-hotel",
+   262→   262→    subcategories: [
+   263→   263→      { value: "HOTEL_MANAGEMENT", label: "Hotel Management" },
+   264→   264→      { value: "FOOD_BEVERAGE", label: "Food & Beverage Service" },
+   265→   265→      { value: "TRAVEL_TOURISM", label: "Travel & Tourism Operations" },
+   266→   266→      { value: "CHEF_CULINARY", label: "Chef & Culinary Arts" },
+   267→   267→      { value: "EVENT_PLANNING", label: "Event Planning & Coordination" },
+   268→   268→      { value: "TOUR_GUIDE", label: "Tour Guiding & Safari Operations" },
+   269→   269→      { value: "FRONT_OFFICE", label: "Front Office & Guest Relations" },
+   270→   270→      { value: "HOUSEKEEPING", label: "Housekeeping & Facilities" },
+   271→   271→      { value: "RECREATION", label: "Recreation & Leisure Management" },
+   272→   272→      { value: "AVIATION_HOSPITALITY", label: "Aviation & Airline Hospitality" },
+   273→   273→      { value: "RESTAURANT_MANAGEMENT", label: "Restaurant Management" },
+   274→   274→      { value: "TOURISM_MARKETING", label: "Tourism Marketing & Sales" }
+   275→   275→    ],
+   276→   276→    seoDescription: "Kenya's hospitality and tourism sector is a leading foreign exchange earner and a major employer, directly and indirectly supporting millions of livelihoods. The country is globally renowned for its wildlife safaris, coastal beaches, cultural heritage, and conference tourism. Nairobi is a major conference destination in Africa, hosting numerous international meetings and events. The sector provides career opportunities in hotel management, travel operations, culinary arts, tour guiding, and tourism marketing. Major employers include leading hotel chains like Serena Hotels, Sarova Hotels, Kempinski, and Fairmont, as well as tour operators like Safarilink, Air Kenya, and hundreds of boutique lodges and camps across national parks and reserves."
+   277→   277→  },
+   278→   278→  {
+   279→   279→    value: "LOGISTICS",
+   280→   280→    label: "Logistics & Supply Chain",
+   281→   281→    icon: "fas fa-truck",
+   282→   282→    subcategories: [
+   283→   283→      { value: "WAREHOUSING", label: "Warehousing & Distribution" },
+   284→   284→      { value: "CUSTOMS_CLEARING", label: "Customs Clearing & Forwarding" },
+   285→   285→      { value: "FLEET_MANAGEMENT", label: "Fleet Management" },
+   286→   286→      { value: "PROCUREMENT", label: "Procurement & Sourcing" },
+   287→   287→      { value: "IMPORT_EXPORT", label: "Import & Export Coordination" },
+   288→   288→      { value: "LAST_MILE", label: "Last-Mile Delivery" },
+   289→   289→      { value: "COLD_CHAIN", label: "Cold Chain Logistics" },
+   290→   290→      { value: "PORT_OPERATIONS", label: "Port & Maritime Operations" },
+   291→   291→      { value: "INVENTORY_MANAGEMENT", label: "Inventory Management" },
+   292→   292→      { value: "SUPPLY_CHAIN_ANALYTICS", label: "Supply Chain Analytics" },
+   293→   293→      { value: "LOGISTICS_TECH", label: "Logistics Technology" },
+   294→   294→      { value: "FREIGHT", label: "Freight & Cargo Management" }
+   295→   295→    ],
+   296→   296→    seoDescription: "Kenya's strategic location as a gateway to East and Central Africa makes it a logistics and supply chain hub for the region. The Port of Mombasa is the largest seaport in East Africa, handling cargo for Kenya and landlocked neighbouring countries including Uganda, Rwanda, Burundi, South Sudan, and the eastern Democratic Republic of Congo. The Standard Gauge Railway has significantly improved cargo transport between Mombasa and Nairobi. Kenya's logistics sector employs hundreds of thousands in warehousing, clearing and forwarding, fleet management, and last-mile delivery. The growth of e-commerce has further boosted demand for logistics professionals, with companies like Safaricom's Sendy, Glovo, and Jumia creating numerous delivery and logistics roles."
+   297→   297→  },
+   298→   298→  {
+   299→   299→    value: "NGO_DEVELOPMENT",
+   300→   300→    label: "NGO & International Development",
+   301→   301→    icon: "fas fa-globe-africa",
+   302→   302→    subcategories: [
+   303→   303→      { value: "PROGRAM_MANAGEMENT", label: "Programme Management" },
+   304→   304→      { value: "MONITORING_EVALUATION", label: "Monitoring & Evaluation" },
+   305→   305→      { value: "GRANTS_MANAGEMENT", label: "Grants Management" },
+   306→   306→      { value: "COMMUNITY_DEVELOPMENT", label: "Community Development" },
+   307→   307→      { value: "HUMANITARIAN", label: "Humanitarian Aid & Relief" },
+   308→   308→      { value: "GENDER_DEVELOPMENT", label: "Gender & Social Inclusion" },
+   309→   309→      { value: "ENVIRONMENTAL_CONSERV", label: "Environmental Conservation" },
+   310→   310→      { value: "HEALTH_PROGRAMMING", label: "Health Programming" },
+   311→   311→      { value: "EDUCATION_PROGRAMMING", label: "Education Programming" },
+   312→   312→      { value: "ADVOCACY", label: "Advocacy & Policy" },
+   313→   313→      { value: "RESOURCE_MOBILIZATION", label: "Resource Mobilization" },
+   314→   314→      { value: "DATA_MANAGEMENT", label: "Data Management (Development)" },
+   315→   315→      { value: "WASH", label: "WASH (Water, Sanitation, Hygiene)" }
+   316→   316→    ],
+   317→   317→    seoDescription: "Kenya hosts one of the largest concentrations of non-governmental organizations and international development agencies in Africa. Nairobi serves as the regional headquarters for numerous UN agencies, international NGOs, and bilateral development organizations. The NGO sector employs tens of thousands of professionals in programme management, monitoring and evaluation, grants management, humanitarian response, and community development. Key employers include UN agencies like UNICEF, UNHCR, WFP, and UNEP, international NGOs like World Vision, Save the Children, Oxfam, and CARE, and local organizations like Amref Health Africa and Kenya Red Cross. Careers in this sector offer competitive salaries, international exposure, and the opportunity to contribute to meaningful social impact."
+   318→   318→  },
+   319→   319→  {
+   320→   320→    value: "MEDIA",
+   321→   321→    label: "Media & Entertainment",
+   322→   322→    icon: "fas fa-film",
+   323→   323→    subcategories: [
+   324→   324→      { value: "JOURNALISM", label: "Journalism & News Reporting" },
+   325→   325→      { value: "BROADCASTING", label: "Broadcasting & TV Production" },
+   326→   326→      { value: "RADIO", label: "Radio Production & Presentation" },
+   327→   327→      { value: "DIGITAL_MEDIA", label: "Digital Media & Content Creation" },
+   328→   328→      { value: "FILM_PRODUCTION", label: "Film Production & Direction" },
+   329→   329→      { value: "PHOTOGRAPHY", label: "Photography & Videography" },
+   330→   330→      { value: "MUSIC", label: "Music & Audio Production" },
+   331→   331→      { value: "PUBLISHING", label: "Publishing & Editing" },
+   332→   332→      { value: "ACTING", label: "Acting & Theatre Arts" },
+   333→   333→      { value: "NEW_MEDIA", label: "New Media & Podcasting" },
+   334→   334→      { value: "MEDIA_MANAGEMENT", label: "Media Management" },
+   335→   335→      { value: "DOCUMENTARY", label: "Documentary Production" }
+   336→   336→    ],
+   337→   337→    seoDescription: "Kenya's media and entertainment industry is the most vibrant and sophisticated in East Africa, with a robust landscape of television stations, radio networks, digital platforms, and a growing film industry often referred to as 'Riverwood.' The country has a strong tradition of journalism and is considered a media hub for the region, with major media houses like Nation Media Group, Standard Media Group, Royal Media Services, and MediaMax operating multiple TV and radio stations. The creative economy is gaining momentum, with Kenya's music, film, and digital content reaching global audiences through platforms like YouTube, Netflix, and Showmax. Career opportunities are expanding in digital content creation, podcasting, social media influencing, and streaming media production."
+   338→   338→  },
+   339→   339→  {
+   340→   340→    value: "TELECOMMUNICATIONS",
+   341→   341→    label: "Telecommunications",
+   342→   342→    icon: "fas fa-wifi",
+   343→   343→    subcategories: [
+   344→   344→      { value: "NETWORK_ENGINEERING", label: "Network Engineering" },
+   345→   345→      { value: "TELECOM_SALES", label: "Telecom Sales & Distribution" },
+   346→   346→      { value: "RF_ENGINEERING", label: "RF Engineering" },
+   347→   347→      { value: "FIBER_OPTICS", label: "Fiber Optics & Transmission" },
+   348→   348→      { value: "VAS", label: "Value Added Services" },
+   349→   349→      { value: "MOBILE_MONEY", label: "Mobile Money & Digital Payments" },
+   350→   350→      { value: "TELECOM_MANAGEMENT", label: "Telecom Management" },
+   351→   351→      { value: "CUSTOMER_EXPERIENCE", label: "Customer Experience" },
+   352→   352→      { value: "PRODUCT_DEV_TELECOM", label: "Product Development" },
+   353→   353→      { value: "SATELLITE", label: "Satellite Communications" }
+   354→   354→    ],
+   355→   355→    seoDescription: "Kenya is a global leader in mobile telecommunications innovation, home to M-Pesa, the world's most successful mobile money service. The telecommunications sector is one of the most dynamic industries in the country, driven by Safaricom, Airtel Kenya, and Telkom Kenya. With mobile penetration exceeding 95% and growing demand for data services, the sector continues to invest heavily in 4G and 5G network expansion, fiber optic infrastructure, and digital services. Career opportunities span network engineering, product development, mobile money operations, customer experience, and telecommunications management. The sector offers some of the most competitive salary packages in Kenya and provides excellent career development opportunities."
+   356→   356→  },
+   357→   357→  {
+   358→   358→    value: "RETAIL",
+   359→   359→    label: "Retail & E-Commerce",
+   360→   360→    icon: "fas fa-shopping-cart",
+   361→   361→    subcategories: [
+   362→   362→      { value: "RETAIL_MANAGEMENT", label: "Retail Management" },
+   363→   363→      { value: "MERCHANDISING", label: "Merchandising & Visual Display" },
+   364→   364→      { value: "E_COMMERCE", label: "E-Commerce Operations" },
+   365→   365→      { value: "LOSS_PREVENTION", label: "Loss Prevention & Security" },
+   366→   366→      { value: "SUPPLY_CHAIN_RETAIL", label: "Retail Supply Chain" },
+   367→   367→      { value: "CUSTOMER_SERVICE", label: "Customer Service & Experience" },
+   368→   368→      { value: "STORE_OPERATIONS", label: "Store Operations" },
+   369→   369→      { value: "CATEGORY_MANAGEMENT", label: "Category Management" },
+   370→   370→      { value: "RETAIL_BUYING", label: "Retail Buying" },
+   371→   371→      { value: "WAREHOUSE_RETAIL", label: "Retail Warehousing" },
+   372→   372→      { value: "ONLINE_MARKETPLACES", label: "Online Marketplace Management" }
+   373→   373→    ],
+   374→   374→    seoDescription: "Kenya's retail sector is undergoing rapid transformation, driven by the growth of formal retail chains, supermarket expansion into county towns, and the explosive growth of e-commerce. The country's young, tech-savvy population and high mobile money adoption have made Kenya one of Africa's leading e-commerce markets. Major players include Tuskys, Naivas, Quickmart, Carrefour, and Chandarana in traditional retail, alongside Jumia, Kilimall, and Jiji in e-commerce. Career opportunities are growing in retail management, e-commerce operations, supply chain, merchandising, and customer experience. The sector provides entry-level to senior management positions and is a significant employer of youth in Kenya."
+   375→   375→  },
+   376→   376→  {
+   377→   377→    value: "ENERGY",
+   378→   378→    label: "Energy & Utilities",
+   379→   379→    icon: "fas fa-bolt",
+   380→   380→    subcategories: [
+   381→   381→      { value: "RENEWABLE_ENERGY", label: "Renewable Energy" },
+   382→   382→      { value: "ELECTRICAL_ENGINEERING_EN", label: "Electrical Engineering (Energy)" },
+   383→   383→      { value: "OIL_GAS", label: "Oil & Gas" },
+   384→   384→      { value: "ENERGY_MANAGEMENT", label: "Energy Management" },
+   385→   385→      { value: "SOLAR", label: "Solar Energy" },
+   386→   386→      { value: "GEOTHERMAL", label: "Geothermal Energy" },
+   387→   387→      { value: "WATER_UTILITIES", label: "Water & Sanitation Utilities" },
+   388→   388→      { value: "POWER_DISTRIBUTION", label: "Power Distribution" },
+   389→   389→      { value: "ENERGY_POLICY", label: "Energy Policy & Regulation" },
+   390→   390→      { value: "PETROLEUM_ENGINEERING_EN", label: "Petroleum Engineering" },
+   391→   391→      { value: "WIND_ENERGY", label: "Wind Energy" }
+   392→   392→    ],
+   393→   393→    seoDescription: "Kenya is a global leader in renewable energy, with approximately 90% of its electricity generated from renewable sources including geothermal, hydro, wind, and solar power. The country has the largest geothermal capacity in Africa and continues to expand its renewable energy portfolio. The energy sector offers exciting career opportunities in renewable energy engineering, power distribution, energy management, and petroleum exploration. Key employers include Kenya Electricity Generating Company (KenGen), Kenya Power, Geothermal Development Company, the Ministry of Energy, and numerous private sector players in solar, wind, and mini-grid development. Kenya's commitment to 100% renewable electricity by 2030 continues to drive investment and job creation in this sector."
+   394→   394→  },
+   395→   395→  {
+   396→   396→    value: "AUTOMOTIVE",
+   397→   397→    label: "Automotive & Transport",
+   398→   398→    icon: "fas fa-car",
+   399→   399→    subcategories: [
+   400→   400→      { value: "MECHANIC", label: "Automotive Mechanics" },
+   401→   401→      { value: "AUTO_ELECTRICS", label: "Auto Electrics & Diagnostics" },
+   402→   402→      { value: "DRIVING", label: "Professional Driving" },
+   403→   403→      { value: "FLEET_MANAGEMENT_AUTO", label: "Fleet Management" },
+   404→   404→      { value: "SALES_AUTO", label: "Automotive Sales" },
+   405→   405→      { value: "PARTS", label: "Spare Parts & Accessories" },
+   406→   406→      { value: "VEHICLE_INSPECTION", label: "Vehicle Inspection" },
+   407→   407→      { value: "LOGISTICS_AUTO", label: "Automotive Logistics" },
+   408→   408→      { value: "EV_TECH", label: "Electric Vehicle Technology" },
+   409→   409→      { value: "AUTOMOTIVE_DESIGN", label: "Automotive Design" }
+   410→   410→    ],
+   411→   411→    seoDescription: "Kenya's automotive and transport sector is a significant employer, encompassing vehicle manufacturing, assembly, sales, maintenance, and transport services. The country has several vehicle assembly plants including those operated by Toyota, Isuzu, and Simba Corporation. The matatu (public transport) sector is a major employer and a uniquely Kenyan industry, while formal bus and taxi services continue to grow. With the global shift towards electric vehicles, Kenya is beginning to see EV adoption, creating new career opportunities in EV technology and charging infrastructure. The sector provides diverse career paths from technical roles in mechanics and auto-electrics to management positions in fleet management, automotive sales, and logistics."
+   412→   412→  },
+   413→   413→  {
+   414→   414→    value: "INSURANCE",
+   415→   415→    label: "Insurance",
+   416→   416→    icon: "fas fa-shield-alt",
+   417→   417→    subcategories: [
+   418→   418→      { value: "UNDERWRITING", label: "Underwriting" },
+   419→   419→      { value: "CLAIMS", label: "Claims Adjustment" },
+   420→   420→      { value: "INSURANCE_SALES", label: "Insurance Sales" },
+   421→   421→      { value: "RISK_ASSESSMENT", label: "Risk Assessment" },
+   422→   422→      { value: "INSURANCE_BROKER", label: "Insurance Broker" },
+   423→   423→      { value: "ACTUARIAL", label: "Actuarial Science" },
+   424→   424→      { value: "POLICY_ADMIN", label: "Policy Administration" },
+   425→   425→      { value: "LOSS_CONTROL", label: "Loss Control" },
+   426→   426→      { value: "REINSURANCE", label: "Reinsurance" },
+   427→   427→      { value: "INSURANCE_ANALYTICS", label: "Insurance Analytics" },
+   428→   428→      { value: "LIFE_INSURANCE", label: "Life Insurance" },
+   429→   429→      { value: "HEALTH_INSURANCE", label: "Health Insurance" },
+   430→   430→      { value: "PROPERTY_INSURANCE", label: "Property Insurance" },
+   431→   431→      { value: "CASUALTY_INSURANCE", label: "Casualty Insurance" },
+   432→   432→      { value: "MICRO_INSURANCE", label: "Micro-Insurance" }
+   433→   433→    ],
+   434→   434→    seoDescription: "Kenya's insurance industry is the fourth largest in Africa and continues to grow as financial inclusion initiatives expand access to insurance products across the population. The Insurance Regulatory Authority (IRA) oversees a sector comprising life insurance companies, general insurance companies, reinsurance companies, insurance brokers, and agents. With an insurance penetration rate that is still relatively low compared to global standards, there is significant room for growth, creating abundant career opportunities. Major players include Jubilee Holdings, UAP Old Mutual, Kenya Reinsurance Corporation, CIC Insurance, and Britam. The sector offers careers in underwriting, actuarial science, claims management, risk assessment, and insurance technology innovations."
+   435→   435→  },
+   436→   436→  {
+   437→   437→    value: "PHARMACEUTICAL",
+   438→   438→    label: "Pharmaceuticals",
+   439→   439→    icon: "fas fa-pills",
+   440→   440→    subcategories: [
+   441→   441→      { value: "PHARMACY_PRACTICE", label: "Pharmacy Practice" },
+   442→   442→      { value: "PHARMACEUTICAL_SALES", label: "Pharmaceutical Sales" },
+   443→   443→      { value: "DRUG_REGULATION", label: "Drug Regulation & Safety" },
+   444→   444→      { value: "CLINICAL_RESEARCH", label: "Clinical Research" },
+   445→   445→      { value: "QUALITY_CONTROL_PHARMA", label: "Quality Control" },
+   446→   446→      { value: "PHARMACOVIGILANCE", label: "Pharmacovigilance" },
+   447→   447→      { value: "MANUFACTURING_PHARMA", label: "Pharmaceutical Manufacturing" },
+   448→   448→      { value: "MEDICAL_REPRESENTATION", label: "Medical Representation" },
+   449→   449→      { value: "REGULATORY_AFFAIRS", label: "Regulatory Affairs" },
+   450→   450→      { value: "BIOTECH", label: "Biotechnology" }
+   451→   451→    ],
+   452→   452→    seoDescription: "Kenya's pharmaceutical sector plays a vital role in healthcare delivery across East Africa, with the country serving as a major distribution hub for medicines and medical supplies in the region. The Pharmacy and Poisons Board regulates the sector, ensuring quality standards and safety. Kenya has a growing local pharmaceutical manufacturing industry, with companies like Dawa Ltd, Lab & Allied, and Universal Corporation producing essential medicines. Career opportunities span community and hospital pharmacy practice, pharmaceutical sales, clinical research, drug regulation, quality control, and manufacturing. The sector offers competitive remuneration and is increasingly attracting professionals with backgrounds in science, business, and technology."
+   453→   453→  },
+   454→   454→  {
+   455→   455→    value: "MINING",
+   456→   456→    label: "Mining & Geology",
+   457→   457→    icon: "fas fa-gem",
+   458→   458→    subcategories: [
+   459→   459→      { value: "MINING_ENGINEERING", label: "Mining Engineering" },
+   460→   460→      { value: "GEOLOGY", label: "Geology & Geoscience" },
+   461→   461→      { value: "MINERAL_PROCESSING", label: "Mineral Processing" },
+   462→   462→      { value: "ENVIRONMENTAL_MINING", label: "Environmental Management" },
+   463→   463→      { value: "MINE_SURVEYING", label: "Mine Surveying" },
+   464→   464→      { value: "HEALTH_SAFETY_MINING", label: "Health & Safety (Mining)" },
+   465→   465→      { value: "EXPLORATION", label: "Mineral Exploration" },
+   466→   466→      { value: "METALLURGY", label: "Metallurgy" }
+   467→   467→    ],
+   468→   468→    seoDescription: "Kenya's mining sector is emerging as a significant contributor to the national economy, with the country endowed with a variety of minerals including titanium, fluorspar, soda ash, limestone, gold, and rare earth elements. Recent discoveries of mineral deposits in various counties have attracted both local and international mining companies. The Mining Act of 2016 provides a modern regulatory framework that has increased investor confidence. Career opportunities exist in mining engineering, geology, mineral processing, environmental management, and mine health and safety. The government body responsible for the sector is the Ministry of Mining, Blue Economy and Maritime Affairs, working alongside the Mineral Appraisal and Mining Corporation."
+   469→   469→  },
+   470→   470→  {
+   471→   471→    value: "SECURITY",
+   472→   472→    label: "Security & Defense",
+   473→   473→    icon: "fas fa-user-shield",
+   474→   474→    subcategories: [
+   475→   475→      { value: "CYBER_SECURITY_ROLES", label: "Cybersecurity" },
+   476→   476→      { value: "PHYSICAL_SECURITY", label: "Physical Security" },
+   477→   477→      { value: "SECURITY_MANAGEMENT", label: "Security Management" },
+   478→   478→      { value: "INVESTIGATIONS", label: "Investigations & Intelligence" },
+   479→   479→      { value: "CLOSE_PROTECTION", label: "Close Protection & VIP Security" },
+   480→   480→      { value: "FIRE_SAFETY", label: "Fire Safety & Prevention" },
+   481→   481→      { value: "ACCESS_CONTROL", label: "Access Control Systems" },
+   482→   482→      { value: "SECURITY_CONSULTING", label: "Security Consulting" },
+   483→   483→      { value: "RISK_ANALYSIS", label: "Security Risk Analysis" },
+   484→   484→      { value: "SURVEILLANCE", label: "Surveillance & Monitoring" }
+   485→   485→    ],
+   486→   486→    seoDescription: "Kenya's security industry has experienced significant growth in response to evolving security challenges including terrorism, cybercrime, and physical security threats. The sector encompasses both public security services (police, military, intelligence) and a rapidly expanding private security industry. Private security firms such as G4S Kenya, Securitas, KK Security, and Wells Fargo employ tens of thousands of security personnel across the country. With increasing digitalization, cybersecurity has become one of the fastest-growing specializations, with demand far outstripping supply for qualified professionals. Career opportunities range from entry-level security officer positions to senior roles in security management, risk analysis, and cybersecurity consulting."
+   487→   487→  },
+   488→   488→  {
+   489→   489→    value: "SPORTS",
+   490→   490→    label: "Sports & Recreation",
+   491→   491→    icon: "fas fa-futbol",
+   492→   492→    subcategories: [
+   493→   493→      { value: "SPORTS_MANAGEMENT", label: "Sports Management" },
+   494→   494→      { value: "COACHING", label: "Coaching & Training" },
+   495→   495→      { value: "SPORTS_MEDICINE", label: "Sports Medicine" },
+   496→   496→      { value: "FITNESS", label: "Fitness & Personal Training" },
+   497→   497→      { value: "SPORTS_JOURNALISM", label: "Sports Journalism" },
+   498→   498→      { value: "EVENT_ORGANIZATION", label: "Sports Event Organization" },
+   499→   499→      { value: "SPORTS_MARKETING", label: "Sports Marketing" },
+   500→   500→      { value: "RECREATION_MANAGEMENT", label: "Recreation Management" },
+   501→   501→      { value: "SPORTS_ADMIN", label: "Sports Administration" },
+   502→   502→      { value: "ESPORTS", label: "E-Sports & Gaming" }
+   503→   503→    ],
+   504→   504→    seoDescription: "Kenya is globally renowned for its dominance in long-distance running and athletics, producing world champions and Olympic medalists consistently. Beyond athletics, Kenya's sports industry encompasses football, rugby, cricket, basketball, and emerging areas like e-sports and gaming. The Sports Act of 2013 established a framework for sports governance in the country, and the Ministry of Sports, Culture and Heritage oversees the sector. Career opportunities exist in sports management, coaching, sports medicine, fitness training, and sports marketing. The growth of commercial sports leagues, fitness centres, and sports betting has created new employment pathways. Key institutions include the Kenya Academy of Sports and various national sports federations."
+   505→   505→  },
+   506→   506→  {
+   507→   507→    value: "ENVIRONMENT",
+   508→   508→    label: "Environment & Conservation",
+   509→   509→    icon: "fas fa-leaf",
+   510→   510→    subcategories: [
+   511→   511→      { value: "ENVIRONMENTAL_CONSERV", label: "Environmental Conservation" },
+   512→   512→      { value: "CLIMATE_CHANGE", label: "Climate Change & Sustainability" },
+   513→   513→      { value: "NATURAL_RESOURCE_MANAGE", label: "Natural Resource Management" },
+   514→   514→      { value: "WASTE_MANAGEMENT", label: "Waste Management" },
+   515→   515→      { value: "WATER_RESOURCES", label: "Water Resources Management" },
+   516→   516→      { value: "ENVIRONMENTAL_IMPACT", label: "Environmental Impact Assessment" },
+   517→   517→      { value: "WILDLIFE_CONSERVATION", label: "Wildlife Conservation" },
+   518→   518→      { value: "RENEWABLE_ENERGY_ENV", label: "Renewable Energy" },
+   519→   519→      { value: "GREEN_BUILDING", label: "Green Building & Design" },
+   520→   520→      { value: "ENVIRONMENTAL_POLICY", label: "Environmental Policy" }
+   521→   521→    ],
+   522→   522→    seoDescription: "Kenya is at the forefront of environmental conservation and climate action in Africa, with the country hosting the United Nations Environment Programme (UNEP) headquarters in Nairobi. Kenya's rich biodiversity, including iconic wildlife species and diverse ecosystems from the coast to Mount Kenya, makes environmental conservation a national priority. The sector offers career opportunities in wildlife conservation, climate change adaptation, natural resource management, environmental impact assessment, and waste management. Key employers include the Kenya Wildlife Service, National Environment Management Authority (NEMA), Kenya Forest Service, international conservation organizations like WWF and Wildlife Conservation Society, and numerous community-based conservation organizations."
+   523→   523→  },
+   524→   524→  {
+   525→   525→    value: "REAL_ESTATE",
+   526→   526→    label: "Real Estate & Property",
+   527→   527→    icon: "fas fa-building",
+   528→   528→    subcategories: [
+   529→   529→      { value: "PROPERTY_MANAGEMENT", label: "Property Management" },
+   530→   530→      { value: "REAL_ESTATE_SALES", label: "Real Estate Sales & Agency" },
+   531→   531→      { value: "VALUATION", label: "Valuation & Appraisal" },
+   532→   532→      { value: "REAL_ESTATE_DEVELOP", label: "Real Estate Development" },
+   533→   533→      { value: "COMMERCIAL_PROPERTY", label: "Commercial Property" },
+   534→   534→      { value: "RESIDENTIAL_PROPERTY", label: "Residential Property" },
+   535→   535→      { value: "PROPERTY_LEGAL", label: "Property Law & Conveyancing" },
+   536→   536→      { value: "REAL_ESTATE_INVEST", label: "Real Estate Investment" },
+   537→   537→      { value: "FACILITIES_MGT", label: "Facilities Management" },
+   538→   538→      { value: "TITLE_SEARCH", label: "Title Search & Documentation" }
+   539→   539→    ],
+   540→   540→    seoDescription: "Kenya's real estate sector is one of the most dynamic and lucrative industries in the country, driven by rapid urbanization, a growing middle class, and a housing deficit estimated at over 2 million units. Nairobi, Mombasa, Kisumu, and other major towns are experiencing significant real estate development, with investments in commercial office space, residential apartments, and mixed-use developments. The government's affordable housing agenda under the Big Four Pillars has further stimulated the sector. Career opportunities span property management, real estate sales and valuation, property development, and facilities management. The sector is regulated by relevant professional bodies and offers excellent earning potential, particularly in property sales and real estate development."
+   541→   541→  },
+   542→   542→  {
+   543→   543→    value: "CONSULTING",
+   544→   544→    label: "Consulting & Professional Services",
+   545→   545→    icon: "fas fa-handshake",
+   546→   546→    subcategories: [
+   547→   547→      { value: "MANAGEMENT_CONSULTING", label: "Management Consulting" },
+   548→   548→      { value: "IT_CONSULTING", label: "IT Consulting" },
+   549→   549→      { value: "STRATEGY_CONSULTING", label: "Strategy Consulting" },
+   550→   550→      { value: "BUSINESS_ADVISORY", label: "Business Advisory" },
+   551→   551→      { value: "TAX_ADVISORY", label: "Tax Advisory" },
+   552→   552→      { value: "AUDIT_ASSURANCE", label: "Audit & Assurance" },
+   553→   553→      { value: "HR_CONSULTING", label: "HR Consulting" },
+   554→   554→      { value: "RISK_ADVISORY", label: "Risk Advisory" },
+   555→   555→      { value: "PROCESS_IMPROVEMENT", label: "Process Improvement" },
+   556→   556→      { value: "CHANGE_MANAGEMENT", label: "Change Management" }
+   557→   557→    ],
+   558→   558→    seoDescription: "Kenya's consulting and professional services industry has grown significantly as both local and international organizations seek expert advice to navigate the complex East African business environment. Nairobi is the consulting hub for the region, hosting offices of global firms like McKinsey, BCG, Bain, Deloitte, PwC, EY, and KPMG, alongside thriving local consulting firms. The sector offers some of the most prestigious and well-compensated career paths in Kenya, with opportunities in management consulting, strategy, IT consulting, audit and assurance, tax advisory, and risk advisory. The Big Four accounting firms are particularly active, serving clients across banking, telecommunications, government, and the NGO sector."
+   559→   559→  },
+   560→   560→  {
+   561→   561→    value: "TEXTILES",
+   562→   562→    label: "Textiles & Fashion",
+   563→   563→    icon: "fas fa-tshirt",
+   564→   564→    subcategories: [
+   565→   565→      { value: "FASHION_DESIGN", label: "Fashion Design" },
+   566→   566→      { value: "TEXTILE_ENGINEERING", label: "Textile Engineering" },
+   567→   567→      { value: "GARMENT_MANUFACTURING", label: "Garment Manufacturing" },
+   568→   568→      { value: "FASHION_MARKETING", label: "Fashion Marketing & Retail" },
+   569→   569→      { value: "QUALITY_CONTROL_TEXTILE", label: "Quality Control" },
+   570→   570→      { value: "PATTERN_MAKING", label: "Pattern Making" },
+   571→   571→      { value: "TEXTILE_DESIGN", label: "Textile Design" },
+   572→   572→      { value: "MERCHANDISING_FASHION", label: "Fashion Merchandising" },
+   573→   573→      { value: "COSMETOLOGY", label: "Cosmetology & Beauty" }
+   574→   574→    ],
+   575→   575→    seoDescription: "Kenya's textiles and fashion industry is experiencing a renaissance, driven by a new generation of creative designers, growing consumer demand for fashion products, and government initiatives to revive the local textile manufacturing sector. The country has a rich textile heritage, from hand-woven kikoi and kanga fabrics to modern fashion design. Kenya's Export Processing Zones host several garment manufacturing companies producing for international brands. Career opportunities exist in fashion design, textile engineering, garment manufacturing, fashion marketing, and quality control. Nairobi and Mombasa host a growing number of fashion events, and Kenyan designers are gaining international recognition on global fashion platforms."
+   576→   576→  },
+   577→   577→  {
+   578→   578→    value: "AVIATION",
+   579→   579→    label: "Aviation",
+   580→   580→    icon: "fas fa-plane",
+   581→   581→    subcategories: [
+   582→   582→      { value: "PILOT", label: "Pilot & Flight Operations" },
+   583→   583→      { value: "AIR_TRAFFIC_CONTROL", label: "Air Traffic Control" },
+   584→   584→      { value: "AIRCRAFT_MAINTENANCE", label: "Aircraft Maintenance" },
+   585→   585→      { value: "AVIATION_MANAGEMENT", label: "Aviation Management" },
+   586→   586→      { value: "GROUND_HANDLING", label: "Ground Handling Services" },
+   587→   587→      { value: "CABIN_CREW", label: "Cabin Crew & In-Flight" },
+   588→   588→      { value: "AVIATION_SECURITY", label: "Aviation Security" },
+   589→   589→      { value: "AERONAUTICAL_ENGINEERING", label: "Aeronautical Engineering" },
+   590→   590→      { value: "FLIGHT_DISPATCH", label: "Flight Dispatch" },
+   591→   591→      { value: "AVIATION_REGULATORY", label: "Aviation Regulatory Affairs" }
+   592→   592→    ],
+   593→   593→    seoDescription: "Kenya's aviation sector is a critical economic enabler, supporting tourism, trade, and regional connectivity. Kenya Airways, the national carrier, serves as a major international airline connecting East Africa to the world, while Jomo Kenyatta International Airport in Nairobi is the busiest airport in East and Central Africa. The sector is regulated by the Kenya Civil Aviation Authority (KCAA) and offers diverse career opportunities for pilots, air traffic controllers, aircraft maintenance engineers, cabin crew, and aviation management professionals. With the growth of regional air travel, low-cost carriers, and cargo operations, demand for aviation professionals continues to increase. Training institutions like the Kenya School of Aviation and numerous private flying schools provide the necessary qualifications."
+   594→   594→  },
+   595→   595→  {
+   596→   596→    value: "MARITIME",
+   597→   597→    label: "Maritime & Shipping",
+   598→   598→    icon: "fas fa-ship",
+   599→   599→    subcategories: [
+   600→   600→      { value: "MARITIME_ENGINEERING", label: "Maritime Engineering" },
+   601→   601→      { value: "PORT_MANAGEMENT", label: "Port Management" },
+   602→   602→      { value: "SHIPPING", label: "Shipping & Freight" },
+   603→   603→      { value: "MARINE_LOGISTICS", label: "Marine Logistics" },
+   604→   604→      { value: "CUSTOMS_MARITIME", label: "Maritime Customs" },
+   605→   605→      { value: "NAVAL_ARCHITECTURE", label: "Naval Architecture" },
+   606→   606→      { value: "MARINE_SURVEYING", label: "Marine Surveying" },
+   607→   607→      { value: "MARITIME_LAW", label: "Maritime Law" },
+   608→   608→      { value: "MARINE_CONSERVATION", label: "Marine Conservation" }
+   609→   609→    ],
+   610→   610→    seoDescription: "Kenya's maritime sector is anchored by the Port of Mombasa, the largest and busiest seaport in East Africa, which serves as a critical gateway for imports and exports for Kenya and its landlocked neighbours. The Kenya Maritime Authority regulates the sector, while the Kenya Ports Authority manages port operations. The country's coastline along the Indian Ocean also supports fishing, tourism, and maritime trade activities. Career opportunities in maritime engineering, port management, shipping logistics, marine surveying, and maritime law continue to grow as the sector expands. The development of the Lamu Port-South Sudan-Ethiopia Transport Corridor (LAPSSET) project is expected to create additional maritime industry opportunities."
+   611→   611→  },
+   612→   612→  {
+   613→   613→    value: "DATA_SCIENCE",
+   614→   614→    label: "Data Science & Analytics",
+   615→   615→    icon: "fas fa-database",
+   616→   616→    subcategories: [
+   617→   617→      { value: "DATA_ANALYSIS", label: "Data Analysis" },
+   618→   618→      { value: "DATA_ENGINEERING", label: "Data Engineering" },
+   619→   619→      { value: "MACHINE_LEARNING", label: "Machine Learning" },
+   620→   620→      { value: "BUSINESS_INTELLIGENCE", label: "Business Intelligence" },
+   621→   621→      { value: "DATA_VISUALIZATION", label: "Data Visualization" },
+   622→   622→      { value: "STATISTICAL_ANALYSIS", label: "Statistical Analysis" },
+   623→   623→      { value: "BIG_DATA", label: "Big Data Engineering" },
+   624→   624→      { value: "DATA_GOVERNANCE", label: "Data Governance & Quality" },
+   625→   625→      { value: "NLP", label: "Natural Language Processing" },
+   626→   626→      { value: "COMPUTER_VISION", label: "Computer Vision" }
+   627→   627→    ],
+   628→   628→    seoDescription: "Data science and analytics is one of the fastest-growing career fields in Kenya, as organizations across all sectors recognize the value of data-driven decision-making. Nairobi's tech ecosystem has produced numerous data science professionals, and the demand for talent far exceeds supply. Companies in banking, telecommunications, e-commerce, healthcare, and the NGO sector are actively hiring data analysts, data engineers, machine learning engineers, and business intelligence specialists. Kenya's mobile money ecosystem generates vast amounts of transactional data that drives innovation in financial analytics. Key employers include Safaricom, KCB, NCBA, and tech companies like Andela, while global firms with Nairobi offices also recruit data science talent locally."
+   629→   629→  },
+   630→   630→  {
+   631→   631→    value: "CREATIVE_ARTS",
+   632→   632→    label: "Creative Arts & Design",
+   633→   633→    icon: "fas fa-palette",
+   634→   634→    subcategories: [
+   635→   635→      { value: "GRAPHIC_DESIGN", label: "Graphic Design" },
+   636→   636→      { value: "INTERIOR_DESIGN", label: "Interior Design" },
+   637→   637→      { value: "PRODUCT_DESIGN", label: "Product Design" },
+   638→   638→      { value: "ANIMATION", label: "Animation & Motion Graphics" },
+   639→   639→      { value: "ILLUSTRATION", label: "Illustration" },
+   640→   640→      { value: "CREATIVE_DIRECTION", label: "Creative Direction" },
+   641→   641→      { value: "BRANDING", label: "Branding & Identity Design" },
+   642→   642→      { value: "UX_RESEARCH", label: "UX Research" },
+   643→   643→      { value: "PHOTOGRAPHY", label: "Photography" },
+   644→   644→      { value: "CALLIGRAPHY", label: "Calligraphy & Typography" }
+   645→   645→    ],
+   646→   646→    seoDescription: "Kenya's creative arts and design industry is flourishing, driven by a young, talented, and internationally connected creative workforce. Nairobi's creative scene is vibrant, with a growing number of design studios, advertising agencies, animation companies, and independent creatives making their mark locally and globally. The rise of digital platforms has enabled Kenyan designers, illustrators, and animators to access international markets and clients. Career opportunities exist in graphic design, interior design, product design, animation, creative direction, and UX research. The Kenya Cultural Centre, creative hubs like the Nairobi Design District, and various design schools are nurturing the next generation of creative professionals. The sector benefits from Kenya's strong visual culture and storytelling traditions."
+   647→   647→  },
+   648→   648→  {
+   649→   649→    value: "FOOD_BEVERAGE",
+   650→   650→    label: "Food & Beverage",
+   651→   651→    icon: "fas fa-utensils",
+   652→   652→    subcategories: [
+   653→   653→      { value: "FOOD_PRODUCTION", label: "Food Production & Processing" },
+   654→   654→      { value: "FOOD_SAFETY", label: "Food Safety & Quality" },
+   655→   655→      { value: "BEVERAGE_PRODUCTION", label: "Beverage Production" },
+   656→   656→      { value: "CATERING", label: "Catering & Event Food Service" },
+   657→   657→      { value: "NUTRITION_FOOD", label: "Nutrition & Food Science" },
+   658→   658→      { value: "RESTAURANT_OPS", label: "Restaurant Operations" },
+   659→   659→      { value: "FOOD_TECH", label: "Food Technology" },
+   660→   660→      { value: "SUPPLY_CHAIN_FOOD", label: "Food Supply Chain" },
+   661→   661→      { value: "QUALITY_ASSURANCE_FOOD", label: "Quality Assurance (Food)" }
+   662→   662→    ],
+   663→   663→    seoDescription: "Kenya's food and beverage industry is a major economic sector, encompassing food processing, beverage manufacturing, hospitality, and the vibrant restaurant and catering sub-sector. The country is known globally for its tea, coffee, and fresh produce exports, while the local market features a diverse and growing food service industry. Major food and beverage companies include East African Breweries, Bidco Africa, Brookside Dairy, Nestle Kenya, and Coca-Cola Beverages Africa. Career opportunities span food production and processing, food safety and quality assurance, beverage production, catering, and food technology. The growth of food delivery services and the increasing demand for processed and packaged foods continue to create new employment opportunities in this sector."
+   664→   664→  },
+   665→   665→  {
+   666→   666→    value: "SOCIAL_WORK",
+   667→   667→    label: "Social Work & Community Development",
+   668→   668→    icon: "fas fa-hands-helping",
+   669→   669→    subcategories: [
+   670→   670→      { value: "SOCIAL_WORK", label: "Social Work" },
+   671→   671→      { value: "COMMUNITY_DEVELOPMENT", label: "Community Development" },
+   672→   672→      { value: "COUNSELING", label: "Counseling & Psychology" },
+   673→   673→      { value: "CHILD_WELFARE", label: "Child Welfare & Protection" },
+   674→   674→      { value: "GENDER_BASED_VIOLENCE", label: "Gender-Based Violence Response" },
+   675→   675→      { value: "DISABILITY", label: "Disability & Inclusion" },
+   676→   676→      { value: "YOUTH_DEVELOPMENT", label: "Youth Development" },
+   677→   677→      { value: "SUBSTANCE_ABUSE", label: "Substance Abuse Counseling" },
+   678→   678→      { value: "PROBATION", label: "Probation & Aftercare" },
+   679→   679→      { value: "SOCIAL_POLICY", label: "Social Policy" }
+   680→   680→    ],
+   681→   681→    seoDescription: "Social work and community development is a critical sector in Kenya, addressing the diverse social challenges facing communities across the country. Professional social workers and community development practitioners are employed by government agencies (through the Department of Social Services), county governments, NGOs, faith-based organizations, and international development agencies. The sector focuses on child welfare and protection, community empowerment, gender-based violence response, disability inclusion, youth development, and psychosocial support. With devolution bringing services closer to communities, county-level employment opportunities have expanded significantly. The profession requires registration with the Kenya Association of Social Workers and adherence to professional ethics and standards."
+   682→   682→  },
+   683→   683→  {
+   684→   684→    value: "SCIENCE_RESEARCH",
+   685→   685→    label: "Science & Research",
+   686→   686→    icon: "fas fa-microscope",
+   687→   687→    subcategories: [
+   688→   688→      { value: "RESEARCH_SCIENCE", label: "Scientific Research" },
+   689→   689→      { value: "LABORATORY", label: "Laboratory Technology" },
+   690→   690→      { value: "BIOTECH_RESEARCH", label: "Biotechnology Research" },
+   691→   691→      { value: "AGRI_RESEARCH", label: "Agricultural Research" },
+   692→   692→      { value: "MEDICAL_RESEARCH", label: "Medical Research" },
+   693→   693→      { value: "ENVIRONMENTAL_RESEARCH", label: "Environmental Research" },
+   694→   694→      { value: "DATA_SCIENCE_RESEARCH", label: "Data Science Research" },
+   695→   695→      { value: "ACADEMIC_RESEARCH", label: "Academic Research" },
+   696→   696→      { value: "RESEARCH_ADMIN", label: "Research Administration" }
+   697→   697→    ],
+   698→   698→    seoDescription: "Kenya has a strong research and scientific community, with numerous research institutions, universities, and international organizations conducting cutting-edge research across various fields. The Kenya Medical Research Institute (KEMRI) is globally recognized for its work in infectious diseases, while the Kenya Agricultural and Livestock Research Organization (KALRO) drives agricultural innovation. International research institutions like the International Centre of Insect Physiology and Ecology (ICIPE) and the World Agroforestry Centre (ICRAF) are headquartered in Nairobi. Career opportunities in scientific research span medical research, agricultural research, environmental science, biotechnology, and data science. The sector offers careers for scientists, laboratory technologists, research officers, and research administrators."
+   699→   699→  },
+   700→   700→  {
+   701→   701→    value: "CUSTOMER_SERVICE",
+   702→   702→    label: "Customer Service & Support",
+   703→   703→    icon: "fas fa-headset",
+   704→   704→    subcategories: [
+   705→   705→      { value: "CALL_CENTER", label: "Call Centre Operations" },
+   706→   706→      { value: "CUSTOMER_SUPPORT", label: "Customer Support" },
+   707→   707→      { value: "CLIENT_RELATIONS", label: "Client Relations" },
+   708→   708→      { value: "CUSTOMER_SUCCESS", label: "Customer Success" },
+   709→   709→      { value: "TECHNICAL_SUPPORT", label: "Technical Support" },
+   710→   710→      { value: "COMPLAINTS_MANAGEMENT", label: "Complaints Management" },
+   711→   711→      { value: "QUALITY_ASSURANCE_CS", label: "Quality Assurance" },
+   712→   712→      { value: "CHAT_SUPPORT", label: "Chat & Email Support" }
+   713→   713→    ],
+   714→   714→    seoDescription: "Customer service and support is a significant employment sector in Kenya, driven by the growth of business process outsourcing (BPO), the expansion of the banking and telecommunications sectors, and the rise of e-commerce. Nairobi is a leading BPO destination in Africa, with companies establishing call centres to serve local, regional, and international markets. Safaricom, KCB, Equity Bank, and major telecommunications and financial services companies employ thousands of customer service representatives. The sector offers entry-level opportunities for graduates and non-graduates alike, with career progression paths into team leadership, quality assurance, operations management, and customer experience strategy."
+   715→   715→  },
+   716→   716→  {
+   717→   717→    value: "PROBATION_CORRECTIONS",
+   718→   718→    label: "Probation & Corrections",
+   719→   719→    icon: "fas fa-balance-scale",
+   720→   720→    subcategories: [
+   721→   721→      { value: "PROBATION_OFFICER", label: "Probation Officer" },
+   722→   722→      { value: "CORRECTIONS", label: "Corrections & Prison Service" },
+   723→   723→      { value: "REHABILITATION", label: "Rehabilitation Services" },
+   724→   724→      { value: "AFTER_CARE", label: "Aftercare & Reintegration" },
+   725→   725→      { value: "JUVENILE_JUSTICE", label: "Juvenile Justice" },
+   726→   726→      { value: "COMMUNITY_SERVICE", label: "Community Service Orders" },
+   727→   727→      { value: "VICTIM_SUPPORT", label: "Victim Support" }
+   728→   728→    ],
+   729→   729→    seoDescription: "Kenya's probation and corrections sector plays a vital role in the criminal justice system, focusing on rehabilitation, community reintegration, and offender management. The Kenya Prisons Service and the Probation and Aftercare Service Department are the primary government agencies in this sector. With ongoing criminal justice reforms in Kenya, there is an increasing emphasis on rehabilitation and restorative justice approaches rather than purely punitive measures. Career opportunities exist as probation officers, corrections officers, rehabilitation counsellors, and social workers within the justice system. The sector offers stable government employment with structured career progression, training opportunities, and pension benefits."
+   730→   730→  },
+   731→   731→  {
+   732→   732→    value: "COOPERATIVE",
+   733→   733→    label: "Cooperative & Microfinance",
+   734→   734→    icon: "fas fa-hand-holding-usd",
+   735→   735→    subcategories: [
+   736→   736→      { value: "COOPERATIVE_MANAGEMENT", label: "Cooperative Management" },
+   737→   737→      { value: "MICROFINANCE", label: "Microfinance" },
+   738→   738→      { value: "SACCO_MANAGEMENT", label: "SACCO Management" },
+   739→   739→      { value: "RURAL_FINANCE", label: "Rural Finance" },
+   740→   740→      { value: "FINANCIAL_INCLUSION", label: "Financial Inclusion" },
+   741→   741→      { value: "CREDIT_MANAGEMENT", label: "Credit Management" },
+   742→   742→      { value: "MEMBER_SERVICES", label: "Member Services" },
+   743→   743→      { value: "COOPERATIVE_AUDIT", label: "Cooperative Audit" }
+   744→   744→    ],
+   745→   745→    seoDescription: "Kenya has one of the most developed cooperative movements in Africa, with Savings and Credit Cooperative Organizations (SACCOs) playing a crucial role in financial inclusion and wealth creation for millions of Kenyans. The cooperative sector encompasses savings and credit cooperatives, agricultural cooperatives, housing cooperatives, and producer cooperatives. The SACCO sub-sector alone has assets worth hundreds of billions of shillings and serves millions of members. Career opportunities exist in cooperative management, microfinance, credit management, financial inclusion, and cooperative auditing. The sector is regulated by the Sacco Societies Regulatory Authority (SASRA) and the Commissioner for Cooperative Development, and offers stable employment with opportunities for professional growth."
+   746→   746→  },
+   747→   747→  {
+   748→   748→    value: "DRIVING_LOGISTICS",
+   749→   749→    label: "Driving & Transport Services",
+   750→   750→    icon: "fas fa-bus",
+   751→   751→    subcategories: [
+   752→   752→      { value: "BUS_DRIVING", label: "Bus Driving" },
+   753→   753→      { value: "TRUCK_DRIVING", label: "Truck Driving" },
+   754→   754→      { value: "MOTORCYCLE", label: "Boda Boda & Motorcycle" },
+   755→   755→      { value: "DELIVERY", label: "Delivery Services" },
+   756→   756→      { value: "TAXI_RIDE_HAILING", label: "Taxi & Ride-Hailing" },
+   757→   757→      { value: "HEAVY_MACHINERY", label: "Heavy Machinery Operation" },
+   758→   758→      { value: "TRANSPORT_COORDINATION", label: "Transport Coordination" },
+   759→   759→      { value: "DISPATCH", label: "Dispatch Operations" }
+   760→   760→    ],
+   761→   761→    seoDescription: "Driving and transport services form a massive employment sector in Kenya, providing livelihoods for hundreds of thousands of workers. The matatu (public service vehicle) industry alone is estimated to employ over 500,000 people directly and indirectly. The rise of ride-hailing platforms like Uber, Bolt, and Little has created new income opportunities for private car owners and drivers. Boda boda (motorcycle taxi) services have become a dominant form of last-mile transport, especially in rural and peri-urban areas. The logistics and e-commerce boom has further increased demand for delivery drivers and riders. Professional driving roles in trucking, bus services, and heavy machinery operation offer steady employment, particularly with established transport and logistics companies."
+   762→   762→  },
+   763→   763→  {
+   764→   764→    value: "DOMESTIC_WORK",
+   765→   765→    label: "Domestic Work & Housekeeping",
+   766→   766→    icon: "fas fa-broom",
+   767→   767→    subcategories: [
+   768→   768→      { value: "HOUSEKEEPING", label: "Housekeeping" },
+   769→   769→      { value: "CHILDCARE", label: "Childcare & Nannying" },
+   770→   770→      { value: "COOKING", label: "Cooking & Kitchen Assistance" },
+   771→   771→      { value: "GARDENING", label: "Gardening & Landscaping" },
+   772→   772→      { value: "LAUNDRY", label: "Laundry & Cleaning Services" },
+   773→   773→      { value: "ELDERCARE", label: "Eldercare & Home Nursing" },
+   774→   774→      { value: "DOMESTIC_MANAGEMENT", label: "Domestic Management" }
+   775→   775→    ],
+   776→   776→    seoDescription: "Domestic work and housekeeping is a significant employment sector in Kenya, providing essential services to households across the country. The sector employs millions of workers, predominantly women, in roles including housekeeping, childcare, cooking, gardening, and eldercare. In urban areas, professional domestic work agencies connect workers with employers, and there is growing recognition of domestic workers' rights under Kenyan labour law. The sector also has a regional dimension, with some Kenyan domestic workers seeking employment opportunities in the Middle East and other regions. Professional training programs in housekeeping, childcare, and culinary skills are increasingly available, helping workers improve their skills and earning potential."
+   777→   777→  },
+   778→   778→  {
+   779→   779→    value: "APPRENTICESHIPS",
+   780→   780→    label: "Apprenticeships & Artisanship",
+   781→   781→    icon: "fas fa-tools",
+   782→   782→    subcategories: [
+   783→   783→      { value: "PLUMBING", label: "Plumbing" },
+   784→   784→      { value: "ELECTRICAL", label: "Electrical Installation" },
+   785→   785→      { value: "WELDING", label: "Welding & Fabrication" },
+   786→   786→      { value: "CARPENTRY", label: "Carpentry & Joinery" },
+   787→   787→      { value: "MASONRY", label: "Masonry & Building" },
+   788→   788→      { value: "PAINTING", label: "Painting & Decoration" },
+   789→   789→      { value: "AUTO_MECHANIC", label: "Auto Mechanics" },
+   790→   790→      { value: "TAILORING", label: "Tailoring & Dressmaking" },
+   791→   791→      { value: "HAIRDRESSING", label: "Hairdressing & Beauty" },
+   792→   792→      { value: "SHOE_REPAIR", label: "Shoe Repair & Leatherwork" },
+   793→   793→      { value: "ALUMINIUM", label: "Aluminium & Glass Installation" },
+   794→   794→      { value: "PRINTING", label: "Printing & Bookbinding" }
+   795→   795→    ],
+   796→   796→    seoDescription: "Artisanship and apprenticeships are fundamental to Kenya's economy, providing practical skills and employment opportunities for thousands of young people who may not pursue formal university education. The Technical and Vocational Education and Training (TVET) system, along with informal apprenticeships, trains artisans in trades such as plumbing, electrical installation, welding, carpentry, masonry, and tailoring. These skilled tradespeople are essential to Kenya's construction industry, manufacturing sector, and service economy. With the government's emphasis on TVET as a pathway to employment and entrepreneurship, there are growing opportunities for formally trained artisans. The National Industrial Training Authority (NITA) certifies artisans and regulates industrial training in Kenya."
+   797→   797→  },
+   798→   798→  {
+   799→   799→    value: "VOLUNTEERING",
+   800→   800→    label: "Volunteering & Internships",
+   801→   801→    icon: "fas fa-hands",
+   802→   802→    subcategories: [
+   803→   803→      { value: "VOLUNTEER", label: "Volunteer Work" },
+   804→   804→      { value: "INTERNSHIP", label: "Internships" },
+   805→   805→      { value: "COMMUNITY_SERVICE", label: "Community Service" },
+   806→   806→      { value: "PRO_BONO", label: "Pro Bono Professional Work" },
+   807→   807→      { value: "VIRTUAL_VOLUNTEERING", label: "Virtual Volunteering" },
+   808→   808→      { value: "SKILLS_BASED", label: "Skills-Based Volunteering" },
+   809→   809→      { value: "INTERNSHIP_GOVT", label: "Government Internships" },
+   810→   810→      { value: "CORP_VOLUNTEERING", label: "Corporate Volunteering" }
+   811→   811→    ],
+   812→   812→    seoDescription: "Volunteering and internships serve as critical entry points into Kenya's job market, providing young professionals and graduates with valuable work experience, professional networks, and skills development. Numerous organizations in the NGO sector, government agencies, private companies, and international organizations offer structured internship and volunteer programmes. Government internship programmes, such as those offered by county governments and the Public Service Commission, provide pathways to formal employment. Volunteer opportunities exist in community development, environmental conservation, healthcare, education, and disaster response. Platforms like the UN Volunteers programme, Volunteer Involving Organizations, and online volunteer matching services help connect willing volunteers with organizations that need their skills and time."
+   813→   813→  }
+   814→   814→] as const;

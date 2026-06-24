@@ -1,0 +1,2002 @@
+     1→Here is the **fully updated, comprehensive documentation** incorporating all 8 critical fixes and 5 optimization opportunities from our audit.
+     2→
+     3→I have preserved your excellent original structure while adding the missing primary subcategory fields, granular status tracking, verification columns, optimization tables, and an updated matching SQL query.
+     4→
+     5→---
+     6→
+     7→# 🧠 Candidate-to-Job Matching Engine Documentation
+     8→
+     9→## Version: Phase 2 Technical Architecture (v2.0 – Comprehensive)
+    10→
+    11→---
+    12→
+    13→## Core Principle
+    14→
+    15→The platform uses the following principle:
+    16→
+    17→**AI-on-Ingest, CPU-on-Match**
+    18→
+    19→This means:
+    20→
+    21→- AI or parser logic is used when a CV or job is uploaded.
+    22→- The uploaded CV or job post is converted into structured data.
+    23→- Structured data is saved in MySQL.
+    24→- Matching is done using SQL joins and scoring logic.
+    25→- AI is not used repeatedly during matching.
+    26→- CV files are not permanently stored.
+    27→
+    28→This keeps the platform scalable, cheap, and fast.
+    29→
+    30→---
+    31→
+    32→## 1. Product Vision
+    33→
+    34→The platform helps candidates discover jobs that match their real skills, qualifications, experience, and career interests.
+    35→
+    36→The goal is not to match only job titles.
+    37→
+    38→The goal is to understand:
+    39→
+    40→- What the candidate can do
+    41→- What the job requires
+    42→- What category of work the role belongs to
+    43→- What subcategory or specialization the role belongs to
+    44→- What skills are required
+    45→- What qualifications are required
+    46→- What the candidate is interested in
+    47→- What jobs are realistic for the candidate
+    48→
+    49→---
+    50→
+    51→## 2. Matching Philosophy
+    52→
+    53→The system separates:
+    54→
+    55→- Organization type
+    56→- Organization industry
+    57→- Job category
+    58→- Job subcategory
+    59→- Role title
+    60→- Skills
+    61→- Tools
+    62→- Qualifications
+    63→- Experience
+    64→- Candidate preferences
+    65→
+    66→### Example
+    67→
+    68→Kenyatta National Hospital is in the healthcare industry.
+    69→
+    70→But if they hire an HR Officer:
+    71→
+    72→- Organization industry: Healthcare
+    73→- Job category: Human Resources
+    74→- Job subcategory: HR Generalist or Recruitment
+    75→- Role: HR Officer
+    76→
+    77→The candidate does not need to be a healthcare worker.
+    78→
+    79→They need to be an HR professional.
+    80→
+    81→Therefore:
+    82→
+    83→Industry is context.
+    84→
+    85→Category and subcategory are strong matching signals.
+    86→
+    87→Skills and qualifications are proof.
+    88→
+    89→---
+    90→
+    91→## 3. Why Industry Has Low Matching Weight
+    92→
+    93→A professional can work across many industries.
+    94→
+    95→Example:
+    96→
+    97→An HR Officer can work in:
+    98→
+    99→- Healthcare
+   100→- Banking
+   101→- Telecommunications
+   102→- Education
+   103→- Government
+   104→- Manufacturing
+   105→- NGO
+   106→
+   107→A Finance Officer can work in:
+   108→
+   109→- NGO
+   110→- Government
+   111→- Healthcare
+   112→- Banking
+   113→- Manufacturing
+   114→- Education
+   115→
+   116→So industry should not dominate matching.
+   117→
+   118→Recommended use:
+   119→
+   120→- Industry familiarity is a small bonus.
+   121→- It should not reject otherwise good candidates.
+   122→- Category, subcategory, skills, and qualifications should carry more weight.
+   123→
+   124→---
+   125→
+   126→## 4. Final Matching Weights
+   127→
+   128→Recommended scoring model:
+   129→
+   130→```js
+   131→const MATCH_WEIGHTS = {
+   132→  categoryMatch: 25,
+   133→  subcategoryMatch: 25,
+   134→  skillsMatch: 25,
+   135→  qualificationsMatch: 10,
+   136→  experienceMatch: 10,
+   137→  industryFamiliarity: 5
+   138→};
+   139→```
+   140→
+   141→Total: 100%
+   142→
+   143→Meaning:
+   144→
+   145→- Category match checks if the candidate is in the same career function.
+   146→- Subcategory match checks specialization.
+   147→- Skills match checks capability.
+   148→- Qualifications match checks eligibility.
+   149→- Experience match checks level.
+   150→- Industry familiarity gives a small contextual bonus.
+   151→
+   152→---
+   153→
+   154→## 5. System Architecture
+   155→
+   156→### Candidate Upload Flow
+   157→
+   158→```txt
+   159→Candidate uploads CV
+   160→        ↓
+   161→Backend receives file in memory
+   162→        ↓
+   163→Markitdown extracts Markdown/text
+   164→        ↓
+   165→Parser extracts structured data
+   166→        ↓
+   167→Optional AI fallback if parser confidence is low
+   168→        ↓
+   169→Normalize data against taxonomy
+   170→        ↓
+   171→Save structured profile to MySQL
+   172→        ↓
+   173→Discard uploaded file
+   174→        ↓
+   175→Run CPU-based matching
+   176→        ↓
+   177→Save top matches
+   178→        ↓
+   179→Return candidate profile + matches
+   180→```
+   181→
+   182→---
+   183→
+   184→### Job Upload Flow
+   185→
+   186→```txt
+   187→Recruiter uploads job post
+   188→        ↓
+   189→Backend receives job text
+   190→        ↓
+   191→Parser or AI extracts structured job profile
+   192→        ↓
+   193→Normalize against taxonomy
+   194→        ↓
+   195→Save job and job profile to MySQL
+   196→        ↓
+   197→Run CPU-based matching against candidates
+   198→        ↓
+   199→Save candidate-job scores
+   200→```
+   201→
+   202→---
+   203→
+   204→## 6. No Media Storage Rule
+   205→
+   206→CV files should not be permanently stored.
+   207→
+   208→The file should be:
+   209→
+   210→1. Uploaded.
+   211→2. Processed in memory.
+   212→3. Converted to text.
+   213→4. Discarded.
+   214→
+   215→The database stores:
+   216→
+   217→- Extracted name
+   218→- Email
+   219→- Phone
+   220→- Skills
+   221→- Education
+   222→- Work experience
+   223→- Qualifications
+   224→- Career category
+   225→- Subcategories
+   226→- Matching data
+   227→
+   228→The database should not store the original CV file unless a future business requirement requires it.
+   229→
+   230→Optional:
+   231→
+   232→You may store raw extracted CV text for debugging for a short period, for example 30 days.
+   233→
+   234→---
+   235→
+   236→## 7. AI Role in the System
+   237→
+   238→AI should not be the main matcher.
+   239→
+   240→AI is used for:
+   241→
+   242→### 7.1 CV Extraction
+   243→
+   244→AI helps convert messy CVs into structured data.
+   245→
+   246→Example:
+   247→
+   248→```txt
+   249→Finance Intern at PATH Kenya
+   250→Managed Accounts Payable, reconciliations, audit schedules...
+   251→```
+   252→
+   253→Becomes:
+   254→
+   255→```json
+   256→{
+   257→  "category": "FINANCE_ACCOUNTING",
+   258→  "subcategories": ["ACCOUNTING", "ACCOUNTS_PAYABLE", "AUDIT"],
+   259→  "skills": ["ACCOUNTS_PAYABLE", "BANK_RECONCILIATION", "AUDIT_SUPPORT"],
+   260→  "tools": ["ERP_SYSTEMS", "EXCEL"],
+   261→  "industriesWorkedIn": ["INTERNATIONAL_DEVELOPMENT", "NON_PROFIT"]
+   262→}
+   263→```
+   264→
+   265→### 7.2 Job Extraction
+   266→
+   267→AI helps extract structured job requirements.
+   268→
+   269→Example:
+   270→
+   271→```txt
+   272→Part-Time Lecturer required for Community Health, Counselling Psychology, Social Work...
+   273→```
+   274→
+   275→Becomes:
+   276→
+   277→```json
+   278→{
+   279→  "jobCategory": "EDUCATION",
+   280→  "jobSubcategories": ["LECTURING", "TVET_TRAINING"],
+   281→  "specializations": [
+   282→    "COMMUNITY_HEALTH",
+   283→    "COUNSELLING_PSYCHOLOGY",
+   284→    "SOCIAL_WORK"
+   285→  ]
+   286→}
+   287→```
+   288→
+   289→### 7.3 Normalization
+   290→
+   291→AI or parser logic maps different wording to the same taxonomy item.
+   292→
+   293→Examples:
+   294→
+   295→```txt
+   296→Talent Acquisition → Recruitment
+   297→People Operations → HR Operations
+   298→Quick Books → QuickBooks
+   299→Accounts Clerk → Accounting
+   300→IT Helpdesk → IT Support
+   301→```
+   302→
+   303→### 7.4 Transferable Skills Detection
+   304→
+   305→AI helps detect career transitions.
+   306→
+   307→Examples:
+   308→
+   309→```txt
+   310→Cashier + CPA + reconciliation → Accounts Assistant
+   311→Radio Presenter + Social Media → Communications Officer
+   312→Enumerator + Data Collection → M&E Assistant
+   313→```
+   314→
+   315→### 7.5 Explanation
+   316→
+   317→After the algorithm calculates the score, AI can explain the match.
+   318→
+   319→Example:
+   320→
+   321→```txt
+   322→You are a strong match because your CV shows Accounts Payable, Bank Reconciliation, CPA progression, and financial reporting experience.
+   323→
+   324→Your main gap is SAP experience, which was not found in your CV.
+   325→```
+   326→
+   327→---
+   328→
+   329→## 8. Core MySQL Database Design
+   330→
+   331→The database is MySQL.
+   332→
+   333→The system uses normalized relational tables.
+   334→
+   335→### Main Tables
+   336→
+   337→```txt
+   338→users
+   339→candidates
+   340→candidate_profiles
+   341→candidate_preferences
+   342→candidate_work_experiences
+   343→candidate_educations
+   344→candidate_skills
+   345→candidate_tools
+   346→candidate_qualifications
+   347→candidate_certifications
+   348→candidate_interests
+   349→candidate_subcategories
+   350→candidate_search_history            -- ✅ OPTIMIZATION: NEW
+   351→
+   352→companies
+   353→jobs
+   354→job_profiles
+   355→job_skills
+   356→job_tools
+   357→job_qualifications
+   358→job_certifications
+   359→job_specializations
+   360→job_subcategories
+   361→
+   362→taxonomy_items
+   363→taxonomy_aliases
+   364→taxonomy_relationships
+   365→taxonomy_skill_levels               -- ✅ OPTIMIZATION: NEW
+   366→
+   367→candidate_job_scores
+   368→applications
+   369→job_views                           -- ✅ OPTIMIZATION: NEW
+   370→application_funnel                  -- ✅ OPTIMIZATION: NEW
+   371→ai_extractions
+   372→system_settings
+   373→```
+   374→
+   375→---
+   376→
+   377→## 9. Taxonomy Model
+   378→
+   379→The taxonomy is the foundation of the matching engine.
+   380→
+   381→It stores:
+   382→
+   383→- Organization types
+   384→- Industries
+   385→- Job categories
+   386→- Subcategories
+   387→- Roles
+   388→- Skills
+   389→- Tools
+   390→- Qualifications
+   391→- Certifications
+   392→- Specializations
+   393→
+   394→### 9.1 taxonomy_items
+   395→
+   396→```sql
+   397→CREATE TABLE taxonomy_items (
+   398→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   399→
+   400→  type ENUM(
+   401→    'ORGANIZATION_TYPE',
+   402→    'INDUSTRY',
+   403→    'CATEGORY',
+   404→    'SUBCATEGORY',
+   405→    'ROLE',
+   406→    'SKILL',
+   407→    'TOOL',
+   408→    'QUALIFICATION',
+   409→    'CERTIFICATION',
+   410→    'SPECIALIZATION',
+   411→    'REGULATION',
+   412→    'COMPETENCY'
+   413→  ) NOT NULL,
+   414→
+   415→  value VARCHAR(120) NOT NULL,
+   416→  label VARCHAR(255) NOT NULL,
+   417→
+   418→  parent_id BIGINT UNSIGNED NULL,
+   419→
+   420→  description TEXT NULL,
+   421→
+   422→  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+   423→
+   424→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   425→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   426→
+   427→  UNIQUE KEY unique_taxonomy_value (type, value),
+   428→
+   429→  INDEX idx_taxonomy_type (type),
+   430→  INDEX idx_taxonomy_parent (parent_id),
+   431→
+   432→  CONSTRAINT fk_taxonomy_parent
+   433→    FOREIGN KEY (parent_id)
+   434→    REFERENCES taxonomy_items(id)
+   435→    ON DELETE SET NULL
+   436→);
+   437→```
+   438→
+   439→Example rows:
+   440→
+   441→```txt
+   442→CATEGORY: HUMAN_RESOURCES
+   443→SUBCATEGORY: RECRUITMENT
+   444→SKILL: CANDIDATE_SCREENING
+   445→TOOL: QUICKBOOKS
+   446→QUALIFICATION: BACHELOR_DEGREE
+   447→INDUSTRY: HEALTHCARE
+   448→```
+   449→
+   450→---
+   451→
+   452→### 9.2 taxonomy_aliases
+   453→
+   454→This table handles alternative names.
+   455→
+   456→Example:
+   457→
+   458→```txt
+   459→Quick Books → QuickBooks
+   460→Talent Acquisition → Recruitment
+   461→People Ops → HR Operations
+   462→```
+   463→
+   464→```sql
+   465→CREATE TABLE taxonomy_aliases (
+   466→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   467→
+   468→  taxonomy_item_id BIGINT UNSIGNED NOT NULL,
+   469→
+   470→  alias VARCHAR(255) NOT NULL,
+   471→
+   472→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   473→
+   474→  UNIQUE KEY unique_alias_per_item (taxonomy_item_id, alias),
+   475→  INDEX idx_alias (alias),
+   476→
+   477→  CONSTRAINT fk_alias_taxonomy_item
+   478→    FOREIGN KEY (taxonomy_item_id)
+   479→    REFERENCES taxonomy_items(id)
+   480→    ON DELETE CASCADE
+   481→);
+   482→```
+   483→
+   484→---
+   485→
+   486→### 9.3 taxonomy_relationships
+   487→
+   488→This supports adjacent career relationships.
+   489→
+   490→Example:
+   491→
+   492→```txt
+   493→Finance is related to Banking
+   494→Finance is related to Insurance
+   495→HR is related to Administration
+   496→Media is related to Marketing Communications
+   497→```
+   498→
+   499→```sql
+   500→CREATE TABLE taxonomy_relationships (
+   501→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   502→
+   503→  source_item_id BIGINT UNSIGNED NOT NULL,
+   504→  target_item_id BIGINT UNSIGNED NOT NULL,
+   505→
+   506→  relationship_type ENUM(
+   507→    'RELATED',
+   508→    'ADJACENT',
+   509→    'TRANSFERABLE',
+   510→    'PARENT_CHILD',
+   511→    'SIMILAR'
+   512→  ) NOT NULL DEFAULT 'RELATED',
+   513→
+   514→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+   515→
+   516→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   517→
+   518→  UNIQUE KEY unique_relationship (source_item_id, target_item_id, relationship_type),
+   519→
+   520→  CONSTRAINT fk_relationship_source
+   521→    FOREIGN KEY (source_item_id)
+   522→    REFERENCES taxonomy_items(id)
+   523→    ON DELETE CASCADE,
+   524→
+   525→  CONSTRAINT fk_relationship_target
+   526→    FOREIGN KEY (target_item_id)
+   527→    REFERENCES taxonomy_items(id)
+   528→    ON DELETE CASCADE
+   529→);
+   530→```
+   531→
+   532→---
+   533→
+   534→### 9.4 taxonomy_skill_levels (✅ NEW OPTIMIZATION)
+   535→
+   536→Not all skills are equal. A "Beginner" in Python should score less than an "Expert."
+   537→
+   538→```sql
+   539→CREATE TABLE taxonomy_skill_levels (
+   540→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   541→
+   542→  skill_id BIGINT UNSIGNED NOT NULL,
+   543→
+   544→  level ENUM('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT') NOT NULL,
+   545→
+   546→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+   547→
+   548→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   549→
+   550→  UNIQUE KEY unique_skill_level (skill_id, level),
+   551→
+   552→  CONSTRAINT fk_skill_level_taxonomy
+   553→    FOREIGN KEY (skill_id)
+   554→    REFERENCES taxonomy_items(id)
+   555→    ON DELETE CASCADE
+   556→);
+   557→```
+   558→
+   559→---
+   560→
+   561→## 10. Users and Candidates
+   562→
+   563→### 10.1 users
+   564→
+   565→```sql
+   566→CREATE TABLE users (
+   567→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   568→
+   569→  full_name VARCHAR(255) NULL,
+   570→  email VARCHAR(255) NOT NULL UNIQUE,
+   571→  phone VARCHAR(50) NULL,
+   572→
+   573→  password_hash VARCHAR(255) NULL,
+   574→
+   575→  role ENUM('CANDIDATE', 'RECRUITER', 'ADMIN') NOT NULL DEFAULT 'CANDIDATE',
+   576→
+   577→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   578→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+   579→);
+   580→```
+   581→
+   582→---
+   583→
+   584→### 10.2 candidates
+   585→
+   586→```sql
+   587→CREATE TABLE candidates (
+   588→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   589→
+   590→  user_id BIGINT UNSIGNED NOT NULL,
+   591→
+   592→  first_name VARCHAR(120) NULL,
+   593→  last_name VARCHAR(120) NULL,
+   594→  email VARCHAR(255) NOT NULL,
+   595→  phone VARCHAR(50) NULL,
+   596→
+   597→  -- ✅ FIX: Email verification added
+   598→  email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+   599→  email_verified_at TIMESTAMP NULL,
+   600→
+   601→  location_county VARCHAR(120) NULL,
+   602→  country VARCHAR(120) DEFAULT 'Kenya',
+   603→
+   604→  -- ✅ FIX: Granular onboarding status
+   605→  onboarding_status ENUM(
+   606→    'STARTED',
+   607→    'CV_UPLOADED',
+   608→    'EXTRACTION_COMPLETE',
+   609→    'PROFILE_REVIEWED',
+   610→    'DOMAIN_SUGGESTED',
+   611→    'DOMAIN_CONFIRMED',
+   612→    'INTERESTS_SELECTED',
+   613→    'PREFERENCES_SET',
+   614→    'COMPLETED'
+   615→  ) NOT NULL DEFAULT 'STARTED',
+   616→
+   617→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   618→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   619→
+   620→  UNIQUE KEY unique_candidate_user (user_id),
+   621→
+   622→  CONSTRAINT fk_candidate_user
+   623→    FOREIGN KEY (user_id)
+   624→    REFERENCES users(id)
+   625→    ON DELETE CASCADE
+   626→);
+   627→```
+   628→
+   629→---
+   630→
+   631→## 11. Candidate Profile Tables
+   632→
+   633→### 11.1 candidate_profiles
+   634→
+   635→```sql
+   636→CREATE TABLE candidate_profiles (
+   637→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   638→
+   639→  candidate_id BIGINT UNSIGNED NOT NULL,
+   640→
+   641→  -- ✅ FIX: Primary subcategory added
+   642→  primary_category_id BIGINT UNSIGNED NULL,
+   643→  primary_subcategory_id BIGINT UNSIGNED NULL,
+   644→
+   645→  total_experience_years DECIMAL(4,1) NOT NULL DEFAULT 0.0,
+   646→
+   647→  seniority_level ENUM(
+   648→    'ENTRY',
+   649→    'JUNIOR',
+   650→    'MID',
+   651→    'SENIOR',
+   652→    'EXECUTIVE'
+   653→  ) NULL,
+   654→
+   655→  profile_completion_score TINYINT UNSIGNED NOT NULL DEFAULT 0,
+   656→
+   657→  -- ✅ FIX: Confidence score for LLM fallback
+   658→  parser_confidence_score DECIMAL(5,2) NULL,
+   659→
+   660→  -- ✅ FIX: Extraction status tracking
+   661→  extraction_status ENUM(
+   662→    'PENDING',
+   663→    'EXTRACTED',
+   664→    'FAILED',
+   665→    'NEEDS_REVIEW',
+   666→    'LLM_FALLBACK'
+   667→  ) DEFAULT 'PENDING',
+   668→
+   669→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   670→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   671→
+   672→  UNIQUE KEY unique_candidate_profile (candidate_id),
+   673→
+   674→  INDEX idx_candidate_primary_category (primary_category_id),
+   675→  INDEX idx_candidate_primary_subcategory (primary_subcategory_id),
+   676→
+   677→  CONSTRAINT fk_candidate_profile_candidate
+   678→    FOREIGN KEY (candidate_id)
+   679→    REFERENCES candidates(id)
+   680→    ON DELETE CASCADE,
+   681→
+   682→  CONSTRAINT fk_candidate_primary_category
+   683→    FOREIGN KEY (primary_category_id)
+   684→    REFERENCES taxonomy_items(id)
+   685→    ON DELETE SET NULL,
+   686→
+   687→  CONSTRAINT fk_candidate_primary_subcategory
+   688→    FOREIGN KEY (primary_subcategory_id)
+   689→    REFERENCES taxonomy_items(id)
+   690→    ON DELETE SET NULL
+   691→);
+   692→```
+   693→
+   694→---
+   695→
+   696→### 11.2 candidate_preferences
+   697→
+   698→```sql
+   699→CREATE TABLE candidate_preferences (
+   700→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   701→
+   702→  candidate_id BIGINT UNSIGNED NOT NULL,
+   703→
+   704→  preferred_locations JSON NULL,
+   705→
+   706→  preferred_job_types JSON NULL,
+   707→
+   708→  remote_preference ENUM('ONSITE', 'HYBRID', 'REMOTE', 'ANY') DEFAULT 'ANY',
+   709→
+   710→  expected_salary_min DECIMAL(12,2) NULL,
+   711→  expected_salary_max DECIMAL(12,2) NULL,
+   712→  salary_currency VARCHAR(10) DEFAULT 'KES',
+   713→
+   714→  availability_status ENUM(
+   715→    'IMMEDIATE',
+   716→    'NOTICE_PERIOD',
+   717→    'UNAVAILABLE'
+   718→  ) DEFAULT 'IMMEDIATE',
+   719→
+   720→  notice_period_days INT DEFAULT 0,
+   721→
+   722→  willing_to_relocate BOOLEAN NOT NULL DEFAULT FALSE,
+   723→
+   724→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   725→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   726→
+   727→  UNIQUE KEY unique_candidate_preferences (candidate_id),
+   728→
+   729→  CONSTRAINT fk_candidate_preferences_candidate
+   730→    FOREIGN KEY (candidate_id)
+   731→    REFERENCES candidates(id)
+   732→    ON DELETE CASCADE
+   733→);
+   734→```
+   735→
+   736→---
+   737→
+   738→### 11.3 candidate_interests
+   739→
+   740→Candidate can choose:
+   741→
+   742→- 1 primary category (stored in `candidate_profiles.primary_category_id`)
+   743→- Up to 4 additional interest categories (stored here)
+   744→
+   745→```sql
+   746→CREATE TABLE candidate_interests (
+   747→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   748→
+   749→  candidate_id BIGINT UNSIGNED NOT NULL,
+   750→
+   751→  category_id BIGINT UNSIGNED NOT NULL,
+   752→
+   753→  interest_rank TINYINT UNSIGNED NULL,
+   754→
+   755→  -- ✅ FIX: Source tracking for AI vs User
+   756→  source ENUM('USER_SELECTED', 'AI_SUGGESTED') NOT NULL DEFAULT 'USER_SELECTED',
+   757→  ai_suggested BOOLEAN NOT NULL DEFAULT FALSE,
+   758→  user_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+   759→  override_reason VARCHAR(255) NULL,
+   760→
+   761→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   762→
+   763→  UNIQUE KEY unique_candidate_interest (candidate_id, category_id),
+   764→
+   765→  INDEX idx_candidate_interest_category (category_id),
+   766→
+   767→  CONSTRAINT fk_candidate_interest_candidate
+   768→    FOREIGN KEY (candidate_id)
+   769→    REFERENCES candidates(id)
+   770→    ON DELETE CASCADE,
+   771→
+   772→  CONSTRAINT fk_candidate_interest_category
+   773→    FOREIGN KEY (category_id)
+   774→    REFERENCES taxonomy_items(id)
+   775→    ON DELETE CASCADE
+   776→);
+   777→```
+   778→
+   779→---
+   780→
+   781→### 11.4 candidate_subcategories
+   782→
+   783→Stores AI-extracted or user-selected subcategories with confidence scores.
+   784→
+   785→```sql
+   786→CREATE TABLE candidate_subcategories (
+   787→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   788→
+   789→  candidate_id BIGINT UNSIGNED NOT NULL,
+   790→
+   791→  subcategory_id BIGINT UNSIGNED NOT NULL,
+   792→
+   793→  confidence_score DECIMAL(5,2) NULL,
+   794→
+   795→  source ENUM(
+   796→    'AI_EXTRACTED',
+   797→    'USER_SELECTED',
+   798→    'ADMIN_ADDED'
+   799→  ) NOT NULL DEFAULT 'AI_EXTRACTED',
+   800→
+   801→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   802→
+   803→  UNIQUE KEY unique_candidate_subcategory (candidate_id, subcategory_id),
+   804→
+   805→  INDEX idx_candidate_subcategory (subcategory_id),
+   806→
+   807→  CONSTRAINT fk_candidate_subcategory_candidate
+   808→    FOREIGN KEY (candidate_id)
+   809→    REFERENCES candidates(id)
+   810→    ON DELETE CASCADE,
+   811→
+   812→  CONSTRAINT fk_candidate_subcategory_taxonomy
+   813→    FOREIGN KEY (subcategory_id)
+   814→    REFERENCES taxonomy_items(id)
+   815→    ON DELETE CASCADE
+   816→);
+   817→```
+   818→
+   819→---
+   820→
+   821→### 11.5 candidate_skills
+   822→
+   823→Important:
+   824→
+   825→Do not match by raw skill name.
+   826→
+   827→Match by skill_id.
+   828→
+   829→```sql
+   830→CREATE TABLE candidate_skills (
+   831→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   832→
+   833→  candidate_id BIGINT UNSIGNED NOT NULL,
+   834→
+   835→  skill_id BIGINT UNSIGNED NOT NULL,
+   836→
+   837→  raw_text VARCHAR(255) NULL,
+   838→
+   839→  proficiency ENUM(
+   840→    'BEGINNER',
+   841→    'INTERMEDIATE',
+   842→    'ADVANCED',
+   843→    'EXPERT'
+   844→  ) NULL,
+   845→
+   846→  years_experience DECIMAL(4,1) NULL,
+   847→
+   848→  confidence_score DECIMAL(5,2) NULL,
+   849→
+   850→  source ENUM(
+   851→    'AI_EXTRACTED',
+   852→    'USER_ADDED',
+   853→    'ADMIN_ADDED'
+   854→  ) NOT NULL DEFAULT 'AI_EXTRACTED',
+   855→
+   856→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   857→
+   858→  UNIQUE KEY unique_candidate_skill (candidate_id, skill_id),
+   859→
+   860→  INDEX idx_candidate_skill_id (skill_id),
+   861→  INDEX idx_candidate_skill_candidate (candidate_id),
+   862→
+   863→  CONSTRAINT fk_candidate_skill_candidate
+   864→    FOREIGN KEY (candidate_id)
+   865→    REFERENCES candidates(id)
+   866→    ON DELETE CASCADE,
+   867→
+   868→  CONSTRAINT fk_candidate_skill_taxonomy
+   869→    FOREIGN KEY (skill_id)
+   870→    REFERENCES taxonomy_items(id)
+   871→    ON DELETE CASCADE
+   872→);
+   873→```
+   874→
+   875→---
+   876→
+   877→### 11.6 candidate_tools
+   878→
+   879→```sql
+   880→CREATE TABLE candidate_tools (
+   881→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   882→
+   883→  candidate_id BIGINT UNSIGNED NOT NULL,
+   884→
+   885→  tool_id BIGINT UNSIGNED NOT NULL,
+   886→
+   887→  raw_text VARCHAR(255) NULL,
+   888→
+   889→  proficiency ENUM(
+   890→    'BEGINNER',
+   891→    'INTERMEDIATE',
+   892→    'ADVANCED',
+   893→    'EXPERT'
+   894→  ) NULL,
+   895→
+   896→  confidence_score DECIMAL(5,2) NULL,
+   897→
+   898→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   899→
+   900→  UNIQUE KEY unique_candidate_tool (candidate_id, tool_id),
+   901→
+   902→  INDEX idx_candidate_tool_id (tool_id),
+   903→
+   904→  CONSTRAINT fk_candidate_tool_candidate
+   905→    FOREIGN KEY (candidate_id)
+   906→    REFERENCES candidates(id)
+   907→    ON DELETE CASCADE,
+   908→
+   909→  CONSTRAINT fk_candidate_tool_taxonomy
+   910→    FOREIGN KEY (tool_id)
+   911→    REFERENCES taxonomy_items(id)
+   912→    ON DELETE CASCADE
+   913→);
+   914→```
+   915→
+   916→---
+   917→
+   918→### 11.7 candidate_qualifications
+   919→
+   920→```sql
+   921→CREATE TABLE candidate_qualifications (
+   922→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   923→
+   924→  candidate_id BIGINT UNSIGNED NOT NULL,
+   925→
+   926→  qualification_id BIGINT UNSIGNED NULL,
+   927→
+   928→  institution VARCHAR(255) NULL,
+   929→  field_of_study VARCHAR(255) NULL,
+   930→
+   931→  level ENUM(
+   932→    'CERTIFICATE',
+   933→    'DIPLOMA',
+   934→    'BACHELOR',
+   935→    'MASTER',
+   936→    'PHD',
+   937→    'OTHER'
+   938→  ) NULL,
+   939→
+   940→  status ENUM('COMPLETED', 'ONGOING') DEFAULT 'COMPLETED',
+   941→
+   942→  start_year YEAR NULL,
+   943→  end_year YEAR NULL,
+   944→
+   945→  raw_text VARCHAR(255) NULL,
+   946→
+   947→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   948→
+   949→  INDEX idx_candidate_qualification_candidate (candidate_id),
+   950→  INDEX idx_candidate_qualification_id (qualification_id),
+   951→
+   952→  CONSTRAINT fk_candidate_qualification_candidate
+   953→    FOREIGN KEY (candidate_id)
+   954→    REFERENCES candidates(id)
+   955→    ON DELETE CASCADE,
+   956→
+   957→  CONSTRAINT fk_candidate_qualification_taxonomy
+   958→    FOREIGN KEY (qualification_id)
+   959→    REFERENCES taxonomy_items(id)
+   960→    ON DELETE SET NULL
+   961→);
+   962→```
+   963→
+   964→---
+   965→
+   966→### 11.8 candidate_certifications
+   967→
+   968→```sql
+   969→CREATE TABLE candidate_certifications (
+   970→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   971→
+   972→  candidate_id BIGINT UNSIGNED NOT NULL,
+   973→
+   974→  certification_id BIGINT UNSIGNED NULL,
+   975→
+   976→  issuing_body VARCHAR(255) NULL,
+   977→
+   978→  status ENUM('COMPLETED', 'ONGOING') DEFAULT 'COMPLETED',
+   979→
+   980→  year_awarded YEAR NULL,
+   981→
+   982→  raw_text VARCHAR(255) NULL,
+   983→
+   984→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   985→
+   986→  INDEX idx_candidate_certification_candidate (candidate_id),
+   987→  INDEX idx_candidate_certification_id (certification_id),
+   988→
+   989→  CONSTRAINT fk_candidate_certification_candidate
+   990→    FOREIGN KEY (candidate_id)
+   991→    REFERENCES candidates(id)
+   992→    ON DELETE CASCADE,
+   993→
+   994→  CONSTRAINT fk_candidate_certification_taxonomy
+   995→    FOREIGN KEY (certification_id)
+   996→    REFERENCES taxonomy_items(id)
+   997→    ON DELETE SET NULL
+   998→);
+   999→```
+  1000→
+  1001→---
+  1002→
+  1003→### 11.9 candidate_work_experiences
+  1004→
+  1005→```sql
+  1006→CREATE TABLE candidate_work_experiences (
+  1007→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1008→
+  1009→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1010→
+  1011→  employer_name VARCHAR(255) NULL,
+  1012→
+  1013→  role_title VARCHAR(255) NULL,
+  1014→
+  1015→  normalized_role_id BIGINT UNSIGNED NULL,
+  1016→
+  1017→  organization_type_id BIGINT UNSIGNED NULL,
+  1018→  organization_industry_id BIGINT UNSIGNED NULL,
+  1019→
+  1020→  start_date DATE NULL,
+  1021→  end_date DATE NULL,
+  1022→
+  1023→  is_current BOOLEAN NOT NULL DEFAULT FALSE,
+  1024→
+  1025→  description TEXT NULL,
+  1026→
+  1027→  responsibilities JSON NULL,
+  1028→
+  1029→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1030→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  1031→
+  1032→  INDEX idx_candidate_experience_candidate (candidate_id),
+  1033→  INDEX idx_candidate_experience_role (normalized_role_id),
+  1034→  INDEX idx_candidate_experience_industry (organization_industry_id),
+  1035→
+  1036→  CONSTRAINT fk_candidate_experience_candidate
+  1037→    FOREIGN KEY (candidate_id)
+  1038→    REFERENCES candidates(id)
+  1039→    ON DELETE CASCADE,
+  1040→
+  1041→  CONSTRAINT fk_candidate_experience_role
+  1042→    FOREIGN KEY (normalized_role_id)
+  1043→    REFERENCES taxonomy_items(id)
+  1044→    ON DELETE SET NULL,
+  1045→
+  1046→  CONSTRAINT fk_candidate_experience_org_type
+  1047→    FOREIGN KEY (organization_type_id)
+  1048→    REFERENCES taxonomy_items(id)
+  1049→    ON DELETE SET NULL,
+  1050→
+  1051→  CONSTRAINT fk_candidate_experience_industry
+  1052→    FOREIGN KEY (organization_industry_id)
+  1053→    REFERENCES taxonomy_items(id)
+  1054→    ON DELETE SET NULL
+  1055→);
+  1056→```
+  1057→
+  1058→---
+  1059→
+  1060→### 11.10 candidate_search_history (✅ NEW OPTIMIZATION)
+  1061→
+  1062→Track what candidates search for to improve matching suggestions.
+  1063→
+  1064→```sql
+  1065→CREATE TABLE candidate_search_history (
+  1066→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1067→
+  1068→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1069→
+  1070→  search_query VARCHAR(255) NOT NULL,
+  1071→
+  1072→  search_type ENUM('KEYWORD', 'CATEGORY', 'SKILL') DEFAULT 'KEYWORD',
+  1073→
+  1074→  results_count INT DEFAULT 0,
+  1075→
+  1076→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1077→
+  1078→  INDEX idx_search_candidate (candidate_id),
+  1079→  INDEX idx_search_query (search_query),
+  1080→
+  1081→  CONSTRAINT fk_search_candidate
+  1082→    FOREIGN KEY (candidate_id)
+  1083→    REFERENCES candidates(id)
+  1084→    ON DELETE CASCADE
+  1085→);
+  1086→```
+  1087→
+  1088→---
+  1089→
+  1090→## 12. Companies and Jobs
+  1091→
+  1092→### 12.1 companies
+  1093→
+  1094→```sql
+  1095→CREATE TABLE companies (
+  1096→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1097→
+  1098→  name VARCHAR(255) NOT NULL,
+  1099→
+  1100→  slug VARCHAR(255) NOT NULL UNIQUE,
+  1101→
+  1102→  organization_type_id BIGINT UNSIGNED NULL,
+  1103→
+  1104→  organization_industry_id BIGINT UNSIGNED NULL,
+  1105→
+  1106→  website VARCHAR(255) NULL,
+  1107→
+  1108→  location_county VARCHAR(120) NULL,
+  1109→
+  1110→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1111→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  1112→
+  1113→  INDEX idx_company_org_type (organization_type_id),
+  1114→  INDEX idx_company_industry (organization_industry_id),
+  1115→
+  1116→  CONSTRAINT fk_company_org_type
+  1117→    FOREIGN KEY (organization_type_id)
+  1118→    REFERENCES taxonomy_items(id)
+  1119→    ON DELETE SET NULL,
+  1120→
+  1121→  CONSTRAINT fk_company_industry
+  1122→    FOREIGN KEY (organization_industry_id)
+  1123→    REFERENCES taxonomy_items(id)
+  1124→    ON DELETE SET NULL
+  1125→);
+  1126→```
+  1127→
+  1128→---
+  1129→
+  1130→### 12.2 jobs
+  1131→
+  1132→```sql
+  1133→CREATE TABLE jobs (
+  1134→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1135→
+  1136→  company_id BIGINT UNSIGNED NOT NULL,
+  1137→
+  1138→  recruiter_id BIGINT UNSIGNED NULL,
+  1139→
+  1140→  title VARCHAR(255) NOT NULL,
+  1141→
+  1142→  slug VARCHAR(255) NOT NULL UNIQUE,
+  1143→
+  1144→  raw_description LONGTEXT NOT NULL,
+  1145→
+  1146→  location_county VARCHAR(120) NULL,
+  1147→
+  1148→  is_remote BOOLEAN NOT NULL DEFAULT FALSE,
+  1149→
+  1150→  work_mode ENUM('ONSITE', 'HYBRID', 'REMOTE') DEFAULT 'ONSITE',
+  1151→
+  1152→  job_type ENUM(
+  1153→    'FULL_TIME',
+  1154→    'PART_TIME',
+  1155→    'CONTRACT',
+  1156→    'INTERNSHIP',
+  1157→    'TEMPORARY',
+  1158→    'GRADUATE_TRAINEE'
+  1159→  ) DEFAULT 'FULL_TIME',
+  1160→
+  1161→  application_deadline DATE NULL,
+  1162→
+  1163→  status ENUM('DRAFT', 'ACTIVE', 'CLOSED') NOT NULL DEFAULT 'DRAFT',
+  1164→
+  1165→  source ENUM('MANUAL', 'SCRAPER', 'API') NOT NULL DEFAULT 'MANUAL',
+  1166→
+  1167→  -- ✅ FIX: Extraction status tracking
+  1168→  extraction_status ENUM(
+  1169→    'PENDING',
+  1170→    'EXTRACTED',
+  1171→    'FAILED',
+  1172→    'NEEDS_REVIEW'
+  1173→  ) DEFAULT 'PENDING',
+  1174→
+  1175→  deleted_at TIMESTAMP NULL,
+  1176→
+  1177→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1178→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  1179→
+  1180→  INDEX idx_jobs_status (status),
+  1181→  INDEX idx_jobs_company (company_id),
+  1182→  INDEX idx_jobs_location (location_county),
+  1183→  INDEX idx_jobs_deleted (deleted_at),
+  1184→
+  1185→  CONSTRAINT fk_job_company
+  1186→    FOREIGN KEY (company_id)
+  1187→    REFERENCES companies(id)
+  1188→    ON DELETE CASCADE
+  1189→);
+  1190→```
+  1191→
+  1192→---
+  1193→
+  1194→### 12.3 job_profiles
+  1195→
+  1196→```sql
+  1197→CREATE TABLE job_profiles (
+  1198→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1199→
+  1200→  job_id BIGINT UNSIGNED NOT NULL,
+  1201→
+  1202→  organization_type_id BIGINT UNSIGNED NULL,
+  1203→
+  1204→  organization_industry_id BIGINT UNSIGNED NULL,
+  1205→
+  1206→  job_category_id BIGINT UNSIGNED NULL,
+  1207→
+  1208→  -- ✅ FIX: Primary subcategory added
+  1209→  primary_subcategory_id BIGINT UNSIGNED NULL,
+  1210→
+  1211→  normalized_role_id BIGINT UNSIGNED NULL,
+  1212→
+  1213→  minimum_experience_years DECIMAL(4,1) DEFAULT 0.0,
+  1214→
+  1215→  preferred_experience_years DECIMAL(4,1) DEFAULT 0.0,
+  1216→
+  1217→  seniority_level ENUM(
+  1218→    'ENTRY',
+  1219→    'JUNIOR',
+  1220→    'MID',
+  1221→    'SENIOR',
+  1222→    'EXECUTIVE'
+  1223→  ) NULL,
+  1224→
+  1225→  parser_confidence_score DECIMAL(5,2) NULL,
+  1226→
+  1227→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1228→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  1229→
+  1230→  UNIQUE KEY unique_job_profile (job_id),
+  1231→
+  1232→  INDEX idx_job_profile_category (job_category_id),
+  1233→  INDEX idx_job_profile_subcategory (primary_subcategory_id),
+  1234→  INDEX idx_job_profile_role (normalized_role_id),
+  1235→  INDEX idx_job_profile_industry (organization_industry_id),
+  1236→
+  1237→  CONSTRAINT fk_job_profile_job
+  1238→    FOREIGN KEY (job_id)
+  1239→    REFERENCES jobs(id)
+  1240→    ON DELETE CASCADE,
+  1241→
+  1242→  CONSTRAINT fk_job_profile_org_type
+  1243→    FOREIGN KEY (organization_type_id)
+  1244→    REFERENCES taxonomy_items(id)
+  1245→    ON DELETE SET NULL,
+  1246→
+  1247→  CONSTRAINT fk_job_profile_industry
+  1248→    FOREIGN KEY (organization_industry_id)
+  1249→    REFERENCES taxonomy_items(id)
+  1250→    ON DELETE SET NULL,
+  1251→
+  1252→  CONSTRAINT fk_job_profile_category
+  1253→    FOREIGN KEY (job_category_id)
+  1254→    REFERENCES taxonomy_items(id)
+  1255→    ON DELETE SET NULL,
+  1256→
+  1257→  CONSTRAINT fk_job_profile_subcategory
+  1258→    FOREIGN KEY (primary_subcategory_id)
+  1259→    REFERENCES taxonomy_items(id)
+  1260→    ON DELETE SET NULL,
+  1261→
+  1262→  CONSTRAINT fk_job_profile_role
+  1263→    FOREIGN KEY (normalized_role_id)
+  1264→    REFERENCES taxonomy_items(id)
+  1265→    ON DELETE SET NULL
+  1266→);
+  1267→```
+  1268→
+  1269→---
+  1270→
+  1271→### 12.4 job_subcategories
+  1272→
+  1273→```sql
+  1274→CREATE TABLE job_subcategories (
+  1275→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1276→
+  1277→  job_id BIGINT UNSIGNED NOT NULL,
+  1278→
+  1279→  subcategory_id BIGINT UNSIGNED NOT NULL,
+  1280→
+  1281→  importance ENUM('PRIMARY', 'SECONDARY') DEFAULT 'PRIMARY',
+  1282→
+  1283→  confidence_score DECIMAL(5,2) NULL,
+  1284→
+  1285→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1286→
+  1287→  UNIQUE KEY unique_job_subcategory (job_id, subcategory_id),
+  1288→
+  1289→  INDEX idx_job_subcategory_subcategory (subcategory_id),
+  1290→
+  1291→  CONSTRAINT fk_job_subcategory_job
+  1292→    FOREIGN KEY (job_id)
+  1293→    REFERENCES jobs(id)
+  1294→    ON DELETE CASCADE,
+  1295→
+  1296→  CONSTRAINT fk_job_subcategory_taxonomy
+  1297→    FOREIGN KEY (subcategory_id)
+  1298→    REFERENCES taxonomy_items(id)
+  1299→    ON DELETE CASCADE
+  1300→);
+  1301→```
+  1302→
+  1303→---
+  1304→
+  1305→### 12.5 job_skills
+  1306→
+  1307→```sql
+  1308→CREATE TABLE job_skills (
+  1309→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1310→
+  1311→  job_id BIGINT UNSIGNED NOT NULL,
+  1312→
+  1313→  skill_id BIGINT UNSIGNED NOT NULL,
+  1314→
+  1315→  importance ENUM('MUST_HAVE', 'NICE_TO_HAVE') NOT NULL DEFAULT 'MUST_HAVE',
+  1316→
+  1317→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+  1318→
+  1319→  raw_text VARCHAR(255) NULL,
+  1320→
+  1321→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1322→
+  1323→  UNIQUE KEY unique_job_skill (job_id, skill_id),
+  1324→
+  1325→  INDEX idx_job_skill_skill (skill_id),
+  1326→  INDEX idx_job_skill_job (job_id),
+  1327→
+  1328→  CONSTRAINT fk_job_skill_job
+  1329→    FOREIGN KEY (job_id)
+  1330→    REFERENCES jobs(id)
+  1331→    ON DELETE CASCADE,
+  1332→
+  1333→  CONSTRAINT fk_job_skill_taxonomy
+  1334→    FOREIGN KEY (skill_id)
+  1335→    REFERENCES taxonomy_items(id)
+  1336→    ON DELETE CASCADE
+  1337→);
+  1338→```
+  1339→
+  1340→---
+  1341→
+  1342→### 12.6 job_tools
+  1343→
+  1344→```sql
+  1345→CREATE TABLE job_tools (
+  1346→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1347→
+  1348→  job_id BIGINT UNSIGNED NOT NULL,
+  1349→
+  1350→  tool_id BIGINT UNSIGNED NOT NULL,
+  1351→
+  1352→  importance ENUM('MUST_HAVE', 'NICE_TO_HAVE') NOT NULL DEFAULT 'NICE_TO_HAVE',
+  1353→
+  1354→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+  1355→
+  1356→  raw_text VARCHAR(255) NULL,
+  1357→
+  1358→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1359→
+  1360→  UNIQUE KEY unique_job_tool (job_id, tool_id),
+  1361→
+  1362→  INDEX idx_job_tool_tool (tool_id),
+  1363→
+  1364→  CONSTRAINT fk_job_tool_job
+  1365→    FOREIGN KEY (job_id)
+  1366→    REFERENCES jobs(id)
+  1367→    ON DELETE CASCADE,
+  1368→
+  1369→  CONSTRAINT fk_job_tool_taxonomy
+  1370→    FOREIGN KEY (tool_id)
+  1371→    REFERENCES taxonomy_items(id)
+  1372→    ON DELETE CASCADE
+  1373→);
+  1374→```
+  1375→
+  1376→---
+  1377→
+  1378→### 12.7 job_qualifications
+  1379→
+  1380→```sql
+  1381→CREATE TABLE job_qualifications (
+  1382→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1383→
+  1384→  job_id BIGINT UNSIGNED NOT NULL,
+  1385→
+  1386→  qualification_id BIGINT UNSIGNED NULL,
+  1387→
+  1388→  level ENUM(
+  1389→    'CERTIFICATE',
+  1390→    'DIPLOMA',
+  1391→    'BACHELOR',
+  1392→    'MASTER',
+  1393→    'PHD',
+  1394→    'OTHER'
+  1395→  ) NULL,
+  1396→
+  1397→  field_of_study VARCHAR(255) NULL,
+  1398→
+  1399→  importance ENUM('MUST_HAVE', 'NICE_TO_HAVE') NOT NULL DEFAULT 'MUST_HAVE',
+  1400→
+  1401→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+  1402→
+  1403→  raw_text VARCHAR(255) NULL,
+  1404→
+  1405→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1406→
+  1407→  INDEX idx_job_qualification_job (job_id),
+  1408→  INDEX idx_job_qualification_id (qualification_id),
+  1409→
+  1410→  CONSTRAINT fk_job_qualification_job
+  1411→    FOREIGN KEY (job_id)
+  1412→    REFERENCES jobs(id)
+  1413→    ON DELETE CASCADE,
+  1414→
+  1415→  CONSTRAINT fk_job_qualification_taxonomy
+  1416→    FOREIGN KEY (qualification_id)
+  1417→    REFERENCES taxonomy_items(id)
+  1418→    ON DELETE SET NULL
+  1419→);
+  1420→```
+  1421→
+  1422→---
+  1423→
+  1424→### 12.8 job_certifications
+  1425→
+  1426→```sql
+  1427→CREATE TABLE job_certifications (
+  1428→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1429→
+  1430→  job_id BIGINT UNSIGNED NOT NULL,
+  1431→
+  1432→  certification_id BIGINT UNSIGNED NULL,
+  1433→
+  1434→  importance ENUM('MUST_HAVE', 'NICE_TO_HAVE') NOT NULL DEFAULT 'MUST_HAVE',
+  1435→
+  1436→  weight DECIMAL(4,2) NOT NULL DEFAULT 1.00,
+  1437→
+  1438→  raw_text VARCHAR(255) NULL,
+  1439→
+  1440→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1441→
+  1442→  INDEX idx_job_certification_job (job_id),
+  1443→  INDEX idx_job_certification_id (certification_id),
+  1444→
+  1445→  CONSTRAINT fk_job_certification_job
+  1446→    FOREIGN KEY (job_id)
+  1447→    REFERENCES jobs(id)
+  1448→    ON DELETE CASCADE,
+  1449→
+  1450→  CONSTRAINT fk_job_certification_taxonomy
+  1451→    FOREIGN KEY (certification_id)
+  1452→    REFERENCES taxonomy_items(id)
+  1453→    ON DELETE SET NULL
+  1454→);
+  1455→```
+  1456→
+  1457→---
+  1458→
+  1459→### 12.9 job_specializations
+  1460→
+  1461→Used when one job post has multiple possible specializations.
+  1462→
+  1463→Example:
+  1464→
+  1465→Amref Part-Time Lecturer:
+  1466→
+  1467→- Counselling Psychology
+  1468→- Community Health
+  1469→- Health Records & ICT
+  1470→- Social Work
+  1471→- Environmental Sciences
+  1472→
+  1473→```sql
+  1474→CREATE TABLE job_specializations (
+  1475→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1476→
+  1477→  job_id BIGINT UNSIGNED NOT NULL,
+  1478→
+  1479→  specialization_id BIGINT UNSIGNED NOT NULL,
+  1480→
+  1481→  importance ENUM('MUST_HAVE', 'NICE_TO_HAVE') DEFAULT 'MUST_HAVE',
+  1482→
+  1483→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1484→
+  1485→  UNIQUE KEY unique_job_specialization (job_id, specialization_id),
+  1486→
+  1487→  INDEX idx_job_specialization_specialization (specialization_id),
+  1488→
+  1489→  CONSTRAINT fk_job_specialization_job
+  1490→    FOREIGN KEY (job_id)
+  1491→    REFERENCES jobs(id)
+  1492→    ON DELETE CASCADE,
+  1493→
+  1494→  CONSTRAINT fk_job_specialization_taxonomy
+  1495→    FOREIGN KEY (specialization_id)
+  1496→    REFERENCES taxonomy_items(id)
+  1497→    ON DELETE CASCADE
+  1498→);
+  1499→```
+  1500→
+  1501→---
+  1502→
+  1503→## 13. Candidate-Job Matching Table
+  1504→
+  1505→### 13.1 candidate_job_scores
+  1506→
+  1507→```sql
+  1508→CREATE TABLE candidate_job_scores (
+  1509→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1510→
+  1511→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1512→
+  1513→  job_id BIGINT UNSIGNED NOT NULL,
+  1514→
+  1515→  final_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1516→
+  1517→  category_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1518→  subcategory_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1519→  skills_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1520→  qualifications_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1521→  experience_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1522→  industry_score DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  1523→
+  1524→  -- ✅ OPTIMIZATION: Store counts for UI display
+  1525→  matched_skill_count INT DEFAULT 0,
+  1526→  total_required_skills INT DEFAULT 0,
+  1527→  matched_qualification_count INT DEFAULT 0,
+  1528→  total_required_qualifications INT DEFAULT 0,
+  1529→
+  1530→  verdict ENUM(
+  1531→    'EXCELLENT',
+  1532→    'STRONG',
+  1533→    'MODERATE',
+  1534→    'WEAK',
+  1535→    'NOT_RECOMMENDED'
+  1536→  ) NOT NULL,
+  1537→
+  1538→  recommendation_type ENUM(
+  1539→    'PRIMARY_MATCH',
+  1540→    'INTEREST_MATCH',
+  1541→    'ADJACENT_MATCH',
+  1542→    'STRETCH_MATCH',
+  1543→    'NOT_RECOMMENDED'
+  1544→  ) DEFAULT 'PRIMARY_MATCH',
+  1545→
+  1546→  matched_items JSON NULL,
+  1547→  missing_items JSON NULL,
+  1548→
+  1549→  explanation TEXT NULL,
+  1550→
+  1551→  -- ✅ OPTIMIZATION: Track candidate engagement
+  1552→  is_read BOOLEAN NOT NULL DEFAULT FALSE,
+  1553→  read_at TIMESTAMP NULL,
+  1554→  is_saved BOOLEAN NOT NULL DEFAULT FALSE,
+  1555→  saved_at TIMESTAMP NULL,
+  1556→
+  1557→  computed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1558→
+  1559→  UNIQUE KEY unique_candidate_job_score (candidate_id, job_id),
+  1560→
+  1561→  INDEX idx_score_candidate (candidate_id),
+  1562→  INDEX idx_score_job (job_id),
+  1563→  INDEX idx_score_final (final_score),
+  1564→  INDEX idx_score_verdict (verdict),
+  1565→  INDEX idx_score_read (is_read, computed_at),
+  1566→
+  1567→  CONSTRAINT fk_score_candidate
+  1568→    FOREIGN KEY (candidate_id)
+  1569→    REFERENCES candidates(id)
+  1570→    ON DELETE CASCADE,
+  1571→
+  1572→  CONSTRAINT fk_score_job
+  1573→    FOREIGN KEY (job_id)
+  1574→    REFERENCES jobs(id)
+  1575→    ON DELETE CASCADE
+  1576→);
+  1577→```
+  1578→
+  1579→---
+  1580→
+  1581→## 14. Applications Table
+  1582→
+  1583→```sql
+  1584→CREATE TABLE applications (
+  1585→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1586→
+  1587→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1588→
+  1589→  job_id BIGINT UNSIGNED NOT NULL,
+  1590→
+  1591→  match_score_at_application DECIMAL(5,2) NULL,
+  1592→
+  1593→  status ENUM(
+  1594→    'APPLIED',
+  1595→    'VIEWED',
+  1596→    'SHORTLISTED',
+  1597→    'INTERVIEW',
+  1598→    'REJECTED',
+  1599→    'HIRED',
+  1600→    'WITHDRAWN'
+  1601→  ) NOT NULL DEFAULT 'APPLIED',
+  1602→
+  1603→  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1604→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  1605→
+  1606→  UNIQUE KEY unique_candidate_application (candidate_id, job_id),
+  1607→
+  1608→  INDEX idx_application_candidate (candidate_id),
+  1609→  INDEX idx_application_job (job_id),
+  1610→  INDEX idx_application_status (status),
+  1611→
+  1612→  CONSTRAINT fk_application_candidate
+  1613→    FOREIGN KEY (candidate_id)
+  1614→    REFERENCES candidates(id)
+  1615→    ON DELETE CASCADE,
+  1616→
+  1617→  CONSTRAINT fk_application_job
+  1618→    FOREIGN KEY (job_id)
+  1619→    REFERENCES jobs(id)
+  1620→    ON DELETE CASCADE
+  1621→);
+  1622→```
+  1623→
+  1624→---
+  1625→
+  1626→## 15. Optimization Tables (✅ NEW)
+  1627→
+  1628→### 15.1 job_views
+  1629→
+  1630→Track how many candidates viewed a job.
+  1631→
+  1632→```sql
+  1633→CREATE TABLE job_views (
+  1634→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1635→
+  1636→  job_id BIGINT UNSIGNED NOT NULL,
+  1637→
+  1638→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1639→
+  1640→  viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1641→
+  1642→  source ENUM('MATCH', 'SEARCH', 'DIRECT') DEFAULT 'MATCH',
+  1643→
+  1644→  INDEX idx_job_views_job (job_id),
+  1645→  INDEX idx_job_views_candidate (candidate_id),
+  1646→
+  1647→  CONSTRAINT fk_job_view_job
+  1648→    FOREIGN KEY (job_id)
+  1649→    REFERENCES jobs(id)
+  1650→    ON DELETE CASCADE,
+  1651→
+  1652→  CONSTRAINT fk_job_view_candidate
+  1653→    FOREIGN KEY (candidate_id)
+  1654→    REFERENCES candidates(id)
+  1655→    ON DELETE CASCADE
+  1656→);
+  1657→```
+  1658→
+  1659→---
+  1660→
+  1661→### 15.2 application_funnel
+  1662→
+  1663→Track where candidates drop off in the application process.
+  1664→
+  1665→```sql
+  1666→CREATE TABLE application_funnel (
+  1667→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1668→
+  1669→  job_id BIGINT UNSIGNED NOT NULL,
+  1670→
+  1671→  candidate_id BIGINT UNSIGNED NOT NULL,
+  1672→
+  1673→  stage ENUM(
+  1674→    'VIEWED',
+  1675→    'CLICKED_APPLY',
+  1676→    'STARTED_APPLICATION',
+  1677→    'SUBMITTED',
+  1678→    'COMPLETED'
+  1679→  ) NOT NULL,
+  1680→
+  1681→  stage_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1682→
+  1683→  INDEX idx_funnel_job (job_id),
+  1684→  INDEX idx_funnel_candidate (candidate_id),
+  1685→
+  1686→  CONSTRAINT fk_funnel_job
+  1687→    FOREIGN KEY (job_id)
+  1688→    REFERENCES jobs(id)
+  1689→    ON DELETE CASCADE,
+  1690→
+  1691→  CONSTRAINT fk_funnel_candidate
+  1692→    FOREIGN KEY (candidate_id)
+  1693→    REFERENCES candidates(id)
+  1694→    ON DELETE CASCADE
+  1695→);
+  1696→```
+  1697→
+  1698→---
+  1699→
+  1700→## 16. AI Extractions Table
+  1701→
+  1702→Stores extraction logs.
+  1703→
+  1704→Useful for debugging and improving parser quality.
+  1705→
+  1706→```sql
+  1707→CREATE TABLE ai_extractions (
+  1708→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1709→
+  1710→  source_type ENUM('CV', 'JOB') NOT NULL,
+  1711→
+  1712→  source_id BIGINT UNSIGNED NOT NULL,
+  1713→
+  1714→  raw_text LONGTEXT NULL,
+  1715→
+  1716→  extracted_json JSON NULL,
+  1717→
+  1718→  parser_type ENUM(
+  1719→    'HEURISTIC',
+  1720→    'LLM',
+  1721→    'HYBRID'
+  1722→  ) NOT NULL DEFAULT 'HEURISTIC',
+  1723→
+  1724→  model_used VARCHAR(120) NULL,
+  1725→
+  1726→  confidence_score DECIMAL(5,2) NULL,
+  1727→
+  1728→  status ENUM(
+  1729→    'SUCCESS',
+  1730→    'FAILED',
+  1731→    'NEEDS_REVIEW'
+  1732→  ) NOT NULL DEFAULT 'SUCCESS',
+  1733→
+  1734→  error_message TEXT NULL,
+  1735→
+  1736→  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  1737→
+  1738→  INDEX idx_ai_source (source_type, source_id),
+  1739→  INDEX idx_ai_status (status)
+  1740→);
+  1741→```
+  1742→
+  1743→---
+  1744→
+  1745→## 17. System Settings Table
+  1746→
+  1747→Used for cron tracking.
+  1748→
+  1749→```sql
+  1750→CREATE TABLE system_settings (
+  1751→  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  1752→
+  1753→  setting_key VARCHAR(120) NOT NULL UNIQUE,
+  1754→
+  1755→  setting_value TEXT NULL,
+  1756→
+  1757→  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  1758→);
+  1759→```
+  1760→
+  1761→Example:
+  1762→
+  1763→```txt
+  1764→LAST_CRON_MATCH_RUN = 2026-06-18T10:00:00Z
+  1765→```
+  1766→
+  1767→---
+  1768→
+  1769→## 18. Match Calculation Logic
+  1770→
+  1771→### 18.1 Category Match
+  1772→
+  1773→```js
+  1774→function calculateCategoryMatch(candidate, job) {
+  1775→  if (candidate.primaryCategoryId === job.jobCategoryId) {
+  1776→    return 100;
+  1777→  }
+  1778→
+  1779→  if (candidate.interestCategoryIds.includes(job.jobCategoryId)) {
+  1780→    return 75;
+  1781→  }
+  1782→
+  1783→  return 0;
+  1784→}
+  1785→```
+  1786→
+  1787→---
+  1788→
+  1789→### 18.2 Subcategory Match (✅ UPDATED)
+  1790→
+  1791→```js
+  1792→function calculateSubcategoryMatch(candidate, job) {
+  1793→  // Primary subcategory match = highest score
+  1794→  if (candidate.primarySubcategoryId === job.primarySubcategoryId) {
+  1795→    return 100;
+  1796→  }
+  1797→
+  1798→  // Check candidate's extracted subcategories against job's subcategories
+  1799→  const candidateSubcategories = candidate.subcategoryIds;
+  1800→  const jobSubcategories = job.subcategoryIds;
+  1801→
+  1802→  if (!jobSubcategories.length) return 0;
+  1803→
+  1804→  const matched = jobSubcategories.filter(id =>
+  1805→    candidateSubcategories.includes(id)
+  1806→  );
+  1807→
+  1808→  const score = (matched.length / jobSubcategories.length) * 100;
+  1809→
+  1810→  // If candidate has it as an interest, boost slightly
+  1811→  if (candidate.interestCategoryIds.includes(job.jobCategoryId)) {
+  1812→    return Math.min(score + 10, 100);
+  1813→  }
+  1814→
+  1815→  return score;
+  1816→}
+  1817→```
+  1818→
+  1819→---
+  1820→
+  1821→### 18.3 Skills Match
+  1822→
+  1823→```js
+  1824→function calculateSkillsMatch(candidateSkillIds, jobRequiredSkillIds) {
+  1825→  if (!jobRequiredSkillIds.length) return 100;
+  1826→
+  1827→  const matched = jobRequiredSkillIds.filter(id =>
+  1828→    candidateSkillIds.includes(id)
+  1829→  );
+  1830→
+  1831→  return (matched.length / jobRequiredSkillIds.length) * 100;
+  1832→}
+  1833→```
+  1834→
+  1835→---
+  1836→
+  1837→### 18.4 Qualifications Match
+  1838→
+  1839→```js
+  1840→function calculateQualificationsMatch(candidateQualificationIds, jobQualificationIds) {
+  1841→  if (!jobQualificationIds.length) return 100;
+  1842→
+  1843→  const matched = jobQualificationIds.filter(id =>
+  1844→    candidateQualificationIds.includes(id)
+  1845→  );
+  1846→
+  1847→  return (matched.length / jobQualificationIds.length) * 100;
+  1848→}
+  1849→```
+  1850→
+  1851→---
+  1852→
+  1853→### 18.5 Experience Match
+  1854→
+  1855→```js
+  1856→function calculateExperienceMatch(candidateYears, minimumYears) {
+  1857→  if (!minimumYears || minimumYears === 0) return 100;
+  1858→
+  1859→  if (candidateYears >= minimumYears) return 100;
+  1860→
+  1861→  return (candidateYears / minimumYears) * 100;
+  1862→}
+  1863→```
+  1864→
+  1865→---
+  1866→
+  1867→### 18.6 Industry Familiarity Match
+  1868→
+  1869→```js
+  1870→function calculateIndustryMatch(candidateIndustryIds, jobIndustryId) {
+  1871→  if (!jobIndustryId) return 50;
+  1872→
+  1873→  if (candidateIndustryIds.includes(jobIndustryId)) {
+  1874→    return 100;
+  1875→  }
+  1876→
+  1877→  return 30;
+  1878→}
+  1879→```
+  1880→
+  1881→---
+  1882→
+  1883→### 18.7 Final Score
+  1884→
+  1885→```js
+  1886→function calculateFinalScore(scores) {
+  1887→  return Math.round(
+  1888→    scores.categoryScore * 0.25 +
+  1889→    scores.subcategoryScore * 0.25 +
+  1890→    scores.skillsScore * 0.25 +
+  1891→    scores.qualificationsScore * 0.10 +
+  1892→    scores.experienceScore * 0.10 +
+  1893→    scores.industryScore * 0.05
+  1894→  );
+  1895→}
+  1896→```
+  1897→
+  1898→---
+  1899→
+  1900→### 18.8 Verdict
+  1901→
+  1902→```js
+  1903→function getVerdict(score) {
+  1904→  if (score >= 90) return "EXCELLENT";
+  1905→  if (score >= 80) return "STRONG";
+  1906→  if (score >= 65) return "MODERATE";
+  1907→  if (score >= 50) return "WEAK";
+  1908→  return "NOT_RECOMMENDED";
+  1909→}
+  1910→```
+  1911→
+  1912→---
+  1913→
+  1914→## 19. SQL-Based Matching Query (✅ UPDATED)
+  1915→
+  1916→This is the CPU-based matching approach.
+  1917→
+  1918→Important:
+  1919→
+  1920→Use taxonomy IDs, not raw skill names.
+  1921→
+  1922→### Candidate to Jobs Matching
+  1923→
+  1924→```sql
+  1925→SELECT
+  1926→  j.id AS job_id,
+  1927→  j.title,
+  1928→  j.location_county,
+  1929→  j.is_remote,
+  1930→  c.name AS company_name,
+  1931→
+  1932→  -- Category Score (Weight: 25%)
+  1933→  CASE
+  1934→    WHEN cp.primary_category_id = jp.job_category_id THEN 100
+  1935→    WHEN EXISTS (
+  1936→      SELECT 1
+  1937→      FROM candidate_interests ci
+  1938→      WHERE ci.candidate_id = ca.id
+  1939→        AND ci.category_id = jp.job_category_id
+  1940→    ) THEN 75
+  1941→    ELSE 0
+  1942→  END AS category_score,
+  1943→
+  1944→  -- ✅ UPDATED: Subcategory Score (Weight: 25%)
+  1945→  CASE
+  1946→    -- Highest: Primary subcategory matches
+  1947→    WHEN jp.primary_subcategory_id IS NOT NULL
+  1948→      AND cp.primary_subcategory_id = jp.primary_subcategory_id
+  1949→    THEN 100
+  1950→
+  1951→    -- High: Candidate's extracted subcategories match job's subcategories
+  1952→    WHEN EXISTS (
+  1953→      SELECT 1
+  1954→      FROM job_subcategories js
+  1955→      INNER JOIN candidate_subcategories cs
+  1956→        ON cs.candidate_id = ca.id
+  1957→        AND cs.subcategory_id = js.subcategory_id
+  1958→      WHERE js.job_id = j.id
+  1959→    ) THEN 70
+  1960→
+  1961→    -- Medium: Candidate has the job's category as an interest
+  1962→    WHEN EXISTS (
+  1963→      SELECT 1
+  1964→      FROM candidate_interests ci
+  1965→      WHERE ci.candidate_id = ca.id
+  1966→        AND ci.category_id = jp.job_category_id
+  1967→    ) THEN 50
+  1968→
+  1969→    ELSE 0
+  1970→  END AS subcategory_score,
+  1971→
+  1972→  -- Skills Score (Weight: 25%)
+  1973→  (
+  1974→    SELECT
+  1975→      COALESCE(
+  1976→        (COUNT(DISTINCT csk.skill_id) / NULLIF(COUNT(DISTINCT jsk.skill_id), 0)) * 100,
+  1977→        100
+  1978→      )
+  1979→    FROM job_skills jsk
+  1980→    LEFT JOIN candidate_skills csk
+  1981→      ON csk.candidate_id = ca.id
+  1982→     AND csk.skill_id = jsk.skill_id
+  1983→    WHERE jsk.job_id = j.id
+  1984→      AND jsk.importance = 'MUST_HAVE'
+  1985→  ) AS skills_score,
+  1986→
+  1987→  -- Qualifications Score (Weight: 10%)
+  1988→  (
+  1989→    SELECT
+  1990→      COALESCE(
+  1991→        (COUNT(DISTINCT cq.qualification_id) / NULLIF(COUNT(DISTINCT jq.qualification_id), 0)) * 100,
+  1992→        100
+  1993→      )
+  1994→    FROM job_qualifications jq
+  1995→    LEFT JOIN candidate_qualifications cq
+  1996→      ON cq.candidate_id = ca.id
+  1997→     AND cq.qualification_id = jq.qualification_id
+  1998→    WHERE jq.job_id = j.id
+  1999→      AND jq.importance = 'MUST_HAVE'
+  2000→  ) AS qualifications_score,
+
+[showing lines 1-2000 of 2834; use offset=2001 with limit to continue reading]
