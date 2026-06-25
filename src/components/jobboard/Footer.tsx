@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href="/">
-              <Image src="/logo.svg" alt="JobBoard Kenya" width={160} height={55} />
+              <Image src="/logo.svg" alt="JobBoard Kenya" width={140} height={107} />
             </Link>
             <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
             <div className="footer-social">

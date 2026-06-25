@@ -13,7 +13,8 @@ import { LucideIcon, Search, ChevronRight, BookOpen, MapPin, Landmark, Briefcase
   ShieldAlert, Bus, Pill, Leaf, Plane, Microscope, CircleDot, Flower2,
   UtensilsCrossed, Globe } from 'lucide-react';
 
-export const revalidate = 60;
+// Remote MySQL: force dynamic to avoid build-time connection exhaustion
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const categories = await getAllCategories();

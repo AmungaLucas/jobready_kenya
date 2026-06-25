@@ -11,7 +11,8 @@ import FilterChips from '@/components/jobboard/FilterChips';
 import Pagination from '@/components/jobboard/Pagination';
 import Link from 'next/link';
 
-export const revalidate = 60;
+// Remote MySQL: force dynamic to avoid build-time connection exhaustion
+export const dynamic = 'force-dynamic';
 
 interface JobsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

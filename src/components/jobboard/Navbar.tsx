@@ -35,7 +35,7 @@ export default function Navbar() {
       <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="navbar-inner">
           <Link href="/" className="navbar-logo">
-            <Image src="/logo.svg" alt="JobBoard Kenya" width={140} height={50} priority />
+            <Image src="/logo.svg" alt="JobBoard Kenya" width={120} height={92} priority style={{ height: 'auto', maxWidth: '130px', width: 'auto' }} />
           </Link>
 
           <ul className="navbar-links">

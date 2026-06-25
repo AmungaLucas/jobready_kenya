@@ -14,6 +14,10 @@ import CareerResources from '@/components/jobboard/CareerResources';
 import Newsletter from '@/components/jobboard/Newsletter';
 import GoogleAd from '@/components/jobboard/GoogleAd';
 
+// Homepage queries the DB (latest jobs, gov jobs, etc.) — must be dynamic
+// to avoid exhausting remote MySQL connections during build
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'JobBoard Kenya - Find Verified Jobs & Opportunities in Kenya',
   description: 'Find verified jobs, internships, and opportunities across Kenya. Browse 43+ job categories, 468 subcategories, and opportunities in all 47 counties. Updated daily with government, NGO, and private sector vacancies.',

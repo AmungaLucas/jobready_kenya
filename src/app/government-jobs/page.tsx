@@ -10,7 +10,8 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 import GoogleAd from '@/components/jobboard/GoogleAd';
 
-export const revalidate = 60;
+// Remote MySQL: force dynamic to avoid build-time connection exhaustion
+export const dynamic = 'force-dynamic';
 
 interface GovJobsPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

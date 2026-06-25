@@ -34,7 +34,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       <div className="mobile-drawer open">
         <div className="mobile-drawer-header">
           <Link href="/" onClick={onClose}>
-            <Image src="/logo.svg" alt="JobBoard Kenya" width={120} height={42} />
+            <Image src="/logo.svg" alt="JobBoard Kenya" width={100} height={77} style={{ height: 'auto', maxWidth: '110px', width: 'auto' }} />
           </Link>
           <button type="button" className="mobile-drawer-close" onClick={onClose}>
             <X className="w-5 h-5" />

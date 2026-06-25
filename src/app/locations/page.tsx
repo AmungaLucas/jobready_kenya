@@ -7,7 +7,8 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 import AdBanner from '@/components/jobboard/AdBanner';
 
-export const revalidate = 86400;
+// Remote MySQL: force dynamic to avoid build-time connection exhaustion
+export const dynamic = 'force-dynamic';
 
 const title = 'Browse Jobs by Location in Kenya - All 47 Counties | JobBoard Kenya';
 const description = 'Explore job vacancies across all 47 Kenyan counties. Find jobs in Nairobi, Mombasa, Kisumu, Nakuru, and every county in Kenya. Filter by location to discover opportunities near you.';
