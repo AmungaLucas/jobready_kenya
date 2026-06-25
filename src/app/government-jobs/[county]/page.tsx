@@ -17,7 +17,8 @@ import { getPopularLocations } from '@/lib/locations';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
-export const revalidate = 60;
+// Remote MySQL: force dynamic — no ISR caching to minimize connections on Vercel
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 interface Props {
