@@ -374,11 +374,11 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                     <Link
                       key={s.id || s.slug}
                       href={`/jobs/${s.slug}`}
-                      className="similar-item flex flex-wrap items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition"
+                      className="similar-item flex items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition min-w-0"
                     >
-                      <div>
-                        <span className="similar-title text-sm font-semibold text-gray-800 transition">{s.title}</span>
-                        <span className="similar-company text-sm text-gray-400 ml-2 transition">{s.company} · {s.location}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="similar-title text-sm font-semibold text-gray-800 transition block">{s.title}</span>
+                        <span className="similar-company text-xs text-gray-400 block truncate mt-0.5">{s.company} · {s.location}</span>
                       </div>
                       <span className="text-xs text-gray-500">{s.salary}</span>
                     </Link>
@@ -533,7 +533,6 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
               <a href={`/contact?subject=report&job=${job.slug}`} className="text-xs text-gray-400 hover:text-red-500 transition">Report this job</a>
             </div>
-
 
           </div>
 

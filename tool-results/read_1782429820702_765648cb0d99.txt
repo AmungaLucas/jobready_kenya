@@ -1,0 +1,1254 @@
+     1→     1→@import "tailwindcss";
+     2→     2→@import "tw-animate-css";
+     3→     3→
+     4→     4→@custom-variant dark (&:is(.dark *));
+     5→     5→
+     6→     6→@theme inline {
+     7→     7→  --color-background: var(--background);
+     8→     8→  --color-foreground: var(--foreground);
+     9→     9→  --font-sans: var(--font-nunito);
+    10→    10→  --font-mono: var(--font-geist-mono);
+    11→    11→  --color-sidebar-ring: var(--sidebar-ring);
+    12→    12→  --color-sidebar-border: var(--sidebar-border);
+    13→    13→  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    14→    14→  --color-sidebar-accent: var(--sidebar-accent);
+    15→    15→  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    16→    16→  --color-sidebar-primary: var(--sidebar-primary);
+    17→    17→  --color-sidebar-foreground: var(--sidebar-foreground);
+    18→    18→  --color-sidebar: var(--sidebar);
+    19→    19→  --color-chart-5: var(--chart-5);
+    20→    20→  --color-chart-4: var(--chart-4);
+    21→    21→  --color-chart-3: var(--chart-3);
+    22→    22→  --color-chart-2: var(--chart-2);
+    23→    23→  --color-chart-1: var(--chart-1);
+    24→    24→  --color-ring: var(--ring);
+    25→    25→  --color-input: var(--input);
+    26→    26→  --color-border: var(--border);
+    27→    27→  --color-destructive: var(--destructive);
+    28→    28→  --color-accent-foreground: var(--accent-foreground);
+    29→    29→  --color-accent: var(--accent);
+    30→    30→  --color-muted-foreground: var(--muted-foreground);
+    31→    31→  --color-muted: var(--muted);
+    32→    32→  --color-secondary-foreground: var(--secondary-foreground);
+    33→    33→  --color-secondary: var(--secondary);
+    34→    34→  --color-primary-foreground: var(--primary-foreground);
+    35→    35→  --color-primary: var(--primary);
+    36→    36→  --color-popover-foreground: var(--popover-foreground);
+    37→    37→  --color-popover: var(--popover);
+    38→    38→  --color-card-foreground: var(--card-foreground);
+    39→    39→  --color-card: var(--card);
+    40→    40→  --radius-sm: calc(var(--radius) - 4px);
+    41→    41→  --radius-md: calc(var(--radius) - 2px);
+    42→    42→  --radius-lg: var(--radius);
+    43→    43→  --radius-xl: calc(var(--radius) + 4px);
+    44→    44→}
+    45→    45→
+    46→    46→:root {
+    47→    47→  --radius: 0.625rem;
+    48→    48→  --background: oklch(1 0 0);
+    49→    49→  --foreground: oklch(0.145 0 0);
+    50→    50→  --card: oklch(1 0 0);
+    51→    51→  --card-foreground: oklch(0.145 0 0);
+    52→    52→  --popover: oklch(1 0 0);
+    53→    53→  --popover-foreground: oklch(0.145 0 0);
+    54→    54→  --primary: oklch(0.205 0 0);
+    55→    55→  --primary-foreground: oklch(0.985 0 0);
+    56→    56→  --secondary: oklch(0.97 0 0);
+    57→    57→  --secondary-foreground: oklch(0.205 0 0);
+    58→    58→  --muted: oklch(0.97 0 0);
+    59→    59→  --muted-foreground: oklch(0.556 0 0);
+    60→    60→  --accent: oklch(0.97 0 0);
+    61→    61→  --accent-foreground: oklch(0.205 0 0);
+    62→    62→  --destructive: oklch(0.577 0.245 27.325);
+    63→    63→  --border: oklch(0.922 0 0);
+    64→    64→  --input: oklch(0.922 0 0);
+    65→    65→  --ring: oklch(0.708 0 0);
+    66→    66→  --chart-1: oklch(0.646 0.222 41.116);
+    67→    67→  --chart-2: oklch(0.6 0.118 184.704);
+    68→    68→  --chart-3: oklch(0.398 0.07 227.392);
+    69→    69→  --chart-4: oklch(0.828 0.189 84.429);
+    70→    70→  --chart-5: oklch(0.769 0.188 70.08);
+    71→    71→  --sidebar: oklch(0.985 0 0);
+    72→    72→  --sidebar-foreground: oklch(0.145 0 0);
+    73→    73→  --sidebar-primary: oklch(0.205 0 0);
+    74→    74→  --sidebar-primary-foreground: oklch(0.985 0 0);
+    75→    75→  --sidebar-accent: oklch(0.97 0 0);
+    76→    76→  --sidebar-accent-foreground: oklch(0.205 0 0);
+    77→    77→  --sidebar-border: oklch(0.922 0 0);
+    78→    78→  --sidebar-ring: oklch(0.708 0 0);
+    79→    79→}
+    80→    80→
+    81→    81→@layer base {
+    82→    82→  * {
+    83→    83→    @apply border-border outline-ring/50;
+    84→    84→  }
+    85→    85→  body {
+    86→    86→    @apply bg-background text-foreground;
+    87→    87→  }
+    88→    88→}
+    89→    89→
+    90→    90→/* ----- GLOBAL STYLES (from original) ----- */
+    91→    91→body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #faf9f6; }
+    92→    92→.section-bg { background: #faf9f6; }
+    93→    93→
+    94→    94→/* Hide scrollbar */
+    95→    95→.no-scrollbar::-webkit-scrollbar { display: none; }
+    96→    96→.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    97→    97→
+    98→    98→/* Scroll buttons */
+    99→    99→.scroll-btn {
+   100→   100→  background: white;
+   101→   101→  border: 1px solid #e5e7eb;
+   102→   102→  border-radius: 9999px;
+   103→   103→  width: 44px;
+   104→   104→  height: 44px;
+   105→   105→  display: flex;
+   106→   106→  align-items: center;
+   107→   107→  justify-content: center;
+   108→   108→  cursor: pointer;
+   109→   109→  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+   110→   110→  transition: all 0.2s ease;
+   111→   111→  z-index: 20;
+   112→   112→  color: #374151;
+   113→   113→}
+   114→   114→.scroll-btn:hover {
+   115→   115→  background: #ecfdf5;
+   116→   116→  border-color: #15803d;
+   117→   117→  color: #15803d;
+   118→   118→}
+   119→   119→.scroll-btn.disabled {
+   120→   120→  opacity: 0.3;
+   121→   121→  pointer-events: none;
+   122→   122→}
+   123→   123→
+   124→   124→/* Category items */
+   125→   125→.category-item {
+   126→   126→  transition: all 0.15s ease;
+   127→   127→  cursor: default;
+   128→   128→}
+   129→   129→.category-item:hover {
+   130→   130→  background: #ecfdf5;
+   131→   131→  border-color: #15803d;
+   132→   132→}
+   133→   133→.category-item:hover .cat-icon {
+   134→   134→  transform: scale(1.05);
+   135→   135→}
+   136→   136→.cat-icon { transition: transform 0.15s ease; }
+   137→   137→
+   138→   138→/* Location items */
+   139→   139→.location-item {
+   140→   140→  transition: all 0.15s ease;
+   141→   141→  cursor: default;
+   142→   142→}
+   143→   143→.location-item:hover {
+   144→   144→  background: #ecfdf5;
+   145→   145→}
+   146→   146→.location-item:hover .loc-name {
+   147→   147→  color: #15803d;
+   148→   148→}
+   149→   149→
+   150→   150→/* Closing items */
+   151→   151→.closing-item {
+   152→   152→  transition: all 0.1s ease;
+   153→   153→  cursor: default;
+   154→   154→}
+   155→   155→.closing-item:hover .closing-title {
+   156→   156→  color: #15803d;
+   157→   157→}
+   158→   158→.closing-item:hover .closing-company {
+   159→   159→  color: #374151;
+   160→   160→}
+   161→   161→
+   162→   162→/* Government items */
+   163→   163→.gov-item {
+   164→   164→  transition: all 0.1s ease;
+   165→   165→  cursor: default;
+   166→   166→}
+   167→   167→.gov-item:hover .gov-title {
+   168→   168→  color: #15803d;
+   169→   169→}
+   170→   170→.gov-item:hover .gov-org {
+   171→   171→  color: #374151;
+   172→   172→}
+   173→   173→
+   174→   174→/* Tabs */
+   175→   175→.tab-btn {
+   176→   176→  transition: all 0.15s ease;
+   177→   177→}
+   178→   178→.tab-btn.active {
+   179→   179→  background: #15803d;
+   180→   180→  color: white;
+   181→   181→  box-shadow: 0 4px 6px -1px rgba(21,128,61,0.2);
+   182→   182→}
+   183→   183→.tab-btn.active .tab-count { color: #a7f3d0; }
+   184→   184→.tab-btn.inactive {
+   185→   185→  background: transparent;
+   186→   186→  color: #6b7280;
+   187→   187→}
+   188→   188→.tab-btn.inactive:hover {
+   189→   189→  background: #f3f4f6;
+   190→   190→  color: #374151;
+   191→   191→}
+   192→   192→.tab-content {
+   193→   193→  display: none;
+   194→   194→  animation: fadeIn 0.2s ease;
+   195→   195→}
+   196→   196→.tab-content.active { display: block; }
+   197→   197→@keyframes fadeIn {
+   198→   198→  0% { opacity: 0; transform: translateY(4px); }
+   199→   199→  100% { opacity: 1; transform: translateY(0); }
+   200→   200→}
+   201→   201→
+   202→   202→/* Badges */
+   203→   203→.gov-badge.national { background: #dbeafe; color: #1d4ed8; }
+   204→   204→.gov-badge.county { background: #d1fae5; color: #065f46; }
+   205→   205→
+   206→   206→/* Job Matching Premium Card */
+   207→   207→.matching-card {
+   208→   208→  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 40%, #d1fae5 100%);
+   209→   209→  border: 1px solid #86efac;
+   210→   210→  border-radius: 1rem;
+   211→   211→}
+   212→   212→.matching-card .highlight {
+   213→   213→  background: linear-gradient(135deg, #15803d, #0d9488);
+   214→   214→  color: white;
+   215→   215→  border-radius: 9999px;
+   216→   216→  padding: 0.2rem 1rem;
+   217→   217→  font-size: 0.65rem;
+   218→   218→  font-weight: 700;
+   219→   219→  text-transform: uppercase;
+   220→   220→  letter-spacing: 0.04em;
+   221→   221→  display: inline-block;
+   222→   222→}
+   223→   223→.matching-card .premium-badge {
+   224→   224→  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+   225→   225→  color: #78350f;
+   226→   226→  font-size: 0.6rem;
+   227→   227→  font-weight: 800;
+   228→   228→  text-transform: uppercase;
+   229→   229→  padding: 0.15rem 0.6rem;
+   230→   230→  border-radius: 9999px;
+   231→   231→  letter-spacing: 0.04em;
+   232→   232→  display: inline-block;
+   233→   233→  box-shadow: 0 2px 4px rgba(245,158,11,0.3);
+   234→   234→}
+   235→   235→.matching-card .cta-btn {
+   236→   236→  background: linear-gradient(135deg, #15803d, #0d9488);
+   237→   237→  color: white;
+   238→   238→  font-weight: 700;
+   239→   239→  padding: 0.75rem 2rem;
+   240→   240→  border-radius: 9999px;
+   241→   241→  transition: all 0.2s ease;
+   242→   242→  box-shadow: 0 4px 12px rgba(21,128,61,0.3);
+   243→   243→  display: inline-block;
+   244→   244→  border: none;
+   245→   245→  cursor: pointer;
+   246→   246→}
+   247→   247→.matching-card .cta-btn:hover {
+   248→   248→  transform: translateY(-2px);
+   249→   249→  box-shadow: 0 6px 20px rgba(21,128,61,0.4);
+   250→   250→}
+   251→   251→.feature-item {
+   252→   252→  display: flex;
+   253→   253→  align-items: center;
+   254→   254→  gap: 0.5rem;
+   255→   255→  font-size: 0.875rem;
+   256→   256→  color: #374151;
+   257→   257→}
+   258→   258→.feature-item .check {
+   259→   259→  color: #15803d;
+   260→   260→  font-weight: 800;
+   261→   261→  font-size: 1.1rem;
+   262→   262→}
+   263→   263→.match-result {
+   264→   264→  background: rgba(255,255,255,0.7);
+   265→   265→  backdrop-filter: blur(4px);
+   266→   266→  border: 1px solid #d1fae5;
+   267→   267→  border-radius: 0.75rem;
+   268→   268→  padding: 0.75rem 1rem;
+   269→   269→  transition: all 0.15s ease;
+   270→   270→}
+   271→   271→.match-result:hover {
+   272→   272→  border-color: #15803d;
+   273→   273→  background: rgba(255,255,255,0.9);
+   274→   274→}
+   275→   275→.match-score {
+   276→   276→  font-size: 0.65rem;
+   277→   277→  font-weight: 800;
+   278→   278→  color: #15803d;
+   279→   279→  background: #d1fae5;
+   280→   280→  padding: 0.15rem 0.6rem;
+   281→   281→  border-radius: 9999px;
+   282→   282→  white-space: nowrap;
+   283→   283→}
+   284→   284→.match-score.high {
+   285→   285→  background: #d1fae5;
+   286→   286→  color: #065f46;
+   287→   287→}
+   288→   288→.match-score.medium {
+   289→   289→  background: #fef3c7;
+   290→   290→  color: #92400e;
+   291→   291→}
+   292→   292→
+   293→   293→/* Job card hover */
+   294→   294→.job-card {
+   295→   295→  transition: all 0.15s ease;
+   296→   296→}
+   297→   297→.job-card:hover {
+   298→   298→  border-color: #15803d;
+   299→   299→  background: #ecfdf5;
+   300→   300→}
+   301→   301→.job-card:hover .job-title {
+   302→   302→  color: #15803d;
+   303→   303→}
+   304→   304→
+   305→   305→/* Filter chips */
+   306→   306→.filter-chip {
+   307→   307→  transition: all 0.15s ease;
+   308→   308→  cursor: default;
+   309→   309→}
+   310→   310→.filter-chip.active {
+   311→   311→  background: #15803d;
+   312→   312→  color: white;
+   313→   313→  border-color: #15803d;
+   314→   314→}
+   315→   315→.filter-chip.active:hover {
+   316→   316→  background: #166534;
+   317→   317→}
+   318→   318→.filter-chip.inactive {
+   319→   319→  background: transparent;
+   320→   320→  color: #6b7280;
+   321→   321→  border-color: #e5e7eb;
+   322→   322→}
+   323→   323→.filter-chip.inactive:hover {
+   324→   324→  background: #f3f4f6;
+   325→   325→  color: #374151;
+   326→   326→}
+   327→   327→
+   328→   328→/* Pagination */
+   329→   329→.page-btn {
+   330→   330→  transition: all 0.15s ease;
+   331→   331→}
+   332→   332→.page-btn.active {
+   333→   333→  background: #15803d;
+   334→   334→  color: white;
+   335→   335→  border-color: #15803d;
+   336→   336→}
+   337→   337→.page-btn.inactive {
+   338→   338→  background: transparent;
+   339→   339→  color: #6b7280;
+   340→   340→  border-color: #e5e7eb;
+   341→   341→}
+   342→   342→.page-btn.inactive:hover {
+   343→   343→  background: #f3f4f6;
+   344→   344→  color: #374151;
+   345→   345→}
+   346→   346→
+   347→   347→/* Sidebar sticky */
+   348→   348→.sidebar-sticky {
+   349→   349→  position: sticky;
+   350→   350→  top: 2rem;
+   351→   351→}
+   352→   352→@media (max-width: 1023px) {
+   353→   353→  .sidebar-sticky { position: static; }
+   354→   354→}
+   355→   355→
+   356→   356→/* Similar job item */
+   357→   357→.similar-item {
+   358→   358→  transition: all 0.1s ease;
+   359→   359→  cursor: default;
+   360→   360→}
+   361→   361→.similar-item:hover .similar-title {
+   362→   362→  color: #15803d;
+   363→   363→}
+   364→   364→.similar-item:hover .similar-company {
+   365→   365→  color: #374151;
+   366→   366→}
+   367→   367→
+   368→   368→/* Page sections */
+   369→   369→.page-section {
+   370→   370→  display: none;
+   371→   371→}
+   372→   372→.page-section.active {
+   373→   373→  display: block;
+   374→   374→}
+   375→   375→
+   376→   376→/* ----- NAVBAR / FOOTER STYLES ----- */
+   377→   377→/* Navbar */
+   378→   378→.navbar {
+   379→   379→  position: fixed;
+   380→   380→  top: 0;
+   381→   381→  left: 0;
+   382→   382→  right: 0;
+   383→   383→  z-index: 1000;
+   384→   384→  background: rgba(255, 255, 255, 0.88);
+   385→   385→  backdrop-filter: blur(14px) saturate(1.2);
+   386→   386→  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+   387→   387→  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+   388→   388→  transition: box-shadow 0.25s ease, background 0.25s ease;
+   389→   389→  height: 72px;
+   390→   390→  display: flex;
+   391→   391→  align-items: center;
+   392→   392→}
+   393→   393→
+   394→   394→.navbar.scrolled {
+   395→   395→  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+   396→   396→  background: rgba(255, 255, 255, 0.96);
+   397→   397→}
+   398→   398→
+   399→   399→.navbar-inner {
+   400→   400→  max-width: 1280px;
+   401→   401→  width: 100%;
+   402→   402→  margin: 0 auto;
+   403→   403→  padding: 0 1.5rem;
+   404→   404→  display: flex;
+   405→   405→  align-items: center;
+   406→   406→  justify-content: space-between;
+   407→   407→  gap: 1.5rem;
+   408→   408→}
+   409→   409→
+   410→   410→.navbar-logo {
+   411→   411→  display: flex;
+   412→   412→  align-items: center;
+   413→   413→  gap: 0.4rem;
+   414→   414→  text-decoration: none;
+   415→   415→  flex-shrink: 0;
+   416→   416→}
+   417→   417→
+   418→   418→.navbar-logo .logo-icon {
+   419→   419→  width: 38px;
+   420→   420→  height: 38px;
+   421→   421→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   422→   422→  border-radius: 10px;
+   423→   423→  display: flex;
+   424→   424→  align-items: center;
+   425→   425→  justify-content: center;
+   426→   426→  color: white;
+   427→   427→  font-weight: 800;
+   428→   428→  font-size: 1.05rem;
+   429→   429→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.25);
+   430→   430→  transition: transform 0.2s ease;
+   431→   431→}
+   432→   432→
+   433→   433→.navbar-logo:hover .logo-icon {
+   434→   434→  transform: scale(1.03);
+   435→   435→}
+   436→   436→
+   437→   437→.navbar-logo .logo-badge {
+   438→   438→  font-size: 0.55rem;
+   439→   439→  font-weight: 700;
+   440→   440→  text-transform: uppercase;
+   441→   441→  background: #e7f3ee;
+   442→   442→  color: #0b7e4a;
+   443→   443→  padding: 0.1rem 0.5rem;
+   444→   444→  border-radius: 100px;
+   445→   445→  letter-spacing: 0.03em;
+   446→   446→  border: 1px solid rgba(11, 126, 74, 0.12);
+   447→   447→}
+   448→   448→
+   449→   449→.navbar-links {
+   450→   450→  display: flex;
+   451→   451→  align-items: center;
+   452→   452→  gap: 0.15rem;
+   453→   453→  list-style: none;
+   454→   454→  margin: 0;
+   455→   455→  padding: 0;
+   456→   456→}
+   457→   457→
+   458→   458→.navbar-links>li {
+   459→   459→  position: relative;
+   460→   460→}
+   461→   461→
+   462→   462→.navbar-links>li>a,
+   463→   463→.navbar-links>li>button {
+   464→   464→  display: flex;
+   465→   465→  align-items: center;
+   466→   466→  gap: 0.3rem;
+   467→   467→  padding: 0.5rem 0.9rem;
+   468→   468→  border-radius: 8px;
+   469→   469→  font-size: 0.875rem;
+   470→   470→  font-weight: 500;
+   471→   471→  color: #3d3d3d;
+   472→   472→  text-decoration: none;
+   473→   473→  background: transparent;
+   474→   474→  border: none;
+   475→   475→  cursor: pointer;
+   476→   476→  transition: background 0.15s ease, color 0.15s ease;
+   477→   477→  font-family: inherit;
+   478→   478→  line-height: 1.4;
+   479→   479→  white-space: nowrap;
+   480→   480→}
+   481→   481→
+   482→   482→.navbar-links>li>a:hover,
+   483→   483→.navbar-links>li>button:hover {
+   484→   484→  background: rgba(11, 126, 74, 0.06);
+   485→   485→  color: #0b7e4a;
+   486→   486→}
+   487→   487→
+   488→   488→.navbar-links .dropdown-arrow {
+   489→   489→  font-size: 0.55rem;
+   490→   490→  opacity: 0.5;
+   491→   491→  transition: transform 0.2s ease;
+   492→   492→  margin-left: 0.1rem;
+   493→   493→}
+   494→   494→
+   495→   495→.navbar-links>li:hover .dropdown-arrow {
+   496→   496→  transform: rotate(180deg);
+   497→   497→}
+   498→   498→
+   499→   499→.dropdown-menu {
+   500→   500→  position: absolute;
+   501→   501→  top: calc(100% + 8px);
+   502→   502→  left: 50%;
+   503→   503→  transform: translateX(-50%) translateY(4px);
+   504→   504→  min-width: 220px;
+   505→   505→  background: rgba(255, 255, 255, 0.98);
+   506→   506→  backdrop-filter: blur(12px);
+   507→   507→  -webkit-backdrop-filter: blur(12px);
+   508→   508→  border-radius: 14px;
+   509→   509→  border: 1px solid rgba(0, 0, 0, 0.06);
+   510→   510→  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+   511→   511→  padding: 0.6rem 0;
+   512→   512→  opacity: 0;
+   513→   513→  visibility: hidden;
+   514→   514→  pointer-events: none;
+   515→   515→  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+   516→   516→  z-index: 100;
+   517→   517→}
+   518→   518→
+   519→   519→.navbar-links>li:hover .dropdown-menu {
+   520→   520→  opacity: 1;
+   521→   521→  visibility: visible;
+   522→   522→  pointer-events: auto;
+   523→   523→  transform: translateX(-50%) translateY(0);
+   524→   524→}
+   525→   525→
+   526→   526→.dropdown-menu a {
+   527→   527→  display: flex;
+   528→   528→  align-items: center;
+   529→   529→  gap: 0.6rem;
+   530→   530→  padding: 0.55rem 1.2rem;
+   531→   531→  font-size: 0.82rem;
+   532→   532→  font-weight: 450;
+   533→   533→  color: #2d2d2d;
+   534→   534→  text-decoration: none;
+   535→   535→  transition: background 0.12s ease, color 0.12s ease;
+   536→   536→  border-left: 2px solid transparent;
+   537→   537→}
+   538→   538→
+   539→   539→.dropdown-menu a:hover {
+   540→   540→  background: rgba(11, 126, 74, 0.05);
+   541→   541→  color: #0b7e4a;
+   542→   542→  border-left-color: #0b7e4a;
+   543→   543→}
+   544→   544→
+   545→   545→.dropdown-menu a i {
+   546→   546→  width: 1.1rem;
+   547→   547→  text-align: center;
+   548→   548→  color: #6b6b6b;
+   549→   549→  font-size: 0.8rem;
+   550→   550→}
+   551→   551→
+   552→   552→.dropdown-menu a:hover i {
+   553→   553→  color: #0b7e4a;
+   554→   554→}
+   555→   555→
+   556→   556→.dropdown-divider {
+   557→   557→  height: 1px;
+   558→   558→  background: rgba(0, 0, 0, 0.05);
+   559→   559→  margin: 0.3rem 0.8rem;
+   560→   560→}
+   561→   561→
+   562→   562→.dropdown-label {
+   563→   563→  font-size: 0.6rem;
+   564→   564→  font-weight: 700;
+   565→   565→  text-transform: uppercase;
+   566→   566→  letter-spacing: 0.04em;
+   567→   567→  color: #8f8f8f;
+   568→   568→  padding: 0.4rem 1.2rem 0.2rem;
+   569→   569→}
+   570→   570→
+   571→   571→.navbar-actions {
+   572→   572→  display: flex;
+   573→   573→  align-items: center;
+   574→   574→  gap: 0.5rem;
+   575→   575→  flex-shrink: 0;
+   576→   576→}
+   577→   577→
+   578→   578→.btn-outline {
+   579→   579→  display: inline-flex;
+   580→   580→  align-items: center;
+   581→   581→  gap: 0.4rem;
+   582→   582→  padding: 0.45rem 1.1rem;
+   583→   583→  border-radius: 100px;
+   584→   584→  font-size: 0.8rem;
+   585→   585→  font-weight: 600;
+   586→   586→  border: 1px solid #d0cdc7;
+   587→   587→  background: transparent;
+   588→   588→  color: #2d2d2d;
+   589→   589→  cursor: pointer;
+   590→   590→  transition: all 0.18s ease;
+   591→   591→  text-decoration: none;
+   592→   592→  font-family: inherit;
+   593→   593→  white-space: nowrap;
+   594→   594→}
+   595→   595→
+   596→   596→.btn-outline:hover {
+   597→   597→  background: rgba(11, 126, 74, 0.04);
+   598→   598→  border-color: #0b7e4a;
+   599→   599→  color: #0b7e4a;
+   600→   600→}
+   601→   601→
+   602→   602→.btn-primary {
+   603→   603→  display: inline-flex;
+   604→   604→  align-items: center;
+   605→   605→  gap: 0.4rem;
+   606→   606→  padding: 0.45rem 1.3rem;
+   607→   607→  border-radius: 100px;
+   608→   608→  font-size: 0.8rem;
+   609→   609→  font-weight: 600;
+   610→   610→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   611→   611→  border: none;
+   612→   612→  color: white;
+   613→   613→  cursor: pointer;
+   614→   614→  transition: all 0.2s ease;
+   615→   615→  text-decoration: none;
+   616→   616→  font-family: inherit;
+   617→   617→  white-space: nowrap;
+   618→   618→  box-shadow: 0 4px 12px rgba(11, 126, 74, 0.22);
+   619→   619→}
+   620→   620→
+   621→   621→.btn-primary:hover {
+   622→   622→  transform: translateY(-1px);
+   623→   623→  box-shadow: 0 6px 20px rgba(11, 126, 74, 0.30);
+   624→   624→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+   625→   625→}
+   626→   626→
+   627→   627→.btn-icon {
+   628→   628→  width: 38px;
+   629→   629→  height: 38px;
+   630→   630→  border-radius: 50%;
+   631→   631→  border: 1px solid #e2dfda;
+   632→   632→  background: transparent;
+   633→   633→  color: #3d3d3d;
+   634→   634→  display: flex;
+   635→   635→  align-items: center;
+   636→   636→  justify-content: center;
+   637→   637→  cursor: pointer;
+   638→   638→  transition: all 0.18s ease;
+   639→   639→  font-size: 0.95rem;
+   640→   640→}
+   641→   641→
+   642→   642→.btn-icon:hover {
+   643→   643→  border-color: #0b7e4a;
+   644→   644→  color: #0b7e4a;
+   645→   645→  background: rgba(11, 126, 74, 0.04);
+   646→   646→}
+   647→   647→
+   648→   648→.btn-icon.avatar {
+   649→   649→  background: #e7f3ee;
+   650→   650→  border-color: transparent;
+   651→   651→  font-weight: 700;
+   652→   652→  font-size: 0.7rem;
+   653→   653→  color: #0b7e4a;
+   654→   654→  width: 38px;
+   655→   655→  height: 38px;
+   656→   656→}
+   657→   657→
+   658→   658→.btn-icon.avatar:hover {
+   659→   659→  background: #d0e8de;
+   660→   660→  border-color: transparent;
+   661→   661→}
+   662→   662→
+   663→   663→.navbar-toggle {
+   664→   664→  display: none;
+   665→   665→  flex-direction: column;
+   666→   666→  gap: 4px;
+   667→   667→  background: transparent;
+   668→   668→  border: none;
+   669→   669→  padding: 0.3rem;
+   670→   670→  cursor: pointer;
+   671→   671→  border-radius: 6px;
+   672→   672→  transition: background 0.15s ease;
+   673→   673→}
+   674→   674→
+   675→   675→.navbar-toggle:hover {
+   676→   676→  background: rgba(0, 0, 0, 0.04);
+   677→   677→}
+   678→   678→
+   679→   679→.navbar-toggle span {
+   680→   680→  display: block;
+   681→   681→  width: 24px;
+   682→   682→  height: 2.5px;
+   683→   683→  background: #1a1a1a;
+   684→   684→  border-radius: 4px;
+   685→   685→  transition: all 0.25s ease;
+   686→   686→  transform-origin: center;
+   687→   687→}
+   688→   688→
+   689→   689→.navbar-toggle.active span:nth-child(1) {
+   690→   690→  transform: translateY(6.5px) rotate(45deg);
+   691→   691→}
+   692→   692→
+   693→   693→.navbar-toggle.active span:nth-child(2) {
+   694→   694→  opacity: 0;
+   695→   695→  transform: scaleX(0);
+   696→   696→}
+   697→   697→
+   698→   698→.navbar-toggle.active span:nth-child(3) {
+   699→   699→  transform: translateY(-6.5px) rotate(-45deg);
+   700→   700→}
+   701→   701→
+   702→   702→.mobile-overlay {
+   703→   703→  position: fixed;
+   704→   704→  inset: 0;
+   705→   705→  z-index: 999;
+   706→   706→  background: rgba(0, 0, 0, 0.25);
+   707→   707→  backdrop-filter: blur(4px);
+   708→   708→  -webkit-backdrop-filter: blur(4px);
+   709→   709→  opacity: 0;
+   710→   710→  visibility: hidden;
+   711→   711→  transition: opacity 0.3s ease, visibility 0.3s ease;
+   712→   712→}
+   713→   713→
+   714→   714→.mobile-overlay.open {
+   715→   715→  opacity: 1;
+   716→   716→  visibility: visible;
+   717→   717→}
+   718→   718→
+   719→   719→.mobile-drawer {
+   720→   720→  position: fixed;
+   721→   721→  top: 0;
+   722→   722→  right: -100%;
+   723→   723→  width: 88%;
+   724→   724→  max-width: 380px;
+   725→   725→  height: 100%;
+   726→   726→  z-index: 1001;
+   727→   727→  background: white;
+   728→   728→  padding: 1.5rem 1.5rem 2rem;
+   729→   729→  overflow-y: auto;
+   730→   730→  transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+   731→   731→  display: flex;
+   732→   732→  flex-direction: column;
+   733→   733→  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.06);
+   734→   734→}
+   735→   735→
+   736→   736→.mobile-drawer.open {
+   737→   737→  right: 0;
+   738→   738→}
+   739→   739→
+   740→   740→.mobile-drawer-header {
+   741→   741→  display: flex;
+   742→   742→  align-items: center;
+   743→   743→  justify-content: space-between;
+   744→   744→  padding-bottom: 1rem;
+   745→   745→  border-bottom: 1px solid #efedea;
+   746→   746→  margin-bottom: 1.5rem;
+   747→   747→}
+   748→   748→
+   749→   749→.mobile-drawer-header .logo-icon {
+   750→   750→  width: 36px;
+   751→   751→  height: 36px;
+   752→   752→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   753→   753→  border-radius: 10px;
+   754→   754→  display: flex;
+   755→   755→  align-items: center;
+   756→   756→  justify-content: center;
+   757→   757→  color: white;
+   758→   758→  font-weight: 800;
+   759→   759→  font-size: 0.95rem;
+   760→   760→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.2);
+   761→   761→}
+   762→   762→
+   763→   763→.mobile-drawer-header .logo-badge {
+   764→   764→  font-size: 0.5rem;
+   765→   765→  font-weight: 700;
+   766→   766→  text-transform: uppercase;
+   767→   767→  background: #e7f3ee;
+   768→   768→  color: #0b7e4a;
+   769→   769→  padding: 0.05rem 0.5rem;
+   770→   770→  border-radius: 100px;
+   771→   771→  margin-left: 0.3rem;
+   772→   772→}
+   773→   773→
+   774→   774→.mobile-drawer-close {
+   775→   775→  background: transparent;
+   776→   776→  border: none;
+   777→   777→  font-size: 1.4rem;
+   778→   778→  color: #4b4b4b;
+   779→   779→  cursor: pointer;
+   780→   780→  padding: 0.2rem 0.5rem;
+   781→   781→  border-radius: 6px;
+   782→   782→  transition: background 0.15s ease;
+   783→   783→}
+   784→   784→
+   785→   785→.mobile-drawer-close:hover {
+   786→   786→  background: rgba(0, 0, 0, 0.04);
+   787→   787→}
+   788→   788→
+   789→   789→.mobile-nav-list {
+   790→   790→  list-style: none;
+   791→   791→  margin: 0;
+   792→   792→  padding: 0;
+   793→   793→  flex: 1;
+   794→   794→}
+   795→   795→
+   796→   796→.mobile-nav-list>li {
+   797→   797→  border-bottom: 1px solid #f0eeeb;
+   798→   798→}
+   799→   799→
+   800→   800→.mobile-nav-list>li>a,
+   801→   801→.mobile-nav-list>li>button {
+   802→   802→  display: flex;
+   803→   803→  align-items: center;
+   804→   804→  justify-content: space-between;
+   805→   805→  width: 100%;
+   806→   806→  padding: 0.85rem 0;
+   807→   807→  font-size: 0.95rem;
+   808→   808→  font-weight: 500;
+   809→   809→  color: #1a1a1a;
+   810→   810→  background: transparent;
+   811→   811→  border: none;
+   812→   812→  cursor: pointer;
+   813→   813→  font-family: inherit;
+   814→   814→  text-decoration: none;
+   815→   815→  transition: color 0.15s ease;
+   816→   816→}
+   817→   817→
+   818→   818→.mobile-nav-list>li>a:hover,
+   819→   819→.mobile-nav-list>li>button:hover {
+   820→   820→  color: #0b7e4a;
+   821→   821→}
+   822→   822→
+   823→   823→.mobile-nav-list .sub-toggle {
+   824→   824→  font-size: 0.65rem;
+   825→   825→  opacity: 0.5;
+   826→   826→  transition: transform 0.2s ease;
+   827→   827→}
+   828→   828→
+   829→   829→.mobile-nav-list .sub-toggle.open {
+   830→   830→  transform: rotate(180deg);
+   831→   831→}
+   832→   832→
+   833→   833→.mobile-sub {
+   834→   834→  list-style: none;
+   835→   835→  margin: 0;
+   836→   836→  padding: 0 0 0.5rem 0.5rem;
+   837→   837→  display: none;
+   838→   838→}
+   839→   839→
+   840→   840→.mobile-sub.open {
+   841→   841→  display: block;
+   842→   842→}
+   843→   843→
+   844→   844→.mobile-sub li a {
+   845→   845→  display: flex;
+   846→   846→  align-items: center;
+   847→   847→  gap: 0.6rem;
+   848→   848→  padding: 0.4rem 0.5rem;
+   849→   849→  font-size: 0.82rem;
+   850→   850→  color: #4b4b4b;
+   851→   851→  text-decoration: none;
+   852→   852→  border-radius: 6px;
+   853→   853→  transition: background 0.12s ease, color 0.12s ease;
+   854→   854→}
+   855→   855→
+   856→   856→.mobile-sub li a:hover {
+   857→   857→  background: rgba(11, 126, 74, 0.04);
+   858→   858→  color: #0b7e4a;
+   859→   859→}
+   860→   860→
+   861→   861→.mobile-sub li a i {
+   862→   862→  width: 1.1rem;
+   863→   863→  text-align: center;
+   864→   864→  color: #8a8a8a;
+   865→   865→  font-size: 0.75rem;
+   866→   866→}
+   867→   867→
+   868→   868→.mobile-actions {
+   869→   869→  display: flex;
+   870→   870→  flex-direction: column;
+   871→   871→  gap: 0.6rem;
+   872→   872→  margin-top: 1.5rem;
+   873→   873→  padding-top: 1.5rem;
+   874→   874→  border-top: 1px solid #efedea;
+   875→   875→}
+   876→   876→
+   877→   877→.mobile-actions .btn-primary,
+   878→   878→.mobile-actions .btn-outline {
+   879→   879→  justify-content: center;
+   880→   880→  width: 100%;
+   881→   881→  padding: 0.65rem;
+   882→   882→  font-size: 0.85rem;
+   883→   883→}
+   884→   884→
+   885→   885→/* Footer */
+   886→   886→.footer {
+   887→   887→  background: #1a1a1a;
+   888→   888→  color: #cfcfcf;
+   889→   889→  padding: 4rem 1.5rem 2rem;
+   890→   890→  border-top: 1px solid rgba(255, 255, 255, 0.04);
+   891→   891→}
+   892→   892→
+   893→   893→.footer-inner {
+   894→   894→  max-width: 1280px;
+   895→   895→  margin: 0 auto;
+   896→   896→}
+   897→   897→
+   898→   898→.footer-grid {
+   899→   899→  display: grid;
+   900→   900→  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+   901→   901→  gap: 2.5rem 2rem;
+   902→   902→  padding-bottom: 2.5rem;
+   903→   903→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+   904→   904→}
+   905→   905→
+   906→   906→.footer-brand .logo-icon {
+   907→   907→  width: 42px;
+   908→   908→  height: 42px;
+   909→   909→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   910→   910→  border-radius: 10px;
+   911→   911→  display: flex;
+   912→   912→  align-items: center;
+   913→   913→  justify-content: center;
+   914→   914→  color: white;
+   915→   915→  font-weight: 800;
+   916→   916→  font-size: 1.1rem;
+   917→   917→  margin-bottom: 0.75rem;
+   918→   918→}
+   919→   919→
+   920→   920→.footer-brand .brand-name {
+   921→   921→  font-size: 1.25rem;
+   922→   922→  font-weight: 800;
+   923→   923→  color: white;
+   924→   924→  letter-spacing: -0.02em;
+   925→   925→}
+   926→   926→
+   927→   927→.footer-brand .brand-name span {
+   928→   928→  color: #4cdb8a;
+   929→   929→}
+   930→   930→
+   931→   931→.footer-brand .brand-tagline {
+   932→   932→  font-size: 0.85rem;
+   933→   933→  color: #9a9a9a;
+   934→   934→  margin-top: 0.3rem;
+   935→   935→  max-width: 280px;
+   936→   936→  line-height: 1.6;
+   937→   937→}
+   938→   938→
+   939→   939→.footer-social {
+   940→   940→  display: flex;
+   941→   941→  gap: 0.6rem;
+   942→   942→  margin-top: 1.2rem;
+   943→   943→}
+   944→   944→
+   945→   945→.footer-social a {
+   946→   946→  display: flex;
+   947→   947→  align-items: center;
+   948→   948→  justify-content: center;
+   949→   949→  width: 36px;
+   950→   950→  height: 36px;
+   951→   951→  border-radius: 50%;
+   952→   952→  background: rgba(255, 255, 255, 0.05);
+   953→   953→  color: #afafaf;
+   954→   954→  text-decoration: none;
+   955→   955→  transition: all 0.18s ease;
+   956→   956→  font-size: 0.95rem;
+   957→   957→}
+   958→   958→
+   959→   959→.footer-social a:hover {
+   960→   960→  background: #0b7e4a;
+   961→   961→  color: white;
+   962→   962→  transform: translateY(-2px);
+   963→   963→}
+   964→   964→
+   965→   965→.footer h4 {
+   966→   966→  font-size: 0.8rem;
+   967→   967→  font-weight: 700;
+   968→   968→  text-transform: uppercase;
+   969→   969→  letter-spacing: 0.04em;
+   970→   970→  color: #ffffff;
+   971→   971→  margin-bottom: 1rem;
+   972→   972→  opacity: 0.7;
+   973→   973→}
+   974→   974→
+   975→   975→.footer ul {
+   976→   976→  list-style: none;
+   977→   977→  margin: 0;
+   978→   978→  padding: 0;
+   979→   979→}
+   980→   980→
+   981→   981→.footer ul li {
+   982→   982→  margin-bottom: 0.4rem;
+   983→   983→}
+   984→   984→
+   985→   985→.footer ul li a {
+   986→   986→  color: #b0b0b0;
+   987→   987→  text-decoration: none;
+   988→   988→  font-size: 0.85rem;
+   989→   989→  transition: color 0.15s ease;
+   990→   990→  display: inline-block;
+   991→   991→}
+   992→   992→
+   993→   993→.footer ul li a:hover {
+   994→   994→  color: #4cdb8a;
+   995→   995→}
+   996→   996→
+   997→   997→.footer-newsletter p {
+   998→   998→  font-size: 0.85rem;
+   999→   999→  color: #9a9a9a;
+  1000→  1000→  margin-bottom: 0.8rem;
+  1001→  1001→  line-height: 1.5;
+  1002→  1002→}
+  1003→  1003→
+  1004→  1004→.footer-newsletter form {
+  1005→  1005→  display: flex;
+  1006→  1006→  gap: 0.4rem;
+  1007→  1007→}
+  1008→  1008→
+  1009→  1009→.footer-newsletter input {
+  1010→  1010→  flex: 1;
+  1011→  1011→  padding: 0.5rem 0.8rem;
+  1012→  1012→  border-radius: 100px;
+  1013→  1013→  border: 1px solid rgba(255, 255, 255, 0.1);
+  1014→  1014→  background: rgba(255, 255, 255, 0.04);
+  1015→  1015→  color: white;
+  1016→  1016→  font-size: 0.8rem;
+  1017→  1017→  font-family: inherit;
+  1018→  1018→  outline: none;
+  1019→  1019→  transition: border-color 0.2s ease, background 0.2s ease;
+  1020→  1020→  min-width: 0;
+  1021→  1021→}
+  1022→  1022→
+  1023→  1023→.footer-newsletter input::placeholder {
+  1024→  1024→  color: #6a6a6a;
+  1025→  1025→}
+  1026→  1026→
+  1027→  1027→.footer-newsletter input:focus {
+  1028→  1028→  border-color: #0b7e4a;
+  1029→  1029→  background: rgba(255, 255, 255, 0.06);
+  1030→  1030→}
+  1031→  1031→
+  1032→  1032→.footer-newsletter button {
+  1033→  1033→  padding: 0.5rem 1.2rem;
+  1034→  1034→  border-radius: 100px;
+  1035→  1035→  border: none;
+  1036→  1036→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+  1037→  1037→  color: white;
+  1038→  1038→  font-weight: 600;
+  1039→  1039→  font-size: 0.8rem;
+  1040→  1040→  cursor: pointer;
+  1041→  1041→  transition: all 0.18s ease;
+  1042→  1042→  white-space: nowrap;
+  1043→  1043→  font-family: inherit;
+  1044→  1044→}
+  1045→  1045→
+  1046→  1046→.footer-newsletter button:hover {
+  1047→  1047→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+  1048→  1048→  transform: translateY(-1px);
+  1049→  1049→  box-shadow: 0 4px 16px rgba(11, 126, 74, 0.30);
+  1050→  1050→}
+  1051→  1051→
+  1052→  1052→.footer-middle {
+  1053→  1053→  display: grid;
+  1054→  1054→  grid-template-columns: 1.5fr 2fr;
+  1055→  1055→  gap: 2rem;
+  1056→  1056→  padding: 2.5rem 0;
+  1057→  1057→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  1058→  1058→}
+  1059→  1059→
+  1060→  1060→.footer-middle-col h4 {
+  1061→  1061→  font-size: 0.8rem;
+  1062→  1062→  font-weight: 700;
+  1063→  1063→  text-transform: uppercase;
+  1064→  1064→  letter-spacing: 0.04em;
+  1065→  1065→  color: #ffffff;
+  1066→  1066→  margin-bottom: 0.8rem;
+  1067→  1067→  opacity: 0.7;
+  1068→  1068→}
+  1069→  1069→
+  1070→  1070→.footer-middle-col ul {
+  1071→  1071→  list-style: none;
+  1072→  1072→  padding: 0;
+  1073→  1073→  margin: 0;
+  1074→  1074→  display: flex;
+  1075→  1075→  flex-wrap: wrap;
+  1076→  1076→  gap: 0.2rem 1.2rem;
+  1077→  1077→}
+  1078→  1078→
+  1079→  1079→.footer-middle-col ul li {
+  1080→  1080→  display: inline;
+  1081→  1081→  margin: 0;
+  1082→  1082→  padding: 0;
+  1083→  1083→}
+  1084→  1084→
+  1085→  1085→.footer-middle-col ul li a {
+  1086→  1086→  color: #b0b0b0;
+  1087→  1087→  text-decoration: none;
+  1088→  1088→  font-size: 0.85rem;
+  1089→  1089→  transition: color 0.15s ease;
+  1090→  1090→  padding: 0.1rem 0;
+  1091→  1091→}
+  1092→  1092→
+  1093→  1093→.footer-middle-col ul li a:hover {
+  1094→  1094→  color: #4cdb8a;
+  1095→  1095→}
+  1096→  1096→
+  1097→  1097→.footer-bottom {
+  1098→  1098→  display: flex;
+  1099→  1099→  flex-wrap: wrap;
+  1100→  1100→  justify-content: space-between;
+  1101→  1101→  align-items: center;
+  1102→  1102→  gap: 0.8rem;
+  1103→  1103→  padding-top: 1.8rem;
+  1104→  1104→  font-size: 0.75rem;
+  1105→  1105→  color: #6a6a6a;
+  1106→  1106→}
+  1107→  1107→
+  1108→  1108→.footer-bottom-links {
+  1109→  1109→  display: flex;
+  1110→  1110→  gap: 1.2rem;
+  1111→  1111→}
+  1112→  1112→
+  1113→  1113→.footer-bottom-links a {
+  1114→  1114→  color: #7a7a7a;
+  1115→  1115→  text-decoration: none;
+  1116→  1116→  transition: color 0.15s ease;
+  1117→  1117→}
+  1118→  1118→
+  1119→  1119→.footer-bottom-links a:hover {
+  1120→  1120→  color: #4cdb8a;
+  1121→  1121→}
+  1122→  1122→
+  1123→  1123→/* Responsive overrides for navbar/footer */
+  1124→  1124→@media (max-width: 900px) {
+  1125→  1125→  .navbar-links,
+  1126→  1126→  .navbar-actions .btn-outline {
+  1127→  1127→    display: none;
+  1128→  1128→  }
+  1129→  1129→  .navbar-toggle {
+  1130→  1130→    display: flex;
+  1131→  1131→  }
+  1132→  1132→  .navbar-actions .btn-primary {
+  1133→  1133→    padding: 0.4rem 1rem;
+  1134→  1134→    font-size: 0.75rem;
+  1135→  1135→  }
+  1136→  1136→  .navbar-actions .btn-icon.avatar {
+  1137→  1137→    display: flex;
+  1138→  1138→  }
+  1139→  1139→}
+  1140→  1140→
+  1141→  1141→/* ── Mobile-first responsive typography ── */
+  1142→  1142→@media (max-width: 640px) {
+  1143→  1143→  /* Section padding reduction */
+  1144→  1144→  .section-bg {
+  1145→  1145→    padding-top: 1.5rem;
+  1146→  1146→    padding-bottom: 1.5rem;
+  1147→  1147→  }
+  1148→  1148→
+  1149→  1149→  /* Overflow safety */
+  1150→  1150→  body {
+  1151→  1151→    overflow-x: hidden;
+  1152→  1152→  }
+  1153→  1153→
+  1154→  1154→  /* Inline title+org patterns — stack vertically */
+  1155→  1155→  .job-meta-inline {
+  1156→  1156→    flex-direction: column !important;
+  1157→  1157→    align-items: flex-start !important;
+  1158→  1158→    gap: 0.15rem !important;
+  1159→  1159→  }
+  1160→  1160→  .job-meta-inline .meta-secondary {
+  1161→  1161→    margin-left: 0 !important;
+  1162→  1162→  }
+  1163→  1163→}
+  1164→  1164→
+  1165→  1165→@media (max-width: 480px) {
+  1166→  1166→  .section-bg {
+  1167→  1167→    padding-top: 1.25rem;
+  1168→  1168→    padding-bottom: 1.25rem;
+  1169→  1169→  }
+  1170→  1170→}
+  1171→  1171→
+  1172→  1172→@media (max-width: 640px) {
+  1173→  1173→  body {
+  1174→  1174→    padding-top: 64px;
+  1175→  1175→  }
+  1176→  1176→  .navbar {
+  1177→  1177→    height: 64px;
+  1178→  1178→  }
+  1179→  1179→  .navbar-inner {
+  1180→  1180→    padding: 0 1rem;
+  1181→  1181→  }
+  1182→  1182→  .navbar-logo .logo-icon {
+  1183→  1183→    width: 32px;
+  1184→  1184→    height: 32px;
+  1185→  1185→    font-size: 0.85rem;
+  1186→  1186→  }
+  1187→  1187→  .navbar-logo .logo-badge {
+  1188→  1188→    font-size: 0.45rem;
+  1189→  1189→    padding: 0.05rem 0.4rem;
+  1190→  1190→  }
+  1191→  1191→  .navbar-actions .btn-primary {
+  1192→  1192→    padding: 0.35rem 0.8rem;
+  1193→  1193→    font-size: 0.7rem;
+  1194→  1194→  }
+  1195→  1195→  .navbar-actions .btn-icon.avatar {
+  1196→  1196→    width: 32px;
+  1197→  1197→    height: 32px;
+  1198→  1198→    font-size: 0.6rem;
+  1199→  1199→  }
+  1200→  1200→  .navbar-actions .btn-icon {
+  1201→  1201→    width: 32px;
+  1202→  1202→    height: 32px;
+  1203→  1203→    font-size: 0.8rem;
+  1204→  1204→  }
+  1205→  1205→  .footer-grid {
+  1206→  1206→    grid-template-columns: 1fr;
+  1207→  1207→    gap: 1.8rem;
+  1208→  1208→  }
+  1209→  1209→  .footer-middle {
+  1210→  1210→    grid-template-columns: 1fr;
+  1211→  1211→    gap: 1.8rem;
+  1212→  1212→  }
+  1213→  1213→  .footer-middle-col ul {
+  1214→  1214→    gap: 0.2rem 0.8rem;
+  1215→  1215→  }
+  1216→  1216→  .footer-bottom {
+  1217→  1217→    flex-direction: column;
+  1218→  1218→    text-align: center;
+  1219→  1219→  }
+  1220→  1220→  .footer-bottom-links {
+  1221→  1221→    flex-wrap: wrap;
+  1222→  1222→    justify-content: center;
+  1223→  1223→    gap: 0.8rem 1.2rem;
+  1224→  1224→  }
+  1225→  1225→  .footer-newsletter form {
+  1226→  1226→    flex-direction: column;
+  1227→  1227→  }
+  1228→  1228→  .footer-newsletter button {
+  1229→  1229→    width: 100%;
+  1230→  1230→    justify-content: center;
+  1231→  1231→  }
+  1232→  1232→}
+  1233→  1233→
+  1234→  1234→@media (max-width: 480px) {
+  1235→  1235→  .navbar-actions .btn-primary span {
+  1236→  1236→    display: none;
+  1237→  1237→  }
+  1238→  1238→  .navbar-actions .btn-primary {
+  1239→  1239→    padding: 0.35rem 0.7rem;
+  1240→  1240→  }
+  1241→  1241→  .footer-middle-col ul {
+  1242→  1242→    gap: 0.2rem 0.6rem;
+  1243→  1243→  }
+  1244→  1244→  .footer-middle-col ul li a {
+  1245→  1245→    font-size: 0.8rem;
+  1246→  1246→  }
+  1247→  1247→}
+  1248→  1248→
+  1249→  1249→@media (min-width: 901px) {
+  1250→  1250→  .mobile-overlay,
+  1251→  1251→  .mobile-drawer {
+  1252→  1252→    display: none !important;
+  1253→  1253→  }
+  1254→  1254→}

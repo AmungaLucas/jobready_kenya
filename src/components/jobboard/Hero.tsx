@@ -13,8 +13,8 @@ export default async function Hero() {
             <p className="text-sm font-semibold text-emerald-700 uppercase tracking-wider">
               Stop Searching. Start Matching.
             </p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-800 leading-[1.15]">
-              Find Jobs That Fit You, <br />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-800 leading-[1.15] hero-fluid-h1">
+              Find Jobs That Fit You,{" "}
               <span className="text-emerald-600">Not Just Your Keywords</span>
             </h1>
             <p className="text-base sm:text-lg text-gray-600 font-light leading-relaxed max-w-lg">

@@ -340,8 +340,8 @@ function JobCard({ job }: { job: JobListItem }) {
       className="job-card block bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 transition hover:shadow-md"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h3 className="job-title text-lg font-extrabold text-gray-800 transition">{job.title}</h3>
+        <div className="min-w-0 flex-1">
+          <h3 className="job-title font-extrabold text-gray-800 transition">{job.title}</h3>
           <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
             <span className="font-medium text-gray-700">{job.organization?.orgName || 'Confidential'}</span>
             <span className="text-gray-300">&middot;</span>
