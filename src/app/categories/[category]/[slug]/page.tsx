@@ -42,17 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ISR-only: shared MySQL cannot handle bulk SSG queries at build time.
 export async function generateStaticParams() {
-  try {
-    const slugs = getCachedSubcategorySlugs();
-    if (slugs.length === 0) {
-      const asyncSlugs = await getAllSubcategorySlugs();
-      return asyncSlugs;
-    }
-    return slugs;
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export default async function SubcategoryPage({ params }: Props) {

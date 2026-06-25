@@ -53,13 +53,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ISR-only: shared MySQL cannot handle bulk SSG queries at build time.
 export async function generateStaticParams() {
-  try {
-    const counties = await getAllGovernmentCountySlugs();
-    return counties.map((c) => ({ county: c.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export default async function GovernmentJobsCountyPage({ params }: Props) {

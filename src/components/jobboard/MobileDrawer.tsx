@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import {
   X,
@@ -32,10 +33,9 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       <div className="mobile-overlay open" onClick={onClose}></div>
       <div className="mobile-drawer open">
         <div className="mobile-drawer-header">
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <span className="logo-icon">JB</span>
-            <span className="logo-badge">KE</span>
-          </span>
+          <Link href="/" onClick={onClose}>
+            <Image src="/logo.svg" alt="JobBoard Kenya" width={120} height={42} />
+          </Link>
           <button type="button" className="mobile-drawer-close" onClick={onClose}>
             <X className="w-5 h-5" />
           </button>

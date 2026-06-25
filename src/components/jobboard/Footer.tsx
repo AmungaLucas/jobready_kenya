@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Linkedin, Facebook, Youtube } from 'lucide-react';
 
 export default function Footer() {
@@ -7,10 +8,9 @@ export default function Footer() {
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="logo-icon">JB</div>
-            <div className="brand-name">
-              Job<span>Board</span> <span style={{ fontWeight: 400, color: '#6a6a6a', fontSize: '0.8rem' }}>KE</span>
-            </div>
+            <Link href="/">
+              <Image src="/logo.svg" alt="JobBoard Kenya" width={160} height={55} />
+            </Link>
             <p className="brand-tagline">Helping Kenyans discover verified jobs, internships, and opportunities every day.</p>
             <div className="footer-social">
               <a href="https://twitter.com/jobboardke" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>

@@ -15,10 +15,9 @@ export const prisma =
     },
   });
 
-// Connection pool limits for 10K+ req/s handling
-// Prisma uses connection pooling via the connection URL parameters
-// e.g., ?connection_limit=20&pool_timeout=30
-// These are set in DATABASE_URL env var. The client itself reuses connections
-// via the global singleton pattern above.
+// Connection pool is configured via DATABASE_URL parameters:
+//   ?connection_limit=3&pool_timeout=60
+// The global singleton pattern above ensures a single PrismaClient instance
+// per process, reusing connections across all requests.
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;

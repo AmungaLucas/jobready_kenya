@@ -46,13 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ISR-only: shared MySQL cannot handle bulk SSG queries at build time.
 export async function generateStaticParams() {
-  try {
-    const slugs = await getAllJobSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export default async function JobDetailsPage({ params }: Props) {

@@ -35,7 +35,7 @@ export function generateJobPostingJsonLd(job: {
     hiringOrganization: job.organization ? {
       '@type': 'Organization',
       name: job.organization.orgName,
-      logo: job.organization.orgLogoUrl || `${SITE_URL}/default-og.jpg`,
+      logo: job.organization.orgLogoUrl || `${SITE_URL}/logo.svg`,
       sameAs: job.organization.orgWebsite || undefined,
     } : {
       '@type': 'Organization',
@@ -170,7 +170,7 @@ export function generateOpportunityJsonLd(opp: {
     organizer: {
       '@type': 'Organization',
       name: opp.providerName,
-      logo: opp.providerLogoUrl || `${SITE_URL}/default-og.jpg`,
+      logo: opp.providerLogoUrl || `${SITE_URL}/logo.svg`,
       sameAs: opp.providerWebsite || undefined,
     },
     location: opp.isOnline
@@ -245,7 +245,7 @@ export function generateArticleJsonLd(post: {
     publisher: {
       '@type': 'Organization',
       name: 'JobBoard Kenya',
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/default-og.jpg` },
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.svg` },
     },
     ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
     articleSection: post.category,
@@ -262,7 +262,7 @@ export function generateOrganizationJsonLd() {
     '@type': 'Organization',
     name: 'JobBoard Kenya',
     url: SITE_URL,
-    logo: { '@type': 'ImageObject', url: `${SITE_URL}/default-og.jpg` },
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.svg` },
     description: 'Kenya\'s leading job search platform with verified jobs, internships, and opportunities across all 47 counties. Browse 43+ job categories, 468 subcategories, and opportunities from government, NGO, and private sector employers.',
     foundingDate: '2024',
     sameAs: [

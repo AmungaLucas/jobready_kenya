@@ -42,14 +42,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ISR-only: pages render on first request and cache for 60s.
+// Shared MySQL cannot handle 656+ concurrent connections during build.
 export async function generateStaticParams() {
-  try {
-    const slugs = await getAllBlogPostSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    // DB unavailable during build (e.g. Vercel) — pages rendered dynamically at request time via ISR
-    return [];
-  }
+  return [];
 }
 
 export default async function BlogPostDetailPage({ params }: Props) {
