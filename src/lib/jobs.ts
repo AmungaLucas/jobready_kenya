@@ -141,19 +141,41 @@ export async function getSimilarJobs(job: JobDetail, limit = 4): Promise<JobList
     deletedAt: null,
     id: { not: job.id },
   };
-  // Prefer same category
-  if (job.categoryId) {
+
+  // Try category + county first (best match)
+  if (job.categoryId && job.locationCounty) {
+    where.categoryId = job.categoryId;
+    where.locationCounty = job.locationCounty;
+  } else if (job.categoryId) {
+    // Category only
     where.categoryId = job.categoryId;
   } else if (job.locationCounty) {
+    // County only
     where.locationCounty = job.locationCounty;
   }
 
-  const jobs = await prisma.job.findMany({
+  let jobs = await prisma.job.findMany({
     where,
     select: jobListSelect,
     orderBy: { datePosted: 'desc' },
     take: limit,
   });
+
+  // If category+county returned too few, broaden to category only
+  if (jobs.length < 2 && job.categoryId && job.locationCounty) {
+    jobs = await prisma.job.findMany({
+      where: {
+        status: 'ACTIVE',
+        deletedAt: null,
+        id: { not: job.id },
+        categoryId: job.categoryId,
+      },
+      select: jobListSelect,
+      orderBy: { datePosted: 'desc' },
+      take: limit,
+    });
+  }
+
   return jobs as unknown as JobListItem[];
 }
 

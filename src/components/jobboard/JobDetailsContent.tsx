@@ -360,6 +360,33 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
             </div>
 
+            {/* Similar Jobs — right after company info */}
+            {similar.length > 0 && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+                <h3 className="text-lg font-extrabold text-gray-800">
+                  More {job.category ? `${job.category} ` : ''}Jobs{job.locationCounty ? ` in ${job.locationCounty}` : ''}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1 mb-4">
+                  Explore other {job.category ? `${job.category.toLowerCase()} ` : ''}vacancies{job.locationCounty ? ` in ${job.locationCounty}` : ' across Kenya'} that match your skills and experience.
+                </p>
+                <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
+                  {similar.map((s) => (
+                    <Link
+                      key={s.id || s.slug}
+                      href={`/jobs/${s.slug}`}
+                      className="similar-item flex flex-wrap items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition"
+                    >
+                      <div>
+                        <span className="similar-title text-sm font-semibold text-gray-800 transition">{s.title}</span>
+                        <span className="similar-company text-sm text-gray-400 ml-2 transition">{s.company} · {s.location}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">{s.salary}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Browse Related Categories */}
             {relatedCategories.length > 0 && (
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
@@ -507,30 +534,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               <a href={`/contact?subject=report&job=${job.slug}`} className="text-xs text-gray-400 hover:text-red-500 transition">Report this job</a>
             </div>
 
-            {/* Similar Jobs */}
-            {similar.length > 0 && (
-              <div className="pt-4 border-t border-gray-200/50">
-                <h3 className="text-lg font-extrabold text-gray-800">Similar Jobs in {job.locationCounty || job.location || 'Kenya'}</h3>
-                <p className="text-sm text-gray-500 mt-1 mb-4">
-                  Explore other {job.category ? `${job.category.toLowerCase()} ` : ''}vacancies{job.locationCounty ? ` in ${job.locationCounty}` : ' across Kenya'} that match your skills and experience.
-                </p>
-                <div className="mt-4 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
-                  {similar.map((s) => (
-                    <Link
-                      key={s.id || s.slug}
-                      href={`/jobs/${s.slug}`}
-                      className="similar-item flex flex-wrap items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition rounded-t-xl"
-                    >
-                      <div>
-                        <span className="similar-title text-sm font-semibold text-gray-800 transition">{s.title}</span>
-                        <span className="similar-company text-sm text-gray-400 ml-2 transition">{s.company} · {s.location}</span>
-                      </div>
-                      <span className="text-xs text-gray-500">{s.salary}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+
           </div>
 
           {/* Sidebar */}

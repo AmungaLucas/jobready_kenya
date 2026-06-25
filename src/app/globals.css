@@ -533,6 +533,16 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
   z-index: 100;
 }
 
+/* Bridge the 8px gap so the dropdown doesn't close when moving the cursor */
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
 .navbar-links>li:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;

@@ -20,7 +20,7 @@ export default function OfficialUpdates() {
                   Stay informed with recruitment notices, shortlisting updates, and application announcements.
                 </p>
               </div>
-              <Link href="/government-jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+              <Link href="/updates" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
                 View all →
               </Link>
             </div>

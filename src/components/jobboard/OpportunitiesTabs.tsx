@@ -46,8 +46,8 @@ export default function OpportunitiesTabs() {
               Discover internships, scholarships, graduate programs, and career opportunities.
             </p>
           </div>
-          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
-            View All →
+          <Link href="/opportunities" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+            View All Opportunities →
           </Link>
         </div>
         <div className="flex flex-wrap items-center gap-2 border-b border-gray-200/60 pb-3 mb-6">
