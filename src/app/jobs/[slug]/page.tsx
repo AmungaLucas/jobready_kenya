@@ -7,7 +7,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -47,8 +47,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllJobSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getAllJobSlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function JobDetailsPage({ params }: Props) {

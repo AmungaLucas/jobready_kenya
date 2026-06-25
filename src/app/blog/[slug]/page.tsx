@@ -9,7 +9,7 @@ import Footer from '@/components/jobboard/Footer';
 import AdBanner from '@/components/jobboard/AdBanner';
 
 export const revalidate = 60;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -43,8 +43,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllBlogPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getAllBlogPostSlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    // DB unavailable during build (e.g. Vercel) — pages rendered dynamically at request time via ISR
+    return [];
+  }
 }
 
 export default async function BlogPostDetailPage({ params }: Props) {

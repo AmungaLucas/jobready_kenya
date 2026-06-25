@@ -9,7 +9,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ category: string; slug: string }>;
@@ -43,15 +43,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  // Use sync cache (warmed by /categories/[slug] generateStaticParams)
-  // to avoid Next.js 16/Turbopack bug with Prisma in nested route generateStaticParams
-  const slugs = getCachedSubcategorySlugs();
-  if (slugs.length === 0) {
-    // Fallback: if cache not warmed, try async (may silently fail on Turbopack)
-    const asyncSlugs = await getAllSubcategorySlugs();
-    return asyncSlugs;
+  try {
+    const slugs = getCachedSubcategorySlugs();
+    if (slugs.length === 0) {
+      const asyncSlugs = await getAllSubcategorySlugs();
+      return asyncSlugs;
+    }
+    return slugs;
+  } catch {
+    return [];
   }
-  return slugs;
 }
 
 export default async function SubcategoryPage({ params }: Props) {

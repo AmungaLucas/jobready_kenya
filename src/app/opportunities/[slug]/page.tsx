@@ -8,7 +8,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -46,8 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllOpportunitySlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getAllOpportunitySlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function OpportunityDetailPage({ params }: Props) {

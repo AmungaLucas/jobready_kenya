@@ -18,7 +18,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ county: string }>;
@@ -54,8 +54,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const counties = await getAllGovernmentCountySlugs();
-  return counties.map((c) => ({ county: c.slug }));
+  try {
+    const counties = await getAllGovernmentCountySlugs();
+    return counties.map((c) => ({ county: c.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export default async function GovernmentJobsCountyPage({ params }: Props) {
