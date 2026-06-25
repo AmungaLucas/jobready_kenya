@@ -18,6 +18,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
+export const dynamicParams = false;
 
 interface Props {
   params: Promise<{ county: string }>;

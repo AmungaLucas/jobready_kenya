@@ -2,6 +2,19 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import {
+  X,
+  ChevronDown,
+  Briefcase,
+  LayoutGrid,
+  MapPin,
+  Landmark,
+  GraduationCap,
+  Users,
+  HeartHandshake,
+  PlusCircle,
+  UploadCloud,
+} from 'lucide-react';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -24,7 +37,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             <span className="logo-badge">KE</span>
           </span>
           <button type="button" className="mobile-drawer-close" onClick={onClose}>
-            <i className="fas fa-times"></i>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -41,27 +54,27 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               className="w-full flex justify-between items-center"
             >
               <span>Jobs</span>
-              <i className={`fas fa-chevron-down sub-toggle ${jobsOpen ? 'open' : ''}`}></i>
+              <ChevronDown className={`w-4 h-4 sub-toggle ${jobsOpen ? 'open' : ''}`} />
             </button>
             <ul className={`mobile-sub ${jobsOpen ? 'open' : ''}`}>
               <li>
                 <Link href="/jobs" onClick={onClose}>
-                  <i className="fas fa-briefcase"></i> All Jobs
+                  <Briefcase className="w-4 h-4 inline" /> All Jobs
                 </Link>
               </li>
               <li>
                 <Link href="/categories" onClick={onClose}>
-                  <i className="fas fa-th-large"></i> Browse by Category
+                  <LayoutGrid className="w-4 h-4 inline" /> Browse by Category
                 </Link>
               </li>
               <li>
                 <Link href="/locations/nairobi" onClick={onClose}>
-                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+                  <MapPin className="w-4 h-4 inline" /> Browse by Location
                 </Link>
               </li>
               <li>
                 <Link href="/government-jobs" onClick={onClose}>
-                  <i className="fas fa-landmark"></i> Govt Jobs
+                  <Landmark className="w-4 h-4 inline" /> Govt Jobs
                 </Link>
               </li>
             </ul>
@@ -73,27 +86,27 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               className="w-full flex justify-between items-center"
             >
               <span>Opportunities</span>
-              <i className={`fas fa-chevron-down sub-toggle ${oppOpen ? 'open' : ''}`}></i>
+              <ChevronDown className={`w-4 h-4 sub-toggle ${oppOpen ? 'open' : ''}`} />
             </button>
             <ul className={`mobile-sub ${oppOpen ? 'open' : ''}`}>
               <li>
                 <Link href="/opportunities?type=SCHOLARSHIP" onClick={onClose}>
-                  <i className="fas fa-graduation-cap"></i> Scholarships
+                  <GraduationCap className="w-4 h-4 inline" /> Scholarships
                 </Link>
               </li>
               <li>
                 <Link href="/jobs?type=INTERNSHIP" onClick={onClose}>
-                  <i className="fas fa-briefcase"></i> Internships
+                  <Briefcase className="w-4 h-4 inline" /> Internships
                 </Link>
               </li>
               <li>
                 <Link href="/opportunities?type=FELLOWSHIP" onClick={onClose}>
-                  <i className="fas fa-users"></i> Fellowships
+                  <Users className="w-4 h-4 inline" /> Fellowships
                 </Link>
               </li>
               <li>
                 <Link href="/opportunities?type=VOLUNTEER" onClick={onClose}>
-                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+                  <HeartHandshake className="w-4 h-4 inline" /> Volunteering
                 </Link>
               </li>
               <li style={{ marginTop: '0.3rem' }}>
@@ -122,10 +135,10 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
 
         <div className="mobile-actions">
           <Link href="/contact" className="btn-outline" onClick={onClose}>
-            <i className="fas fa-plus-circle"></i> Post a Job
+            <PlusCircle className="w-4 h-4 inline" /> Post a Job
           </Link>
           <Link href="/cv-services" className="btn-primary" onClick={onClose}>
-            <i className="fas fa-cloud-upload-alt"></i> Upload CV
+            <UploadCloud className="w-4 h-4 inline" /> Upload CV
           </Link>
         </div>
       </div>

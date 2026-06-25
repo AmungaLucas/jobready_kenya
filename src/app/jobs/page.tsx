@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 import Sidebar from '@/components/jobboard/Sidebar';
+import AdBanner from '@/components/jobboard/AdBanner';
 import FilterChips from '@/components/jobboard/FilterChips';
 import Pagination from '@/components/jobboard/Pagination';
 import Link from 'next/link';
@@ -186,6 +187,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
       <section className="section-bg py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdBanner slot="1111111111" className="mb-6" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
               {jobs.length === 0 ? (
@@ -242,6 +244,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               {total > perPage && (
                 <Pagination total={total} perPage={perPage} currentPage={page} />
               )}
+              <AdBanner slot="3333333333" className="mt-6" />
             </div>
             <Sidebar />
           </div>

@@ -8,6 +8,7 @@ import { getAllCategories } from '@/lib/categories';
 import { getPopularLocations } from '@/lib/locations';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import AdBanner from '@/components/jobboard/AdBanner';
 
 export const revalidate = 60;
 
@@ -169,7 +170,10 @@ export default async function OpportunitiesPage({ searchParams }: Props) {
                 <p className="text-sm text-gray-600 leading-relaxed">{seoDescription}</p>
               </div>
 
+              <AdBanner slot="2222222222" className="my-6" />
+
               {/* Opportunity listings or empty fallback */}
+              <AdBanner slot="1111111111" className="mb-6" />
               {opportunities.length > 0 ? (
                 <div>
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">

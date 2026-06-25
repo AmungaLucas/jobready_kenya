@@ -7,6 +7,7 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const dynamicParams = false;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -82,8 +83,10 @@ export default async function JobDetailsPage({ params }: Props) {
     subcategory: job.subcategory?.label || '',
     subcategorySlug: job.subcategory?.slug || '',
     experienceLevel: job.experienceLevel,
+    educationLevel: job.educationLevel,
     description: job.description,
     isRemote: job.isRemote,
+    externalUrl: job.externalUrl || null,
     featured: job.featured,
     requirements: [],
     responsibilities: [],
@@ -140,6 +143,38 @@ export default async function JobDetailsPage({ params }: Props) {
   breadcrumbItems.push({ name: job.title, url: `/jobs/${job.slug}` });
   const breadcrumbLd = generateBreadcrumbJsonLd(breadcrumbItems);
 
+  // JSON-LD: FAQPage for AEO
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': [
+      {
+        '@type': 'Question',
+        'name': `What is the salary for this ${job.category?.label || 'position'}?`,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': formatSalary(job) !== 'Salary not disclosed' ? `The salary range is ${formatSalary(job)}.` : 'Salary details are available upon application.',
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': `Where is this ${job.title} job located?`,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': job.isRemote ? 'This is a remote position.' : `This position is located in ${job.locationCity || job.locationCounty || 'Kenya'}.`,
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': `When is the application deadline?`,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': job.deadline ? `The application deadline is ${job.deadline.toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' })}.` : 'No deadline specified.',
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <script
@@ -149,6 +184,10 @@ export default async function JobDetailsPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
       <Navbar />
       <JobDetailsContent job={formattedJob} similar={formattedSimilar} />

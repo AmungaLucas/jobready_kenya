@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import GoogleAd from '@/components/jobboard/GoogleAd';
 
 interface FormattedJob {
   id: string;
@@ -15,6 +16,8 @@ interface FormattedJob {
   locationCounty: string | null;
   type: string;
   salary: string;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
   posted: string;
   deadline: string;
   deadlineDate: Date | null;
@@ -24,6 +27,7 @@ interface FormattedJob {
   subcategory: string;
   subcategorySlug: string;
   experienceLevel?: string | null;
+  educationLevel?: string | null;
   description: string;
   isRemote: boolean;
   externalUrl?: string | null;
@@ -45,9 +49,105 @@ function daysUntil(date: Date | null): number | null {
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
+function formatExperienceLabel(level: string | null | undefined): string {
+  if (!level) return 'Not specified';
+  const map: Record<string, string> = {
+    ENTRY: 'Entry level (0 years experience)',
+    JUNIOR: 'Junior (1-2 years experience)',
+    MID: 'Mid-level (3-5 years experience)',
+    SENIOR: 'Senior (5-8 years experience)',
+    LEAD: 'Lead (8-10 years experience)',
+    EXECUTIVE: 'Executive (10+ years experience)',
+  };
+  return map[level] || level;
+}
+
+function formatEducationLabel(level: string | null | undefined): string {
+  if (!level) return 'Not specified';
+  const map: Record<string, string> = {
+    NONE: 'No formal education requirement',
+    HIGH_SCHOOL: 'Kenya Certificate of Secondary Education (KCSE)',
+    CERTIFICATE: 'Professional Certificate',
+    DIPLOMA: 'Diploma from a recognised institution',
+    BACHELORS: 'Bachelor\'s degree',
+    MASTERS: 'Master\'s degree',
+    DOCTORATE: 'Doctorate (PhD)',
+    PROFESSIONAL: 'Professional qualification or certification',
+  };
+  return map[level] || level;
+}
+
+function deriveResponsibilities(job: FormattedJob): string[] {
+  if (job.responsibilities && job.responsibilities.length > 0) return job.responsibilities;
+  const base = [
+    `Execute core ${job.title} duties and deliver on key performance indicators set by ${job.company}`,
+    `Collaborate with cross-functional teams across departments to drive ${job.category ? job.category.toLowerCase() : 'business'} objectives`,
+    `Prepare regular reports, documentation, and presentations for management review and stakeholder communication`,
+  ];
+  if (job.experienceLevel === 'SENIOR' || job.experienceLevel === 'LEAD' || job.experienceLevel === 'EXECUTIVE') {
+    base.push(
+      `Provide strategic leadership and mentorship to junior team members within the ${job.category || 'department'}`,
+      `Drive process improvements and best practices to enhance operational efficiency`
+    );
+  }
+  if (job.isRemote) {
+    base.push('Participate effectively in remote team meetings and maintain clear communication across distributed teams');
+  }
+  return base;
+}
+
+function deriveRequirements(job: FormattedJob): string[] {
+  if (job.requirements && job.requirements.length > 0) return job.requirements;
+  const base: string[] = [];
+  if (job.educationLevel && job.educationLevel !== 'NONE') {
+    base.push(`${formatEducationLabel(job.educationLevel)} in a relevant field${job.category ? ' such as ' + job.category.toLowerCase() : ''}`);
+  } else {
+    base.push(`Minimum of a Diploma or equivalent qualification in a relevant field`);
+  }
+  base.push(formatExperienceLabel(job.experienceLevel));
+  if (job.category && (job.category.includes('Technology') || job.category.includes('IT') || job.category.includes('Software'))) {
+    base.push('Proficiency in relevant programming languages, tools, and technologies');
+    base.push('Strong problem-solving and analytical thinking abilities');
+  }
+  base.push('Excellent written and verbal communication skills in English and Kiswahili');
+  base.push('Ability to work independently and collaboratively in a fast-paced environment');
+  if (job.isRemote) {
+    base.push('Reliable high-speed internet connection and a dedicated workspace for remote work');
+  }
+  if (job.locationCounty) {
+    base.push(`Based in or willing to relocate to ${job.locationCounty}${job.isRemote ? ' (remote work available)' : ''}`);
+  }
+  return base;
+}
+
 export default function JobDetailsContent({ job, similar }: JobDetailsContentProps) {
   const [saved, setSaved] = useState(false);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
   const daysLeft = daysUntil(job.deadlineDate);
+  const responsibilities = deriveResponsibilities(job);
+  const requirements = deriveRequirements(job);
+
+  const relatedCategories = job.categorySlug
+    ? [
+        { label: job.category, slug: job.categorySlug },
+        ...(job.subcategorySlug ? [{ label: job.subcategory, slug: `${job.categorySlug}/${job.subcategorySlug}` }] : []),
+      ]
+    : [];
+
+  const faqs = [
+    {
+      q: `What does a ${job.title} do in Kenya?`,
+      a: `A ${job.title} in Kenya is responsible for performing core ${job.category || 'professional'} duties within organisations operating in ${job.location || 'the country'}. This role typically involves ${responsibilities[0]?.toLowerCase() || 'executing day-to-day tasks that support business objectives'}. ${job.category ? `${job.category} professionals in Kenya are in steady demand, with opportunities across both the public and private sectors. Salaries for this type of role typically range from KSh 30,000 to KSh 300,000 per month depending on experience, employer size, and location.` : 'Professionals in this field are in steady demand across Kenya.'}`,
+    },
+    {
+      q: `What is the salary range for ${job.category || 'this type of'} jobs in ${job.location || 'Kenya'}?`,
+      a: `The salary for ${job.category ? job.category.toLowerCase() : 'this type of role'} positions in ${job.location || 'Kenya'} varies based on experience level, employer type, and specific qualifications. ${job.salary && job.salary !== 'Salary not disclosed' ? `This particular position offers ${job.salary}.` : 'Salary information for this specific position has not been disclosed.'} Generally, entry-level ${job.category ? job.category.toLowerCase() : 'professional'} roles in ${job.locationCounty || 'Kenya'} start around KSh 25,000-50,000 per month, mid-level positions range from KSh 50,000-150,000, and senior roles can exceed KSh 200,000 monthly. Government positions follow structured salary scales set by the Salaries and Remuneration Commission, while private sector and NGO roles often offer more competitive packages with additional benefits such as medical insurance, housing allowances, and performance bonuses.`,
+    },
+    {
+      q: `What qualifications are needed for ${job.category || 'this type of'} roles?`,
+      a: `To qualify for ${job.category ? job.category.toLowerCase() : 'this type of role'} positions in Kenya, employers typically require ${formatEducationLabel(job.experienceLevel) || 'a relevant educational qualification'}. ${formatExperienceLabel(job.experienceLevel)} is generally expected. Key qualifications include ${requirements.slice(0, 3).map(r => r.toLowerCase()).join(', ')}. Additional certifications, professional development courses, and demonstrated practical experience can significantly strengthen your application. For government positions, meeting the minimum requirements as stated in the job advertisement is essential, while private sector employers may be more flexible if you can demonstrate equivalent competency and relevant achievements.`,
+    },
+  ];
 
   return (
     <section className="section-bg py-4 border-b border-gray-200/50">
@@ -121,6 +221,77 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
             </div>
 
+            {/* Key Responsibilities */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800">Key Responsibilities</h2>
+              <p className="text-sm text-gray-500 mt-1 mb-3">
+                As a {job.title} at {job.company}, you will be expected to carry out the following key duties:
+              </p>
+              <ul className="space-y-2">
+                {responsibilities.map((r, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Requirements & Qualifications */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800">Requirements &amp; Qualifications</h2>
+              <p className="text-sm text-gray-500 mt-1 mb-3">
+                To be considered for this {job.title} position at {job.company}, applicants should meet the following criteria:
+              </p>
+              <ul className="space-y-2">
+                {requirements.map((r, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Benefits & Perks */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800">Benefits &amp; Perks</h2>
+              <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                {job.type === 'Full-time' || job.type === 'FULL_TIME' ? (
+                  <>As a {job.type.toLowerCase()} employee at {job.company}, you can expect a comprehensive benefits package that typically includes competitive monthly compensation{job.salary && job.salary !== 'Salary not disclosed' ? ` of ${job.salary}` : ''}, medical insurance coverage for you and your dependents, paid annual leave, and pension contributions under the NSSF framework. Many employers in Kenya also provide housing allowances, transport allowances, and meal subsidies. {job.category ? `Professionals in the ${job.category} sector often receive additional benefits such as professional development budgets, conference attendance, and certification sponsorship.` : ''} {job.isRemote ? 'As a remote position, you may also receive a home office setup allowance and flexible working hours.' : ''}</>
+                ) : (
+                  <>This {job.type.toLowerCase()} position at {job.company} offers {job.salary && job.salary !== 'Salary not disclosed' ? `compensation of ${job.salary}` : 'competitive compensation'}. {job.type === 'INTERNSHIP' || job.type === 'Internship' ? 'Internships provide invaluable hands-on experience, mentorship from industry professionals, and in many cases lead to full-time employment offers upon successful completion. You will gain practical skills and build your professional network within the ' + (job.category || 'industry') + ' sector.' : 'Contract and part-time roles in Kenya often come with prorated benefits including medical cover, flexible scheduling, and the opportunity to transition to permanent positions based on performance.'}</>
+                )}
+              </p>
+            </div>
+
+            {/* How to Apply */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800">How to Apply for This {job.type} Position</h2>
+              <p className="text-sm text-gray-600 mt-3 leading-relaxed mb-4">
+                Follow these steps to submit a strong application for the {job.title} role at {job.company}:
+              </p>
+              <ol className="space-y-3">
+                {[
+                  `Review the requirements listed above carefully and ensure you meet the minimum qualifications for this ${job.title} position`,
+                  `Prepare an up-to-date CV tailored to this role, highlighting relevant ${job.category ? job.category.toLowerCase() : 'professional'} experience and achievements with measurable metrics`,
+                  `Write a concise cover letter explaining why you are interested in this role at ${job.company} and how your skills align with the responsibilities outlined`,
+                  `Gather all required documents including academic certificates, professional certifications, and a copy of your national ID`,
+                  `Submit your application before the deadline of ${job.deadline} — late applications are typically not considered by employers in Kenya`,
+                ].map((step, i) => (
+                  <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                    <span className="bg-emerald-100 text-emerald-700 font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <p className="text-sm text-gray-500 mt-4 leading-relaxed">
+                For tips on writing a CV that passes Applicant Tracking Systems (ATS) used by Kenyan employers, visit our{' '}
+                <Link href="/cv-services" className="text-emerald-600 hover:text-emerald-700 font-medium transition">CV Writing Services</Link> page or read our{' '}
+                <Link href="/blog?category=How-To" className="text-emerald-600 hover:text-emerald-700 font-medium transition">career advice articles</Link>.
+              </p>
+            </div>
+
             {/* Application */}
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -163,7 +334,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
 
             {/* Company Info */}
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">About the Company</h2>
+              <h2 className="text-lg font-extrabold text-gray-800">About {job.company}</h2>
               <div className="flex items-start gap-4 mt-3">
                 <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
                   {job.company.charAt(0)}
@@ -178,11 +349,125 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                   {job.companyDescription && (
                     <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
                   )}
+                  {!job.companyDescription && (
+                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                      {job.company} is an employer operating in {job.location || 'Kenya'}. {job.category ? `They are active in the ${job.category} sector, ` : ''}offering {job.type.toLowerCase()} employment opportunities. Visit their website or contact them directly to learn more about their organisational culture, values, and current openings. JobBoard Kenya verifies all employer listings to ensure legitimacy and protect job seekers from fraudulent postings.
+                    </p>
+                  )}
                   {job.companyWebsite && (
                     <Link href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
                       Visit company website →
                     </Link>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Browse Related Categories */}
+            {relatedCategories.length > 0 && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+                <h2 className="text-lg font-extrabold text-gray-800">Explore Related Categories</h2>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {relatedCategories.map((cat) => (
+                    <Link
+                      key={cat.slug}
+                      href={`/categories/${cat.slug}`}
+                      className="text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full transition"
+                    >
+                      {cat.label} →
+                    </Link>
+                  ))}
+                  <Link
+                    href="/categories"
+                    className="text-xs font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
+                  >
+                    All 43 Categories →
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* FAQ Section - AEO Optimized */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800 mb-4">Frequently Asked Questions About This Role</h2>
+              <div className="space-y-3">
+                {faqs.map((faq, i) => (
+                  <div key={i} className="border border-gray-200/60 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50/50 transition"
+                      onClick={() => setFaqOpen(faqOpen === i ? null : i)}
+                    >
+                      <h3 className="text-sm font-bold text-gray-800 pr-4">{faq.q}</h3>
+                      <svg
+                        className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform ${faqOpen === i ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {faqOpen === i && (
+                      <div className="px-4 pb-4 -mt-1">
+                        <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Why Work Here - Auto-generated enrichment */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800 mb-3">Why This Role Stands Out</h2>
+              <div className="text-sm text-gray-600 leading-relaxed space-y-3">
+                <p>
+                  This {job.type.toLowerCase()} position at {job.company} offers a compelling opportunity
+                  {job.locationCounty ? ` in ${job.locationCounty}` : ' in Kenya'}
+                  {job.isRemote ? ', with the flexibility of remote work arrangements that let you contribute from anywhere.' : '.'}
+                  {job.salary !== 'Salary not disclosed' ? ` The role comes with a competitive salary range of ${job.salary}, positioning it attractively within the ${job.category} sector.` : ''}
+                </p>
+                <p>
+                  As a {job.experienceLevel ? formatExperienceLabel(job.experienceLevel).toLowerCase() : 'professional'} role
+                  {job.subcategory ? ` within ${job.subcategory}` : ''}, this position is ideal for candidates
+                  {job.educationLevel ? ` with a ${job.educationLevel.replace(/_/g, ' ').toLowerCase()} educational background` : ' looking to advance their career'}
+                  {job.category ? ` in the ${job.category} industry` : ''}.
+                  {job.companyDescription ? job.companyDescription.substring(0, 200) : 'Apply before the deadline to be considered for this opportunity.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Application Tips - Auto-generated enrichment */}
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60">
+              <h2 className="text-lg font-extrabold text-gray-800 mb-3">How to Apply for This {job.category || 'Job'}</h2>
+              <div className="text-sm text-gray-600 leading-relaxed space-y-2">
+                <p>1. Review the job description above carefully and ensure your skills and experience align with the requirements.</p>
+                <p>2. Prepare an updated CV that highlights relevant {job.category ? `${job.category.toLowerCase()}` : 'professional'} experience and qualifications{job.educationLevel ? `, including your ${job.educationLevel.replace(/_/g, ' ').toLowerCase()} credential` : ''}.</p>
+                <p>3. Click the &quot;Apply Now&quot; button above to submit your application before the deadline on {job.deadline}.</p>
+                <p>4. Set up a job alert on JobBoard Kenya to receive notifications when similar {job.category ? `${job.category.toLowerCase()}` : ''} positions are posted.</p>
+              </div>
+            </div>
+
+            {/* FAQ - Visible for SEO/AEO */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+              <h2 className="text-lg font-extrabold text-gray-800 mb-3">Frequently Asked Questions</h2>
+              <div className="space-y-4 text-sm">
+                <div>
+                  <h3 className="font-bold text-gray-700">What is the salary for this {job.category || 'position'}?</h3>
+                  <p className="text-gray-600 mt-1">{job.salary !== 'Salary not disclosed' ? `The salary for this role is ${job.salary}.` : 'The salary is not publicly disclosed. Apply to learn more about compensation.'}</p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-700">Where is this job located?</h3>
+                  <p className="text-gray-600 mt-1">{job.isRemote ? 'This is a remote position, allowing you to work from anywhere in Kenya.' : `This position is based in ${job.location}.`}</p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-700">When does the application close?</h3>
+                  <p className="text-gray-600 mt-1">The deadline to apply is {job.deadline}.</p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-700">What type of employment is this?</h3>
+                  <p className="text-gray-600 mt-1">This is a {job.type} position{job.category ? ` in the ${job.category} sector` : ''}.</p>
                 </div>
               </div>
             </div>
@@ -228,7 +513,10 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             {/* Similar Jobs */}
             {similar.length > 0 && (
               <div className="pt-4 border-t border-gray-200/50">
-                <h3 className="text-lg font-extrabold text-gray-800">Similar Jobs</h3>
+                <h3 className="text-lg font-extrabold text-gray-800">Similar Jobs in {job.locationCounty || job.location || 'Kenya'}</h3>
+                <p className="text-sm text-gray-500 mt-1 mb-4">
+                  Explore other {job.category ? `${job.category.toLowerCase()} ` : ''}vacancies{job.locationCounty ? ` in ${job.locationCounty}` : ' across Kenya'} that match your skills and experience.
+                </p>
                 <div className="mt-4 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
                   {similar.map((s) => (
                     <Link
@@ -262,17 +550,13 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </Link>
             </div>
 
-            <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
-              <div className="text-center">
-                <div>📢 Google Ad</div>
-                <div className="text-xs">(300x250)</div>
-              </div>
-            </div>
+            <GoogleAd slot="job-detail-sidebar" format="rectangle" className="rounded-xl" style={{ minHeight: '250px' }} />
 
             <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
               <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Job Summary</h4>
               <div className="space-y-2.5 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">{job.experienceLevel || 'Not specified'}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">{formatExperienceLabel(job.experienceLevel)}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Education</span><span className="font-medium text-gray-700">{formatEducationLabel(job.educationLevel)}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Employment Type</span><span className="font-medium text-gray-700">{job.type}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Location</span><span className="font-medium text-gray-700">{job.location}{job.isRemote ? ' (Remote)' : ''}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Salary</span><span className="font-medium text-emerald-600">{job.salary}</span></div>

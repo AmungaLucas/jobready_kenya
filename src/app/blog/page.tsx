@@ -5,6 +5,7 @@ import { getBlogPosts, getBlogPostCounts, BLOG_CATEGORIES, BLOG_CATEGORY_DESCRIP
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import GoogleAd from '@/components/jobboard/GoogleAd';
 
 export const revalidate = 60;
 
@@ -319,6 +320,12 @@ export default async function BlogListPage({ searchParams }: Props) {
           </div>
         </div>
       </section>
+      {/* Bottom Ad */}
+      <div className="section-bg pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <GoogleAd slot="blog-bottom" format="horizontal" className="rounded-xl" style={{ minHeight: '90px' }} />
+        </div>
+      </div>
       <Footer />
     </>
   );

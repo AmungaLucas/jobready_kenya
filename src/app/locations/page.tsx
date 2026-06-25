@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import AdBanner from '@/components/jobboard/AdBanner';
 
 export const revalidate = 86400;
 
@@ -128,6 +129,8 @@ export default async function LocationsIndexPage() {
             </div>
           </div>
 
+          <AdBanner slot="1111111111" className="mb-8" />
+
           {/* SEO Content */}
           <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60 mb-12">
             <h2 className="text-xl font-extrabold text-gray-800 mb-3">Find Jobs in Every Kenyan County</h2>
@@ -141,6 +144,8 @@ export default async function LocationsIndexPage() {
               Whether you are a fresh graduate starting your career, an experienced professional seeking new challenges, or someone looking to relocate to a different part of Kenya, browsing jobs by location helps you focus your search on the areas that matter most to you. Use the county listing below to explore all available positions in your preferred location.
             </p>
           </div>
+
+          <AdBanner slot="3333333333" className="mb-8" />
 
           {/* All Locations Grid */}
           <div>

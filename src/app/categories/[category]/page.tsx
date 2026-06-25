@@ -9,28 +9,29 @@ import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
 
 export const revalidate = 60;
+export const dynamicParams = false;
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ category: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
-  if (!category) return { title: 'Category Not Found' };
+  const { category } = await params;
+  const cat = await getCategoryBySlug(category);
+  if (!cat) return { title: 'Category Not Found' };
 
-  const title = category.seoTitle || `${category.label} Jobs in Kenya - Find ${category.label} Vacancies | JobBoard Kenya`;
-  const description = category.seoDescription || `Browse ${category._count.jobs}+ ${category.label.toLowerCase()} job vacancies in Kenya. Updated daily with the latest ${category.label.toLowerCase()} opportunities from top employers.`;
+  const title = cat.seoTitle || `${cat.label} Jobs in Kenya - Find ${cat.label} Vacancies | JobBoard Kenya`;
+  const description = cat.seoDescription || `Browse ${cat._count.jobs}+ ${cat.label.toLowerCase()} job vacancies in Kenya. Updated daily with the latest ${cat.label.toLowerCase()} opportunities from top employers.`;
 
   return {
     title,
     description: description.substring(0, 160),
-    alternates: { canonical: `${SITE_URL}/categories/${category.slug}` },
+    alternates: { canonical: `${SITE_URL}/categories/${cat.slug}` },
     robots: { index: true, follow: true },
     openGraph: {
       title,
       description: description.substring(0, 160),
-      url: `${SITE_URL}/categories/${category.slug}`,
+      url: `${SITE_URL}/categories/${cat.slug}`,
       siteName: 'JobBoard Kenya',
     },
     twitter: {
@@ -46,21 +47,21 @@ export async function generateStaticParams() {
   // can read it synchronously (avoids Next.js 16/Turbopack Prisma bug)
   await getAllSubcategorySlugs();
   const slugs = await getAllCategorySlugs();
-  return slugs.map((slug) => ({ slug }));
+  return slugs.map((slug) => ({ category: slug }));
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = await params;
+  const { category } = await params;
   const page = 1;
   const perPage = 20;
 
-  const category = await getCategoryBySlug(slug);
-  if (!category) notFound();
+  const cat = await getCategoryBySlug(category);
+  if (!cat) notFound();
 
   const [jobsData, subcategories, siblingJobs, locations, allCategories] = await Promise.all([
-    getCategoryJobs(category.id, page, perPage),
-    getCategorySubcategories(category.id, category.slug),
-    getSiblingCategoryJobs(category.id, 6),
+    getCategoryJobs(cat.id, page, perPage),
+    getCategorySubcategories(cat.id, cat.slug),
+    getSiblingCategoryJobs(cat.id, 6),
     getPopularLocations(8),
     getAllCategories(),
   ]);
@@ -70,16 +71,16 @@ export default async function CategoryPage({ params }: Props) {
 
   // JSON-LD
   const collectionLd = generateCollectionPageJsonLd({
-    name: `${category.label} Jobs in Kenya`,
-    description: category.seoDescription || category.description || `${category.label} job listings in Kenya`,
-    url: `/categories/${category.slug}`,
+    name: `${cat.label} Jobs in Kenya`,
+    description: cat.seoDescription || cat.description || `${cat.label} job listings in Kenya`,
+    url: `/categories/${cat.slug}`,
     itemCount: total,
   });
 
   const breadcrumbLd = generateBreadcrumbJsonLd([
     { name: 'Home', url: '/' },
     { name: 'Job Categories', url: '/categories' },
-    { name: category.label, url: `/categories/${category.slug}` },
+    { name: cat.label, url: `/categories/${cat.slug}` },
   ]);
 
   return (
@@ -96,7 +97,7 @@ export default async function CategoryPage({ params }: Props) {
             <span>/</span>
             <Link href="/categories" className="hover:text-emerald-600 transition">Job Categories</Link>
             <span>/</span>
-            <span className="text-gray-700 font-medium">{category.label}</span>
+            <span className="text-gray-700 font-medium">{cat.label}</span>
           </nav>
         </div>
       </section>
@@ -107,15 +108,15 @@ export default async function CategoryPage({ params }: Props) {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">
-                {category.label} Jobs in Kenya
+                {cat.label} Jobs in Kenya
               </h1>
               <p className="text-sm text-gray-500 mt-1">
                 <span className="font-semibold text-emerald-600">{total}</span> active vacancies
-                &middot; <span className="text-gray-400">{category._count.subcategories} specializations</span>
+                &middot; <span className="text-gray-400">{cat._count.subcategories} specializations</span>
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href={`/jobs?category=${category.slug}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+              <Link href={`/jobs?category=${cat.slug}`} className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
                 View as list &rarr;
               </Link>
             </div>
@@ -131,9 +132,9 @@ export default async function CategoryPage({ params }: Props) {
             <div className="lg:col-span-3 space-y-8">
 
               {/* LAYER 1: SEO Description */}
-              {category.description && (
+              {cat.description && (
                 <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <p className="text-sm text-gray-600 leading-relaxed">{category.description}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{cat.description}</p>
                 </div>
               )}
 
@@ -145,7 +146,7 @@ export default async function CategoryPage({ params }: Props) {
                     {subcategories.map((sub) => (
                       <Link
                         key={sub.urlSlug}
-                        href={`/categories/${category.slug}/${sub.urlSlug}`}
+                        href={`/categories/${cat.slug}/${sub.urlSlug}`}
                         className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
                       >
                         <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition">{sub.label}</span>
@@ -160,7 +161,7 @@ export default async function CategoryPage({ params }: Props) {
               {jobs.length > 0 ? (
                 <div>
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                    Latest {category.label} Vacancies
+                    Latest {cat.label} Vacancies
                   </h2>
                   <div className="space-y-3">
                     {jobs.map((job) => (
@@ -172,7 +173,7 @@ export default async function CategoryPage({ params }: Props) {
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                         <Link
                           key={p}
-                          href={`/categories/${category.slug}?page=${p}`}
+                          href={`/categories/${cat.slug}?page=${p}`}
                           className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
                             p === page
                               ? 'bg-emerald-600 text-white'
@@ -192,7 +193,7 @@ export default async function CategoryPage({ params }: Props) {
                   {/* Layer 3: Sibling jobs from same category */}
                   {siblingJobs.length > 0 && (
                     <div>
-                      <h2 className="text-lg font-extrabold text-gray-800 mb-4">Related {category.label} Opportunities</h2>
+                      <h2 className="text-lg font-extrabold text-gray-800 mb-4">Related {cat.label} Opportunities</h2>
                       <div className="space-y-3">
                         {siblingJobs.slice(0, 6).map((job) => (
                           <JobCard key={job.id} job={job} />
@@ -203,7 +204,7 @@ export default async function CategoryPage({ params }: Props) {
 
                   {/* Layer 4: Browse by location */}
                   <div>
-                    <h2 className="text-lg font-extrabold text-gray-800 mb-4">Browse {category.label} Jobs by County</h2>
+                    <h2 className="text-lg font-extrabold text-gray-800 mb-4">Browse {cat.label} Jobs by County</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {locations.map((loc) => (
                         <Link
@@ -222,7 +223,7 @@ export default async function CategoryPage({ params }: Props) {
                     <h2 className="text-lg font-extrabold text-gray-800 mb-2">Explore Other Categories</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4">
                       {allCategories
-                        .filter((c) => c.slug !== category.slug)
+                        .filter((c) => c.slug !== cat.slug)
                         .slice(0, 9)
                         .map((c) => (
                           <Link
@@ -240,7 +241,7 @@ export default async function CategoryPage({ params }: Props) {
                         Browse All Jobs &rarr;
                       </Link>
                       <p className="text-xs text-gray-500">
-                        Set up job alerts to get notified when new {category.label.toLowerCase()} positions are posted.
+                        Set up job alerts to get notified when new {cat.label.toLowerCase()} positions are posted.
                       </p>
                     </div>
                     <div className="mt-4 flex items-center gap-2">
@@ -261,8 +262,8 @@ export default async function CategoryPage({ params }: Props) {
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Category Overview</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Active Jobs</span><span className="font-medium text-emerald-600">{total}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Specializations</span><span className="font-medium text-gray-700">{category._count.subcategories}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Category</span><span className="font-medium text-gray-700">{category.label}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Specializations</span><span className="font-medium text-gray-700">{cat._count.subcategories}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Category</span><span className="font-medium text-gray-700">{cat.label}</span></div>
                 </div>
               </div>
 
@@ -275,7 +276,7 @@ export default async function CategoryPage({ params }: Props) {
                       <Link
                         href={`/categories/${c.slug}`}
                         className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
-                          c.slug === category.slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
+                          c.slug === cat.slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
                         }`}
                       >
                         <span>{c.label}</span>
@@ -290,9 +291,9 @@ export default async function CategoryPage({ params }: Props) {
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xl">📬</span>
-                  <h4 className="text-sm font-bold text-gray-700">Get {category.label} Job Alerts</h4>
+                  <h4 className="text-sm font-bold text-gray-700">Get {cat.label} Job Alerts</h4>
                 </div>
-                <p className="text-xs text-gray-600">Be the first to know when new {category.label.toLowerCase()} jobs are posted.</p>
+                <p className="text-xs text-gray-600">Be the first to know when new {cat.label.toLowerCase()} jobs are posted.</p>
                 <div className="mt-3 flex flex-col gap-2">
                   <input type="email" placeholder="Your email" className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
                   <button type="button" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition text-sm">Subscribe</button>

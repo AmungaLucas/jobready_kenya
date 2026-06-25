@@ -3,6 +3,7 @@ import { Nunito } from 'next/font/google';
 import "./globals.css";
 import CookieConsent from '@/components/jobboard/CookieConsent';
 import WhatsAppButton from '@/components/jobboard/WhatsAppButton';
+import { generateOrganizationJsonLd } from '@/lib/jsonld';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
   },
 };
 
@@ -77,11 +78,20 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunito.variable} suppressHydrationWarning>
       <head>
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        />
+        {/* DNS prefetch & preconnect for performance */}
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        {/* Google AdSense - replace ca-pub-XXXXXXXXXX with your real publisher ID */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossOrigin="anonymous" />
+        {process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && (
+          <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION} />
+        )}
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationJsonLd()) }} />
       </head>
       <body className="font-sans bg-[#faf9f6]">
         {children}

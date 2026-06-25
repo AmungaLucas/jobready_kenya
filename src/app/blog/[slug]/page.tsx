@@ -6,8 +6,10 @@ import { getBlogPostBySlug, getAllBlogPostSlugs, getRelatedPosts, BLOG_CATEGORIE
 import { generateArticleJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import AdBanner from '@/components/jobboard/AdBanner';
 
 export const revalidate = 60;
+export const dynamicParams = false;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -124,12 +126,15 @@ export default async function BlogPostDetailPage({ params }: Props) {
                 </div>
               )}
 
+              <AdBanner slot="2222222222" className="my-4" />
+
               {/* Content */}
               <div className="prose prose-sm sm:prose-base max-w-none bg-white/70 backdrop-blur-sm rounded-xl p-6 md:p-8 border border-white/60">
                 <div className="whitespace-pre-line text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content.replace(/^## (.*$)/gm, '<h2 class="text-lg font-extrabold text-gray-800 mt-8 mb-3">$1</h2>').replace(/^### (.*$)/gm, '<h3 class="text-base font-bold text-gray-800 mt-6 mb-2">$1</h3>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '</p><p class="mb-4">').replace(/^(?!<)/, '<p class="mb-4">') }} />
               </div>
 
               {/* Tags */}
+              <AdBanner slot="3333333333" className="my-4" />
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (

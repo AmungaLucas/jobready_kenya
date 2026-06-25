@@ -3,6 +3,19 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import MobileDrawer from './MobileDrawer';
+import {
+  ChevronDown,
+  Briefcase,
+  LayoutGrid,
+  MapPin,
+  Landmark,
+  Building2,
+  GraduationCap,
+  Users,
+  HeartHandshake,
+  PlusCircle,
+  UploadCloud,
+} from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -32,48 +45,48 @@ export default function Navbar() {
             <li className="group relative">
               <button type="button" className="flex items-center gap-1">
                 Jobs
-                <i className="fas fa-chevron-down dropdown-arrow"></i>
+                <ChevronDown className="w-4 h-4 dropdown-arrow" />
               </button>
               <div className="dropdown-menu">
                 <Link href="/jobs">
-                  <i className="fas fa-briefcase"></i> All Jobs
+                  <Briefcase className="w-4 h-4 inline" /> All Jobs
                 </Link>
                 <Link href="/categories">
-                  <i className="fas fa-th-large"></i> Browse by Category
+                  <LayoutGrid className="w-4 h-4 inline" /> Browse by Category
                 </Link>
                 <Link href="/locations/nairobi">
-                  <i className="fas fa-map-marker-alt"></i> Browse by Location
+                  <MapPin className="w-4 h-4 inline" /> Browse by Location
                 </Link>
                 <Link href="/government-jobs">
-                  <i className="fas fa-landmark"></i> Govt Jobs
+                  <Landmark className="w-4 h-4 inline" /> Govt Jobs
                 </Link>
                 <Link href="/government-jobs?type=COUNTY_GOVERNMENT">
-                  <i className="fas fa-city"></i> County Jobs
+                  <Building2 className="w-4 h-4 inline" /> County Jobs
                 </Link>
               </div>
             </li>
             <li className="group relative">
               <button type="button" className="flex items-center gap-1">
                 Opportunities
-                <i className="fas fa-chevron-down dropdown-arrow"></i>
+                <ChevronDown className="w-4 h-4 dropdown-arrow" />
               </button>
               <div className="dropdown-menu">
                 <div className="dropdown-label">Explore</div>
                 <Link href="/opportunities?type=SCHOLARSHIP">
-                  <i className="fas fa-graduation-cap"></i> Scholarships
+                  <GraduationCap className="w-4 h-4 inline" /> Scholarships
                 </Link>
                 <Link href="/jobs?type=INTERNSHIP">
-                  <i className="fas fa-briefcase"></i> Internships
+                  <Briefcase className="w-4 h-4 inline" /> Internships
                 </Link>
                 <Link href="/opportunities?type=FELLOWSHIP">
-                  <i className="fas fa-users"></i> Fellowships
+                  <Users className="w-4 h-4 inline" /> Fellowships
                 </Link>
                 <Link href="/opportunities?type=VOLUNTEER">
-                  <i className="fas fa-hand-holding-heart"></i> Volunteering
+                  <HeartHandshake className="w-4 h-4 inline" /> Volunteering
                 </Link>
                 <div className="dropdown-divider"></div>
                 <Link href="/opportunities">
-                  <i className="fas fa-th-large"></i> <strong>All Opportunities &rarr;</strong>
+                  <LayoutGrid className="w-4 h-4 inline" /> <strong>All Opportunities &rarr;</strong>
                 </Link>
               </div>
             </li>
@@ -90,10 +103,10 @@ export default function Navbar() {
 
           <div className="navbar-actions">
             <Link href="/contact" className="btn-outline">
-              <i className="fas fa-plus-circle"></i> <span>Post a Job</span>
+              <PlusCircle className="w-4 h-4 inline" /> <span>Post a Job</span>
             </Link>
             <Link href="/cv-services" className="btn-primary">
-              <i className="fas fa-cloud-upload-alt"></i> <span>Upload CV</span>
+              <UploadCloud className="w-4 h-4 inline" /> <span>Upload CV</span>
             </Link>
             <button type="button" className="btn-icon avatar">JD</button>
             <button

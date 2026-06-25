@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import GoogleAd from '@/components/jobboard/GoogleAd';
 
 export default async function Sidebar() {
   const categories = await prisma.jobCategory.findMany({
@@ -26,12 +27,7 @@ export default async function Sidebar() {
       </div>
 
       {/* Google Ad */}
-      <div className="bg-gray-100 rounded-xl flex items-center justify-center h-64 border border-gray-200 text-gray-400 text-sm">
-        <div className="text-center">
-          <div>📢 Google Ad</div>
-          <div className="text-xs">(300x250)</div>
-        </div>
-      </div>
+      <GoogleAd slot="jobs-sidebar" format="rectangle" className="rounded-xl" style={{ minHeight: '250px' }} />
 
       {/* Browse by Category - now dynamic */}
       <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">

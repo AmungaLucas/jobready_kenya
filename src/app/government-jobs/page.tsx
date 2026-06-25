@@ -8,6 +8,7 @@ import { getAllCategories } from '@/lib/categories';
 import { getPopularLocations } from '@/lib/locations';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import GoogleAd from '@/components/jobboard/GoogleAd';
 
 export const revalidate = 60;
 
@@ -294,6 +295,9 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
 
+              {/* Sidebar Ad */}
+              <GoogleAd slot="gov-jobs-sidebar" format="rectangle" className="rounded-xl" style={{ minHeight: '250px' }} />
+
               {/* Quick stats */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Overview</h3>
@@ -358,6 +362,12 @@ export default async function GovernmentJobsPage({ searchParams }: GovJobsPagePr
           </div>
         </div>
       </section>
+      {/* Bottom Ad */}
+      <div className="section-bg pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <GoogleAd slot="gov-jobs-bottom" format="horizontal" className="rounded-xl" style={{ minHeight: '90px' }} />
+        </div>
+      </div>
       <Footer />
     </>
   );

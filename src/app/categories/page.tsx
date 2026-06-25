@@ -3,7 +3,15 @@ import Link from 'next/link';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import AdBanner from '@/components/jobboard/AdBanner';
 import { getAllCategories } from '@/lib/categories';
+import { LucideIcon, Search, ChevronRight, BookOpen, MapPin, Landmark, Briefcase,
+  Laptop, HeartPulse, TrendingUp, Cog, GraduationCap, Megaphone, Scale, BedDouble,
+  Sprout, Truck, HardHat, Factory, HandHelping, Newspaper, Palette, Handshake,
+  FileText, Users, Headset, Building, Satellite, Zap, Gem, Car, ShoppingCart,
+  Banknote, ShieldCheck, Calculator, ClipboardCheck, Lightbulb, Database, Pencil,
+  ShieldAlert, Bus, Pill, Leaf, Plane, Microscope, CircleDot, Flower2,
+  UtensilsCrossed, Globe } from 'lucide-react';
 
 export const revalidate = 60;
 
@@ -29,51 +37,51 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const categoryIcons: Record<string, string> = {
-  'technology': 'fas fa-laptop-code',
-  'healthcare': 'fas fa-heartbeat',
-  'finance': 'fas fa-chart-line',
-  'engineering': 'fas fa-cogs',
-  'education': 'fas fa-graduation-cap',
-  'marketing': 'fas fa-bullhorn',
-  'legal': 'fas fa-balance-scale',
-  'hospitality-tourism': 'fas fa-hotel',
-  'agriculture': 'fas fa-seedling',
-  'logistics': 'fas fa-truck',
-  'construction': 'fas fa-hard-hat',
-  'manufacturing': 'fas fa-industry',
-  'government': 'fas fa-landmark',
-  'ngo': 'fas fa-hands-helping',
-  'media': 'fas fa-newspaper',
-  'creative': 'fas fa-palette',
-  'sales': 'fas fa-handshake',
-  'admin': 'fas fa-file-invoice',
-  'human-resources': 'fas fa-users',
-  'customer-service': 'fas fa-headset',
-  'real-estate': 'fas fa-building',
-  'telecommunications': 'fas fa-satellite-dish',
-  'energy': 'fas fa-bolt',
-  'mining': 'fas fa-gem',
-  'automotive': 'fas fa-car',
-  'retail': 'fas fa-shopping-cart',
-  'banking': 'fas fa-university',
-  'insurance': 'fas fa-shield-alt',
-  'accounting': 'fas fa-calculator',
-  'audit': 'fas fa-clipboard-check',
-  'consulting': 'fas fa-lightbulb',
-  'data': 'fas fa-database',
-  'design': 'fas fa-pencil-ruler',
-  'security': 'fas fa-user-shield',
-  'transport': 'fas fa-bus',
-  'social-work': 'fas fa-hands-helping',
-  'pharmaceutical': 'fas fa-pills',
-  'environmental': 'fas fa-leaf',
-  'aviation': 'fas fa-plane',
-  'research': 'fas fa-microscope',
-  'sports': 'fas fa-futbol',
-  'beauty': 'fas fa-spa',
-  'food-beverage': 'fas fa-utensils',
-  'imports': 'fas fa-globe-africa',
+const categoryIcons: Record<string, LucideIcon> = {
+  'technology': Laptop,
+  'healthcare': HeartPulse,
+  'finance': TrendingUp,
+  'engineering': Cog,
+  'education': GraduationCap,
+  'marketing': Megaphone,
+  'legal': Scale,
+  'hospitality-tourism': BedDouble,
+  'agriculture': Sprout,
+  'logistics': Truck,
+  'construction': HardHat,
+  'manufacturing': Factory,
+  'government': Landmark,
+  'ngo': HandHelping,
+  'media': Newspaper,
+  'creative': Palette,
+  'sales': Handshake,
+  'admin': FileText,
+  'human-resources': Users,
+  'customer-service': Headset,
+  'real-estate': Building,
+  'telecommunications': Satellite,
+  'energy': Zap,
+  'mining': Gem,
+  'automotive': Car,
+  'retail': ShoppingCart,
+  'banking': Banknote,
+  'insurance': ShieldCheck,
+  'accounting': Calculator,
+  'audit': ClipboardCheck,
+  'consulting': Lightbulb,
+  'data': Database,
+  'design': Pencil,
+  'security': ShieldAlert,
+  'transport': Bus,
+  'social-work': HandHelping,
+  'pharmaceutical': Pill,
+  'environmental': Leaf,
+  'aviation': Plane,
+  'research': Microscope,
+  'sports': CircleDot,
+  'beauty': Flower2,
+  'food-beverage': UtensilsCrossed,
+  'imports': Globe,
 };
 
 export default async function CategoriesPage() {
@@ -122,7 +130,7 @@ export default async function CategoriesPage() {
           {/* Search Box */}
           <form action="/jobs" method="GET" className="max-w-xl mx-auto">
             <div className="flex items-center bg-white rounded-lg border border-gray-300 shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500">
-              <i className="fas fa-search text-gray-400 ml-4"></i>
+              <Search className="w-4 h-4 text-gray-400 ml-4" />
               <input
                 type="text"
                 name="search"
@@ -139,6 +147,8 @@ export default async function CategoriesPage() {
           </form>
         </div>
       </section>
+
+      <AdBanner slot="1111111111" className="my-4" />
 
       {/* Categories Grid */}
       <section className="section-bg py-12">
@@ -159,7 +169,7 @@ export default async function CategoriesPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {categories.map((category) => {
-              const iconClass = categoryIcons[category.slug] || 'fas fa-briefcase';
+              const IconComponent = categoryIcons[category.slug] || Briefcase;
               return (
                 <Link
                   key={category.slug}
@@ -168,7 +178,7 @@ export default async function CategoriesPage() {
                 >
                   <div className="flex items-start gap-4">
                     <span className="w-10 h-10 shrink-0 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition">
-                      <i className={iconClass}></i>
+                      <IconComponent className="w-5 h-5" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-sm font-bold text-gray-800 group-hover:text-emerald-600 transition truncate">
@@ -178,7 +188,7 @@ export default async function CategoriesPage() {
                         {category.jobCount} {category.jobCount === 1 ? 'job' : 'jobs'}
                       </p>
                     </div>
-                    <i className="fas fa-chevron-right text-gray-300 group-hover:text-emerald-500 transition mt-1"></i>
+                    <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition mt-1" />
                   </div>
                 </Link>
               );
@@ -186,6 +196,8 @@ export default async function CategoriesPage() {
           </div>
         </div>
       </section>
+
+      <AdBanner slot="3333333333" className="my-4" />
 
       {/* SEO Content Section */}
       <section className="section-bg py-12 border-t border-gray-200/50">
@@ -205,17 +217,17 @@ export default async function CategoriesPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/blog" className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 hover:border-emerald-300/60 transition group text-center">
-              <i className="fas fa-book-reader text-emerald-600 text-xl mb-2"></i>
+              <BookOpen className="w-5 h-5 text-emerald-600 mx-auto mb-2" />
               <h3 className="text-sm font-bold text-gray-800 group-hover:text-emerald-600 transition">Career Blog</h3>
               <p className="text-xs text-gray-500 mt-1">Expert advice and job market insights</p>
             </Link>
             <Link href="/locations/nairobi" className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 hover:border-emerald-300/60 transition group text-center">
-              <i className="fas fa-map-marker-alt text-emerald-600 text-xl mb-2"></i>
+              <MapPin className="w-5 h-5 text-emerald-600 mx-auto mb-2" />
               <h3 className="text-sm font-bold text-gray-800 group-hover:text-emerald-600 transition">Jobs by Location</h3>
               <p className="text-xs text-gray-500 mt-1">Browse opportunities in all 47 counties</p>
             </Link>
             <Link href="/government-jobs" className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 hover:border-emerald-300/60 transition group text-center">
-              <i className="fas fa-landmark text-emerald-600 text-xl mb-2"></i>
+              <Landmark className="w-5 h-5 text-emerald-600 mx-auto mb-2" />
               <h3 className="text-sm font-bold text-gray-800 group-hover:text-emerald-600 transition">Government Jobs</h3>
               <p className="text-xs text-gray-500 mt-1">National and county government vacancies</p>
             </Link>

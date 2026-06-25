@@ -1,0 +1,562 @@
+     1→     1→'use client';
+     2→     2→
+     3→     3→import Link from 'next/link';
+     4→     4→import { useState } from 'react';
+     5→     5→import GoogleAd from '@/components/jobboard/GoogleAd';
+     6→     6→
+     7→     7→interface FormattedJob {
+     8→     8→  id: string;
+     9→     9→  slug: string;
+    10→    10→  title: string;
+    11→    11→  company: string;
+    12→    12→  companySlug: string | null;
+    13→    13→  companyWebsite: string | null;
+    14→    14→  companyDescription: string;
+    15→    15→  location: string;
+    16→    16→  locationCounty: string | null;
+    17→    17→  type: string;
+    18→    18→  salary: string;
+    19→    19→  salaryMin?: number | null;
+    20→    20→  salaryMax?: number | null;
+    21→    21→  posted: string;
+    22→    22→  deadline: string;
+    23→    23→  deadlineDate: Date | null;
+    24→    24→  datePosted: Date;
+    25→    25→  category: string;
+    26→    26→  categorySlug: string;
+    27→    27→  subcategory: string;
+    28→    28→  subcategorySlug: string;
+    29→    29→  experienceLevel?: string | null;
+    30→    30→  educationLevel?: string | null;
+    31→    31→  description: string;
+    32→    32→  isRemote: boolean;
+    33→    33→  externalUrl?: string | null;
+    34→    34→  featured?: boolean;
+    35→    35→  match: number;
+    36→    36→  requirements: string[];
+    37→    37→  responsibilities: string[];
+    38→    38→}
+    39→    39→
+    40→    40→interface JobDetailsContentProps {
+    41→    41→  job: FormattedJob;
+    42→    42→  similar: Partial<FormattedJob>[];
+    43→    43→}
+    44→    44→
+    45→    45→function daysUntil(date: Date | null): number | null {
+    46→    46→  if (!date) return null;
+    47→    47→  const now = new Date();
+    48→    48→  const diff = date.getTime() - now.getTime();
+    49→    49→  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    50→    50→}
+    51→    51→
+    52→    52→function formatExperienceLabel(level: string | null | undefined): string {
+    53→    53→  if (!level) return 'Not specified';
+    54→    54→  const map: Record<string, string> = {
+    55→    55→    ENTRY: 'Entry level (0 years experience)',
+    56→    56→    JUNIOR: 'Junior (1-2 years experience)',
+    57→    57→    MID: 'Mid-level (3-5 years experience)',
+    58→    58→    SENIOR: 'Senior (5-8 years experience)',
+    59→    59→    LEAD: 'Lead (8-10 years experience)',
+    60→    60→    EXECUTIVE: 'Executive (10+ years experience)',
+    61→    61→  };
+    62→    62→  return map[level] || level;
+    63→    63→}
+    64→    64→
+    65→    65→function formatEducationLabel(level: string | null | undefined): string {
+    66→    66→  if (!level) return 'Not specified';
+    67→    67→  const map: Record<string, string> = {
+    68→    68→    NONE: 'No formal education requirement',
+    69→    69→    HIGH_SCHOOL: 'Kenya Certificate of Secondary Education (KCSE)',
+    70→    70→    CERTIFICATE: 'Professional Certificate',
+    71→    71→    DIPLOMA: 'Diploma from a recognised institution',
+    72→    72→    BACHELORS: 'Bachelor\'s degree',
+    73→    73→    MASTERS: 'Master\'s degree',
+    74→    74→    DOCTORATE: 'Doctorate (PhD)',
+    75→    75→    PROFESSIONAL: 'Professional qualification or certification',
+    76→    76→  };
+    77→    77→  return map[level] || level;
+    78→    78→}
+    79→    79→
+    80→    80→function deriveResponsibilities(job: FormattedJob): string[] {
+    81→    81→  if (job.responsibilities && job.responsibilities.length > 0) return job.responsibilities;
+    82→    82→  const base = [
+    83→    83→    `Execute core ${job.title} duties and deliver on key performance indicators set by ${job.company}`,
+    84→    84→    `Collaborate with cross-functional teams across departments to drive ${job.category ? job.category.toLowerCase() : 'business'} objectives`,
+    85→    85→    `Prepare regular reports, documentation, and presentations for management review and stakeholder communication`,
+    86→    86→  ];
+    87→    87→  if (job.experienceLevel === 'SENIOR' || job.experienceLevel === 'LEAD' || job.experienceLevel === 'EXECUTIVE') {
+    88→    88→    base.push(
+    89→    89→      `Provide strategic leadership and mentorship to junior team members within the ${job.category || 'department'}`,
+    90→    90→      `Drive process improvements and best practices to enhance operational efficiency`
+    91→    91→    );
+    92→    92→  }
+    93→    93→  if (job.isRemote) {
+    94→    94→    base.push('Participate effectively in remote team meetings and maintain clear communication across distributed teams');
+    95→    95→  }
+    96→    96→  return base;
+    97→    97→}
+    98→    98→
+    99→    99→function deriveRequirements(job: FormattedJob): string[] {
+   100→   100→  if (job.requirements && job.requirements.length > 0) return job.requirements;
+   101→   101→  const base: string[] = [];
+   102→   102→  if (job.educationLevel && job.educationLevel !== 'NONE') {
+   103→   103→    base.push(`${formatEducationLabel(job.educationLevel)} in a relevant field${job.category ? ' such as ' + job.category.toLowerCase() : ''}`);
+   104→   104→  } else {
+   105→   105→    base.push(`Minimum of a Diploma or equivalent qualification in a relevant field`);
+   106→   106→  }
+   107→   107→  base.push(formatExperienceLabel(job.experienceLevel));
+   108→   108→  if (job.category && (job.category.includes('Technology') || job.category.includes('IT') || job.category.includes('Software'))) {
+   109→   109→    base.push('Proficiency in relevant programming languages, tools, and technologies');
+   110→   110→    base.push('Strong problem-solving and analytical thinking abilities');
+   111→   111→  }
+   112→   112→  base.push('Excellent written and verbal communication skills in English and Kiswahili');
+   113→   113→  base.push('Ability to work independently and collaboratively in a fast-paced environment');
+   114→   114→  if (job.isRemote) {
+   115→   115→    base.push('Reliable high-speed internet connection and a dedicated workspace for remote work');
+   116→   116→  }
+   117→   117→  if (job.locationCounty) {
+   118→   118→    base.push(`Based in or willing to relocate to ${job.locationCounty}${job.isRemote ? ' (remote work available)' : ''}`);
+   119→   119→  }
+   120→   120→  return base;
+   121→   121→}
+   122→   122→
+   123→   123→export default function JobDetailsContent({ job, similar }: JobDetailsContentProps) {
+   124→   124→  const [saved, setSaved] = useState(false);
+   125→   125→  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+   126→   126→  const daysLeft = daysUntil(job.deadlineDate);
+   127→   127→  const responsibilities = deriveResponsibilities(job);
+   128→   128→  const requirements = deriveRequirements(job);
+   129→   129→
+   130→   130→  const relatedCategories = job.categorySlug
+   131→   131→    ? [
+   132→   132→        { label: job.category, slug: job.categorySlug },
+   133→   133→        ...(job.subcategorySlug ? [{ label: job.subcategory, slug: `${job.categorySlug}/${job.subcategorySlug}` }] : []),
+   134→   134→      ]
+   135→   135→    : [];
+   136→   136→
+   137→   137→  const faqs = [
+   138→   138→    {
+   139→   139→      q: `What does a ${job.title} do in Kenya?`,
+   140→   140→      a: `A ${job.title} in Kenya is responsible for performing core ${job.category || 'professional'} duties within organisations operating in ${job.location || 'the country'}. This role typically involves ${responsibilities[0]?.toLowerCase() || 'executing day-to-day tasks that support business objectives'}. ${job.category ? `${job.category} professionals in Kenya are in steady demand, with opportunities across both the public and private sectors. Salaries for this type of role typically range from KSh 30,000 to KSh 300,000 per month depending on experience, employer size, and location.` : 'Professionals in this field are in steady demand across Kenya.'}`,
+   141→   141→    },
+   142→   142→    {
+   143→   143→      q: `What is the salary range for ${job.category || 'this type of'} jobs in ${job.location || 'Kenya'}?`,
+   144→   144→      a: `The salary for ${job.category ? job.category.toLowerCase() : 'this type of role'} positions in ${job.location || 'Kenya'} varies based on experience level, employer type, and specific qualifications. ${job.salary && job.salary !== 'Salary not disclosed' ? `This particular position offers ${job.salary}.` : 'Salary information for this specific position has not been disclosed.'} Generally, entry-level ${job.category ? job.category.toLowerCase() : 'professional'} roles in ${job.locationCounty || 'Kenya'} start around KSh 25,000-50,000 per month, mid-level positions range from KSh 50,000-150,000, and senior roles can exceed KSh 200,000 monthly. Government positions follow structured salary scales set by the Salaries and Remuneration Commission, while private sector and NGO roles often offer more competitive packages with additional benefits such as medical insurance, housing allowances, and performance bonuses.`,
+   145→   145→    },
+   146→   146→    {
+   147→   147→      q: `What qualifications are needed for ${job.category || 'this type of'} roles?`,
+   148→   148→      a: `To qualify for ${job.category ? job.category.toLowerCase() : 'this type of role'} positions in Kenya, employers typically require ${formatEducationLabel(job.experienceLevel) || 'a relevant educational qualification'}. ${formatExperienceLabel(job.experienceLevel)} is generally expected. Key qualifications include ${requirements.slice(0, 3).map(r => r.toLowerCase()).join(', ')}. Additional certifications, professional development courses, and demonstrated practical experience can significantly strengthen your application. For government positions, meeting the minimum requirements as stated in the job advertisement is essential, while private sector employers may be more flexible if you can demonstrate equivalent competency and relevant achievements.`,
+   149→   149→    },
+   150→   150→  ];
+   151→   151→
+   152→   152→  return (
+   153→   153→    <section className="section-bg py-4 border-b border-gray-200/50">
+   154→   154→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+   155→   155→        {/* Breadcrumb with schema-friendly structure */}
+   156→   156→        <nav className="flex items-center gap-2 text-sm text-gray-500">
+   157→   157→          <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
+   158→   158→          <span>/</span>
+   159→   159→          <Link href="/jobs" className="hover:text-emerald-600 transition">Browse Jobs</Link>
+   160→   160→          {job.categorySlug && (
+   161→   161→            <>
+   162→   162→              <span>/</span>
+   163→   163→              <Link href={`/categories/${job.categorySlug}`} className="hover:text-emerald-600 transition">{job.category}</Link>
+   164→   164→            </>
+   165→   165→          )}
+   166→   166→          <span>/</span>
+   167→   167→          <span className="text-gray-700 font-medium">{job.title}</span>
+   168→   168→        </nav>
+   169→   169→      </div>
+   170→   170→
+   171→   171→      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+   172→   172→        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+   173→   173→          <div className="lg:col-span-2 space-y-6">
+   174→   174→            {/* Job Header */}
+   175→   175→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   176→   176→              <div className="flex flex-wrap items-start justify-between gap-4">
+   177→   177→                <div>
+   178→   178→                  <div className="flex items-center gap-4">
+   179→   179→                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm">
+   180→   180→                      {job.company.charAt(0)}
+   181→   181→                    </div>
+   182→   182→                    <div>
+   183→   183→                      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{job.title}</h1>
+   184→   184→                      <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+   185→   185→                        {job.companyWebsite ? (
+   186→   186→                          <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-700 hover:text-emerald-600 transition">{job.company}</a>
+   187→   187→                        ) : (
+   188→   188→                          <span className="font-semibold text-gray-700">{job.company}</span>
+   189→   189→                        )}
+   190→   190→                        <span className="text-gray-300">•</span>
+   191→   191→                        <span>{job.location}</span>
+   192→   192→                        {job.isRemote && (
+   193→   193→                          <>
+   194→   194→                            <span className="text-gray-300">•</span>
+   195→   195→                            <span className="text-emerald-600 font-medium">Remote</span>
+   196→   196→                          </>
+   197→   197→                        )}
+   198→   198→                      </p>
+   199→   199→                    </div>
+   200→   200→                  </div>
+   201→   201→                </div>
+   202→   202→                <div className="flex flex-wrap items-center gap-2">
+   203→   203→                  {job.featured && (
+   204→   204→                    <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
+   205→   205→                  )}
+   206→   206→                  <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">{job.type}</span>
+   207→   207→                </div>
+   208→   208→              </div>
+   209→   209→              <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-200/50 text-xs text-gray-500">
+   210→   210→                <span className="flex items-center gap-1.5">💰 <span className="font-medium text-gray-700">{job.salary}</span></span>
+   211→   211→                <span className="text-gray-300">|</span>
+   212→   212→                <span className="flex items-center gap-1.5">📅 Posted <span className="font-medium text-gray-700">{job.posted}</span></span>
+   213→   213→                <span className="text-gray-300">|</span>
+   214→   214→                <span className="flex items-center gap-1.5">⏳ Closes <span className="font-medium text-red-600">{job.deadline}</span></span>
+   215→   215→              </div>
+   216→   216→            </div>
+   217→   217→
+   218→   218→            {/* Description */}
+   219→   219→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   220→   220→              <h2 className="text-lg font-extrabold text-gray-800">Job Description</h2>
+   221→   221→              <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
+   222→   222→            </div>
+   223→   223→
+   224→   224→            {/* Key Responsibilities */}
+   225→   225→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   226→   226→              <h2 className="text-lg font-extrabold text-gray-800">Key Responsibilities</h2>
+   227→   227→              <p className="text-sm text-gray-500 mt-1 mb-3">
+   228→   228→                As a {job.title} at {job.company}, you will be expected to carry out the following key duties:
+   229→   229→              </p>
+   230→   230→              <ul className="space-y-2">
+   231→   231→                {responsibilities.map((r, i) => (
+   232→   232→                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+   233→   233→                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+   234→   234→                    <span>{r}</span>
+   235→   235→                  </li>
+   236→   236→                ))}
+   237→   237→              </ul>
+   238→   238→            </div>
+   239→   239→
+   240→   240→            {/* Requirements & Qualifications */}
+   241→   241→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   242→   242→              <h2 className="text-lg font-extrabold text-gray-800">Requirements &amp; Qualifications</h2>
+   243→   243→              <p className="text-sm text-gray-500 mt-1 mb-3">
+   244→   244→                To be considered for this {job.title} position at {job.company}, applicants should meet the following criteria:
+   245→   245→              </p>
+   246→   246→              <ul className="space-y-2">
+   247→   247→                {requirements.map((r, i) => (
+   248→   248→                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+   249→   249→                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+   250→   250→                    <span>{r}</span>
+   251→   251→                  </li>
+   252→   252→                ))}
+   253→   253→              </ul>
+   254→   254→            </div>
+   255→   255→
+   256→   256→            {/* Benefits & Perks */}
+   257→   257→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   258→   258→              <h2 className="text-lg font-extrabold text-gray-800">Benefits &amp; Perks</h2>
+   259→   259→              <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+   260→   260→                {job.type === 'Full-time' || job.type === 'FULL_TIME' ? (
+   261→   261→                  <>As a {job.type.toLowerCase()} employee at {job.company}, you can expect a comprehensive benefits package that typically includes competitive monthly compensation{job.salary && job.salary !== 'Salary not disclosed' ? ` of ${job.salary}` : ''}, medical insurance coverage for you and your dependents, paid annual leave, and pension contributions under the NSSF framework. Many employers in Kenya also provide housing allowances, transport allowances, and meal subsidies. {job.category ? `Professionals in the ${job.category} sector often receive additional benefits such as professional development budgets, conference attendance, and certification sponsorship.` : ''} {job.isRemote ? 'As a remote position, you may also receive a home office setup allowance and flexible working hours.' : ''}</>
+   262→   262→                ) : (
+   263→   263→                  <>This {job.type.toLowerCase()} position at {job.company} offers {job.salary && job.salary !== 'Salary not disclosed' ? `compensation of ${job.salary}` : 'competitive compensation'}. {job.type === 'INTERNSHIP' || job.type === 'Internship' ? 'Internships provide invaluable hands-on experience, mentorship from industry professionals, and in many cases lead to full-time employment offers upon successful completion. You will gain practical skills and build your professional network within the ' + (job.category || 'industry') + ' sector.' : 'Contract and part-time roles in Kenya often come with prorated benefits including medical cover, flexible scheduling, and the opportunity to transition to permanent positions based on performance.'}</>
+   264→   264→                )}
+   265→   265→              </p>
+   266→   266→            </div>
+   267→   267→
+   268→   268→            {/* How to Apply */}
+   269→   269→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   270→   270→              <h2 className="text-lg font-extrabold text-gray-800">How to Apply for This {job.type} Position</h2>
+   271→   271→              <p className="text-sm text-gray-600 mt-3 leading-relaxed mb-4">
+   272→   272→                Follow these steps to submit a strong application for the {job.title} role at {job.company}:
+   273→   273→              </p>
+   274→   274→              <ol className="space-y-3">
+   275→   275→                {[
+   276→   276→                  `Review the requirements listed above carefully and ensure you meet the minimum qualifications for this ${job.title} position`,
+   277→   277→                  `Prepare an up-to-date CV tailored to this role, highlighting relevant ${job.category ? job.category.toLowerCase() : 'professional'} experience and achievements with measurable metrics`,
+   278→   278→                  `Write a concise cover letter explaining why you are interested in this role at ${job.company} and how your skills align with the responsibilities outlined`,
+   279→   279→                  `Gather all required documents including academic certificates, professional certifications, and a copy of your national ID`,
+   280→   280→                  `Submit your application before the deadline of ${job.deadline} — late applications are typically not considered by employers in Kenya`,
+   281→   281→                ].map((step, i) => (
+   282→   282→                  <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
+   283→   283→                    <span className="bg-emerald-100 text-emerald-700 font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">{i + 1}</span>
+   284→   284→                    <span>{step}</span>
+   285→   285→                  </li>
+   286→   286→                ))}
+   287→   287→              </ol>
+   288→   288→              <p className="text-sm text-gray-500 mt-4 leading-relaxed">
+   289→   289→                For tips on writing a CV that passes Applicant Tracking Systems (ATS) used by Kenyan employers, visit our{' '}
+   290→   290→                <Link href="/cv-services" className="text-emerald-600 hover:text-emerald-700 font-medium transition">CV Writing Services</Link> page or read our{' '}
+   291→   291→                <Link href="/blog?category=How-To" className="text-emerald-600 hover:text-emerald-700 font-medium transition">career advice articles</Link>.
+   292→   292→              </p>
+   293→   293→            </div>
+   294→   294→
+   295→   295→            {/* Application */}
+   296→   296→            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60 shadow-sm">
+   297→   297→              <div className="flex flex-wrap items-center justify-between gap-4">
+   298→   298→                <div>
+   299→   299→                  <h3 className="text-lg font-extrabold text-gray-800">Ready to apply?</h3>
+   300→   300→                  <p className="text-sm text-gray-600">Submit your application before the deadline.</p>
+   301→   301→                  {daysLeft !== null && daysLeft > 0 && (
+   302→   302→                    <p className="text-xs text-red-600 font-medium mt-1">Closes in {daysLeft} day{daysLeft !== 1 ? 's' : ''}</p>
+   303→   303→                  )}
+   304→   304→                </div>
+   305→   305→                <div className="flex flex-wrap items-center gap-3">
+   306→   306→                  {job.externalUrl ? (
+   307→   307→                  <a href={job.externalUrl} target="_blank" rel="noopener noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
+   308→   308→                    Apply Now
+   309→   309→                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   310→   310→                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+   311→   311→                    </svg>
+   312→   312→                  </a>
+   313→   313→                ) : (
+   314→   314→                  <Link href="/contact" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
+   315→   315→                    Apply via Contact
+   316→   316→                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   317→   317→                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+   318→   318→                    </svg>
+   319→   319→                  </Link>
+   320→   320→                )}
+   321→   321→                  <button
+   322→   322→                    type="button"
+   323→   323→                    className="bg-white/70 text-gray-700 hover:text-emerald-600 border border-gray-300 hover:border-emerald-400 font-medium px-4 py-2.5 rounded-lg transition text-sm flex items-center gap-2"
+   324→   324→                    onClick={() => setSaved(!saved)}
+   325→   325→                  >
+   326→   326→                    <svg className="w-4 h-4" fill={saved ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+   327→   327→                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+   328→   328→                    </svg>
+   329→   329→                    {saved ? 'Saved' : 'Save'}
+   330→   330→                  </button>
+   331→   331→                </div>
+   332→   332→              </div>
+   333→   333→            </div>
+   334→   334→
+   335→   335→            {/* Company Info */}
+   336→   336→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   337→   337→              <h2 className="text-lg font-extrabold text-gray-800">About {job.company}</h2>
+   338→   338→              <div className="flex items-start gap-4 mt-3">
+   339→   339→                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
+   340→   340→                  {job.company.charAt(0)}
+   341→   341→                </div>
+   342→   342→                <div>
+   343→   343→                  <h3 className="text-md font-bold text-gray-800">
+   344→   344→                    {job.companyWebsite ? (
+   345→   345→                      <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition">{job.company}</a>
+   346→   346→                    ) : job.company}
+   347→   347→                  </h3>
+   348→   348→                  <p className="text-sm text-gray-500">{job.location}, Kenya</p>
+   349→   349→                  {job.companyDescription && (
+   350→   350→                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
+   351→   351→                  )}
+   352→   352→                  {!job.companyDescription && (
+   353→   353→                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+   354→   354→                      {job.company} is an employer operating in {job.location || 'Kenya'}. {job.category ? `They are active in the ${job.category} sector, ` : ''}offering {job.type.toLowerCase()} employment opportunities. Visit their website or contact them directly to learn more about their organisational culture, values, and current openings. JobBoard Kenya verifies all employer listings to ensure legitimacy and protect job seekers from fraudulent postings.
+   355→   355→                    </p>
+   356→   356→                  )}
+   357→   357→                  {job.companyWebsite && (
+   358→   358→                    <Link href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+   359→   359→                      Visit company website →
+   360→   360→                    </Link>
+   361→   361→                  )}
+   362→   362→                </div>
+   363→   363→              </div>
+   364→   364→            </div>
+   365→   365→
+   366→   366→            {/* Browse Related Categories */}
+   367→   367→            {relatedCategories.length > 0 && (
+   368→   368→              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   369→   369→                <h2 className="text-lg font-extrabold text-gray-800">Explore Related Categories</h2>
+   370→   370→                <div className="flex flex-wrap gap-2 mt-3">
+   371→   371→                  {relatedCategories.map((cat) => (
+   372→   372→                    <Link
+   373→   373→                      key={cat.slug}
+   374→   374→                      href={`/categories/${cat.slug}`}
+   375→   375→                      className="text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full transition"
+   376→   376→                    >
+   377→   377→                      {cat.label} →
+   378→   378→                    </Link>
+   379→   379→                  ))}
+   380→   380→                  <Link
+   381→   381→                    href="/categories"
+   382→   382→                    className="text-xs font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition"
+   383→   383→                  >
+   384→   384→                    All 43 Categories →
+   385→   385→                  </Link>
+   386→   386→                </div>
+   387→   387→              </div>
+   388→   388→            )}
+   389→   389→
+   390→   390→            {/* FAQ Section - AEO Optimized */}
+   391→   391→            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
+   392→   392→              <h2 className="text-lg font-extrabold text-gray-800 mb-4">Frequently Asked Questions About This Role</h2>
+   393→   393→              <div className="space-y-3">
+   394→   394→                {faqs.map((faq, i) => (
+   395→   395→                  <div key={i} className="border border-gray-200/60 rounded-lg overflow-hidden">
+   396→   396→                    <button
+   397→   397→                      type="button"
+   398→   398→                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50/50 transition"
+   399→   399→                      onClick={() => setFaqOpen(faqOpen === i ? null : i)}
+   400→   400→                    >
+   401→   401→                      <h3 className="text-sm font-bold text-gray-800 pr-4">{faq.q}</h3>
+   402→   402→                      <svg
+   403→   403→                        className={`w-4 h-4 text-gray-500 flex-shrink-0 transition-transform ${faqOpen === i ? 'rotate-180' : ''}`}
+   404→   404→                        fill="none"
+   405→   405→                        stroke="currentColor"
+   406→   406→                        viewBox="0 0 24 24"
+   407→   407→                      >
+   408→   408→                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+   409→   409→                      </svg>
+   410→   410→                    </button>
+   411→   411→                    {faqOpen === i && (
+   412→   412→                      <div className="px-4 pb-4 -mt-1">
+   413→   413→                        <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+   414→   414→                      </div>
+   415→   415→                    )}
+   416→   416→                  </div>
+   417→   417→                ))}
+   418→   418→              </div>
+   419→   419→            </div>
+   420→   420→
+   421→   421→            {/* Share */}
+   422→   422→            <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-500">
+   423→   423→              <div className="flex items-center gap-3">
+   424→   424→                <span className="font-medium">Share:</span>
+   425→   425→                <a
+   426→   426→                  href={`mailto:?subject=${encodeURIComponent(job.title + ' - JobBoard Kenya')}&body=${encodeURIComponent(`Check out this job: ${job.title} at ${job.company} in ${job.location}. Apply before ${job.deadline}.\n\nhttps://jobboard.ke/jobs/${job.slug}`)}`}
+   427→   427→                  className="hover:text-emerald-600 transition"
+   428→   428→                  aria-label="Share via email"
+   429→   429→                  title="Share via email"
+   430→   430→                >📧</a>
+   431→   431→                <a
+   432→   432→                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(job.title + ' - ' + job.company)}&url=${encodeURIComponent(`https://jobboard.ke/jobs/${job.slug}`)}`}
+   433→   433→                  target="_blank"
+   434→   434→                  rel="noopener noreferrer"
+   435→   435→                  className="hover:text-emerald-600 transition"
+   436→   436→                  aria-label="Share on Twitter"
+   437→   437→                  title="Share on Twitter"
+   438→   438→                >🐦</a>
+   439→   439→                <a
+   440→   440→                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://jobboard.ke/jobs/${job.slug}`)}`}
+   441→   441→                  target="_blank"
+   442→   442→                  rel="noopener noreferrer"
+   443→   443→                  className="hover:text-emerald-600 transition"
+   444→   444→                  aria-label="Share on LinkedIn"
+   445→   445→                  title="Share on LinkedIn"
+   446→   446→                >💼</a>
+   447→   447→                <a
+   448→   448→                  href={`https://wa.me/?text=${encodeURIComponent(`${job.title} - ${job.company}\nhttps://jobboard.ke/jobs/${job.slug}`)}`}
+   449→   449→                  target="_blank"
+   450→   450→                  rel="noopener noreferrer"
+   451→   451→                  className="hover:text-emerald-600 transition"
+   452→   452→                  aria-label="Share on WhatsApp"
+   453→   453→                  title="Share on WhatsApp"
+   454→   454→                >📱</a>
+   455→   455→              </div>
+   456→   456→              <a href={`/contact?subject=report&job=${job.slug}`} className="text-xs text-gray-400 hover:text-red-500 transition">Report this job</a>
+   457→   457→            </div>
+   458→   458→
+   459→   459→            {/* Similar Jobs */}
+   460→   460→            {similar.length > 0 && (
+   461→   461→              <div className="pt-4 border-t border-gray-200/50">
+   462→   462→                <h3 className="text-lg font-extrabold text-gray-800">Similar Jobs</h3>
+   463→   463→                <div className="mt-4 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
+   464→   464→                  {similar.map((s) => (
+   465→   465→                    <Link
+   466→   466→                      key={s.id || s.slug}
+   467→   467→                      href={`/jobs/${s.slug}`}
+   468→   468→                      className="similar-item flex flex-wrap items-center justify-between gap-2 py-3 px-5 hover:bg-emerald-50/30 transition rounded-t-xl"
+   469→   469→                    >
+   470→   470→                      <div>
+   471→   471→                        <span className="similar-title text-sm font-semibold text-gray-800 transition">{s.title}</span>
+   472→   472→                        <span className="similar-company text-sm text-gray-400 ml-2 transition">{s.company} · {s.location}</span>
+   473→   473→                      </div>
+   474→   474→                      <span className="text-xs text-gray-500">{s.salary}</span>
+   475→   475→                    </Link>
+   476→   476→                  ))}
+   477→   477→                </div>
+   478→   478→              </div>
+   479→   479→            )}
+   480→   480→          </div>
+   481→   481→
+   482→   482→          {/* Sidebar */}
+   483→   483→          <div className="lg:col-span-1 space-y-6 sidebar-sticky">
+   484→   484→            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
+   485→   485→              <div className="flex items-center gap-2">
+   486→   486→                <span className="text-xl">🧠</span>
+   487→   487→                <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">Premium</span>
+   488→   488→              </div>
+   489→   489→              <h4 className="text-base font-extrabold text-gray-800 mt-1">Smart Job Matching</h4>
+   490→   490→              <p className="text-sm text-gray-600 mt-1 leading-relaxed">Upload your CV and let our AI find the perfect roles for you.</p>
+   491→   491→              <Link href="/cv-matching" className="mt-3 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+   492→   492→                Upload CV &amp; Get Matched →
+   493→   493→              </Link>
+   494→   494→            </div>
+   495→   495→
+   496→   496→            <GoogleAd slot="job-detail-sidebar" format="rectangle" className="rounded-xl" style={{ minHeight: '250px' }} />
+   497→   497→
+   498→   498→            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   499→   499→              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Job Summary</h4>
+   500→   500→              <div className="space-y-2.5 text-sm">
+   501→   501→                <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">{formatExperienceLabel(job.experienceLevel)}</span></div>
+   502→   502→                <div className="flex justify-between"><span className="text-gray-500">Education</span><span className="font-medium text-gray-700">{formatEducationLabel(job.educationLevel)}</span></div>
+   503→   503→                <div className="flex justify-between"><span className="text-gray-500">Employment Type</span><span className="font-medium text-gray-700">{job.type}</span></div>
+   504→   504→                <div className="flex justify-between"><span className="text-gray-500">Location</span><span className="font-medium text-gray-700">{job.location}{job.isRemote ? ' (Remote)' : ''}</span></div>
+   505→   505→                <div className="flex justify-between"><span className="text-gray-500">Salary</span><span className="font-medium text-emerald-600">{job.salary}</span></div>
+   506→   506→                <div className="flex justify-between"><span className="text-gray-500">Deadline</span><span className="font-medium text-red-600">{job.deadline}</span></div>
+   507→   507→                {job.category && (
+   508→   508→                  <div className="flex justify-between">
+   509→   509→                    <span className="text-gray-500">Category</span>
+   510→   510→                    <Link href={`/categories/${job.categorySlug}`} className="font-medium text-emerald-600 hover:text-emerald-700 transition">{job.category}</Link>
+   511→   511→                  </div>
+   512→   512→                )}
+   513→   513→              </div>
+   514→   514→            </div>
+   515→   515→
+   516→   516→            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   517→   517→              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2 border-b border-gray-200/60 pb-3 mb-4">
+   518→   518→                <span>🔥</span> Trending Searches
+   519→   519→              </h4>
+   520→   520→              <ul className="space-y-2">
+   521→   521→                {['Teaching', 'Nursing', 'IT & Software', 'Driving', 'Accounting'].map((term) => (
+   522→   522→                  <li key={term}>
+   523→   523→                    <Link href={`/jobs?search=${term}`} className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
+   524→   524→                      <span>{term}</span>
+   525→   525→                      <span className="text-xs text-gray-400">→</span>
+   526→   526→                    </Link>
+   527→   527→                  </li>
+   528→   528→                ))}
+   529→   529→              </ul>
+   530→   530→            </div>
+   531→   531→
+   532→   532→            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
+   533→   533→              <div className="flex items-center gap-2 mb-2">
+   534→   534→                <span className="text-xl">📄</span>
+   535→   535→                <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">Internal Ad</span>
+   536→   536→              </div>
+   537→   537→              <h4 className="text-base font-extrabold text-gray-800">Your CV Opens Doors</h4>
+   538→   538→              <p className="text-sm text-gray-600 mt-1">Professional CV writing, cover letters, and LinkedIn optimization. From <span className="font-bold text-emerald-600">KSh 1,500</span>.</p>
+   539→   539→              <Link href="/cv-services" className="mt-4 w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm">
+   540→   540→                Improve My CV →
+   541→   541→              </Link>
+   542→   542→            </div>
+   543→   543→
+   544→   544→            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
+   545→   545→              <div className="flex items-center gap-2 mb-2">
+   546→   546→                <span className="text-xl">📬</span>
+   547→   547→                <h4 className="text-sm font-bold text-gray-700">Get Job Alerts</h4>
+   548→   548→              </div>
+   549→   549→              <p className="text-xs text-gray-600">Get new jobs matching your profile delivered to your inbox.</p>
+   550→   550→              <div className="mt-3 flex flex-col gap-2">
+   551→   551→                <input type="email" placeholder="Your email" className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600" />
+   552→   552→                <button type="button" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-lg transition text-sm">
+   553→   553→                  Subscribe
+   554→   554→                </button>
+   555→   555→              </div>
+   556→   556→            </div>
+   557→   557→          </div>
+   558→   558→        </div>
+   559→   559→      </div>
+   560→   560→    </section>
+   561→   561→  );
+   562→   562→}

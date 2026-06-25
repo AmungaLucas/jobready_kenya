@@ -255,3 +255,27 @@ export function generateArticleJsonLd(post: {
     },
   };
 }
+
+export function generateOrganizationJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'JobBoard Kenya',
+    url: SITE_URL,
+    logo: { '@type': 'ImageObject', url: `${SITE_URL}/default-og.jpg` },
+    description: 'Kenya\'s leading job search platform with verified jobs, internships, and opportunities across all 47 counties. Browse 43+ job categories, 468 subcategories, and opportunities from government, NGO, and private sector employers.',
+    foundingDate: '2024',
+    sameAs: [
+      'https://twitter.com/jobboardke',
+      'https://www.linkedin.com/company/jobboard-kenya',
+      'https://www.facebook.com/jobboardke',
+      'https://www.instagram.com/jobboardke',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      url: `${SITE_URL}/contact`,
+      availableLanguage: ['English', 'Swahili'],
+    },
+  };
+}

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { generateWebPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import { ChevronDown, BookOpen, FileText, Briefcase, Landmark } from 'lucide-react';
 
 export const revalidate = 86400;
 
@@ -59,7 +60,7 @@ const faqs = [
   },
   {
     question: 'How do I verify if a job listing is legitimate?',
-    answer: 'Verifying job legitimacy is crucial, as job scams are unfortunately common in Kenya. At JobBoard Kenya, every listing goes through our verification process before publication, but it is still important to exercise personal diligence. Legitimate employers will never ask you to pay money to secure a job — if any listing or recruiter requests payment for application processing, training materials, or medical exams before you are hired, it is almost certainly a scam. Verify the company exists by checking their website, physical address, and registration with the Business Registration Service (BRS). Cross-reference the job posting on the company’s official website or their verified social media pages. Be cautious of listings that offer unusually high salaries for minimal qualifications, have vague job descriptions, or use free email addresses (Gmail, Yahoo) instead of company email domains. Legitimate government jobs are posted on official portals like publicservice.go.ke. If something feels off, trust your instincts and report the listing to us through our Contact page.'
+    answer: 'Verifying job legitimacy is crucial, as job scams are unfortunately common in Kenya. At JobBoard Kenya, every listing goes through our verification process before publication, but it is still important to exercise personal diligence. Legitimate employers will never ask you to pay money to secure a job — if any listing or recruiter requests payment for application processing, training materials, or medical exams before you are hired, it is almost certainly a scam. Verify the company exists by checking their website, physical address, and registration with the Business Registration Service (BRS). Cross-reference the job posting on the company\u2019s official website or their verified social media pages. Be cautious of listings that offer unusually high salaries for minimal qualifications, have vague job descriptions, or use free email addresses (Gmail, Yahoo) instead of company email domains. Legitimate government jobs are posted on official portals like publicservice.go.ke. If something feels off, trust your instincts and report the listing to us through our Contact page.'
   },
   {
     question: 'How do I search for remote jobs in Kenya?',
@@ -83,7 +84,7 @@ const faqs = [
   },
   {
     question: 'What are the most in-demand skills in Kenya 2026?',
-    answer: 'The Kenyan job market in 2026 is being shaped by digital transformation, economic diversification, and evolving employer needs across all sectors. Technology skills remain the most sought-after, with software development (particularly in Python, JavaScript, and cloud technologies), data science and analytics, cybersecurity, artificial intelligence and machine learning, and DevOps engineering leading demand. Digital marketing skills including SEO, social media management, content marketing, and performance analytics are highly valued as businesses expand their online presence. In the healthcare sector, nursing, clinical medicine, pharmacy, and health informatics continue to see strong demand. Financial technology (fintech) skills are growing rapidly due to Kenya’s position as a global leader in mobile money innovation. Project management, agile methodologies, and product management are increasingly required across industries. Soft skills such as communication, critical thinking, adaptability, and emotional intelligence are now considered equally important as technical abilities. Green skills related to renewable energy, environmental sustainability, and climate resilience are also emerging as Kenya invests heavily in these areas.'
+    answer: 'The Kenyan job market in 2026 is being shaped by digital transformation, economic diversification, and evolving employer needs across all sectors. Technology skills remain the most sought-after, with software development (particularly in Python, JavaScript, and cloud technologies), data science and analytics, cybersecurity, artificial intelligence and machine learning, and DevOps engineering leading demand. Digital marketing skills including SEO, social media management, content marketing, and performance analytics are highly valued as businesses expand their online presence. In the healthcare sector, nursing, clinical medicine, pharmacy, and health informatics continue to see strong demand. Financial technology (fintech) skills are growing rapidly due to Kenya\u2019s position as a global leader in mobile money innovation. Project management, agile methodologies, and product management are increasingly required across industries. Soft skills such as communication, critical thinking, adaptability, and emotional intelligence are now considered equally important as technical abilities. Green skills related to renewable energy, environmental sustainability, and climate resilience are also emerging as Kenya invests heavily in these areas.'
   },
 ];
 
@@ -154,8 +155,7 @@ export default function FaqPage() {
               <summary className="flex items-center justify-between cursor-pointer p-5 md:p-6 text-left select-none">
                 <h2 className="text-sm font-bold text-gray-800 pr-4">{faq.question}</h2>
                 <span className="w-6 h-6 shrink-0 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 group-open:bg-emerald-100 group-open:text-emerald-600 transition">
-                  <i className="fas fa-plus text-xs group-open:hidden"></i>
-                  <i className="fas fa-minus text-xs hidden group-open:inline"></i>
+                  <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
                 </span>
               </summary>
               <div className="px-5 md:px-6 pb-5 md:pb-6 -mt-1">
@@ -176,28 +176,28 @@ export default function FaqPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/blog" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
-                <i className="fas fa-book-reader text-emerald-600"></i>
+                <BookOpen className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
                   <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Career Blog</span>
                   <p className="text-xs text-gray-500">In-depth guides and tips</p>
                 </div>
               </Link>
               <Link href="/cv-services" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
-                <i className="fas fa-file-alt text-emerald-600"></i>
+                <FileText className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
                   <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">CV Services</span>
                   <p className="text-xs text-gray-500">Professional CV writing</p>
                 </div>
               </Link>
               <Link href="/jobs" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
-                <i className="fas fa-briefcase text-emerald-600"></i>
+                <Briefcase className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
                   <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Browse Jobs</span>
                   <p className="text-xs text-gray-500">Thousands of verified listings</p>
                 </div>
               </Link>
               <Link href="/government-jobs" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200/60 hover:border-emerald-300/60 transition group">
-                <i className="fas fa-landmark text-emerald-600"></i>
+                <Landmark className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
                   <span className="text-sm font-medium text-gray-800 group-hover:text-emerald-600 transition">Government Jobs</span>
                   <p className="text-xs text-gray-500">National and county vacancies</p>
