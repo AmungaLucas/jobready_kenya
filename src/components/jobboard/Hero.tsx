@@ -64,14 +64,14 @@ export default async function Hero() {
             </div>
             <ul className="divide-y divide-gray-200/50">
               {jobs.map((job) => (
-                <li key={job.id} className="py-2.5 flex items-center justify-between">
-                  <div>
-                    <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition">
+                <li key={job.id} className="py-2.5 flex flex-wrap items-center justify-between gap-1">
+                  <div className="job-meta-inline flex items-center gap-2 min-w-0">
+                    <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition truncate">
                       {job.title}
                     </Link>
-                    <span className="text-sm text-gray-400 ml-2">{job.organization?.orgName || 'Confidential'}</span>
+                    <span className="meta-secondary text-xs text-gray-400 ml-2 whitespace-nowrap">{job.organization?.orgName || 'Confidential'}</span>
                   </div>
-                  <span className="text-xs text-gray-300">{timeAgo(job.datePosted)}</span>
+                  <span className="text-xs text-gray-300 ml-auto whitespace-nowrap">{timeAgo(job.datePosted)}</span>
                 </li>
               ))}
             </ul>

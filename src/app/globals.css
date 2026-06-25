@@ -1165,6 +1165,37 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
   }
 }
 
+/* ── Mobile-first responsive typography ── */
+@media (max-width: 640px) {
+  /* Section padding reduction */
+  .section-bg {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  /* Overflow safety */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Inline title+org patterns — stack vertically */
+  .job-meta-inline {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.15rem !important;
+  }
+  .job-meta-inline .meta-secondary {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-bg {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
 @media (max-width: 640px) {
   body {
     padding-top: 64px;

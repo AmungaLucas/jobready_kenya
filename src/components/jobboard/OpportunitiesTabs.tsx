@@ -39,9 +39,9 @@ export default function OpportunitiesTabs() {
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-gray-800">🚀 Opportunities Hub</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-800">🚀 Opportunities Hub</h2>
             <p className="text-sm text-gray-500 font-light">
               Discover internships, scholarships, graduate programs, and career opportunities.
             </p>
@@ -72,8 +72,8 @@ export default function OpportunitiesTabs() {
                 {items.map((item, idx) => (
                   <li key={idx} className="py-3 flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <span className="text-sm font-semibold text-gray-800">{item.title}</span>
-                      <span className="text-sm text-gray-400 ml-2">{item.company}</span>
+                      <span className="text-sm font-semibold text-gray-800 block">{item.title}</span>
+                      <span className="text-xs text-gray-400">{item.company}</span>
                     </div>
                     <span className="text-xs text-gray-300">{item.time}</span>
                   </li>

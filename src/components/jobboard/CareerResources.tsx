@@ -5,14 +5,14 @@ export default function CareerResources() {
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-gray-800">📖 Career Advice &amp; Resources</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-800">📖 Career Advice &amp; Resources</h2>
             <p className="text-sm text-gray-500 font-light">
               Practical guides to help you write better CVs, prepare for interviews, and negotiate salaries.
             </p>
           </div>
-          <Link href="/blog" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+          <Link href="/blog" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition">
             Read All Articles →
           </Link>
         </div>

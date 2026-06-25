@@ -1,0 +1,1223 @@
+     1→@import "tailwindcss";
+     2→@import "tw-animate-css";
+     3→
+     4→@custom-variant dark (&:is(.dark *));
+     5→
+     6→@theme inline {
+     7→  --color-background: var(--background);
+     8→  --color-foreground: var(--foreground);
+     9→  --font-sans: var(--font-nunito);
+    10→  --font-mono: var(--font-geist-mono);
+    11→  --color-sidebar-ring: var(--sidebar-ring);
+    12→  --color-sidebar-border: var(--sidebar-border);
+    13→  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    14→  --color-sidebar-accent: var(--sidebar-accent);
+    15→  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    16→  --color-sidebar-primary: var(--sidebar-primary);
+    17→  --color-sidebar-foreground: var(--sidebar-foreground);
+    18→  --color-sidebar: var(--sidebar);
+    19→  --color-chart-5: var(--chart-5);
+    20→  --color-chart-4: var(--chart-4);
+    21→  --color-chart-3: var(--chart-3);
+    22→  --color-chart-2: var(--chart-2);
+    23→  --color-chart-1: var(--chart-1);
+    24→  --color-ring: var(--ring);
+    25→  --color-input: var(--input);
+    26→  --color-border: var(--border);
+    27→  --color-destructive: var(--destructive);
+    28→  --color-accent-foreground: var(--accent-foreground);
+    29→  --color-accent: var(--accent);
+    30→  --color-muted-foreground: var(--muted-foreground);
+    31→  --color-muted: var(--muted);
+    32→  --color-secondary-foreground: var(--secondary-foreground);
+    33→  --color-secondary: var(--secondary);
+    34→  --color-primary-foreground: var(--primary-foreground);
+    35→  --color-primary: var(--primary);
+    36→  --color-popover-foreground: var(--popover-foreground);
+    37→  --color-popover: var(--popover);
+    38→  --color-card-foreground: var(--card-foreground);
+    39→  --color-card: var(--card);
+    40→  --radius-sm: calc(var(--radius) - 4px);
+    41→  --radius-md: calc(var(--radius) - 2px);
+    42→  --radius-lg: var(--radius);
+    43→  --radius-xl: calc(var(--radius) + 4px);
+    44→}
+    45→
+    46→:root {
+    47→  --radius: 0.625rem;
+    48→  --background: oklch(1 0 0);
+    49→  --foreground: oklch(0.145 0 0);
+    50→  --card: oklch(1 0 0);
+    51→  --card-foreground: oklch(0.145 0 0);
+    52→  --popover: oklch(1 0 0);
+    53→  --popover-foreground: oklch(0.145 0 0);
+    54→  --primary: oklch(0.205 0 0);
+    55→  --primary-foreground: oklch(0.985 0 0);
+    56→  --secondary: oklch(0.97 0 0);
+    57→  --secondary-foreground: oklch(0.205 0 0);
+    58→  --muted: oklch(0.97 0 0);
+    59→  --muted-foreground: oklch(0.556 0 0);
+    60→  --accent: oklch(0.97 0 0);
+    61→  --accent-foreground: oklch(0.205 0 0);
+    62→  --destructive: oklch(0.577 0.245 27.325);
+    63→  --border: oklch(0.922 0 0);
+    64→  --input: oklch(0.922 0 0);
+    65→  --ring: oklch(0.708 0 0);
+    66→  --chart-1: oklch(0.646 0.222 41.116);
+    67→  --chart-2: oklch(0.6 0.118 184.704);
+    68→  --chart-3: oklch(0.398 0.07 227.392);
+    69→  --chart-4: oklch(0.828 0.189 84.429);
+    70→  --chart-5: oklch(0.769 0.188 70.08);
+    71→  --sidebar: oklch(0.985 0 0);
+    72→  --sidebar-foreground: oklch(0.145 0 0);
+    73→  --sidebar-primary: oklch(0.205 0 0);
+    74→  --sidebar-primary-foreground: oklch(0.985 0 0);
+    75→  --sidebar-accent: oklch(0.97 0 0);
+    76→  --sidebar-accent-foreground: oklch(0.205 0 0);
+    77→  --sidebar-border: oklch(0.922 0 0);
+    78→  --sidebar-ring: oklch(0.708 0 0);
+    79→}
+    80→
+    81→@layer base {
+    82→  * {
+    83→    @apply border-border outline-ring/50;
+    84→  }
+    85→  body {
+    86→    @apply bg-background text-foreground;
+    87→  }
+    88→}
+    89→
+    90→/* ----- GLOBAL STYLES (from original) ----- */
+    91→body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #faf9f6; }
+    92→.section-bg { background: #faf9f6; }
+    93→
+    94→/* Hide scrollbar */
+    95→.no-scrollbar::-webkit-scrollbar { display: none; }
+    96→.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    97→
+    98→/* Scroll buttons */
+    99→.scroll-btn {
+   100→  background: white;
+   101→  border: 1px solid #e5e7eb;
+   102→  border-radius: 9999px;
+   103→  width: 44px;
+   104→  height: 44px;
+   105→  display: flex;
+   106→  align-items: center;
+   107→  justify-content: center;
+   108→  cursor: pointer;
+   109→  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+   110→  transition: all 0.2s ease;
+   111→  z-index: 20;
+   112→  color: #374151;
+   113→}
+   114→.scroll-btn:hover {
+   115→  background: #ecfdf5;
+   116→  border-color: #15803d;
+   117→  color: #15803d;
+   118→}
+   119→.scroll-btn.disabled {
+   120→  opacity: 0.3;
+   121→  pointer-events: none;
+   122→}
+   123→
+   124→/* Category items */
+   125→.category-item {
+   126→  transition: all 0.15s ease;
+   127→  cursor: default;
+   128→}
+   129→.category-item:hover {
+   130→  background: #ecfdf5;
+   131→  border-color: #15803d;
+   132→}
+   133→.category-item:hover .cat-icon {
+   134→  transform: scale(1.05);
+   135→}
+   136→.cat-icon { transition: transform 0.15s ease; }
+   137→
+   138→/* Location items */
+   139→.location-item {
+   140→  transition: all 0.15s ease;
+   141→  cursor: default;
+   142→}
+   143→.location-item:hover {
+   144→  background: #ecfdf5;
+   145→}
+   146→.location-item:hover .loc-name {
+   147→  color: #15803d;
+   148→}
+   149→
+   150→/* Closing items */
+   151→.closing-item {
+   152→  transition: all 0.1s ease;
+   153→  cursor: default;
+   154→}
+   155→.closing-item:hover .closing-title {
+   156→  color: #15803d;
+   157→}
+   158→.closing-item:hover .closing-company {
+   159→  color: #374151;
+   160→}
+   161→
+   162→/* Government items */
+   163→.gov-item {
+   164→  transition: all 0.1s ease;
+   165→  cursor: default;
+   166→}
+   167→.gov-item:hover .gov-title {
+   168→  color: #15803d;
+   169→}
+   170→.gov-item:hover .gov-org {
+   171→  color: #374151;
+   172→}
+   173→
+   174→/* Tabs */
+   175→.tab-btn {
+   176→  transition: all 0.15s ease;
+   177→}
+   178→.tab-btn.active {
+   179→  background: #15803d;
+   180→  color: white;
+   181→  box-shadow: 0 4px 6px -1px rgba(21,128,61,0.2);
+   182→}
+   183→.tab-btn.active .tab-count { color: #a7f3d0; }
+   184→.tab-btn.inactive {
+   185→  background: transparent;
+   186→  color: #6b7280;
+   187→}
+   188→.tab-btn.inactive:hover {
+   189→  background: #f3f4f6;
+   190→  color: #374151;
+   191→}
+   192→.tab-content {
+   193→  display: none;
+   194→  animation: fadeIn 0.2s ease;
+   195→}
+   196→.tab-content.active { display: block; }
+   197→@keyframes fadeIn {
+   198→  0% { opacity: 0; transform: translateY(4px); }
+   199→  100% { opacity: 1; transform: translateY(0); }
+   200→}
+   201→
+   202→/* Badges */
+   203→.gov-badge.national { background: #dbeafe; color: #1d4ed8; }
+   204→.gov-badge.county { background: #d1fae5; color: #065f46; }
+   205→
+   206→/* Job Matching Premium Card */
+   207→.matching-card {
+   208→  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 40%, #d1fae5 100%);
+   209→  border: 1px solid #86efac;
+   210→  border-radius: 1rem;
+   211→}
+   212→.matching-card .highlight {
+   213→  background: linear-gradient(135deg, #15803d, #0d9488);
+   214→  color: white;
+   215→  border-radius: 9999px;
+   216→  padding: 0.2rem 1rem;
+   217→  font-size: 0.65rem;
+   218→  font-weight: 700;
+   219→  text-transform: uppercase;
+   220→  letter-spacing: 0.04em;
+   221→  display: inline-block;
+   222→}
+   223→.matching-card .premium-badge {
+   224→  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+   225→  color: #78350f;
+   226→  font-size: 0.6rem;
+   227→  font-weight: 800;
+   228→  text-transform: uppercase;
+   229→  padding: 0.15rem 0.6rem;
+   230→  border-radius: 9999px;
+   231→  letter-spacing: 0.04em;
+   232→  display: inline-block;
+   233→  box-shadow: 0 2px 4px rgba(245,158,11,0.3);
+   234→}
+   235→.matching-card .cta-btn {
+   236→  background: linear-gradient(135deg, #15803d, #0d9488);
+   237→  color: white;
+   238→  font-weight: 700;
+   239→  padding: 0.75rem 2rem;
+   240→  border-radius: 9999px;
+   241→  transition: all 0.2s ease;
+   242→  box-shadow: 0 4px 12px rgba(21,128,61,0.3);
+   243→  display: inline-block;
+   244→  border: none;
+   245→  cursor: pointer;
+   246→}
+   247→.matching-card .cta-btn:hover {
+   248→  transform: translateY(-2px);
+   249→  box-shadow: 0 6px 20px rgba(21,128,61,0.4);
+   250→}
+   251→.feature-item {
+   252→  display: flex;
+   253→  align-items: center;
+   254→  gap: 0.5rem;
+   255→  font-size: 0.875rem;
+   256→  color: #374151;
+   257→}
+   258→.feature-item .check {
+   259→  color: #15803d;
+   260→  font-weight: 800;
+   261→  font-size: 1.1rem;
+   262→}
+   263→.match-result {
+   264→  background: rgba(255,255,255,0.7);
+   265→  backdrop-filter: blur(4px);
+   266→  border: 1px solid #d1fae5;
+   267→  border-radius: 0.75rem;
+   268→  padding: 0.75rem 1rem;
+   269→  transition: all 0.15s ease;
+   270→}
+   271→.match-result:hover {
+   272→  border-color: #15803d;
+   273→  background: rgba(255,255,255,0.9);
+   274→}
+   275→.match-score {
+   276→  font-size: 0.65rem;
+   277→  font-weight: 800;
+   278→  color: #15803d;
+   279→  background: #d1fae5;
+   280→  padding: 0.15rem 0.6rem;
+   281→  border-radius: 9999px;
+   282→  white-space: nowrap;
+   283→}
+   284→.match-score.high {
+   285→  background: #d1fae5;
+   286→  color: #065f46;
+   287→}
+   288→.match-score.medium {
+   289→  background: #fef3c7;
+   290→  color: #92400e;
+   291→}
+   292→
+   293→/* Job card hover */
+   294→.job-card {
+   295→  transition: all 0.15s ease;
+   296→}
+   297→.job-card:hover {
+   298→  border-color: #15803d;
+   299→  background: #ecfdf5;
+   300→}
+   301→.job-card:hover .job-title {
+   302→  color: #15803d;
+   303→}
+   304→
+   305→/* Filter chips */
+   306→.filter-chip {
+   307→  transition: all 0.15s ease;
+   308→  cursor: default;
+   309→}
+   310→.filter-chip.active {
+   311→  background: #15803d;
+   312→  color: white;
+   313→  border-color: #15803d;
+   314→}
+   315→.filter-chip.active:hover {
+   316→  background: #166534;
+   317→}
+   318→.filter-chip.inactive {
+   319→  background: transparent;
+   320→  color: #6b7280;
+   321→  border-color: #e5e7eb;
+   322→}
+   323→.filter-chip.inactive:hover {
+   324→  background: #f3f4f6;
+   325→  color: #374151;
+   326→}
+   327→
+   328→/* Pagination */
+   329→.page-btn {
+   330→  transition: all 0.15s ease;
+   331→}
+   332→.page-btn.active {
+   333→  background: #15803d;
+   334→  color: white;
+   335→  border-color: #15803d;
+   336→}
+   337→.page-btn.inactive {
+   338→  background: transparent;
+   339→  color: #6b7280;
+   340→  border-color: #e5e7eb;
+   341→}
+   342→.page-btn.inactive:hover {
+   343→  background: #f3f4f6;
+   344→  color: #374151;
+   345→}
+   346→
+   347→/* Sidebar sticky */
+   348→.sidebar-sticky {
+   349→  position: sticky;
+   350→  top: 2rem;
+   351→}
+   352→@media (max-width: 1023px) {
+   353→  .sidebar-sticky { position: static; }
+   354→}
+   355→
+   356→/* Similar job item */
+   357→.similar-item {
+   358→  transition: all 0.1s ease;
+   359→  cursor: default;
+   360→}
+   361→.similar-item:hover .similar-title {
+   362→  color: #15803d;
+   363→}
+   364→.similar-item:hover .similar-company {
+   365→  color: #374151;
+   366→}
+   367→
+   368→/* Page sections */
+   369→.page-section {
+   370→  display: none;
+   371→}
+   372→.page-section.active {
+   373→  display: block;
+   374→}
+   375→
+   376→/* ----- NAVBAR / FOOTER STYLES ----- */
+   377→/* Navbar */
+   378→.navbar {
+   379→  position: fixed;
+   380→  top: 0;
+   381→  left: 0;
+   382→  right: 0;
+   383→  z-index: 1000;
+   384→  background: rgba(255, 255, 255, 0.88);
+   385→  backdrop-filter: blur(14px) saturate(1.2);
+   386→  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+   387→  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+   388→  transition: box-shadow 0.25s ease, background 0.25s ease;
+   389→  height: 72px;
+   390→  display: flex;
+   391→  align-items: center;
+   392→}
+   393→
+   394→.navbar.scrolled {
+   395→  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+   396→  background: rgba(255, 255, 255, 0.96);
+   397→}
+   398→
+   399→.navbar-inner {
+   400→  max-width: 1280px;
+   401→  width: 100%;
+   402→  margin: 0 auto;
+   403→  padding: 0 1.5rem;
+   404→  display: flex;
+   405→  align-items: center;
+   406→  justify-content: space-between;
+   407→  gap: 1.5rem;
+   408→}
+   409→
+   410→.navbar-logo {
+   411→  display: flex;
+   412→  align-items: center;
+   413→  gap: 0.4rem;
+   414→  text-decoration: none;
+   415→  flex-shrink: 0;
+   416→}
+   417→
+   418→.navbar-logo .logo-icon {
+   419→  width: 38px;
+   420→  height: 38px;
+   421→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   422→  border-radius: 10px;
+   423→  display: flex;
+   424→  align-items: center;
+   425→  justify-content: center;
+   426→  color: white;
+   427→  font-weight: 800;
+   428→  font-size: 1.05rem;
+   429→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.25);
+   430→  transition: transform 0.2s ease;
+   431→}
+   432→
+   433→.navbar-logo:hover .logo-icon {
+   434→  transform: scale(1.03);
+   435→}
+   436→
+   437→.navbar-logo .logo-badge {
+   438→  font-size: 0.55rem;
+   439→  font-weight: 700;
+   440→  text-transform: uppercase;
+   441→  background: #e7f3ee;
+   442→  color: #0b7e4a;
+   443→  padding: 0.1rem 0.5rem;
+   444→  border-radius: 100px;
+   445→  letter-spacing: 0.03em;
+   446→  border: 1px solid rgba(11, 126, 74, 0.12);
+   447→}
+   448→
+   449→.navbar-links {
+   450→  display: flex;
+   451→  align-items: center;
+   452→  gap: 0.15rem;
+   453→  list-style: none;
+   454→  margin: 0;
+   455→  padding: 0;
+   456→}
+   457→
+   458→.navbar-links>li {
+   459→  position: relative;
+   460→}
+   461→
+   462→.navbar-links>li>a,
+   463→.navbar-links>li>button {
+   464→  display: flex;
+   465→  align-items: center;
+   466→  gap: 0.3rem;
+   467→  padding: 0.5rem 0.9rem;
+   468→  border-radius: 8px;
+   469→  font-size: 0.875rem;
+   470→  font-weight: 500;
+   471→  color: #3d3d3d;
+   472→  text-decoration: none;
+   473→  background: transparent;
+   474→  border: none;
+   475→  cursor: pointer;
+   476→  transition: background 0.15s ease, color 0.15s ease;
+   477→  font-family: inherit;
+   478→  line-height: 1.4;
+   479→  white-space: nowrap;
+   480→}
+   481→
+   482→.navbar-links>li>a:hover,
+   483→.navbar-links>li>button:hover {
+   484→  background: rgba(11, 126, 74, 0.06);
+   485→  color: #0b7e4a;
+   486→}
+   487→
+   488→.navbar-links .dropdown-arrow {
+   489→  font-size: 0.55rem;
+   490→  opacity: 0.5;
+   491→  transition: transform 0.2s ease;
+   492→  margin-left: 0.1rem;
+   493→}
+   494→
+   495→.navbar-links>li:hover .dropdown-arrow {
+   496→  transform: rotate(180deg);
+   497→}
+   498→
+   499→.dropdown-menu {
+   500→  position: absolute;
+   501→  top: calc(100% + 8px);
+   502→  left: 50%;
+   503→  transform: translateX(-50%) translateY(4px);
+   504→  min-width: 220px;
+   505→  background: rgba(255, 255, 255, 0.98);
+   506→  backdrop-filter: blur(12px);
+   507→  -webkit-backdrop-filter: blur(12px);
+   508→  border-radius: 14px;
+   509→  border: 1px solid rgba(0, 0, 0, 0.06);
+   510→  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+   511→  padding: 0.6rem 0;
+   512→  opacity: 0;
+   513→  visibility: hidden;
+   514→  pointer-events: none;
+   515→  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+   516→  z-index: 100;
+   517→}
+   518→
+   519→.navbar-links>li:hover .dropdown-menu {
+   520→  opacity: 1;
+   521→  visibility: visible;
+   522→  pointer-events: auto;
+   523→  transform: translateX(-50%) translateY(0);
+   524→}
+   525→
+   526→.dropdown-menu a {
+   527→  display: flex;
+   528→  align-items: center;
+   529→  gap: 0.6rem;
+   530→  padding: 0.55rem 1.2rem;
+   531→  font-size: 0.82rem;
+   532→  font-weight: 450;
+   533→  color: #2d2d2d;
+   534→  text-decoration: none;
+   535→  transition: background 0.12s ease, color 0.12s ease;
+   536→  border-left: 2px solid transparent;
+   537→}
+   538→
+   539→.dropdown-menu a:hover {
+   540→  background: rgba(11, 126, 74, 0.05);
+   541→  color: #0b7e4a;
+   542→  border-left-color: #0b7e4a;
+   543→}
+   544→
+   545→.dropdown-menu a i {
+   546→  width: 1.1rem;
+   547→  text-align: center;
+   548→  color: #6b6b6b;
+   549→  font-size: 0.8rem;
+   550→}
+   551→
+   552→.dropdown-menu a:hover i {
+   553→  color: #0b7e4a;
+   554→}
+   555→
+   556→.dropdown-divider {
+   557→  height: 1px;
+   558→  background: rgba(0, 0, 0, 0.05);
+   559→  margin: 0.3rem 0.8rem;
+   560→}
+   561→
+   562→.dropdown-label {
+   563→  font-size: 0.6rem;
+   564→  font-weight: 700;
+   565→  text-transform: uppercase;
+   566→  letter-spacing: 0.04em;
+   567→  color: #8f8f8f;
+   568→  padding: 0.4rem 1.2rem 0.2rem;
+   569→}
+   570→
+   571→.navbar-actions {
+   572→  display: flex;
+   573→  align-items: center;
+   574→  gap: 0.5rem;
+   575→  flex-shrink: 0;
+   576→}
+   577→
+   578→.btn-outline {
+   579→  display: inline-flex;
+   580→  align-items: center;
+   581→  gap: 0.4rem;
+   582→  padding: 0.45rem 1.1rem;
+   583→  border-radius: 100px;
+   584→  font-size: 0.8rem;
+   585→  font-weight: 600;
+   586→  border: 1px solid #d0cdc7;
+   587→  background: transparent;
+   588→  color: #2d2d2d;
+   589→  cursor: pointer;
+   590→  transition: all 0.18s ease;
+   591→  text-decoration: none;
+   592→  font-family: inherit;
+   593→  white-space: nowrap;
+   594→}
+   595→
+   596→.btn-outline:hover {
+   597→  background: rgba(11, 126, 74, 0.04);
+   598→  border-color: #0b7e4a;
+   599→  color: #0b7e4a;
+   600→}
+   601→
+   602→.btn-primary {
+   603→  display: inline-flex;
+   604→  align-items: center;
+   605→  gap: 0.4rem;
+   606→  padding: 0.45rem 1.3rem;
+   607→  border-radius: 100px;
+   608→  font-size: 0.8rem;
+   609→  font-weight: 600;
+   610→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   611→  border: none;
+   612→  color: white;
+   613→  cursor: pointer;
+   614→  transition: all 0.2s ease;
+   615→  text-decoration: none;
+   616→  font-family: inherit;
+   617→  white-space: nowrap;
+   618→  box-shadow: 0 4px 12px rgba(11, 126, 74, 0.22);
+   619→}
+   620→
+   621→.btn-primary:hover {
+   622→  transform: translateY(-1px);
+   623→  box-shadow: 0 6px 20px rgba(11, 126, 74, 0.30);
+   624→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+   625→}
+   626→
+   627→.btn-icon {
+   628→  width: 38px;
+   629→  height: 38px;
+   630→  border-radius: 50%;
+   631→  border: 1px solid #e2dfda;
+   632→  background: transparent;
+   633→  color: #3d3d3d;
+   634→  display: flex;
+   635→  align-items: center;
+   636→  justify-content: center;
+   637→  cursor: pointer;
+   638→  transition: all 0.18s ease;
+   639→  font-size: 0.95rem;
+   640→}
+   641→
+   642→.btn-icon:hover {
+   643→  border-color: #0b7e4a;
+   644→  color: #0b7e4a;
+   645→  background: rgba(11, 126, 74, 0.04);
+   646→}
+   647→
+   648→.btn-icon.avatar {
+   649→  background: #e7f3ee;
+   650→  border-color: transparent;
+   651→  font-weight: 700;
+   652→  font-size: 0.7rem;
+   653→  color: #0b7e4a;
+   654→  width: 38px;
+   655→  height: 38px;
+   656→}
+   657→
+   658→.btn-icon.avatar:hover {
+   659→  background: #d0e8de;
+   660→  border-color: transparent;
+   661→}
+   662→
+   663→.navbar-toggle {
+   664→  display: none;
+   665→  flex-direction: column;
+   666→  gap: 4px;
+   667→  background: transparent;
+   668→  border: none;
+   669→  padding: 0.3rem;
+   670→  cursor: pointer;
+   671→  border-radius: 6px;
+   672→  transition: background 0.15s ease;
+   673→}
+   674→
+   675→.navbar-toggle:hover {
+   676→  background: rgba(0, 0, 0, 0.04);
+   677→}
+   678→
+   679→.navbar-toggle span {
+   680→  display: block;
+   681→  width: 24px;
+   682→  height: 2.5px;
+   683→  background: #1a1a1a;
+   684→  border-radius: 4px;
+   685→  transition: all 0.25s ease;
+   686→  transform-origin: center;
+   687→}
+   688→
+   689→.navbar-toggle.active span:nth-child(1) {
+   690→  transform: translateY(6.5px) rotate(45deg);
+   691→}
+   692→
+   693→.navbar-toggle.active span:nth-child(2) {
+   694→  opacity: 0;
+   695→  transform: scaleX(0);
+   696→}
+   697→
+   698→.navbar-toggle.active span:nth-child(3) {
+   699→  transform: translateY(-6.5px) rotate(-45deg);
+   700→}
+   701→
+   702→.mobile-overlay {
+   703→  position: fixed;
+   704→  inset: 0;
+   705→  z-index: 999;
+   706→  background: rgba(0, 0, 0, 0.25);
+   707→  backdrop-filter: blur(4px);
+   708→  -webkit-backdrop-filter: blur(4px);
+   709→  opacity: 0;
+   710→  visibility: hidden;
+   711→  transition: opacity 0.3s ease, visibility 0.3s ease;
+   712→}
+   713→
+   714→.mobile-overlay.open {
+   715→  opacity: 1;
+   716→  visibility: visible;
+   717→}
+   718→
+   719→.mobile-drawer {
+   720→  position: fixed;
+   721→  top: 0;
+   722→  right: -100%;
+   723→  width: 88%;
+   724→  max-width: 380px;
+   725→  height: 100%;
+   726→  z-index: 1001;
+   727→  background: white;
+   728→  padding: 1.5rem 1.5rem 2rem;
+   729→  overflow-y: auto;
+   730→  transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+   731→  display: flex;
+   732→  flex-direction: column;
+   733→  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.06);
+   734→}
+   735→
+   736→.mobile-drawer.open {
+   737→  right: 0;
+   738→}
+   739→
+   740→.mobile-drawer-header {
+   741→  display: flex;
+   742→  align-items: center;
+   743→  justify-content: space-between;
+   744→  padding-bottom: 1rem;
+   745→  border-bottom: 1px solid #efedea;
+   746→  margin-bottom: 1.5rem;
+   747→}
+   748→
+   749→.mobile-drawer-header .logo-icon {
+   750→  width: 36px;
+   751→  height: 36px;
+   752→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   753→  border-radius: 10px;
+   754→  display: flex;
+   755→  align-items: center;
+   756→  justify-content: center;
+   757→  color: white;
+   758→  font-weight: 800;
+   759→  font-size: 0.95rem;
+   760→  box-shadow: 0 4px 8px rgba(11, 126, 74, 0.2);
+   761→}
+   762→
+   763→.mobile-drawer-header .logo-badge {
+   764→  font-size: 0.5rem;
+   765→  font-weight: 700;
+   766→  text-transform: uppercase;
+   767→  background: #e7f3ee;
+   768→  color: #0b7e4a;
+   769→  padding: 0.05rem 0.5rem;
+   770→  border-radius: 100px;
+   771→  margin-left: 0.3rem;
+   772→}
+   773→
+   774→.mobile-drawer-close {
+   775→  background: transparent;
+   776→  border: none;
+   777→  font-size: 1.4rem;
+   778→  color: #4b4b4b;
+   779→  cursor: pointer;
+   780→  padding: 0.2rem 0.5rem;
+   781→  border-radius: 6px;
+   782→  transition: background 0.15s ease;
+   783→}
+   784→
+   785→.mobile-drawer-close:hover {
+   786→  background: rgba(0, 0, 0, 0.04);
+   787→}
+   788→
+   789→.mobile-nav-list {
+   790→  list-style: none;
+   791→  margin: 0;
+   792→  padding: 0;
+   793→  flex: 1;
+   794→}
+   795→
+   796→.mobile-nav-list>li {
+   797→  border-bottom: 1px solid #f0eeeb;
+   798→}
+   799→
+   800→.mobile-nav-list>li>a,
+   801→.mobile-nav-list>li>button {
+   802→  display: flex;
+   803→  align-items: center;
+   804→  justify-content: space-between;
+   805→  width: 100%;
+   806→  padding: 0.85rem 0;
+   807→  font-size: 0.95rem;
+   808→  font-weight: 500;
+   809→  color: #1a1a1a;
+   810→  background: transparent;
+   811→  border: none;
+   812→  cursor: pointer;
+   813→  font-family: inherit;
+   814→  text-decoration: none;
+   815→  transition: color 0.15s ease;
+   816→}
+   817→
+   818→.mobile-nav-list>li>a:hover,
+   819→.mobile-nav-list>li>button:hover {
+   820→  color: #0b7e4a;
+   821→}
+   822→
+   823→.mobile-nav-list .sub-toggle {
+   824→  font-size: 0.65rem;
+   825→  opacity: 0.5;
+   826→  transition: transform 0.2s ease;
+   827→}
+   828→
+   829→.mobile-nav-list .sub-toggle.open {
+   830→  transform: rotate(180deg);
+   831→}
+   832→
+   833→.mobile-sub {
+   834→  list-style: none;
+   835→  margin: 0;
+   836→  padding: 0 0 0.5rem 0.5rem;
+   837→  display: none;
+   838→}
+   839→
+   840→.mobile-sub.open {
+   841→  display: block;
+   842→}
+   843→
+   844→.mobile-sub li a {
+   845→  display: flex;
+   846→  align-items: center;
+   847→  gap: 0.6rem;
+   848→  padding: 0.4rem 0.5rem;
+   849→  font-size: 0.82rem;
+   850→  color: #4b4b4b;
+   851→  text-decoration: none;
+   852→  border-radius: 6px;
+   853→  transition: background 0.12s ease, color 0.12s ease;
+   854→}
+   855→
+   856→.mobile-sub li a:hover {
+   857→  background: rgba(11, 126, 74, 0.04);
+   858→  color: #0b7e4a;
+   859→}
+   860→
+   861→.mobile-sub li a i {
+   862→  width: 1.1rem;
+   863→  text-align: center;
+   864→  color: #8a8a8a;
+   865→  font-size: 0.75rem;
+   866→}
+   867→
+   868→.mobile-actions {
+   869→  display: flex;
+   870→  flex-direction: column;
+   871→  gap: 0.6rem;
+   872→  margin-top: 1.5rem;
+   873→  padding-top: 1.5rem;
+   874→  border-top: 1px solid #efedea;
+   875→}
+   876→
+   877→.mobile-actions .btn-primary,
+   878→.mobile-actions .btn-outline {
+   879→  justify-content: center;
+   880→  width: 100%;
+   881→  padding: 0.65rem;
+   882→  font-size: 0.85rem;
+   883→}
+   884→
+   885→/* Footer */
+   886→.footer {
+   887→  background: #1a1a1a;
+   888→  color: #cfcfcf;
+   889→  padding: 4rem 1.5rem 2rem;
+   890→  border-top: 1px solid rgba(255, 255, 255, 0.04);
+   891→}
+   892→
+   893→.footer-inner {
+   894→  max-width: 1280px;
+   895→  margin: 0 auto;
+   896→}
+   897→
+   898→.footer-grid {
+   899→  display: grid;
+   900→  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+   901→  gap: 2.5rem 2rem;
+   902→  padding-bottom: 2.5rem;
+   903→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+   904→}
+   905→
+   906→.footer-brand .logo-icon {
+   907→  width: 42px;
+   908→  height: 42px;
+   909→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+   910→  border-radius: 10px;
+   911→  display: flex;
+   912→  align-items: center;
+   913→  justify-content: center;
+   914→  color: white;
+   915→  font-weight: 800;
+   916→  font-size: 1.1rem;
+   917→  margin-bottom: 0.75rem;
+   918→}
+   919→
+   920→.footer-brand .brand-name {
+   921→  font-size: 1.25rem;
+   922→  font-weight: 800;
+   923→  color: white;
+   924→  letter-spacing: -0.02em;
+   925→}
+   926→
+   927→.footer-brand .brand-name span {
+   928→  color: #4cdb8a;
+   929→}
+   930→
+   931→.footer-brand .brand-tagline {
+   932→  font-size: 0.85rem;
+   933→  color: #9a9a9a;
+   934→  margin-top: 0.3rem;
+   935→  max-width: 280px;
+   936→  line-height: 1.6;
+   937→}
+   938→
+   939→.footer-social {
+   940→  display: flex;
+   941→  gap: 0.6rem;
+   942→  margin-top: 1.2rem;
+   943→}
+   944→
+   945→.footer-social a {
+   946→  display: flex;
+   947→  align-items: center;
+   948→  justify-content: center;
+   949→  width: 36px;
+   950→  height: 36px;
+   951→  border-radius: 50%;
+   952→  background: rgba(255, 255, 255, 0.05);
+   953→  color: #afafaf;
+   954→  text-decoration: none;
+   955→  transition: all 0.18s ease;
+   956→  font-size: 0.95rem;
+   957→}
+   958→
+   959→.footer-social a:hover {
+   960→  background: #0b7e4a;
+   961→  color: white;
+   962→  transform: translateY(-2px);
+   963→}
+   964→
+   965→.footer h4 {
+   966→  font-size: 0.8rem;
+   967→  font-weight: 700;
+   968→  text-transform: uppercase;
+   969→  letter-spacing: 0.04em;
+   970→  color: #ffffff;
+   971→  margin-bottom: 1rem;
+   972→  opacity: 0.7;
+   973→}
+   974→
+   975→.footer ul {
+   976→  list-style: none;
+   977→  margin: 0;
+   978→  padding: 0;
+   979→}
+   980→
+   981→.footer ul li {
+   982→  margin-bottom: 0.4rem;
+   983→}
+   984→
+   985→.footer ul li a {
+   986→  color: #b0b0b0;
+   987→  text-decoration: none;
+   988→  font-size: 0.85rem;
+   989→  transition: color 0.15s ease;
+   990→  display: inline-block;
+   991→}
+   992→
+   993→.footer ul li a:hover {
+   994→  color: #4cdb8a;
+   995→}
+   996→
+   997→.footer-newsletter p {
+   998→  font-size: 0.85rem;
+   999→  color: #9a9a9a;
+  1000→  margin-bottom: 0.8rem;
+  1001→  line-height: 1.5;
+  1002→}
+  1003→
+  1004→.footer-newsletter form {
+  1005→  display: flex;
+  1006→  gap: 0.4rem;
+  1007→}
+  1008→
+  1009→.footer-newsletter input {
+  1010→  flex: 1;
+  1011→  padding: 0.5rem 0.8rem;
+  1012→  border-radius: 100px;
+  1013→  border: 1px solid rgba(255, 255, 255, 0.1);
+  1014→  background: rgba(255, 255, 255, 0.04);
+  1015→  color: white;
+  1016→  font-size: 0.8rem;
+  1017→  font-family: inherit;
+  1018→  outline: none;
+  1019→  transition: border-color 0.2s ease, background 0.2s ease;
+  1020→  min-width: 0;
+  1021→}
+  1022→
+  1023→.footer-newsletter input::placeholder {
+  1024→  color: #6a6a6a;
+  1025→}
+  1026→
+  1027→.footer-newsletter input:focus {
+  1028→  border-color: #0b7e4a;
+  1029→  background: rgba(255, 255, 255, 0.06);
+  1030→}
+  1031→
+  1032→.footer-newsletter button {
+  1033→  padding: 0.5rem 1.2rem;
+  1034→  border-radius: 100px;
+  1035→  border: none;
+  1036→  background: linear-gradient(145deg, #0b7e4a, #0d9e5a);
+  1037→  color: white;
+  1038→  font-weight: 600;
+  1039→  font-size: 0.8rem;
+  1040→  cursor: pointer;
+  1041→  transition: all 0.18s ease;
+  1042→  white-space: nowrap;
+  1043→  font-family: inherit;
+  1044→}
+  1045→
+  1046→.footer-newsletter button:hover {
+  1047→  background: linear-gradient(145deg, #0c8f53, #0eac63);
+  1048→  transform: translateY(-1px);
+  1049→  box-shadow: 0 4px 16px rgba(11, 126, 74, 0.30);
+  1050→}
+  1051→
+  1052→.footer-middle {
+  1053→  display: grid;
+  1054→  grid-template-columns: 1.5fr 2fr;
+  1055→  gap: 2rem;
+  1056→  padding: 2.5rem 0;
+  1057→  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  1058→}
+  1059→
+  1060→.footer-middle-col h4 {
+  1061→  font-size: 0.8rem;
+  1062→  font-weight: 700;
+  1063→  text-transform: uppercase;
+  1064→  letter-spacing: 0.04em;
+  1065→  color: #ffffff;
+  1066→  margin-bottom: 0.8rem;
+  1067→  opacity: 0.7;
+  1068→}
+  1069→
+  1070→.footer-middle-col ul {
+  1071→  list-style: none;
+  1072→  padding: 0;
+  1073→  margin: 0;
+  1074→  display: flex;
+  1075→  flex-wrap: wrap;
+  1076→  gap: 0.2rem 1.2rem;
+  1077→}
+  1078→
+  1079→.footer-middle-col ul li {
+  1080→  display: inline;
+  1081→  margin: 0;
+  1082→  padding: 0;
+  1083→}
+  1084→
+  1085→.footer-middle-col ul li a {
+  1086→  color: #b0b0b0;
+  1087→  text-decoration: none;
+  1088→  font-size: 0.85rem;
+  1089→  transition: color 0.15s ease;
+  1090→  padding: 0.1rem 0;
+  1091→}
+  1092→
+  1093→.footer-middle-col ul li a:hover {
+  1094→  color: #4cdb8a;
+  1095→}
+  1096→
+  1097→.footer-bottom {
+  1098→  display: flex;
+  1099→  flex-wrap: wrap;
+  1100→  justify-content: space-between;
+  1101→  align-items: center;
+  1102→  gap: 0.8rem;
+  1103→  padding-top: 1.8rem;
+  1104→  font-size: 0.75rem;
+  1105→  color: #6a6a6a;
+  1106→}
+  1107→
+  1108→.footer-bottom-links {
+  1109→  display: flex;
+  1110→  gap: 1.2rem;
+  1111→}
+  1112→
+  1113→.footer-bottom-links a {
+  1114→  color: #7a7a7a;
+  1115→  text-decoration: none;
+  1116→  transition: color 0.15s ease;
+  1117→}
+  1118→
+  1119→.footer-bottom-links a:hover {
+  1120→  color: #4cdb8a;
+  1121→}
+  1122→
+  1123→/* Responsive overrides for navbar/footer */
+  1124→@media (max-width: 900px) {
+  1125→  .navbar-links,
+  1126→  .navbar-actions .btn-outline {
+  1127→    display: none;
+  1128→  }
+  1129→  .navbar-toggle {
+  1130→    display: flex;
+  1131→  }
+  1132→  .navbar-actions .btn-primary {
+  1133→    padding: 0.4rem 1rem;
+  1134→    font-size: 0.75rem;
+  1135→  }
+  1136→  .navbar-actions .btn-icon.avatar {
+  1137→    display: flex;
+  1138→  }
+  1139→}
+  1140→
+  1141→@media (max-width: 640px) {
+  1142→  body {
+  1143→    padding-top: 64px;
+  1144→  }
+  1145→  .navbar {
+  1146→    height: 64px;
+  1147→  }
+  1148→  .navbar-inner {
+  1149→    padding: 0 1rem;
+  1150→  }
+  1151→  .navbar-logo .logo-icon {
+  1152→    width: 32px;
+  1153→    height: 32px;
+  1154→    font-size: 0.85rem;
+  1155→  }
+  1156→  .navbar-logo .logo-badge {
+  1157→    font-size: 0.45rem;
+  1158→    padding: 0.05rem 0.4rem;
+  1159→  }
+  1160→  .navbar-actions .btn-primary {
+  1161→    padding: 0.35rem 0.8rem;
+  1162→    font-size: 0.7rem;
+  1163→  }
+  1164→  .navbar-actions .btn-icon.avatar {
+  1165→    width: 32px;
+  1166→    height: 32px;
+  1167→    font-size: 0.6rem;
+  1168→  }
+  1169→  .navbar-actions .btn-icon {
+  1170→    width: 32px;
+  1171→    height: 32px;
+  1172→    font-size: 0.8rem;
+  1173→  }
+  1174→  .footer-grid {
+  1175→    grid-template-columns: 1fr;
+  1176→    gap: 1.8rem;
+  1177→  }
+  1178→  .footer-middle {
+  1179→    grid-template-columns: 1fr;
+  1180→    gap: 1.8rem;
+  1181→  }
+  1182→  .footer-middle-col ul {
+  1183→    gap: 0.2rem 0.8rem;
+  1184→  }
+  1185→  .footer-bottom {
+  1186→    flex-direction: column;
+  1187→    text-align: center;
+  1188→  }
+  1189→  .footer-bottom-links {
+  1190→    flex-wrap: wrap;
+  1191→    justify-content: center;
+  1192→    gap: 0.8rem 1.2rem;
+  1193→  }
+  1194→  .footer-newsletter form {
+  1195→    flex-direction: column;
+  1196→  }
+  1197→  .footer-newsletter button {
+  1198→    width: 100%;
+  1199→    justify-content: center;
+  1200→  }
+  1201→}
+  1202→
+  1203→@media (max-width: 480px) {
+  1204→  .navbar-actions .btn-primary span {
+  1205→    display: none;
+  1206→  }
+  1207→  .navbar-actions .btn-primary {
+  1208→    padding: 0.35rem 0.7rem;
+  1209→  }
+  1210→  .footer-middle-col ul {
+  1211→    gap: 0.2rem 0.6rem;
+  1212→  }
+  1213→  .footer-middle-col ul li a {
+  1214→    font-size: 0.8rem;
+  1215→  }
+  1216→}
+  1217→
+  1218→@media (min-width: 901px) {
+  1219→  .mobile-overlay,
+  1220→  .mobile-drawer {
+  1221→    display: none !important;
+  1222→  }
+  1223→}

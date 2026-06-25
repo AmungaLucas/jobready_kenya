@@ -19,29 +19,29 @@ export default async function ClosingSoon() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
               <div>
-                <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-800">
                   ⏳ Don&apos;t Miss These Deadlines
                 </h2>
                 <p className="text-sm text-gray-500 font-light">
                   Applications closing soon. Submit your application before time runs out.
                 </p>
               </div>
-              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition">
                 View All Deadlines →
               </Link>
             </div>
             <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 px-4">
               {jobs.map((job) => (
-                <li key={job.id} className="closing-item py-3 flex items-center justify-between">
-                  <div>
-                    <Link href={`/jobs/${job.slug}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600">
+                <li key={job.id} className="closing-item py-3 flex flex-wrap items-center justify-between gap-1">
+                  <div className="job-meta-inline flex items-center gap-2 min-w-0">
+                    <Link href={`/jobs/${job.slug}`} className="closing-title text-sm font-semibold text-gray-800 transition hover:text-emerald-600 truncate">
                       {job.title}
                     </Link>
-                    <span className="closing-company text-sm text-gray-400 ml-2 transition">{job.organization?.orgName || 'Confidential'}</span>
+                    <span className="meta-secondary closing-company text-xs text-gray-400 ml-2 transition whitespace-nowrap">{job.organization?.orgName || 'Confidential'}</span>
                   </div>
-                  <span className="text-xs font-medium text-red-600">{daysUntil(job.deadline)}</span>
+                  <span className="text-xs font-medium text-red-600 ml-auto">{daysUntil(job.deadline)}</span>
                 </li>
               ))}
               {jobs.length === 0 && (

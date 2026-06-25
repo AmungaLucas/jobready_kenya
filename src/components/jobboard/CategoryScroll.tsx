@@ -47,12 +47,12 @@ export default function CategoryScroll() {
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-gray-800">Browse by Category</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-800">Browse by Category</h2>
             <p className="text-sm text-gray-500 font-light">Explore opportunities based on your field, interests, and experience.</p>
           </div>
-          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition">
             View All Categories →
           </Link>
         </div>
@@ -76,7 +76,7 @@ export default function CategoryScroll() {
                 href={`/jobs?category=${cat.slug}`}
                 className="category-item flex-shrink-0 w-[160px] sm:w-[170px] bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-white/60 hover:border-emerald-400 transition"
               >
-                <div className="cat-icon text-4xl mb-2">{cat.icon}</div>
+                <div className="cat-icon text-3xl sm:text-4xl mb-2">{cat.icon}</div>
                 <p className="text-sm font-semibold text-gray-800">{cat.name}</p>
                 <span className="text-xs text-gray-400">{cat.count} jobs</span>
               </Link>

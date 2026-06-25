@@ -23,11 +23,11 @@ interface JobCardProps {
 
 export default function JobCard({ job }: JobCardProps) {
   return (
-    <Link href={`/jobs/${job.slug}`} className="job-card block bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 transition">
+    <Link href={`/jobs/${job.slug}`} className="job-card block bg-white/70 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-white/60 transition">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="job-title text-lg font-extrabold text-gray-800 transition">{job.title}</h3>
-          <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+          <h3 className="job-title text-base sm:text-lg font-extrabold text-gray-800 transition leading-snug">{job.title}</h3>
+          <p className="text-xs sm:text-sm text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
             <span className="font-medium text-gray-700">{job.organization?.orgName || 'Confidential'}</span>
             <span className="text-gray-300">•</span>
             <span>{job.locationCity || job.locationCounty}</span>

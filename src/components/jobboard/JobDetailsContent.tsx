@@ -157,7 +157,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
     <section className="section-bg py-4 border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb with schema-friendly structure */}
-        <nav className="flex items-center gap-2 text-sm text-gray-500">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
           <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
           <span>/</span>
           <Link href="/jobs" className="hover:text-emerald-600 transition">Browse Jobs</Link>
@@ -168,7 +168,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             </>
           )}
           <span>/</span>
-          <span className="text-gray-700 font-medium">{job.title}</span>
+          <span className="text-gray-700 font-medium truncate max-w-[200px] sm:max-w-none">{job.title}</span>
         </nav>
       </div>
 
@@ -179,23 +179,23 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-lg sm:text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
                       {job.company.charAt(0)}
                     </div>
-                    <div>
-                      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{job.title}</h1>
-                      <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+                    <div className="min-w-0">
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 leading-tight">{job.title}</h1>
+                      <p className="text-sm text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
                         {job.companyWebsite ? (
                           <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-700 hover:text-emerald-600 transition">{job.company}</a>
                         ) : (
                           <span className="font-semibold text-gray-700">{job.company}</span>
                         )}
-                        <span className="text-gray-300">•</span>
+                        <span className="text-gray-300">·</span>
                         <span>{job.location}</span>
                         {job.isRemote && (
                           <>
-                            <span className="text-gray-300">•</span>
+                            <span className="text-gray-300">·</span>
                             <span className="text-emerald-600 font-medium">Remote</span>
                           </>
                         )}
