@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import MobileDrawer from './MobileDrawer';
 import {
@@ -35,7 +34,7 @@ export default function Navbar() {
       <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="navbar-inner">
           <Link href="/" className="navbar-logo">
-            <Image src="/logo.svg" alt="JobBoard Kenya" width={120} height={92} priority style={{ height: 'auto', maxWidth: '130px', width: 'auto' }} />
+            <img src="/logo.svg" alt="JobBoard Kenya" className="logo-img" />
           </Link>
 
           <ul className="navbar-links">

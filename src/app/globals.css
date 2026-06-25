@@ -415,6 +415,23 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
   flex-shrink: 0;
 }
 
+/* Logo image — SVG maintains its own aspect ratio via viewBox */
+.logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+.logo-img-footer {
+  height: 60px;
+  width: auto;
+}
+
+.logo-img-drawer {
+  height: 40px;
+  width: auto;
+}
+
 .navbar-logo .logo-icon {
   width: 38px;
   height: 38px;
