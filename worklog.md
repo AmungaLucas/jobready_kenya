@@ -394,3 +394,31 @@ Stage Summary:
 - Brand assets generated and integrated across all pages
 - GitHub: pushed to AmungaLucas/jobready_kenya (main), 2 commits (eb05222, e72d6af)
 - Vercel should auto-deploy from the push; DATABASE_URL env var must be set in Vercel dashboard
+
+---
+Task ID: responsive-typography
+Agent: Main Agent
+Task: Fix mobile responsive typography — titles wrapping instead of adapting to screen font size
+
+Work Log:
+- Audited all components (JobCard, Hero, Navbar, Footer, page H1s, inline cards) for mobile title wrapping
+- Added CSS fluid typography system to globals.css:
+  - .job-title: clamp(0.875rem, 2.5vw, 1.125rem) + line-clamp-2
+  - .similar-title: single-line truncation with ellipsis + fluid sizing
+  - Auto H1/H2 fluid sizing for elements without responsive Tailwind breakpoints
+  - Breadcrumb horizontal scroll on mobile
+  - .hero-fluid-h1 class for smooth Hero H1 scaling
+- Fixed JobCard.tsx: min-w-0 flex-1 on title wrapper, removed fixed Tailwind text-size
+- Fixed Hero.tsx: removed hard <br>, added hero-fluid-h1 class
+- Fixed 7 inline JobCard/OppCard components across pages (min-w-0, removed text-lg)
+- Fixed JobDetailsContent similar jobs layout (title + company stacked, truncation)
+- Fixed jobs page H1: added text-xl sm: breakpoint
+- Resolved git rebase conflicts with previous session's commit
+- Built and pushed to GitHub
+
+Stage Summary:
+- All job card titles now scale smoothly with viewport using CSS clamp()
+- Long titles are clamped to 2 lines max with ellipsis fallback
+- Similar job titles truncate to single line on mobile
+- Page H1/H2 headings scale fluidly on screens below 640px
+- Breadcrumbs scroll horizontally on mobile instead of wrapping
