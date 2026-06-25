@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import GoogleAd from '@/components/jobboard/GoogleAd';
+import SmartApplyButton from '@/components/jobboard/SmartApplyButton';
 
 interface FormattedJob {
   id: string;
@@ -31,6 +32,9 @@ interface FormattedJob {
   description: string;
   isRemote: boolean;
   externalUrl?: string | null;
+  applicationUrl?: string | null;
+  applyEmail?: string | null;
+  howToApply?: string | null;
   featured?: boolean;
   match: number;
   requirements: string[];
@@ -303,21 +307,14 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                   )}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  {job.externalUrl ? (
-                  <a href={job.externalUrl} target="_blank" rel="noopener noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
-                    Apply Now
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </a>
-                ) : (
-                  <Link href="/contact" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-md shadow-emerald-200 flex items-center gap-2 text-sm">
-                    Apply via Contact
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </Link>
-                )}
+                  <SmartApplyButton
+                    applicationUrl={job.applicationUrl}
+                    applyEmail={job.applyEmail}
+                    howToApply={job.howToApply}
+                    jobTitle={job.title}
+                    companyName={job.company}
+                    deadline={job.deadline}
+                  />
                   <button
                     type="button"
                     className="bg-white/70 text-gray-700 hover:text-emerald-600 border border-gray-300 hover:border-emerald-400 font-medium px-4 py-2.5 rounded-lg transition text-sm flex items-center gap-2"
