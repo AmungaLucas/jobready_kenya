@@ -364,3 +364,33 @@ Stage Summary:
 - Zero lint errors introduced in modified files
 - All 43 category icons mapped to appropriate Lucide React components
 
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: SQLite→MySQL migration, brand asset generation, build fix, full seeding, GitHub push
+
+Work Log:
+- Migrated Prisma schema provider from sqlite to mysql (mysql2 driver)
+- Updated .env with MySQL connection string: mysql://jobready_kenya_db_admin:***@d7.my-control-panel.com:3306/jobready_kenya_db?connection_limit=3&pool_timeout=60
+- Confirmed all 7 dynamic route generateStaticParams return [] (zero DB queries at build time) - the correct fix for remote MySQL
+- All 7 dynamic routes have dynamicParams=true for on-demand rendering via ISR
+- Sitemap uses force-dynamic so it queries DB at request time, not build time
+- middleware.ts replaced with proxy.ts (Next.js 16 convention) in prior session
+- Generated all brand assets from SVG logo: favicon.ico, favicon.svg, 6 PNG icons (16-512px), apple-touch-icon, OG image, twitter card, manifest.json
+- Updated layout.tsx with comprehensive metadata (icons, OG, twitter, theme-color, keywords, authors)
+- Replaced text logos in Navbar, Footer, MobileDrawer with actual logo.svg Image component
+- Updated jsonld.ts to reference logo.svg instead of default-og.jpg
+- Seeded 15 opportunities (scholarships, grants, fellowships, sponsorships, mentorship, competition, conference, training, volunteer)
+- Fixed conflicting public/robots.txt (removed, src/app/robots.ts handles it)
+- Updated .gitignore to exclude tool-results/ and upload/
+- Build: SUCCESS - 18 static pages generated, 7 dynamic routes configured for on-demand ISR
+- All pages smoke tested: homepage, /jobs, /categories, /opportunities, /blog, /locations, /government-jobs, /about, /manifest.json, /robots.txt, /favicon.ico, /jobs/senior-software-engineer-safaricom-nairobi - all 200
+- Pushed 2 commits to GitHub (main branch)
+
+Stage Summary:
+- MySQL migration complete, build succeeds with zero DB queries at build time
+- DB fully seeded: 43 categories, 142 subcategories, 46 locations, 20 orgs, 24 jobs, 15 opportunities, 10 blog posts
+- Brand assets generated and integrated across all pages
+- GitHub: pushed to AmungaLucas/jobready_kenya (main), 2 commits (eb05222, e72d6af)
+- Vercel should auto-deploy from the push; DATABASE_URL env var must be set in Vercel dashboard
