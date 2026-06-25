@@ -136,26 +136,7 @@ export default async function CategoryPage({ params }: Props) {
                 </div>
               )}
 
-              {/* LAYER 2: Subcategory grid */}
-              {subcategories.length > 0 && (
-                <div>
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-4">Browse by Specialization</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {subcategories.map((sub) => (
-                      <Link
-                        key={sub.urlSlug}
-                        href={`/categories/${cat.slug}/${sub.urlSlug}`}
-                        className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
-                      >
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition">{sub.label}</span>
-                        <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{sub.jobCount}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Job listings or empty fallback */}
+              {/* LAYER 2: Job listings first — jobs get priority */}
               {jobs.length > 0 ? (
                 <div>
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">
@@ -251,9 +232,27 @@ export default async function CategoryPage({ params }: Props) {
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* Sidebar */}
+              {/* LAYER 3: Specializations — compact list below jobs */}
+              {subcategories.length > 0 && (
+                <div>
+                  <h2 className="text-lg font-extrabold text-gray-800 mb-3">Specializations</h2>
+                  <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60">
+                    {subcategories.map((sub) => (
+                      <li key={sub.urlSlug}>
+                        <Link
+                          href={`/categories/${cat.slug}/${sub.urlSlug}`}
+                          className="flex items-center justify-between py-2.5 px-4 hover:bg-emerald-50/30 transition"
+                        >
+                          <span className="text-sm text-gray-700 hover:text-emerald-700">{sub.label}</span>
+                          <span className="text-xs text-gray-400">{sub.jobCount}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             <div className="lg:col-span-1 space-y-6">
               {/* Quick stats */}
               <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">

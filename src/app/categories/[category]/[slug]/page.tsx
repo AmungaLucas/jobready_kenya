@@ -178,31 +178,7 @@ export default async function SubcategoryPage({ params }: Props) {
                 /* 5-LAYER EMPTY PAGE FALLBACK */
                 <div className="space-y-6">
 
-                  {/* Layer 2: Other subcategories in parent */}
-                  {subcategories.length > 0 && (
-                    <div>
-                      <h2 className="text-lg font-extrabold text-gray-800 mb-4">
-                        Other {subcategory.category.label} Specializations
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {subcategories
-                          .filter((s) => s.urlSlug !== slug)
-                          .slice(0, 9)
-                          .map((sub) => (
-                            <Link
-                              key={sub.urlSlug}
-                              href={`/categories/${categorySlug}/${sub.urlSlug}`}
-                              className="group flex items-center justify-between p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
-                            >
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-emerald-700 transition">{sub.label}</span>
-                              <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{sub.jobCount}</span>
-                            </Link>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Layer 3: Sibling jobs from same category */}
+                  {/* Layer 2: Sibling jobs from same category — jobs first */}
                   {siblingJobs.length > 0 && (
                     <div>
                       <h2 className="text-lg font-extrabold text-gray-800 mb-4">
@@ -216,7 +192,32 @@ export default async function SubcategoryPage({ params }: Props) {
                     </div>
                   )}
 
-                  {/* Layer 4: Browse by location */}
+                  {/* Layer 4: Other specializations in parent — compact list */}
+                  {subcategories.length > 0 && (
+                    <div>
+                      <h2 className="text-lg font-extrabold text-gray-800 mb-3">
+                        Other {subcategory.category.label} Specializations
+                      </h2>
+                      <ul className="divide-y divide-gray-200/50 bg-white/40 backdrop-blur-sm rounded-xl border border-white/60">
+                        {subcategories
+                          .filter((s) => s.urlSlug !== slug)
+                          .slice(0, 9)
+                          .map((sub) => (
+                            <li key={sub.urlSlug}>
+                              <Link
+                                href={`/categories/${categorySlug}/${sub.urlSlug}`}
+                                className="flex items-center justify-between py-2.5 px-4 hover:bg-emerald-50/30 transition"
+                              >
+                                <span className="text-sm text-gray-700 hover:text-emerald-700">{sub.label}</span>
+                                <span className="text-xs text-gray-400">{sub.jobCount}</span>
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Layer 5: Browse by location */}
                   <div>
                     <h2 className="text-lg font-extrabold text-gray-800 mb-4">
                       Browse {subcategory.label} Jobs by County
