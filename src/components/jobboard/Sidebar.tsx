@@ -4,7 +4,11 @@ import GoogleAd from '@/components/jobboard/GoogleAd';
 
 export default async function Sidebar() {
   const categories = await prisma.jobCategory.findMany({
-    select: { label: true, slug: true, _count: { where: { status: 'ACTIVE', deletedAt: null }, select: { id: true } } },
+    select: {
+      label: true,
+      slug: true,
+      _count: { select: { jobs: { where: { status: 'ACTIVE', deletedAt: null } } } },
+    },
     orderBy: { sortOrder: 'asc' },
     take: 8,
   });
@@ -39,7 +43,7 @@ export default async function Sidebar() {
             <li key={cat.slug}>
               <Link href={`/categories/${cat.slug}`} className="flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-emerald-600 transition">
                 <span>{cat.label}</span>
-                <span className="text-xs text-gray-400 font-normal">({cat._count.id})</span>
+                <span className="text-xs text-gray-400 font-normal">({cat._count.jobs})</span>
               </Link>
             </li>
           ))}

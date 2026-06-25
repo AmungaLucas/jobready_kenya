@@ -4,6 +4,10 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// In production (Vercel serverless), each function instance is a separate process.
+// The global singleton ensures ONE PrismaClient per instance.
+// connection_limit is set to 1 via DATABASE_URL to avoid exhausting MySQL
+// max_user_connections across concurrent serverless instances.
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
@@ -14,10 +18,5 @@ export const prisma =
       },
     },
   });
-
-// Connection pool is configured via DATABASE_URL parameters:
-//   ?connection_limit=3&pool_timeout=60
-// The global singleton pattern above ensures a single PrismaClient instance
-// per process, reusing connections across all requests.
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
