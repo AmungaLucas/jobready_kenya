@@ -179,11 +179,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-lg sm:text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
-                      {job.company.charAt(0)}
-                    </div>
-                    <div className="min-w-0">
+                  <div className="min-w-0">
                       <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 leading-tight">{job.title}</h1>
                       <p className="text-sm text-gray-500 flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
                         {job.companyWebsite ? (
@@ -335,31 +331,30 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
             {/* Company Info */}
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
               <h2 className="text-lg font-extrabold text-gray-800">About {job.company}</h2>
-              <div className="flex items-start gap-4 mt-3">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center text-xl font-extrabold text-emerald-700 shadow-sm flex-shrink-0">
-                  {job.company.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="text-md font-bold text-gray-800">
+              <div className="mt-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="w-6 h-6 rounded bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700 flex-shrink-0">{job.company.charAt(0)}</span>
+                  <span className="text-md font-bold text-gray-800">
                     {job.companyWebsite ? (
                       <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-600 transition">{job.company}</a>
                     ) : job.company}
-                  </h3>
-                  <p className="text-sm text-gray-500">{job.location}, Kenya</p>
-                  {job.companyDescription && (
-                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">{job.companyDescription}</p>
-                  )}
-                  {!job.companyDescription && (
-                    <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-                      {job.company} is an employer operating in {job.location || 'Kenya'}. {job.category ? `They are active in the ${job.category} sector, ` : ''}offering {job.type.toLowerCase()} employment opportunities. Visit their website or contact them directly to learn more about their organisational culture, values, and current openings. JobBoard Kenya verifies all employer listings to ensure legitimacy and protect job seekers from fraudulent postings.
-                    </p>
-                  )}
-                  {job.companyWebsite && (
-                    <Link href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
-                      Visit company website →
-                    </Link>
-                  )}
+                  </span>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-sm text-gray-500">{job.location}, Kenya</span>
                 </div>
+                {job.companyDescription && (
+                  <p className="text-sm text-gray-600 mt-2 leading-relaxed">{job.companyDescription}</p>
+                )}
+                {!job.companyDescription && (
+                  <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                    {job.company} is an employer operating in {job.location || 'Kenya'}. {job.category ? `They are active in the ${job.category} sector, ` : ''}offering {job.type.toLowerCase()} employment opportunities. Visit their website or contact them directly to learn more about their organisational culture, values, and current openings. JobBoard Kenya verifies all employer listings to ensure legitimacy and protect job seekers from fraudulent postings.
+                  </p>
+                )}
+                {job.companyWebsite && (
+                  <Link href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700 transition">
+                    Visit company website →
+                  </Link>
+                )}
               </div>
             </div>
 

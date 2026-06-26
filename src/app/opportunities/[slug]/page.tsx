@@ -117,8 +117,6 @@ export default async function OpportunityDetailPage({ params }: Props) {
               {/* Header */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">{typeLabel}</span>
-                  <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">{formatFunding(opp)}</span>
                   {opp.featured && (
                     <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
                   )}
@@ -132,7 +130,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
                     <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">Open Internationally</span>
                   )}
                 </div>
-                <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">{opp.title}</h1>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 leading-tight">{opp.title}</h1>
                 <p className="text-sm text-gray-500 mt-2">
                   <span className="font-medium text-gray-700">{opp.providerOrg?.orgName || opp.providerName}</span>
                   <span className="text-gray-300 mx-2">&middot;</span>
@@ -143,57 +141,50 @@ export default async function OpportunityDetailPage({ params }: Props) {
                       <span>{opp.duration}</span>
                     </>
                   )}
+                  {opp.deadline && (
+                    <>
+                      <span className="text-gray-300 mx-2">&middot;</span>
+                      <span className="font-medium text-red-600">Deadline: {opp.deadline.toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    </>
+                  )}
                 </p>
               </div>
 
-              {/* Key details grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <DetailCard label="Provider" value={opp.providerOrg?.orgName || opp.providerName} />
-                <DetailCard label="Type" value={typeLabel} />
-                <DetailCard label="Funding" value={formatFunding(opp)} />
-                <DetailCard
-                  label="Deadline"
-                  value={opp.deadline ? opp.deadline.toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' }) : 'No deadline'}
-                />
+              {/* Combined Content Flow */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60 space-y-5">
+                <div>
+                  <h2 className="text-base font-bold text-gray-800">Description</h2>
+                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line mt-2">{opp.description}</div>
+                </div>
+
+                {opp.eligibilityCriteria && (
+                  <div>
+                    <h2 className="text-base font-bold text-gray-800">Eligibility Criteria</h2>
+                    <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line mt-2">{opp.eligibilityCriteria}</div>
+                  </div>
+                )}
+
+                {opp.requirements && (
+                  <div>
+                    <h2 className="text-base font-bold text-gray-800">Requirements</h2>
+                    <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line mt-2">{opp.requirements}</div>
+                  </div>
+                )}
+
+                {opp.benefits && (
+                  <div>
+                    <h2 className="text-base font-bold text-gray-800">Benefits</h2>
+                    <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line mt-2">{opp.benefits}</div>
+                  </div>
+                )}
+
+                {opp.howToApply && (
+                  <div>
+                    <h2 className="text-base font-bold text-gray-800">How to Apply</h2>
+                    <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line mt-2">{opp.howToApply}</div>
+                  </div>
+                )}
               </div>
-
-              {/* Description */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                <h2 className="text-lg font-extrabold text-gray-800 mb-3">Description</h2>
-                <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{opp.description}</div>
-              </div>
-
-              {/* Eligibility */}
-              {opp.eligibilityCriteria && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-3">Eligibility Criteria</h2>
-                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{opp.eligibilityCriteria}</div>
-                </div>
-              )}
-
-              {/* Requirements */}
-              {opp.requirements && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-3">Requirements</h2>
-                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{opp.requirements}</div>
-                </div>
-              )}
-
-              {/* Benefits */}
-              {opp.benefits && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-3">Benefits</h2>
-                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{opp.benefits}</div>
-                </div>
-              )}
-
-              {/* How to Apply */}
-              {opp.howToApply && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-3">How to Apply</h2>
-                  <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{opp.howToApply}</div>
-                </div>
-              )}
 
               {/* Apply CTA */}
               <div className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60">
@@ -228,23 +219,23 @@ export default async function OpportunityDetailPage({ params }: Props) {
                 )}
               </div>
 
-              {/* Similar Jobs */}
+              {/* Related Jobs — simple list */}
               {similarJobs.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-extrabold text-gray-800 mb-4">Related Jobs</h2>
-                  <div className="space-y-3">
+                  <h2 className="text-base font-bold text-gray-800 mb-2">Related Jobs</h2>
+                  <ul className="divide-y divide-gray-200/50">
                     {similarJobs.map((job) => (
-                      <Link
-                        key={job.id}
-                        href={`/jobs/${job.slug}`}
-                        className="block bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60 hover:border-emerald-300 hover:shadow-sm transition"
-                      >
-                        <span className="text-sm font-bold text-gray-800">{job.title}</span>
-                        <span className="text-xs text-gray-400 ml-2">{job.organization?.orgName}</span>
-                        <span className="text-xs text-gray-300 ml-2">&middot; {job.locationCity || job.locationCounty}</span>
-                      </Link>
+                      <li key={job.id}>
+                        <Link
+                          href={`/jobs/${job.slug}`}
+                          className="flex items-center justify-between py-2.5 px-1 hover:text-emerald-600 transition min-w-0 group"
+                        >
+                          <span className="text-sm font-semibold text-gray-800 group-hover:text-emerald-700 truncate">{job.title}</span>
+                          <span className="text-xs text-gray-400 flex-shrink-0 ml-3">{job.organization?.orgName} &middot; {job.locationCity || job.locationCounty}</span>
+                        </Link>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               )}
             </div>
@@ -319,11 +310,3 @@ export default async function OpportunityDetailPage({ params }: Props) {
   );
 }
 
-function DetailCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/60">
-      <span className="text-xs text-gray-400 block">{label}</span>
-      <span className="text-sm font-medium text-gray-800 block mt-0.5">{value}</span>
-    </div>
-  );
-}
