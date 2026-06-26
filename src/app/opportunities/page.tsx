@@ -149,16 +149,16 @@ export default async function OpportunitiesPage({ searchParams }: Props) {
             {/* Main content */}
             <div className="lg:col-span-3 space-y-8">
 
-              {/* Filter tabs */}
-              <div className="flex flex-wrap gap-2">
+              {/* Filter tabs — simple text links */}
+              <div className="flex items-center gap-4 overflow-x-auto border-b border-gray-200/60">
                 {tabs.map((tab) => (
                   <Link
                     key={tab.key}
                     href={tab.key === 'all' ? '/opportunities' : `/opportunities?type=${tab.key}`}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                    className={`whitespace-nowrap pb-2.5 text-sm font-medium border-b-2 transition ${
                       type === tab.key
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
-                        : 'bg-white/70 text-gray-600 hover:bg-gray-100 border border-white/60'
+                        ? 'border-emerald-600 text-emerald-700'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
                     {tab.label}
@@ -348,24 +348,16 @@ function OppCard({ opp }: { opp: OpportunityListItem }) {
   return (
     <Link
       href={`/opportunities/${opp.slug}`}
-      className="job-card flex items-center justify-between gap-3 py-3.5 px-5 hover:bg-emerald-50/30 transition min-w-0"
+      className="flex items-center justify-between gap-3 py-3.5 px-5 hover:bg-emerald-50/30 transition min-w-0"
     >
       <div className="min-w-0 flex-1">
-        <span className="job-title text-sm font-semibold text-gray-800 block transition">{opp.title}</span>
+        <span className="text-sm font-semibold text-gray-800 block transition">{opp.title}</span>
         <span className="text-xs text-gray-400 block truncate mt-0.5">
           {opp.providerName} &middot; {opp.locationCity || opp.locationCounty || (opp.isOnline ? 'Online' : 'Kenya')}
           {opp.isRemote && ' · Remote'}
         </span>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
-        {opp.featured && (
-          <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full">Featured</span>
-        )}
-        <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-          {OPP_TYPE_LABELS[opp.type] || opp.type}
-        </span>
-        <span className="text-xs text-gray-400 hidden sm:inline">{timeAgo(opp.datePosted)}</span>
-      </div>
+      <span className="text-xs text-gray-400 flex-shrink-0 hidden sm:inline">{timeAgo(opp.datePosted)}</span>
     </Link>
   );
 }
