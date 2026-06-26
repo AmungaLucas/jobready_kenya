@@ -9,8 +9,8 @@ export default function MatchingCard() {
           <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-teal-200/30 rounded-full blur-3xl"></div>
           <div className="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">🧠</span>
+              <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                <span className="text-xl sm:text-3xl">🧠</span>
                 <span className="premium-badge">⭐ Premium</span>
                 <span className="highlight">AI-Powered</span>
               </div>

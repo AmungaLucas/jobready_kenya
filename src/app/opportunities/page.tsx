@@ -180,7 +180,7 @@ export default async function OpportunitiesPage({ searchParams }: Props) {
                   <h2 className="text-lg font-extrabold text-gray-800 mb-4">
                     Latest {type !== 'all' ? typeLabel : 'Opportunities'}
                   </h2>
-                  <div className="space-y-3">
+                  <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
                     {opportunities.map((opp) => (
                       <OppCard key={opp.id} opp={opp} />
                     ))}
@@ -348,46 +348,23 @@ function OppCard({ opp }: { opp: OpportunityListItem }) {
   return (
     <Link
       href={`/opportunities/${opp.slug}`}
-      className="job-card block bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60 transition hover:shadow-md"
+      className="job-card flex items-center justify-between gap-3 py-3.5 px-5 hover:bg-emerald-50/30 transition min-w-0"
     >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h3 className="job-title font-extrabold text-gray-800 transition">{opp.title}</h3>
-          <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
-            <span className="font-medium text-gray-700">{opp.providerName}</span>
-            <span className="text-gray-300">&middot;</span>
-            <span>{opp.locationCity || opp.locationCounty || (opp.isOnline ? 'Online' : 'Kenya')}</span>
-            {opp.isRemote && (
-              <>
-                <span className="text-gray-300">&middot;</span>
-                <span className="text-emerald-600 font-medium">Remote</span>
-              </>
-            )}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {opp.featured && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-          )}
-          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
-            {OPP_TYPE_LABELS[opp.type] || opp.type}
-          </span>
-          <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-            {formatFunding(opp)}
-          </span>
-        </div>
+      <div className="min-w-0 flex-1">
+        <span className="job-title text-sm font-semibold text-gray-800 block transition">{opp.title}</span>
+        <span className="text-xs text-gray-400 block truncate mt-0.5">
+          {opp.providerName} &middot; {opp.locationCity || opp.locationCounty || (opp.isOnline ? 'Online' : 'Kenya')}
+          {opp.isRemote && ' · Remote'}
+        </span>
       </div>
-      <p className="text-xs text-gray-400 mt-1 line-clamp-1">{opp.description}</p>
-      <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-400">
-        {opp.duration && <span>{opp.duration}</span>}
-        {opp.duration && <span>&middot;</span>}
-        <span>{timeAgo(opp.datePosted)}</span>
-        {opp.deadline && (
-          <>
-            <span>&middot;</span>
-            <span>Closes {opp.deadline.toLocaleDateString('en-KE', { day: 'numeric', month: 'short' })}</span>
-          </>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {opp.featured && (
+          <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full">Featured</span>
         )}
+        <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+          {OPP_TYPE_LABELS[opp.type] || opp.type}
+        </span>
+        <span className="text-xs text-gray-400 hidden sm:inline">{timeAgo(opp.datePosted)}</span>
       </div>
     </Link>
   );

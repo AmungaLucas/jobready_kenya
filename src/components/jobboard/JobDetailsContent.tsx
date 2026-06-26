@@ -219,81 +219,84 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
             </div>
 
-            {/* Description */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">Job Description</h2>
-              <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
-            </div>
+            {/* Job Details — Combined Flow */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60 space-y-6">
+              {/* Job Description */}
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800">Job Description</h2>
+                <p className="text-sm text-gray-600 mt-3 leading-relaxed">{job.description}</p>
+              </div>
 
-            {/* Key Responsibilities */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">Key Responsibilities</h2>
-              <p className="text-sm text-gray-500 mt-1 mb-3">
-                As a {job.title} at {job.company}, you will be expected to carry out the following key duties:
-              </p>
-              <ul className="space-y-2">
-                {responsibilities.map((r, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
-                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
-                    <span>{r}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {/* Key Responsibilities */}
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800">Key Responsibilities</h2>
+                <p className="text-sm text-gray-500 mt-1 mb-3">
+                  As a {job.title} at {job.company}, you will be expected to carry out the following key duties:
+                </p>
+                <ul className="space-y-2">
+                  {responsibilities.map((r, i) => (
+                    <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+                      <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            {/* Requirements & Qualifications */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">Requirements &amp; Qualifications</h2>
-              <p className="text-sm text-gray-500 mt-1 mb-3">
-                To be considered for this {job.title} position at {job.company}, applicants should meet the following criteria:
-              </p>
-              <ul className="space-y-2">
-                {requirements.map((r, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
-                    <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
-                    <span>{r}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {/* Requirements & Qualifications */}
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800">Requirements &amp; Qualifications</h2>
+                <p className="text-sm text-gray-500 mt-1 mb-3">
+                  To be considered for this {job.title} position at {job.company}, applicants should meet the following criteria:
+                </p>
+                <ul className="space-y-2">
+                  {requirements.map((r, i) => (
+                    <li key={i} className="flex gap-2 text-sm text-gray-600 leading-relaxed">
+                      <span className="text-emerald-500 mt-1 flex-shrink-0">●</span>
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            {/* Benefits & Perks */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">Benefits &amp; Perks</h2>
-              <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+              {/* Benefits & Perks */}
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800">Benefits &amp; Perks</h2>
+                <p className="text-sm text-gray-600 mt-3 leading-relaxed">
                 {job.type === 'Full-time' || job.type === 'FULL_TIME' ? (
                   <>As a {job.type.toLowerCase()} employee at {job.company}, you can expect a comprehensive benefits package that typically includes competitive monthly compensation{job.salary && job.salary !== 'Salary not disclosed' ? ` of ${job.salary}` : ''}, medical insurance coverage for you and your dependents, paid annual leave, and pension contributions under the NSSF framework. Many employers in Kenya also provide housing allowances, transport allowances, and meal subsidies. {job.category ? `Professionals in the ${job.category} sector often receive additional benefits such as professional development budgets, conference attendance, and certification sponsorship.` : ''} {job.isRemote ? 'As a remote position, you may also receive a home office setup allowance and flexible working hours.' : ''}</>
                 ) : (
                   <>This {job.type.toLowerCase()} position at {job.company} offers {job.salary && job.salary !== 'Salary not disclosed' ? `compensation of ${job.salary}` : 'competitive compensation'}. {job.type === 'INTERNSHIP' || job.type === 'Internship' ? 'Internships provide invaluable hands-on experience, mentorship from industry professionals, and in many cases lead to full-time employment offers upon successful completion. You will gain practical skills and build your professional network within the ' + (job.category || 'industry') + ' sector.' : 'Contract and part-time roles in Kenya often come with prorated benefits including medical cover, flexible scheduling, and the opportunity to transition to permanent positions based on performance.'}</>
                 )}
               </p>
-            </div>
+              </div>
 
-            {/* How to Apply */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">How to Apply for This {job.type} Position</h2>
-              <p className="text-sm text-gray-600 mt-3 leading-relaxed mb-4">
-                Follow these steps to submit a strong application for the {job.title} role at {job.company}:
-              </p>
-              <ol className="space-y-3">
-                {[
-                  `Review the requirements listed above carefully and ensure you meet the minimum qualifications for this ${job.title} position`,
-                  `Prepare an up-to-date CV tailored to this role, highlighting relevant ${job.category ? job.category.toLowerCase() : 'professional'} experience and achievements with measurable metrics`,
-                  `Write a concise cover letter explaining why you are interested in this role at ${job.company} and how your skills align with the responsibilities outlined`,
-                  `Gather all required documents including academic certificates, professional certifications, and a copy of your national ID`,
-                  `Submit your application before the deadline of ${job.deadline} — late applications are typically not considered by employers in Kenya`,
-                ].map((step, i) => (
-                  <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
-                    <span className="bg-emerald-100 text-emerald-700 font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">{i + 1}</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-              <p className="text-sm text-gray-500 mt-4 leading-relaxed">
-                For tips on writing a CV that passes Applicant Tracking Systems (ATS) used by Kenyan employers, visit our{' '}
-                <Link href="/cv-services" className="text-emerald-600 hover:text-emerald-700 font-medium transition">CV Writing Services</Link> page or read our{' '}
-                <Link href="/blog?category=How-To" className="text-emerald-600 hover:text-emerald-700 font-medium transition">career advice articles</Link>.
-              </p>
+              {/* How to Apply */}
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800">How to Apply for This {job.type} Position</h2>
+                <p className="text-sm text-gray-600 mt-3 leading-relaxed mb-4">
+                  Follow these steps to submit a strong application for the {job.title} role at {job.company}:
+                </p>
+                <ol className="space-y-3">
+                  {[
+                    `Review the requirements listed above carefully and ensure you meet the minimum qualifications for this ${job.title} position`,
+                    `Prepare an up-to-date CV tailored to this role, highlighting relevant ${job.category ? job.category.toLowerCase() : 'professional'} experience and achievements with measurable metrics`,
+                    `Write a concise cover letter explaining why you are interested in this role at ${job.company} and how your skills align with the responsibilities outlined`,
+                    `Gather all required documents including academic certificates, professional certifications, and a copy of your national ID`,
+                    `Submit your application before the deadline of ${job.deadline} — late applications are typically not considered by employers in Kenya`,
+                  ].map((step, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-gray-600 leading-relaxed">
+                      <span className="bg-emerald-100 text-emerald-700 font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5">{i + 1}</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="text-sm text-gray-500 mt-4 leading-relaxed">
+                  For tips on writing a CV that passes Applicant Tracking Systems (ATS) used by Kenyan employers, visit our{' '}
+                  <Link href="/cv-services" className="text-emerald-600 hover:text-emerald-700 font-medium transition">CV Writing Services</Link> page or read our{' '}
+                  <Link href="/blog?category=How-To" className="text-emerald-600 hover:text-emerald-700 font-medium transition">career advice articles</Link>.
+                </p>
+              </div>
             </div>
 
             {/* Application */}
@@ -462,17 +465,6 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
             </div>
 
-            {/* Application Tips - Auto-generated enrichment */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-6 border border-emerald-200/60">
-              <h2 className="text-lg font-extrabold text-gray-800 mb-3">How to Apply for This {job.category || 'Job'}</h2>
-              <div className="text-sm text-gray-600 leading-relaxed space-y-2">
-                <p>1. Review the job description above carefully and ensure your skills and experience align with the requirements.</p>
-                <p>2. Prepare an updated CV that highlights relevant {job.category ? `${job.category.toLowerCase()}` : 'professional'} experience and qualifications{job.educationLevel ? `, including your ${job.educationLevel.replace(/_/g, ' ').toLowerCase()} credential` : ''}.</p>
-                <p>3. Click the &quot;Apply Now&quot; button above to submit your application before the deadline on {job.deadline}.</p>
-                <p>4. Set up a job alert on JobBoard Kenya to receive notifications when similar {job.category ? `${job.category.toLowerCase()}` : ''} positions are posted.</p>
-              </div>
-            </div>
-
             {/* FAQ - Visible for SEO/AEO */}
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
               <h2 className="text-lg font-extrabold text-gray-800 mb-3">Frequently Asked Questions</h2>
@@ -588,7 +580,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
 
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50/80 rounded-xl p-5 border border-emerald-200/60 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">📄</span>
+                <span className="text-base">📄</span>
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">Internal Ad</span>
               </div>
               <h4 className="text-base font-extrabold text-gray-800">Your CV Opens Doors</h4>

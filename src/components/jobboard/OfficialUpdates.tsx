@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 export default function OfficialUpdates() {
   const updates = [
-    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago' },
-    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago' },
-    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago' },
-    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago' },
+    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago', slug: 'knec-shortlisted-candidates-2026' },
+    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago', slug: 'kra-tax-officer-interviews-june' },
+    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago', slug: 'nakuru-county-50-positions' },
+    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago', slug: 'tsc-deadline-extended-june' },
   ];
 
   return (
@@ -26,9 +26,9 @@ export default function OfficialUpdates() {
             </div>
             <div className="bg-white/50 backdrop-blur-sm rounded-xl divide-y divide-gray-200/60 border border-white/60">
               {updates.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
+                <Link key={idx} href={`/updates#${item.slug}`} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
                   <span className="text-xl mt-0.5">{item.icon}</span>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-semibold text-gray-800">{item.title}</p>
                     <div className="flex items-center gap-3 mt-0.5">
                       <span className="text-xs text-gray-400">{item.tag}</span>
@@ -36,7 +36,7 @@ export default function OfficialUpdates() {
                       <span className="text-xs text-gray-300">{item.time}</span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

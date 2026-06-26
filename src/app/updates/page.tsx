@@ -13,18 +13,18 @@ export const metadata: Metadata = {
 
 /* ── Static updates data (same structure as OfficialUpdates component) ── */
 const allUpdates = [
-  { icon: '📢', title: 'KNEC announces shortlisted candidates for 2025 marking exercise', tag: 'Shortlisting', time: '2h ago', type: 'shortlisting' },
-  { icon: '📅', title: 'KRA interviews for tax officers — dates released for July 2025', tag: 'Interview Date', time: '5h ago', type: 'interview' },
-  { icon: '📋', title: 'County government of Nakuru opens 50 new positions across departments', tag: 'Recruitment', time: '1d ago', type: 'recruitment' },
-  { icon: '⏳', title: 'TSC extends application deadline for teacher recruitment to 30 July 2025', tag: 'Deadline Extension', time: '2d ago', type: 'deadline' },
-  { icon: '📢', title: 'Kenya Defence Forces releases shortlist for cadet recruitment 2025', tag: 'Shortlisting', time: '2d ago', type: 'shortlisting' },
-  { icon: '📋', title: 'Kenyatta University Teaching Hospital announces 30 nursing positions', tag: 'Recruitment', time: '3d ago', type: 'recruitment' },
-  { icon: '📅', title: 'Commission on Revenue Allocation schedules interviews for economists', tag: 'Interview Date', time: '3d ago', type: 'interview' },
-  { icon: '⏳', title: 'Public Service Commission extends internship application deadline', tag: 'Deadline Extension', time: '4d ago', type: 'deadline' },
-  { icon: '📢', title: 'National Police Service shortlists candidates for constable recruitment', tag: 'Shortlisting', time: '5d ago', type: 'shortlisting' },
-  { icon: '📋', title: 'Ministry of Health opens recruitment for medical officers countrywide', tag: 'Recruitment', time: '5d ago', type: 'recruitment' },
-  { icon: '📅', title: 'Central Bank of Kenya invites shortlisted candidates for graduate trainee interviews', tag: 'Interview Date', time: '1w ago', type: 'interview' },
-  { icon: '⏳', title: 'Judicial Service Commission extends application window for court clerks', tag: 'Deadline Extension', time: '1w ago', type: 'deadline' },
+  { icon: '📢', title: 'KNEC announces shortlisted candidates for 2025 marking exercise', tag: 'Shortlisting', time: '2h ago', type: 'shortlisting', slug: 'knec-shortlisted-candidates-2026' },
+  { icon: '📅', title: 'KRA interviews for tax officers — dates released for July 2025', tag: 'Interview Date', time: '5h ago', type: 'interview', slug: 'kra-tax-officer-interviews-june' },
+  { icon: '📋', title: 'County government of Nakuru opens 50 new positions across departments', tag: 'Recruitment', time: '1d ago', type: 'recruitment', slug: 'nakuru-county-50-positions' },
+  { icon: '⏳', title: 'TSC extends application deadline for teacher recruitment to 30 July 2025', tag: 'Deadline Extension', time: '2d ago', type: 'deadline', slug: 'tsc-deadline-extended-june' },
+  { icon: '📢', title: 'Kenya Defence Forces releases shortlist for cadet recruitment 2025', tag: 'Shortlisting', time: '2d ago', type: 'shortlisting', slug: 'kdf-cadet-shortlist-2025' },
+  { icon: '📋', title: 'Kenyatta University Teaching Hospital announces 30 nursing positions', tag: 'Recruitment', time: '3d ago', type: 'recruitment', slug: 'kuth-nursing-positions' },
+  { icon: '📅', title: 'Commission on Revenue Allocation schedules interviews for economists', tag: 'Interview Date', time: '3d ago', type: 'interview', slug: 'cra-economist-interviews' },
+  { icon: '⏳', title: 'Public Service Commission extends internship application deadline', tag: 'Deadline Extension', time: '4d ago', type: 'deadline', slug: 'psc-internship-deadline' },
+  { icon: '📢', title: 'National Police Service shortlists candidates for constable recruitment', tag: 'Shortlisting', time: '5d ago', type: 'shortlisting', slug: 'nps-constable-shortlist' },
+  { icon: '📋', title: 'Ministry of Health opens recruitment for medical officers countrywide', tag: 'Recruitment', time: '5d ago', type: 'recruitment', slug: 'moh-medical-officers' },
+  { icon: '📅', title: 'Central Bank of Kenya invites shortlisted candidates for graduate trainee interviews', tag: 'Interview Date', time: '1w ago', type: 'interview', slug: 'cbk-graduate-interviews' },
+  { icon: '⏳', title: 'Judicial Service Commission extends application window for court clerks', tag: 'Deadline Extension', time: '1w ago', type: 'deadline', slug: 'jsc-court-clerks-deadline' },
 ];
 
 const tagColors: Record<string, string> = {
@@ -53,6 +53,7 @@ export default function UpdatesPage() {
             {allUpdates.map((update, idx) => (
               <div
                 key={idx}
+                id={update.slug}
                 className="bg-white/70 backdrop-blur-sm rounded-xl border border-white/60 p-5 hover:shadow-md hover:border-emerald-200/50 transition"
               >
                 <div className="flex items-start gap-4">
