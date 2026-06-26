@@ -197,7 +197,6 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                         )}
                       </p>
                     </div>
-                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {job.featured && (
