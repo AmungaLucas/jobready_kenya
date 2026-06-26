@@ -52,7 +52,7 @@ export default function LocationScroll() {
             <h2 className="text-2xl font-extrabold text-gray-800">📍 Browse by Location</h2>
             <p className="text-sm text-gray-500 font-light">Find jobs near you across Kenya&apos;s major towns and cities.</p>
           </div>
-          <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
+          <Link href="/locations" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
             All Locations →
           </Link>
         </div>
@@ -73,7 +73,7 @@ export default function LocationScroll() {
             {locations.map((loc) => (
               <Link
                 key={loc.name}
-                href={`/jobs?location=${loc.name.toLowerCase()}`}
+                href={`/locations/${loc.name.toLowerCase()}`}
                 className="location-item flex-shrink-0 w-[140px] sm:w-[150px] bg-white/70 backdrop-blur-sm rounded-xl p-3.5 text-center border border-white/60 transition"
               >
                 <p className="loc-name text-sm font-semibold text-gray-800 transition">{loc.name}</p>
