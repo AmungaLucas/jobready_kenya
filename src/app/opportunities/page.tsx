@@ -149,16 +149,16 @@ export default async function OpportunitiesPage({ searchParams }: Props) {
             {/* Main content */}
             <div className="lg:col-span-3 space-y-8">
 
-              {/* Filter tabs — simple text links */}
-              <div className="flex items-center gap-4 overflow-x-auto border-b border-gray-200/60">
+              {/* Filter — plain text links */}
+              <div className="flex items-center gap-4 flex-wrap">
                 {tabs.map((tab) => (
                   <Link
                     key={tab.key}
                     href={tab.key === 'all' ? '/opportunities' : `/opportunities?type=${tab.key}`}
-                    className={`whitespace-nowrap pb-2.5 text-sm font-medium border-b-2 transition ${
+                    className={`text-sm whitespace-nowrap transition ${
                       type === tab.key
-                        ? 'border-emerald-600 text-emerald-700'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'text-emerald-700 font-semibold'
+                        : 'text-gray-500 hover:text-gray-700'
                     }`}
                   >
                     {tab.label}
