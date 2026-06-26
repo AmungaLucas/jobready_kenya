@@ -182,14 +182,14 @@ export default async function BlogPostDetailPage({ params }: Props) {
             {/* Sidebar */}
             <aside className="lg:col-span-1 space-y-6">
               {/* Author */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Author</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Author</h3>
                 <p className="text-sm font-medium text-gray-800">{post.authorName}</p>
               </div>
 
               {/* Article Info */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Article Info</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Article Info</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Category</span><span className="font-medium text-gray-700">{post.category}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Read Time</span><span className="font-medium text-gray-700">{post.readTimeMinutes} min</span></div>
@@ -198,22 +198,22 @@ export default async function BlogPostDetailPage({ params }: Props) {
               </div>
 
               {/* Browse */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Browse</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Browse</h3>
                 <ul className="space-y-1">
-                  <li><Link href={`/blog?category=${post.category}`} className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">All {post.category} →</Link></li>
-                  <li><Link href="/blog" className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">All Articles →</Link></li>
-                  <li><Link href="/jobs" className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">Browse Jobs →</Link></li>
-                  <li><Link href="/opportunities" className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">Opportunities →</Link></li>
+                  <li><Link href={`/blog?category=${post.category}`} className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">All {post.category} →</Link></li>
+                  <li><Link href="/blog" className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">All Articles →</Link></li>
+                  <li><Link href="/jobs" className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">Browse Jobs →</Link></li>
+                  <li><Link href="/opportunities" className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">Opportunities →</Link></li>
                 </ul>
               </div>
 
               {/* Other Categories */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Explore Topics</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Explore Topics</h3>
                 <ul className="space-y-1">
                   {BLOG_CATEGORIES.filter((c) => c !== post.category).map((cat) => (
-                    <li key={cat}><Link href={`/blog?category=${cat}`} className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">{cat} →</Link></li>
+                    <li key={cat}><Link href={`/blog?category=${cat}`} className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">{cat} →</Link></li>
                   ))}
                 </ul>
               </div>

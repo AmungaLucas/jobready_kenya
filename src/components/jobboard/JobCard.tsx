@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
+import { formatSalary, timeAgo, formatDate } from '@/lib/jobs';
 
 interface JobCardProps {
   job: {
@@ -38,14 +38,6 @@ export default function JobCard({ job }: JobCardProps) {
               </>
             )}
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {job.featured && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-          )}
-          <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-            {employmentTypeLabels[job.employmentType || ''] || job.employmentType}
-          </span>
         </div>
       </div>
       {job.category && (

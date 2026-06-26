@@ -10,7 +10,7 @@ import {
   GOV_TYPE_LABELS,
 } from '@/lib/government';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
-import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
+import { formatSalary, timeAgo, formatDate } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
 import { getAllCategories } from '@/lib/categories';
 import { getPopularLocations } from '@/lib/locations';
@@ -317,8 +317,8 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
             <div className="lg:col-span-1 space-y-6">
 
               {/* Quick stats */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">
                   {county} County Overview
                 </h3>
                 <div className="space-y-2.5 text-sm">
@@ -332,14 +332,14 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
 
               {/* Gov counties sidebar */}
               {showOrgs && (
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Government Employers in {county}</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Government Employers in {county}</h3>
                 <ul className="space-y-1 max-h-48 overflow-y-auto">
                   {countyOrgs.map((org) => (
                     <li key={org.orgSlug}>
                       <Link
                         href={`/jobs?search=${encodeURIComponent(org.orgName)}`}
-                        className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition text-gray-700"
+                        className="flex items-center justify-between text-sm py-1 transition text-gray-700"
                       >
                         <span className="truncate mr-2">{org.orgName}</span>
                         <span className="text-xs text-gray-400 flex-shrink-0">{org.jobCount}</span>
@@ -351,14 +351,14 @@ export default async function GovernmentJobsCountyPage({ params }: Props) {
               )}
 
               {/* Other counties */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Other Counties</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Other Counties</h3>
                 <ul className="space-y-1 max-h-60 overflow-y-auto">
                   {otherCounties.map((loc) => (
                     <li key={loc.slug}>
                       <Link
                         href={`/government-jobs/${loc.slug}`}
-                        className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition text-gray-700"
+                        className="flex items-center justify-between text-sm py-1 transition text-gray-700"
                       >
                         <span>{loc.county}</span>
                       </Link>
@@ -408,14 +408,6 @@ function JobCard({ job }: { job: JobListItem }) {
               </>
             )}
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {job.featured && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-          )}
-          <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-            {employmentTypeLabels[job.employmentType || ''] || job.employmentType}
-          </span>
         </div>
       </div>
       {job.category && (

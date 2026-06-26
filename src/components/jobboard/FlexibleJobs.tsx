@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
-import { formatSalary, employmentTypeLabels } from '@/lib/jobs';
+import { formatSalary } from '@/lib/jobs';
 
 export default async function FlexibleJobs() {
   // Fetch flexible work jobs
@@ -35,14 +35,6 @@ export default async function FlexibleJobs() {
   });
   const slugMap = Object.fromEntries(countySlugs.map(l => [l.county, l.slug]));
 
-  const typeColors: Record<string, string> = {
-    'Part-time': 'bg-blue-50 text-blue-700',
-    'Freelance': 'bg-purple-50 text-purple-700',
-    'Casual': 'bg-orange-50 text-orange-700',
-    'Temporary': 'bg-yellow-50 text-yellow-700',
-    'Contract': 'bg-green-50 text-green-700',
-  };
-
   const icons = ['🛍️', '✍️', '🎪', '📋'];
 
   return (
@@ -61,7 +53,6 @@ export default async function FlexibleJobs() {
             </div>
             <div className="bg-white/40 backdrop-blur-sm rounded-xl border border-white/60 divide-y divide-gray-200/50">
               {flexibleJobs.map((job, idx) => {
-                const typeLabel = employmentTypeLabels[job.employmentType || ''] || job.employmentType || 'Full-time';
                 return (
                   <div key={job.slug} className="flex flex-wrap items-center justify-between py-4 px-5 hover:bg-emerald-50/30 transition">
                     <div className="flex items-center gap-3">
@@ -74,9 +65,6 @@ export default async function FlexibleJobs() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 mt-1 sm:mt-0">
-                      <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${typeColors[typeLabel] || 'bg-gray-50 text-gray-700'}`}>
-                        {typeLabel}
-                      </span>
                       <span className="text-sm font-medium text-gray-700">{formatSalary(job as any)}</span>
                     </div>
                   </div>

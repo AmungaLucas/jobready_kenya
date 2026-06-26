@@ -538,8 +538,8 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
 
             <GoogleAd slot="job-detail-sidebar" format="rectangle" className="rounded-xl" style={{ minHeight: '250px' }} />
 
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Job Summary</h4>
+            <div>
+              <h4 className="text-sm font-bold text-gray-700 mb-3">Job Summary</h4>
               <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">Experience</span><span className="font-medium text-gray-700">{formatExperienceLabel(job.experienceLevel)}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Education</span><span className="font-medium text-gray-700">{formatEducationLabel(job.educationLevel)}</span></div>
@@ -556,14 +556,14 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
               </div>
             </div>
 
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-              <h4 className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2 border-b border-gray-200/60 pb-3 mb-4">
+            <div>
+              <h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
                 <span>🔥</span> Trending Searches
               </h4>
               <ul className="space-y-2">
                 {['Teaching', 'Nursing', 'IT & Software', 'Driving', 'Accounting'].map((term) => (
                   <li key={term}>
-                    <Link href={`/jobs?search=${term}`} className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group p-2 rounded-lg hover:bg-emerald-50/50">
+                    <Link href={`/jobs?search=${term}`} className="flex items-center justify-between text-sm text-gray-700 hover:text-emerald-600 transition group py-1">
                       <span>{term}</span>
                       <span className="text-xs text-gray-400">→</span>
                     </Link>

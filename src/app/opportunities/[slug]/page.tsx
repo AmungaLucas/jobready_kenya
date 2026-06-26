@@ -243,8 +243,8 @@ export default async function OpportunityDetailPage({ params }: Props) {
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
               {/* Quick info */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Quick Info</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Quick Info</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Type</span><span className="font-medium text-gray-700">{typeLabel}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Funding</span><span className="font-medium text-gray-700">{formatFunding(opp)}</span></div>
@@ -257,8 +257,8 @@ export default async function OpportunityDetailPage({ params }: Props) {
               </div>
 
               {/* Provider info */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Provider</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Provider</h3>
                 <p className="text-sm font-medium text-gray-800">{opp.providerOrg?.orgName || opp.providerName}</p>
                 {opp.providerOrg?.orgWebsite && (
                   <a href={opp.providerOrg.orgWebsite} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-600 hover:underline block mt-1">
@@ -268,21 +268,21 @@ export default async function OpportunityDetailPage({ params }: Props) {
               </div>
 
               {/* Back links */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Browse</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Browse</h3>
                 <ul className="space-y-1">
                   <li>
-                    <Link href={`/opportunities?type=${opp.type}`} className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">
+                    <Link href={`/opportunities?type=${opp.type}`} className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">
                       All {typeLabel} &rarr;
                     </Link>
                   </li>
                   <li>
-                    <Link href="/opportunities" className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">
+                    <Link href="/opportunities" className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">
                       All Opportunities &rarr;
                     </Link>
                   </li>
                   <li>
-                    <Link href="/jobs" className="text-sm text-gray-700 hover:text-emerald-600 transition p-2 block rounded-lg hover:bg-emerald-50/50">
+                    <Link href="/jobs" className="text-sm text-gray-700 hover:text-emerald-600 transition py-1 block">
                       Browse Jobs &rarr;
                     </Link>
                   </li>

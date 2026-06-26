@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSubcategoryBySlug, getSubcategoryJobs, getCategorySubcategories, getAllSubcategorySlugs, getSiblingCategoryJobs, getPopularLocations, getAllCategories, getCategoryBySlug, getCachedSubcategorySlugs } from '@/lib/categories';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
-import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
+import { formatSalary, timeAgo, formatDate } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
@@ -266,8 +266,8 @@ export default async function SubcategoryPage({ params }: Props) {
             <div className="lg:col-span-1 space-y-6">
               {/* Subcategory nav */}
               {subcategories.length > 0 && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-700 mb-3">
                     {subcategory.category.label}
                   </h3>
                   <ul className="space-y-1 max-h-80 overflow-y-auto">
@@ -275,7 +275,7 @@ export default async function SubcategoryPage({ params }: Props) {
                       <li key={sub.urlSlug}>
                         <Link
                           href={`/categories/${categorySlug}/${sub.urlSlug}`}
-                          className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
+                          className={`flex items-center justify-between text-sm py-1 transition ${
                             sub.urlSlug === slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
                           }`}
                         >
@@ -289,14 +289,14 @@ export default async function SubcategoryPage({ params }: Props) {
               )}
 
               {/* All categories */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">All Categories</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">All Categories</h3>
                 <ul className="space-y-1 max-h-60 overflow-y-auto">
                   {allCategories.map((c) => (
                     <li key={c.slug}>
                       <Link
                         href={`/categories/${c.slug}`}
-                        className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
+                        className={`flex items-center justify-between text-sm py-1 transition ${
                           c.slug === categorySlug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
                         }`}
                       >
@@ -349,14 +349,6 @@ function JobCard({ job }: { job: JobListItem }) {
               </>
             )}
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {job.featured && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-          )}
-          <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-            {employmentTypeLabels[job.employmentType || ''] || job.employmentType}
-          </span>
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-400">

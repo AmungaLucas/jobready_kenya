@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getLocationBySlug, getLocationJobs, getLocationCategories, getOtherLocations, getAllLocationSlugs, getPopularLocations } from '@/lib/locations';
 import { getAllCategories } from '@/lib/categories';
 import { generateCollectionPageJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/lib/jsonld';
-import { formatSalary, timeAgo, formatDate, employmentTypeLabels } from '@/lib/jobs';
+import { formatSalary, timeAgo, formatDate } from '@/lib/jobs';
 import type { JobListItem } from '@/lib/jobs';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
@@ -262,8 +262,8 @@ export default async function LocationPage({ params }: Props) {
             <div className="lg:col-span-1 space-y-6">
 
               {/* Quick stats */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Location Overview</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Location Overview</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Active Jobs</span><span className="font-medium text-emerald-600">{total}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">County</span><span className="font-medium text-gray-700">{location.county}</span></div>
@@ -272,14 +272,14 @@ export default async function LocationPage({ params }: Props) {
               </div>
 
               {/* Popular locations */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Popular Locations</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Popular Locations</h3>
                 <ul className="space-y-1">
                   {popularLocations.map((loc) => (
                     <li key={loc.slug}>
                       <Link
                         href={`/locations/${loc.slug}`}
-                        className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${
+                        className={`flex items-center justify-between text-sm py-1 transition ${
                           loc.slug === location.slug ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
                         }`}
                       >
@@ -293,14 +293,14 @@ export default async function LocationPage({ params }: Props) {
 
               {/* Categories in this location */}
               {categories.length > 0 && (
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                  <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Top Categories</h3>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-700 mb-3">Top Categories</h3>
                   <ul className="space-y-1">
                     {categories.slice(0, 6).map((cat) => (
                       <li key={cat.categorySlug}>
                         <Link
                           href={`/categories/${cat.categorySlug}?county=${location.slug}`}
-                          className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition text-gray-700"
+                          className="flex items-center justify-between text-sm py-1 transition text-gray-700"
                         >
                           <span className="truncate mr-2">{cat.categoryLabel}</span>
                           <span className="text-xs text-gray-400 flex-shrink-0">{cat.jobCount}</span>
@@ -353,14 +353,6 @@ function JobCard({ job }: { job: JobListItem }) {
               </>
             )}
           </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {job.featured && (
-            <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-          )}
-          <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-            {employmentTypeLabels[job.employmentType || ''] || job.employmentType}
-          </span>
         </div>
       </div>
       {job.category && (

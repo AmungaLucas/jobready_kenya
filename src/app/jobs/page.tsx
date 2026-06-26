@@ -220,14 +220,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                           )}
                         </p>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        {job.featured && (
-                          <span className="text-xs font-medium text-amber-700 bg-amber-100/70 px-2.5 py-1 rounded-full">Featured</span>
-                        )}
-                        <span className="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
-                          {employmentTypeLabels[job.employmentType || ''] || job.employmentType}
-                        </span>
-                      </div>
                     </div>
                     {job.category && (
                       <p className="text-xs text-gray-400 mt-1">{job.category.label}</p>

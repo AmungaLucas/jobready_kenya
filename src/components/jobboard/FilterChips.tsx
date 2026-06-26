@@ -28,13 +28,13 @@ export default function FilterChips() {
         <button
           key={label}
           type="button"
-          className={`filter-chip ${active === label ? 'active' : 'inactive'} px-4 py-1.5 rounded-full border text-sm font-medium`}
+          className={active === label ? 'text-emerald-700 font-semibold text-sm' : 'text-gray-500 hover:text-gray-700 text-sm'}
           onClick={() => handleFilter(label)}
         >
           {label}
         </button>
       ))}
-      <select className="ml-2 px-3 py-1.5 rounded-full border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600">
+      <select className="ml-2 text-sm text-gray-500 focus:outline-none focus:text-emerald-700 bg-transparent">
         <option>Sort by: Relevance</option>
         <option>Sort by: Newest</option>
         <option>Sort by: Deadline</option>

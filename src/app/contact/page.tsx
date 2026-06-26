@@ -135,8 +135,8 @@ export default function ContactPage() {
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
               {/* Contact Info */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-4">Contact Information</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-4">Contact Information</h3>
                 <div className="space-y-4 text-sm">
                   <div className="flex items-start gap-3">
                     <span className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 flex-shrink-0">
@@ -178,8 +178,8 @@ export default function ContactPage() {
               </div>
 
               {/* Quick Links */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-4">Quick Links</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-4">Quick Links</h3>
                 <ul className="space-y-2 text-sm">
                   <li>
                     <Link href="/about" className="text-emerald-600 hover:text-emerald-700 transition">About JobBoard Kenya</Link>

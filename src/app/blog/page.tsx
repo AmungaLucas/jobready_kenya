@@ -274,8 +274,8 @@ export default async function BlogListPage({ searchParams }: Props) {
             {/* Sidebar */}
             <div className="lg:col-span-1 space-y-6">
               {/* Blog Overview */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Blog Overview</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Blog Overview</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-500">Total Articles</span>
@@ -291,12 +291,12 @@ export default async function BlogListPage({ searchParams }: Props) {
               </div>
 
               {/* Categories */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 border border-white/60">
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200/60 pb-3 mb-3">Categories</h3>
+              <div>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Categories</h3>
                 <ul className="space-y-1">
                   {BLOG_CATEGORIES.map((cat) => (
                     <li key={cat}>
-                      <Link href={`/blog?category=${cat}`} className={`flex items-center justify-between text-sm p-2 rounded-lg hover:bg-emerald-50/50 transition ${category === cat ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'}`}>
+                      <Link href={`/blog?category=${cat}`} className={`flex items-center justify-between text-sm py-1 transition ${category === cat ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'}`}>
                         <span>{cat}</span>
                         <span className="text-xs text-gray-400">{counts[cat] || 0}</span>
                       </Link>
