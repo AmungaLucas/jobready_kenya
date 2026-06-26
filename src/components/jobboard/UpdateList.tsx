@@ -1,60 +1,66 @@
-'use client';
+import Link from 'next/link';
+import { UPDATE_TYPE_ICONS, UPDATE_TYPE_LABELS, UPDATE_TAG_COLORS } from '@/lib/updates';
 
-import { useState } from 'react';
-
-interface Update {
-  icon: string;
-  title: string;
-  tag: string;
-  time: string;
-  type: string;
+interface UpdateItem {
+  id: string;
   slug: string;
-  body: string;
+  title: string;
+  summary: string | null;
+  updateType: string;
+  sourceName: string;
+  imageUrl: string | null;
+  hasPdf: boolean;
+  datePosted: Date;
+  featured: boolean;
 }
 
-const tagColors: Record<string, string> = {
-  shortlisting: 'text-blue-700',
-  interview: 'text-purple-700',
-  recruitment: 'text-emerald-700',
-  deadline: 'text-amber-700',
-};
-
-export default function UpdateList({ updates }: { updates: Update[] }) {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-
+export default function UpdateList({ updates }: { updates: UpdateItem[] }) {
   return (
     <div className="divide-y divide-gray-200/60">
-      {updates.map((update, idx) => (
-        <div
-          key={idx}
-          id={update.slug}
-          className="py-4 cursor-pointer group"
-          onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+      {updates.map((update) => (
+        <Link
+          key={update.id}
+          href={`/updates/${update.slug}`}
+          className="flex items-start gap-3 py-4 group"
         >
-          <div className="flex items-start gap-3">
-            <span className="text-lg flex-shrink-0 mt-0.5">{update.icon}</span>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-gray-800 leading-relaxed group-hover:text-emerald-700 transition">{update.title}</h3>
-              <div className="flex items-center gap-3 mt-1">
-                <span className={`text-xs font-medium ${tagColors[update.type] || 'text-gray-600'}`}>
-                  {update.tag}
-                </span>
-                <span className="text-xs text-gray-400">{update.time}</span>
-              </div>
-              {openIdx === idx && (
-                <p className="text-sm text-gray-600 leading-relaxed mt-3">{update.body}</p>
+          <span className="text-lg flex-shrink-0 mt-0.5">
+            {UPDATE_TYPE_ICONS[update.updateType] || '\uD83D\uDCE1'}
+          </span>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-gray-800 leading-relaxed group-hover:text-emerald-700 transition">
+              {update.title}
+            </h3>
+            {update.summary && (
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">{update.summary}</p>
+            )}
+            <div className="flex items-center gap-3 mt-1.5">
+              <span className={`text-xs font-medium ${UPDATE_TAG_COLORS[update.updateType] || 'text-gray-600'}`}>
+                {UPDATE_TYPE_LABELS[update.updateType] || update.updateType}
+              </span>
+              <span className="text-xs text-gray-300">&middot;</span>
+              <span className="text-xs text-gray-400">{update.sourceName}</span>
+              <span className="text-xs text-gray-300">&middot;</span>
+              <span className="text-xs text-gray-400">
+                {update.datePosted.toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+              {update.hasPdf && (
+                <>
+                  <span className="text-xs text-gray-300">&middot;</span>
+                  <span className="text-xs text-red-500 font-medium">PDF</span>
+                </>
+              )}
+              {update.imageUrl && (
+                <>
+                  <span className="text-xs text-gray-300">&middot;</span>
+                  <span className="text-xs text-gray-400">Image</span>
+                </>
               )}
             </div>
-            <svg
-              className={`w-4 h-4 text-gray-400 flex-shrink-0 mt-1 transition-transform ${openIdx === idx ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
           </div>
-        </div>
+          <svg className="w-4 h-4 text-gray-300 flex-shrink-0 mt-1 group-hover:text-emerald-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       ))}
     </div>
   );

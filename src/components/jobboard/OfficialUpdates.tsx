@@ -1,12 +1,16 @@
 import Link from 'next/link';
+import { getRecentUpdates, UPDATE_TYPE_ICONS, UPDATE_TYPE_LABELS, UPDATE_TAG_COLORS } from '@/lib/updates';
 
-export default function OfficialUpdates() {
-  const updates = [
-    { icon: '📢', title: 'KNEC announces shortlisted candidates for 2026 recruitment', tag: 'Shortlisting', time: '2h ago', slug: 'knec-shortlisted-candidates-2026' },
-    { icon: '📅', title: 'KRA interviews for tax officers scheduled for 28 June', tag: 'Interview Date', time: '5h ago', slug: 'kra-tax-officer-interviews-june' },
-    { icon: '📋', title: 'County government of Nakuru opens 50 new positions', tag: 'Recruitment', time: '1d ago', slug: 'nakuru-county-50-positions' },
-    { icon: '⏳', title: 'TSC extends application deadline to 30 June', tag: 'Deadline Extension', time: '2d ago', slug: 'tsc-deadline-extended-june' },
-  ];
+export default async function OfficialUpdates() {
+  let updates: Awaited<ReturnType<typeof getRecentUpdates>> = [];
+
+  try {
+    updates = await getRecentUpdates(4);
+  } catch {
+    // Fallback: render empty section if DB is unavailable
+  }
+
+  if (updates.length === 0) return null;
 
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
@@ -21,19 +25,37 @@ export default function OfficialUpdates() {
                 </p>
               </div>
               <Link href="/updates" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition whitespace-nowrap ml-4">
-                View all →
+                View all &rarr;
               </Link>
             </div>
-            <div className="bg-white/50 backdrop-blur-sm rounded-xl divide-y divide-gray-200/60 border border-white/60">
-              {updates.map((item, idx) => (
-                <Link key={idx} href={`/updates#${item.slug}`} className="flex items-start gap-4 py-3.5 px-4 rounded-xl hover:bg-white/40 transition">
-                  <span className="text-xl mt-0.5">{item.icon}</span>
+            <div className="divide-y divide-gray-200/60">
+              {updates.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/updates/${item.slug}`}
+                  className="flex items-start gap-4 py-3.5 px-1 hover:text-emerald-600 transition group"
+                >
+                  <span className="text-xl mt-0.5 flex-shrink-0">{UPDATE_TYPE_ICONS[item.updateType] || '\uD83D\uDCE1'}</span>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-800">{item.title}</p>
+                    <p className="text-sm font-semibold text-gray-800 group-hover:text-emerald-700 transition">{item.title}</p>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-xs text-gray-400">{item.tag}</span>
-                      <span className="text-xs text-gray-300">•</span>
-                      <span className="text-xs text-gray-300">{item.time}</span>
+                      <span className={`text-xs font-medium ${UPDATE_TAG_COLORS[item.updateType] || 'text-gray-600'}`}>
+                        {UPDATE_TYPE_LABELS[item.updateType] || item.updateType}
+                      </span>
+                      <span className="text-xs text-gray-300">&middot;</span>
+                      <span className="text-xs text-gray-400">{item.sourceName}</span>
+                      {item.hasPdf && (
+                        <>
+                          <span className="text-xs text-gray-300">&middot;</span>
+                          <span className="text-xs text-red-500 font-medium">PDF</span>
+                        </>
+                      )}
+                      {item.imageUrl && (
+                        <>
+                          <span className="text-xs text-gray-300">&middot;</span>
+                          <span className="text-xs text-gray-400">Image</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </Link>

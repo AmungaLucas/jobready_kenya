@@ -156,6 +156,67 @@ enum FundingDisclosure {
 }
 
 // ============================================
+// 📰 UPDATE-SPECIFIC ENUMS
+// ============================================
+
+enum UpdateType {
+  SHORTLISTING
+  INTERVIEW
+  RECRUITMENT
+  DEADLINE
+  ANNOUNCEMENT
+}
+
+enum UpdateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ============================================
+// 📰 UPDATE MODEL
+// ============================================
+
+model Update {
+  id            String       @id @default(cuid())
+  title         String
+  slug          String       @unique
+  body          String                                        // Full content body
+  summary       String?                                       // Short summary for cards (max 200 chars)
+
+  updateType    UpdateType
+  sourceName    String                                        // e.g. "KNEC", "KRA", "TSC"
+  sourceUrl     String?
+  sourceLogoUrl String?
+
+  imageUrl      String?                                       // Primary image (announcement poster, notice scan, etc.)
+  pdfUrl        String?                                       // Attached PDF document (official notice, gazette, etc.)
+
+  seoTitle       String?
+  seoDescription String?
+
+  status        UpdateStatus  @default(DRAFT)
+  featured      Boolean       @default(false)
+
+  datePublished DateTime?
+  datePosted    DateTime      @default(now())
+
+  deletedAt     DateTime?
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status])
+  @@index([featured])
+  @@index([updateType])
+  @@index([datePosted])
+  @@index([status, featured])
+  @@index([deletedAt])
+
+  @@map("updates")
+}
+
+// ============================================
 // 📝 BLOG-SPECIFIC ENUMS & MODEL
 // ============================================
 
