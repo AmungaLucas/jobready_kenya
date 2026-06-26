@@ -329,7 +329,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
 
             {/* Company Info */}
             <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/60">
-              <h2 className="text-lg font-extrabold text-gray-800">About {job.company}</h2>
+              <h2 className="text-lg font-extrabold text-gray-800">About the Company</h2>
               <div className="mt-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="w-6 h-6 rounded bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700 flex-shrink-0">{job.company.charAt(0)}</span>
