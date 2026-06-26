@@ -156,19 +156,19 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
   return (
     <section className="section-bg py-4 border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb with schema-friendly structure */}
-        <nav className="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
-          <Link href="/" className="hover:text-emerald-600 transition">Home</Link>
-          <span>/</span>
-          <Link href="/jobs" className="hover:text-emerald-600 transition">Browse Jobs</Link>
+        {/* Breadcrumb — compact & truncated */}
+        <nav className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 overflow-hidden whitespace-nowrap">
+          <Link href="/" className="hover:text-emerald-600 transition flex-shrink-0">Home</Link>
+          <span className="text-gray-300 flex-shrink-0">/</span>
+          <Link href="/jobs" className="hover:text-emerald-600 transition flex-shrink-0">Jobs</Link>
           {job.categorySlug && (
             <>
-              <span>/</span>
-              <Link href={`/categories/${job.categorySlug}`} className="hover:text-emerald-600 transition">{job.category}</Link>
+              <span className="text-gray-300 flex-shrink-0">/</span>
+              <Link href={`/categories/${job.categorySlug}`} className="hover:text-emerald-600 transition truncate max-w-[120px] sm:max-w-[180px]">{job.category}</Link>
             </>
           )}
-          <span>/</span>
-          <span className="text-gray-700 font-medium truncate max-w-[200px] sm:max-w-none">{job.title}</span>
+          <span className="text-gray-300 flex-shrink-0">/</span>
+          <span className="text-gray-700 font-medium truncate">{job.title}</span>
         </nav>
       </div>
 
