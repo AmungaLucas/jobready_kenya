@@ -69,11 +69,12 @@ export async function getJobs(params?: {
   type?: string;
   county?: string;
   search?: string;
+  sort?: string;
   page?: number;
   perPage?: number;
   featured?: boolean;
 }): Promise<{ jobs: JobListItem[]; total: number }> {
-  const { category, location, type, county, search, page = 1, perPage = 20, featured } = params || {};
+  const { category, location, type, county, search, sort, page = 1, perPage = 20, featured } = params || {};
 
   const where: any = { status: 'ACTIVE', deletedAt: null };
 
@@ -99,7 +100,14 @@ export async function getJobs(params?: {
     where.locationCity = { contains: location };
   }
   if (type) {
-    where.employmentType = type.toUpperCase().replace('-', '_');
+    const typeUpper = type.toUpperCase().replace(/-/g, '_');
+    if (typeUpper === 'GOVERNMENT') {
+      where.organization = { orgType: { in: ['NATIONAL_GOVERNMENT', 'COUNTY_GOVERNMENT', 'STATE_CORPORATION', 'REGULATORY_AUTHORITY'] } };
+    } else if (typeUpper === 'REMOTE') {
+      where.isRemote = true;
+    } else {
+      where.employmentType = typeUpper;
+    }
   }
   if (featured) {
     where.featured = true;
@@ -108,11 +116,17 @@ export async function getJobs(params?: {
     where.searchText = { contains: search };
   }
 
+  // Build orderBy based on sort param
+  let orderBy: any = { datePosted: 'desc' };
+  if (sort === 'newest') orderBy = { datePosted: 'desc' };
+  else if (sort === 'deadline') orderBy = { deadline: 'asc' };
+  else if (sort === 'salary') orderBy = { salaryMax: 'desc' };
+
   const [jobs, total] = await Promise.all([
     prisma.job.findMany({
       where,
       select: jobListSelect,
-      orderBy: { datePosted: 'desc' },
+      orderBy,
       skip: (page - 1) * perPage,
       take: perPage,
     }),

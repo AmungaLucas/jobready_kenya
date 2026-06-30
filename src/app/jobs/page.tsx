@@ -107,13 +107,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const type = typeof params.type === 'string' ? params.type : undefined;
   const county = typeof params.county === 'string' ? params.county : undefined;
   const search = typeof params.search === 'string' ? params.search : undefined;
+  const sort = typeof params.sort === 'string' ? params.sort : undefined;
   const page = typeof params.page === 'string' ? Number(params.page) : 1;
   const perPage = 20;
 
   let jobs: Awaited<ReturnType<typeof getJobs>>['jobs'] = [];
   let total = 0;
   try {
-    const result = await getJobs({ category, location, type, county, search, page, perPage });
+    const result = await getJobs({ category, location, type, county, search, sort, page, perPage });
     jobs = result.jobs;
     total = result.total;
   } catch (err) {
@@ -188,7 +189,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                 Showing <span className="font-semibold text-emerald-600">{total}</span> opportunities
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row items-stretch gap-3 w-full md:w-auto">
+            <form id="search-form" action="/jobs" method="GET" className="flex flex-col sm:flex-row items-stretch gap-3 w-full md:w-auto">
               <div className="relative flex-1 md:w-72">
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -201,10 +202,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-300 bg-white/70 text-sm focus:outline-none focus:border-emerald-600"
                 />
               </div>
-              <button type="submit" form="search-form" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
+              <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg whitespace-nowrap text-sm transition">
                 Search
               </button>
-            </div>
+            </form>
           </div>
           <FilterChips />
         </div>
