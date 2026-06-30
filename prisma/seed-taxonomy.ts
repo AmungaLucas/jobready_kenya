@@ -1,642 +1,660 @@
 /**
- * Taxonomy seed script for the matching engine.
- * Populates taxonomy_items with Kenyan job market categories, subcategories, skills, tools,
- * qualifications, certifications, and specializations.
+ * Taxonomy seed script for the Kenyan job market.
+ * Populates taxonomy_items with categories, subcategories, skills, tools,
+ * qualifications, certifications, industries, and organization types.
  *
  * Usage: npx tsx prisma/seed-taxonomy.ts
  */
 
-import { PrismaClient, TaxonomyType } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../src/lib/prisma';
+import { TaxonomyType } from '@prisma/client';
 
 // ============================================================
 // TYPES
 // ============================================================
 
-interface TaxonomyEntry {
+type TaxonomySeedItem = {
   type: TaxonomyType;
   value: string;
   label: string;
-  parentId?: string; // will be resolved after parent is inserted
-  parentValue?: string; // reference by value for resolution
-  aliases?: string[];
   description?: string;
-}
+  parentId?: string;
+};
 
 // ============================================================
 // ORGANIZATION TYPES
 // ============================================================
 
-const orgTypes: TaxonomyEntry[] = [
-  { type: 'ORGANIZATION_TYPE', value: 'PRIVATE_COMPANY', label: 'Private Company', aliases: ['Private Sector', 'Corporate'] },
-  { type: 'ORGANIZATION_TYPE', value: 'PUBLIC_LISTED_COMPANY', label: 'Public Listed Company', aliases: ['Listed Company', 'NSE Listed'] },
-  { type: 'ORGANIZATION_TYPE', value: 'NATIONAL_GOVERNMENT', label: 'National Government', aliases: ['Government of Kenya', 'GoK'] },
-  { type: 'ORGANIZATION_TYPE', value: 'COUNTY_GOVERNMENT', label: 'County Government', aliases: ['County', 'Devolved Unit'] },
-  { type: 'ORGANIZATION_TYPE', value: 'STATE_CORPORATION', label: 'State Corporation', aliases: ['Parastatal', 'Semi-Autonomous Government Agency'] },
-  { type: 'ORGANIZATION_TYPE', value: 'REGULATORY_AUTHORITY', label: 'Regulatory Authority', aliases: ['Regulator'] },
-  { type: 'ORGANIZATION_TYPE', value: 'NGO_LOCAL', label: 'Local NGO', aliases: ['Local Non-Profit'] },
-  { type: 'ORGANIZATION_TYPE', value: 'NGO_INTERNATIONAL', label: 'International NGO', aliases: ['INGO', 'International Non-Profit', 'UN Agency'] },
-  { type: 'ORGANIZATION_TYPE', value: 'UNIVERSITY', label: 'University', aliases: ['Higher Education Institution'] },
-  { type: 'ORGANIZATION_TYPE', value: 'TVET_INSTITUTION', label: 'TVET Institution', aliases: ['Technical College', 'Polytechnic'] },
-  { type: 'ORGANIZATION_TYPE', value: 'PRIMARY_SECONDARY_SCHOOL', label: 'Primary / Secondary School' },
-  { type: 'ORGANIZATION_TYPE', value: 'FOUNDATION', label: 'Foundation', aliases: ['Trust'] },
-  { type: 'ORGANIZATION_TYPE', value: 'EMBASSY_DIPLOMATIC', label: 'Embassy / Diplomatic Mission' },
-  { type: 'ORGANIZATION_TYPE', value: 'RELIGIOUS_ORGANIZATION', label: 'Religious Organization' },
-  { type: 'ORGANIZATION_TYPE', value: 'COOPERATIVE_SOCIETY', label: 'Cooperative Society', aliases: ['SACCO', 'Cooperative'] },
-  { type: 'ORGANIZATION_TYPE', value: 'STARTUP', label: 'Startup', aliases: ['Tech Startup', 'Early-Stage Company'] },
+const organizationTypes: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'PRIVATE_COMPANY', label: 'Private Company', description: 'Privately held business entities registered in Kenya' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'PUBLIC_LISTED_COMPANY', label: 'Public Listed Company', description: 'Companies listed on the Nairobi Securities Exchange (NSE)' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'NATIONAL_GOVERNMENT', label: 'National Government', description: 'Ministries, departments, and agencies of the Government of Kenya' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'COUNTY_GOVERNMENT', label: 'County Government', description: 'Devolved county governments established under the 2010 Constitution' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'STATE_CORPORATION', label: 'State Corporation', description: 'Semi-autonomous government agencies and parastatals' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'REGULATORY_AUTHORITY', label: 'Regulatory Authority', description: 'Bodies such as CBK, CMA, NCA, KRA, etc.' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'NGO_LOCAL', label: 'Local NGO', description: 'Non-governmental organizations registered in Kenya' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'NGO_INTERNATIONAL', label: 'International NGO', description: 'INGOs and UN agencies operating in Kenya' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'UNIVERSITY', label: 'University', description: 'Public and private universities recognized by CUE' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'TVET_INSTITUTION', label: 'TVET Institution', description: 'Technical and Vocational Education and Training institutions registered with TVETA' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'STARTUP', label: 'Startup', description: 'Early-stage companies, often in tech and innovation hubs' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'FOUNDATION', label: 'Foundation', description: 'Philanthropic foundations and charitable trusts' },
+  { type: TaxonomyType.ORGANIZATION_TYPE, value: 'COOPERATIVE_SOCIETY', label: 'Cooperative Society', description: 'SACCOs and cooperative societies registered under the Cooperative Societies Act' },
 ];
 
 // ============================================================
 // INDUSTRIES
 // ============================================================
 
-const industries: TaxonomyEntry[] = [
-  { type: 'INDUSTRY', value: 'AGRICULTURE', label: 'Agriculture', aliases: ['Agribusiness', 'Farming'] },
-  { type: 'INDUSTRY', value: 'AUTOMOTIVE', label: 'Automotive' },
-  { type: 'INDUSTRY', value: 'AVIATION', label: 'Aviation', aliases: ['Airlines', 'Aerospace'] },
-  { type: 'INDUSTRY', value: 'BANKING', label: 'Banking', aliases: ['Financial Services', 'Banking & Finance'] },
-  { type: 'INDUSTRY', value: 'CONSTRUCTION', label: 'Construction', aliases: ['Building & Construction'] },
-  { type: 'INDUSTRY', value: 'CONSULTING', label: 'Consulting', aliases: ['Professional Services'] },
-  { type: 'INDUSTRY', value: 'CONSUMER_GOODS', label: 'Consumer Goods', aliases: ['FMCG', 'Fast Moving Consumer Goods'] },
-  { type: 'INDUSTRY', value: 'EDUCATION', label: 'Education', aliases: ['Education & Training'] },
-  { type: 'INDUSTRY', value: 'ENERGY', label: 'Energy', aliases: ['Oil & Gas', 'Renewable Energy', 'Power'] },
-  { type: 'INDUSTRY', value: 'ENVIRONMENT', label: 'Environment', aliases: ['Environmental Conservation'] },
-  { type: 'INDUSTRY', value: 'FINTECH', label: 'Fintech', aliases: ['Financial Technology'] },
-  { type: 'INDUSTRY', value: 'FOOD_BEVERAGE', label: 'Food & Beverage', aliases: ['Hospitality', 'Food Industry'] },
-  { type: 'INDUSTRY', value: 'GOVERNMENT_PUBLIC_ADMIN', label: 'Government & Public Administration' },
-  { type: 'INDUSTRY', value: 'HEALTHCARE', label: 'Healthcare', aliases: ['Health', 'Medical', 'Pharmaceutical'] },
-  { type: 'INDUSTRY', value: 'HOSPITALITY_TOURISM', label: 'Hospitality & Tourism', aliases: ['Tourism', 'Hotels', 'Travel'] },
-  { type: 'INDUSTRY', value: 'HUMAN_RESOURCES', label: 'Human Resources' },
-  { type: 'INDUSTRY', value: 'INFORMATION_TECHNOLOGY', label: 'Information Technology', aliases: ['IT', 'Tech'] },
-  { type: 'INDUSTRY', value: 'INSURANCE', label: 'Insurance' },
-  { type: 'INDUSTRY', value: 'INTERNATIONAL_DEVELOPMENT', label: 'International Development', aliases: ['Development', 'Humanitarian'] },
-  { type: 'INDUSTRY', value: 'LEGAL', label: 'Legal', aliases: ['Law', 'Legal Services'] },
-  { type: 'INDUSTRY', value: 'LOGISTICS_SUPPLY_CHAIN', label: 'Logistics & Supply Chain', aliases: ['Supply Chain', 'Shipping', 'Transport'] },
-  { type: 'INDUSTRY', value: 'MANUFACTURING', label: 'Manufacturing' },
-  { type: 'INDUSTRY', value: 'MARKETING_ADVERTISING', label: 'Marketing & Advertising', aliases: ['Advertising', 'Media'] },
-  { type: 'INDUSTRY', value: 'MEDIA_ENTERTAINMENT', label: 'Media & Entertainment' },
-  { type: 'INDUSTRY', value: 'MINING', label: 'Mining', aliases: ['Minerals', 'Extractives'] },
-  { type: 'INDUSTRY', value: 'NON_PROFIT', label: 'Non-Profit', aliases: ['NGO Sector', 'Civil Society'] },
-  { type: 'INDUSTRY', value: 'PHARMACEUTICAL', label: 'Pharmaceutical' },
-  { type: 'INDUSTRY', value: 'REAL_ESTATE', label: 'Real Estate', aliases: ['Property', 'Land'] },
-  { type: 'INDUSTRY', value: 'RESEARCH', label: 'Research', aliases: ['Research & Development', 'R&D'] },
-  { type: 'INDUSTRY', value: 'RETAIL', label: 'Retail', aliases: ['Retail & Wholesale'] },
-  { type: 'INDUSTRY', value: 'SECURITY_DEFENSE', label: 'Security & Defense' },
-  { type: 'INDUSTRY', value: 'SPORTS', label: 'Sports' },
-  { type: 'INDUSTRY', value: 'TELECOMMUNICATIONS', label: 'Telecommunications', aliases: ['Telco', 'Telecom'] },
-  { type: 'INDUSTRY', value: 'TEXTILES_APPAREL', label: 'Textiles & Apparel' },
-  { type: 'INDUSTRY', value: 'WATER_SANITATION', label: 'Water & Sanitation', aliases: ['WASH'] },
+const industries: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  { type: TaxonomyType.INDUSTRY, value: 'BANKING', label: 'Banking', description: 'Commercial banking, microfinance, and SACCOs' },
+  { type: TaxonomyType.INDUSTRY, value: 'TELECOMMUNICATIONS', label: 'Telecommunications', description: 'Mobile networks, internet service providers, and fibre operators' },
+  { type: TaxonomyType.INDUSTRY, value: 'INSURANCE', label: 'Insurance', description: 'Life, health, and general insurance providers' },
+  { type: TaxonomyType.INDUSTRY, value: 'MANUFACTURING', label: 'Manufacturing', description: 'Food processing, textiles, chemicals, and consumer goods' },
+  { type: TaxonomyType.INDUSTRY, value: 'HEALTHCARE', label: 'Healthcare', description: 'Hospitals, clinics, pharmaceuticals, and medical supplies' },
+  { type: TaxonomyType.INDUSTRY, value: 'EDUCATION', label: 'Education', description: 'Universities, TVETs, schools, and training institutions' },
+  { type: TaxonomyType.INDUSTRY, value: 'GOVERNMENT_PUBLIC_ADMIN', label: 'Government & Public Administration', description: 'National and county government operations' },
+  { type: TaxonomyType.INDUSTRY, value: 'INTERNATIONAL_DEVELOPMENT', label: 'International Development', description: 'Development agencies, UN bodies, and bilateral donors' },
+  { type: TaxonomyType.INDUSTRY, value: 'NON_PROFIT', label: 'Non-Profit', description: 'NGOs, CSOs, and community-based organizations' },
+  { type: TaxonomyType.INDUSTRY, value: 'RETAIL', label: 'Retail', description: 'Supermarkets, shops, and e-commerce platforms' },
+  { type: TaxonomyType.INDUSTRY, value: 'AGRICULTURE', label: 'Agriculture', description: 'Crop farming, livestock, horticulture, and agribusiness' },
+  { type: TaxonomyType.INDUSTRY, value: 'CONSTRUCTION', label: 'Construction', description: 'Building, infrastructure, and real estate development' },
+  { type: TaxonomyType.INDUSTRY, value: 'ENERGY', label: 'Energy', description: 'Geothermal, solar, wind, and petroleum' },
+  { type: TaxonomyType.INDUSTRY, value: 'TOURISM_HOSPITALITY', label: 'Tourism & Hospitality', description: 'Hotels, travel agencies, tour operators, and restaurants' },
+  { type: TaxonomyType.INDUSTRY, value: 'LOGISTICS', label: 'Logistics', description: 'Freight, clearing & forwarding, and last-mile delivery' },
+  { type: TaxonomyType.INDUSTRY, value: 'MEDIA', label: 'Media', description: 'Broadcast, print, digital media, and advertising agencies' },
+  { type: TaxonomyType.INDUSTRY, value: 'REAL_ESTATE', label: 'Real Estate', description: 'Property management, valuation, and estate agency' },
+  { type: TaxonomyType.INDUSTRY, value: 'FINTECH', label: 'Fintech', description: 'Mobile money, digital lending, payments, and insurtech' },
+  { type: TaxonomyType.INDUSTRY, value: 'MINING', label: 'Mining', description: 'Mineral extraction, quarrying, and gemstone mining' },
+  { type: TaxonomyType.INDUSTRY, value: 'WATER_SANITATION', label: 'Water & Sanitation', description: 'Water supply, wastewater treatment, and borehole drilling' },
 ];
 
 // ============================================================
-// JOB CATEGORIES + SUBCATEGORIES
+// CATEGORIES
 // ============================================================
 
-const categories: TaxonomyEntry[] = [
-  // TECHNOLOGY
-  { type: 'CATEGORY', value: 'TECHNOLOGY', label: 'Technology & IT' },
-  { type: 'SUBCATEGORY', value: 'SOFTWARE_ENGINEERING', label: 'Software Engineering', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'WEB_DEVELOPMENT', label: 'Web Development', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'MOBILE_DEVELOPMENT', label: 'Mobile Development', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'DATA_SCIENCE', label: 'Data Science & Analytics', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'CYBER_SECURITY', label: 'Cybersecurity', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'DEVOPS_CLOUD', label: 'DevOps & Cloud Infrastructure', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'IT_SUPPORT', label: 'IT Support & Helpdesk', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'NETWORK_ADMIN', label: 'Network Administration', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'AI_ML', label: 'AI & Machine Learning', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'QA_TESTING', label: 'QA & Testing', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'UI_UX_DESIGN', label: 'UI/UX Design', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'DATABASE_ADMIN', label: 'Database Administration', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'SYSTEM_ADMIN', label: 'Systems Administration', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'PRODUCT_MANAGEMENT', label: 'Product Management', parentValue: 'TECHNOLOGY' },
-  { type: 'SUBCATEGORY', value: 'TECHNICAL_WRITING', label: 'Technical Writing', parentValue: 'TECHNOLOGY' },
-
-  // FINANCE & ACCOUNTING
-  { type: 'CATEGORY', value: 'FINANCE_ACCOUNTING', label: 'Finance & Accounting' },
-  { type: 'SUBCATEGORY', value: 'ACCOUNTING', label: 'Accounting', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'ACCOUNTS_PAYABLE', label: 'Accounts Payable', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'FINANCIAL_REPORTING', label: 'Financial Reporting', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'AUDIT', label: 'Audit', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'TAX_COMPLIANCE', label: 'Tax & Compliance', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'PAYROLL', label: 'Payroll', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'FINANCIAL_ANALYSIS', label: 'Financial Analysis', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'BANKING_OPERATIONS', label: 'Banking Operations', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'INSURANCE', label: 'Insurance', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'GRANT_MANAGEMENT', label: 'Grant Management', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'SUBCATEGORY', value: 'PROCUREMENT', label: 'Procurement', parentValue: 'FINANCE_ACCOUNTING' },
-
-  // HEALTHCARE
-  { type: 'CATEGORY', value: 'HEALTHCARE', label: 'Healthcare & Medical' },
-  { type: 'SUBCATEGORY', value: 'MEDICAL_DOCTOR', label: 'Medical Doctor', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'NURSING', label: 'Nursing', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'CLINICAL_OFFICER', label: 'Clinical Officer', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'PHARMACY', label: 'Pharmacy', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'PUBLIC_HEALTH', label: 'Public Health', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'HEALTH_RECORDS', label: 'Health Records & ICT', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'MEDICAL_LABORATORY', label: 'Medical Laboratory', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'NUTRITION', label: 'Nutrition & Dietetics', parentValue: 'HEALTHCARE' },
-  { type: 'SUBCATEGORY', value: 'HEALTH_ADMINISTRATION', label: 'Health Administration', parentValue: 'HEALTHCARE' },
-
-  // EDUCATION
-  { type: 'CATEGORY', value: 'EDUCATION', label: 'Education & Training' },
-  { type: 'SUBCATEGORY', value: 'LECTURING', label: 'Lecturing', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'TVET_TRAINING', label: 'TVET Training', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'CURRICULUM_DEVELOPMENT', label: 'Curriculum Development', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'EDUCATION_ADMIN', label: 'Education Administration', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'EARLY_CHILDHOOD', label: 'Early Childhood Education', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'SPECIAL_NEEDS', label: 'Special Needs Education', parentValue: 'EDUCATION' },
-  { type: 'SUBCATEGORY', value: 'E_LEARNING', label: 'E-Learning', parentValue: 'EDUCATION' },
-
-  // ENGINEERING
-  { type: 'CATEGORY', value: 'ENGINEERING', label: 'Engineering' },
-  { type: 'SUBCATEGORY', value: 'CIVIL_ENGINEERING', label: 'Civil Engineering', parentValue: 'ENGINEERING' },
-  { type: 'SUBCATEGORY', value: 'ELECTRICAL_ENGINEERING', label: 'Electrical Engineering', parentValue: 'ENGINEERING' },
-  { type: 'SUBCATEGORY', value: 'MECHANICAL_ENGINEERING', label: 'Mechanical Engineering', parentValue: 'ENGINEERING' },
-  { type: 'SUBCATEGORY', value: 'CHEMICAL_ENGINEERING', label: 'Chemical Engineering', parentValue: 'ENGINEERING' },
-  { type: 'SUBCATEGORY', value: 'ENVIRONMENTAL_ENGINEERING', label: 'Environmental Engineering', parentValue: 'ENGINEERING' },
-  { type: 'SUBCATEGORY', value: 'GEOMATIC_ENGINEERING', label: 'Geomatic / Surveying', parentValue: 'ENGINEERING' },
-
-  // HUMAN RESOURCES
-  { type: 'CATEGORY', value: 'HUMAN_RESOURCES', label: 'Human Resources' },
-  { type: 'SUBCATEGORY', value: 'HR_GENERALIST', label: 'HR Generalist', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'SUBCATEGORY', value: 'RECRUITMENT', label: 'Recruitment', parentValue: 'HUMAN_RESOURCES', aliases: ['Talent Acquisition', 'People Operations'] },
-  { type: 'SUBCATEGORY', value: 'HR_OPERATIONS', label: 'HR Operations', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'SUBCATEGORY', value: 'TRAINING_DEVELOPMENT', label: 'Training & Development', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'SUBCATEGORY', value: 'COMPENSATION_BENEFITS', label: 'Compensation & Benefits', parentValue: 'HUMAN_RESOURCES' },
-
-  // MARKETING & COMMUNICATIONS
-  { type: 'CATEGORY', value: 'MARKETING', label: 'Marketing & Communications' },
-  { type: 'SUBCATEGORY', value: 'DIGITAL_MARKETING', label: 'Digital Marketing', parentValue: 'MARKETING' },
-  { type: 'SUBCATEGORY', value: 'CONTENT_MARKETING', label: 'Content Marketing', parentValue: 'MARKETING' },
-  { type: 'SUBCATEGORY', value: 'SOCIAL_MEDIA', label: 'Social Media Management', parentValue: 'MARKETING' },
-  { type: 'SUBCATEGORY', value: 'PUBLIC_RELATIONS', label: 'Public Relations', parentValue: 'MARKETING' },
-  { type: 'SUBCATEGORY', value: 'BRAND_MANAGEMENT', label: 'Brand Management', parentValue: 'MARKETING' },
-
-  // ADMINISTRATION
-  { type: 'CATEGORY', value: 'ADMINISTRATION', label: 'Administration & Office' },
-  { type: 'SUBCATEGORY', value: 'OFFICE_ADMIN', label: 'Office Administration', parentValue: 'ADMINISTRATION' },
-  { type: 'SUBCATEGORY', value: 'RECEPTION', label: 'Reception & Front Desk', parentValue: 'ADMINISTRATION' },
-  { type: 'SUBCATEGORY', value: 'DATA_ENTRY', label: 'Data Entry', parentValue: 'ADMINISTRATION' },
-  { type: 'SUBCATEGORY', value: 'SECRETARIAL', label: 'Secretarial', parentValue: 'ADMINISTRATION' },
-
-  // LEGAL
-  { type: 'CATEGORY', value: 'LEGAL', label: 'Legal' },
-  { type: 'SUBCATEGORY', value: 'CORPORATE_LAW', label: 'Corporate Law', parentValue: 'LEGAL' },
-  { type: 'SUBCATEGORY', value: 'LITIGATION', label: 'Litigation', parentValue: 'LEGAL' },
-  { type: 'SUBCATEGORY', value: 'COMPLIANCE', label: 'Compliance & Regulatory', parentValue: 'LEGAL' },
-  { type: 'SUBCATEGORY', value: 'CONVEYANCING', label: 'Conveyancing', parentValue: 'LEGAL' },
-
-  // SUPPLY CHAIN
-  { type: 'CATEGORY', value: 'SUPPLY_CHAIN', label: 'Supply Chain & Logistics' },
-  { type: 'SUBCATEGORY', value: 'LOGISTICS', label: 'Logistics', parentValue: 'SUPPLY_CHAIN' },
-  { type: 'SUBCATEGORY', value: 'WAREHOUSING', label: 'Warehousing', parentValue: 'SUPPLY_CHAIN' },
-  { type: 'SUBCATEGORY', value: 'IMPORT_EXPORT', label: 'Import & Export', parentValue: 'SUPPLY_CHAIN' },
-  { type: 'SUBCATEGORY', value: 'FLEET_MANAGEMENT', label: 'Fleet Management', parentValue: 'SUPPLY_CHAIN' },
-
-  // AGRICULTURE
-  { type: 'CATEGORY', value: 'AGRICULTURE', label: 'Agriculture & Agribusiness' },
-  { type: 'SUBCATEGORY', value: 'AGRONOMY', label: 'Agronomy', parentValue: 'AGRICULTURE' },
-  { type: 'SUBCATEGORY', value: 'VETERINARY', label: 'Veterinary', parentValue: 'AGRICULTURE' },
-  { type: 'SUBCATEGORY', value: 'AGRI_BUSINESS', label: 'Agribusiness Management', parentValue: 'AGRICULTURE' },
-  { type: 'SUBCATEGORY', value: 'FOOD_SCIENCE', label: 'Food Science', parentValue: 'AGRICULTURE' },
-
-  // CUSTOMER SERVICE
-  { type: 'CATEGORY', value: 'CUSTOMER_SERVICE', label: 'Customer Service' },
-  { type: 'SUBCATEGORY', value: 'CALL_CENTER', label: 'Call Centre', parentValue: 'CUSTOMER_SERVICE', aliases: ['Contact Centre'] },
-  { type: 'SUBCATEGORY', value: 'CUSTOMER_SUCCESS', label: 'Customer Success', parentValue: 'CUSTOMER_SERVICE' },
-  { type: 'SUBCATEGORY', value: 'CLIENT_RELATIONS', label: 'Client Relations', parentValue: 'CUSTOMER_SERVICE' },
-
-  // SALES
-  { type: 'CATEGORY', value: 'SALES', label: 'Sales' },
-  { type: 'SUBCATEGORY', value: 'BUSINESS_DEVELOPMENT', label: 'Business Development', parentValue: 'SALES' },
-  { type: 'SUBCATEGORY', value: 'ACCOUNT_MANAGEMENT', label: 'Account Management', parentValue: 'SALES' },
-  { type: 'SUBCATEGORY', value: 'REAL_ESTATE_SALES', label: 'Real Estate Sales', parentValue: 'SALES' },
-
-  // MEDIA & CREATIVE
-  { type: 'CATEGORY', value: 'MEDIA_CREATIVE', label: 'Media & Creative' },
-  { type: 'SUBCATEGORY', value: 'JOURNALISM', label: 'Journalism', parentValue: 'MEDIA_CREATIVE' },
-  { type: 'SUBCATEGORY', value: 'GRAPHIC_DESIGN', label: 'Graphic Design', parentValue: 'MEDIA_CREATIVE' },
-  { type: 'SUBCATEGORY', value: 'VIDEO_PRODUCTION', label: 'Video Production', parentValue: 'MEDIA_CREATIVE' },
-  { type: 'SUBCATEGORY', value: 'PHOTOGRAPHY', label: 'Photography', parentValue: 'MEDIA_CREATIVE' },
-
-  // SOCIAL WORK
-  { type: 'CATEGORY', value: 'SOCIAL_WORK', label: 'Social Work & Community' },
-  { type: 'SUBCATEGORY', value: 'COMMUNITY_DEVELOPMENT', label: 'Community Development', parentValue: 'SOCIAL_WORK' },
-  { type: 'SUBCATEGORY', value: 'SOCIAL_WORK_DIRECT', label: 'Social Work', parentValue: 'SOCIAL_WORK' },
-  { type: 'SUBCATEGORY', value: 'COUNSELLING', label: 'Counselling Psychology', parentValue: 'SOCIAL_WORK' },
-  { type: 'SUBCATEGORY', value: 'M_E', label: 'Monitoring & Evaluation', parentValue: 'SOCIAL_WORK' },
-
-  // GOVERNMENT & POLICY
-  { type: 'CATEGORY', value: 'GOVERNMENT_POLICY', label: 'Government & Policy' },
-  { type: 'SUBCATEGORY', value: 'PUBLIC_POLICY', label: 'Public Policy', parentValue: 'GOVERNMENT_POLICY' },
-  { type: 'SUBCATEGORY', value: 'GOVERNANCE', label: 'Governance', parentValue: 'GOVERNMENT_POLICY' },
-  { type: 'SUBCATEGORY', value: 'DISASTER_MANAGEMENT', label: 'Disaster Management', parentValue: 'GOVERNMENT_POLICY' },
+const categories: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  { type: TaxonomyType.CATEGORY, value: 'FINANCE_ACCOUNTING', label: 'Finance & Accounting', description: 'Financial management, accounting, audit, and tax roles' },
+  { type: TaxonomyType.CATEGORY, value: 'HUMAN_RESOURCES', label: 'Human Resources', description: 'Recruitment, talent management, and employee relations' },
+  { type: TaxonomyType.CATEGORY, value: 'INFORMATION_TECHNOLOGY', label: 'Information Technology', description: 'Software development, infrastructure, and IT support' },
+  { type: TaxonomyType.CATEGORY, value: 'EDUCATION_TRAINING', label: 'Education & Training', description: 'Teaching, lecturing, curriculum development, and TVET' },
+  { type: TaxonomyType.CATEGORY, value: 'HEALTHCARE_MEDICAL', label: 'Healthcare & Medical', description: 'Clinical, nursing, pharmacy, and public health roles' },
+  { type: TaxonomyType.CATEGORY, value: 'ENGINEERING', label: 'Engineering', description: 'Civil, electrical, mechanical, and other engineering disciplines' },
+  { type: TaxonomyType.CATEGORY, value: 'MARKETING_COMMUNICATIONS', label: 'Marketing & Communications', description: 'Digital marketing, PR, branding, and content creation' },
+  { type: TaxonomyType.CATEGORY, value: 'PROCUREMENT_SUPPLY_CHAIN', label: 'Procurement & Supply Chain', description: 'Purchasing, logistics, warehousing, and inventory management' },
+  { type: TaxonomyType.CATEGORY, value: 'LEGAL', label: 'Legal', description: 'Corporate law, litigation, compliance, and conveyancing' },
+  { type: TaxonomyType.CATEGORY, value: 'ADMINISTRATION', label: 'Administration', description: 'Office administration, secretarial, and data entry roles' },
+  { type: TaxonomyType.CATEGORY, value: 'SALES_BUSINESS_DEVELOPMENT', label: 'Sales & Business Development', description: 'Sales, account management, and business growth' },
+  { type: TaxonomyType.CATEGORY, value: 'LOGISTICS_TRANSPORT', label: 'Logistics & Transport', description: 'Freight, fleet management, clearing & forwarding' },
+  { type: TaxonomyType.CATEGORY, value: 'AGRICULTURE_AGRIBUSINESS', label: 'Agriculture & Agribusiness', description: 'Farming, agronomy, veterinary, and food science' },
+  { type: TaxonomyType.CATEGORY, value: 'GOVERNMENT_PUBLIC_ADMIN', label: 'Government & Public Administration', description: 'Public policy, governance, and county administration' },
+  { type: TaxonomyType.CATEGORY, value: 'MEDIA_CREATIVE', label: 'Media & Creative', description: 'Journalism, graphic design, video production, and photography' },
+  { type: TaxonomyType.CATEGORY, value: 'CUSTOMER_SERVICE', label: 'Customer Service', description: 'Call centres, customer success, and client relations' },
+  { type: TaxonomyType.CATEGORY, value: 'RESEARCH_DATA_ANALYTICS', label: 'Research & Data Analytics', description: 'Research, monitoring & evaluation, and data analysis' },
+  { type: TaxonomyType.CATEGORY, value: 'CONSTRUCTION_REAL_ESTATE', label: 'Construction & Real Estate', description: 'Building construction, project management, and property' },
+  { type: TaxonomyType.CATEGORY, value: 'SOCIAL_WORK_COMMUNITY_DEVELOPMENT', label: 'Social Work & Community Development', description: 'Community development, social work, and counselling' },
 ];
 
 // ============================================================
-// SKILLS (cross-category, common in Kenyan job market)
+// SUBCATEGORIES (organized by parent category value)
 // ============================================================
 
-const skills: TaxonomyEntry[] = [
-  // Finance & Accounting skills
-  { type: 'SKILL', value: 'ACCOUNTS_PAYABLE', label: 'Accounts Payable', aliases: ['AP Processing', 'Creditor Management'] },
-  { type: 'SKILL', value: 'ACCOUNTS_RECEIVABLE', label: 'Accounts Receivable', aliases: ['Debtor Management'] },
-  { type: 'SKILL', value: 'BANK_RECONCILIATION', label: 'Bank Reconciliation' },
-  { type: 'SKILL', value: 'FINANCIAL_REPORTING', label: 'Financial Reporting', aliases: ['Financial Statements'] },
-  { type: 'SKILL', value: 'INVOICE_PROCESSING', label: 'Invoice Processing' },
-  { type: 'SKILL', value: 'AUDIT_SUPPORT', label: 'Audit Support', aliases: ['Internal Audit', 'External Audit'] },
-  { type: 'SKILL', value: 'PAYROLL_PROCESSING', label: 'Payroll Processing', aliases: ['Payroll Management'] },
-  { type: 'SKILL', value: 'BUDGET_PREPARATION', label: 'Budget Preparation', aliases: ['Budgeting'] },
-  { type: 'SKILL', value: 'TAX_COMPLIANCE_SKILL', label: 'Tax Compliance', aliases: ['Tax Filing', 'KRA Returns', 'PAYE', 'NSSF', 'NHIF'] },
-  { type: 'SKILL', value: 'GRANT_MANAGEMENT', label: 'Grant Management', aliases: ['Donor Reporting'] },
-  { type: 'SKILL', value: 'FINANCIAL_ANALYSIS_SKILL', label: 'Financial Analysis', aliases: ['Ratio Analysis', 'Trend Analysis'] },
-  { type: 'SKILL', value: 'COST_ACCOUNTING', label: 'Cost Accounting' },
-  { type: 'SKILL', value: 'FOREX_MANAGEMENT', label: 'Foreign Exchange Management' },
-  { type: 'SKILL', value: 'CASH_FLOW_MANAGEMENT', label: 'Cash Flow Management' },
+const subcategoriesByParent: Record<string, Omit<TaxonomySeedItem, 'parentId'>[]> = {
+  FINANCE_ACCOUNTING: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'ACCOUNTING', label: 'Accounting', description: 'General accounting and bookkeeping' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'ACCOUNTS_PAYABLE', label: 'Accounts Payable', description: 'Managing creditor payments and supplier invoices' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'FINANCIAL_REPORTING', label: 'Financial Reporting', description: 'Preparing financial statements and management reports' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'AUDIT', label: 'Audit', description: 'Internal and external audit functions' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TAX_COMPLIANCE', label: 'Tax & Compliance', description: 'KRA tax filing, PAYE, VAT, and withholding tax' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PAYROLL', label: 'Payroll', description: 'Salary processing, NSSF, NHIF/SHIF deductions' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TREASURY', label: 'Treasury', description: 'Cash management, liquidity, and treasury operations' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CREDIT_CONTROL', label: 'Credit Control', description: 'Debt collection, credit risk assessment, and receivables management' },
+  ],
 
-  // Tech skills
-  { type: 'SKILL', value: 'JAVASCRIPT', label: 'JavaScript', aliases: ['JS', 'ES6+'] },
-  { type: 'SKILL', value: 'TYPESCRIPT', label: 'TypeScript' },
-  { type: 'SKILL', value: 'PYTHON', label: 'Python' },
-  { type: 'SKILL', value: 'PHP', label: 'PHP' },
-  { type: 'SKILL', value: 'REACT', label: 'React', aliases: ['React.js', 'ReactJS'] },
-  { type: 'SKILL', value: 'NEXT_JS', label: 'Next.js', aliases: ['NextJS'] },
-  { type: 'SKILL', value: 'NODE_JS', label: 'Node.js', aliases: ['Node', 'NodeJS'] },
-  { type: 'SKILL', value: 'FLUTTER', label: 'Flutter' },
-  { type: 'SKILL', value: 'REACT_NATIVE', label: 'React Native' },
-  { type: 'SKILL', value: 'SQL', label: 'SQL', aliases: ['MySQL', 'PostgreSQL', 'Database Querying'] },
-  { type: 'SKILL', value: 'REST_API', label: 'REST API Design', aliases: ['API Development', 'RESTful APIs'] },
-  { type: 'SKILL', value: 'GIT', label: 'Git', aliases: ['Version Control'] },
-  { type: 'SKILL', value: 'DOCKER', label: 'Docker', aliases: ['Containerization'] },
-  { type: 'SKILL', value: 'AWS', label: 'AWS', aliases: ['Amazon Web Services'] },
-  { type: 'SKILL', value: 'AZURE', label: 'Microsoft Azure' },
-  { type: 'SKILL', value: 'MACHINE_LEARNING', label: 'Machine Learning', aliases: ['ML'] },
-  { type: 'SKILL', value: 'DATA_VISUALIZATION', label: 'Data Visualization', aliases: ['Tableau', 'Power BI'] },
-  { type: 'SKILL', value: 'LINUX', label: 'Linux Administration', aliases: ['Ubuntu', 'CentOS'] },
-  { type: 'SKILL', value: 'CYBERSECURITY_FUNDAMENTALS', label: 'Cybersecurity Fundamentals' },
-  { type: 'SKILL', value: 'HTML_CSS', label: 'HTML & CSS' },
-  { type: 'SKILL', value: 'TAILWIND_CSS', label: 'Tailwind CSS' },
-  { type: 'SKILL', value: 'FIGMA', label: 'Figma' },
-  { type: 'SKILL', value: 'UI_UX_DESIGN_SKILL', label: 'UI/UX Design' },
+  HUMAN_RESOURCES: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'RECRUITMENT', label: 'Recruitment', description: 'Talent acquisition, job advertising, and candidate selection' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'HR_GENERALIST', label: 'HR Generalist', description: 'Broad HR functions across the employee lifecycle' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TALENT_MANAGEMENT', label: 'Talent Management', description: 'Succession planning, talent pipelines, and workforce planning' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'COMPENSATION_BENEFITS', label: 'Compensation & Benefits', description: 'Salary structuring, benefits administration, and job evaluation' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'HR_OPERATIONS', label: 'HR Operations', description: 'HRIS management, policies, and compliance' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'EMPLOYEE_RELATIONS', label: 'Employee Relations', description: 'Disciplinary processes, grievances, and labour relations' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TRAINING_DEVELOPMENT', label: 'Training & Development', description: 'Capacity building, L&D programmes, and mentorship' },
+  ],
 
-  // Healthcare skills
-  { type: 'SKILL', value: 'PATIENT_CARE', label: 'Patient Care' },
-  { type: 'SKILL', value: 'CLINICAL_ASSESSMENT', label: 'Clinical Assessment' },
-  { type: 'SKILL', value: 'PHARMACOLOGY', label: 'Pharmacology' },
-  { type: 'SKILL', value: 'EPIDEMIOLOGY', label: 'Epidemiology' },
-  { type: 'SKILL', value: 'HEALTH_RECORDS_MANAGEMENT', label: 'Health Records Management' },
-  { type: 'SKILL', value: 'MATERNAL_HEALTH', label: 'Maternal & Child Health' },
+  INFORMATION_TECHNOLOGY: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'SOFTWARE_DEVELOPMENT', label: 'Software Development', description: 'Custom software, backend systems, and application development' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'WEB_DEVELOPMENT', label: 'Web Development', description: 'Frontend, backend, and full-stack web applications' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'MOBILE_DEVELOPMENT', label: 'Mobile Development', description: 'Android, iOS, and cross-platform mobile apps' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DATABASE_ADMINISTRATION', label: 'Database Administration', description: 'MySQL, PostgreSQL, MongoDB, and data architecture' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'IT_SUPPORT', label: 'IT Support', description: 'Helpdesk, hardware troubleshooting, and end-user support' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CYBERSECURITY', label: 'Cybersecurity', description: 'Information security, penetration testing, and compliance' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DATA_ENGINEERING', label: 'Data Engineering', description: 'ETL pipelines, data warehousing, and big data infrastructure' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'NETWORK_ADMINISTRATION', label: 'Network Administration', description: 'LAN/WAN, firewalls, VPNs, and network infrastructure' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DEVOPS', label: 'DevOps', description: 'CI/CD, cloud infrastructure, and site reliability engineering' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'QUALITY_ASSURANCE', label: 'Quality Assurance', description: 'Manual and automated testing, QA processes' },
+  ],
 
-  // Education skills
-  { type: 'SKILL', value: 'LESSON_PLANNING', label: 'Lesson Planning' },
-  { type: 'SKILL', value: 'STUDENT_ASSESSMENT', label: 'Student Assessment', aliases: ['Examination', 'Grading'] },
-  { type: 'SKILL', value: 'MENTORSHIP', label: 'Mentorship', aliases: ['Student Mentorship'] },
-  { type: 'SKILL', value: 'CURRICULUM_DELIVERY', label: 'Curriculum Delivery', aliases: ['Teaching'] },
-  { type: 'SKILL', value: 'EXAM_INVIGILATION', label: 'Exam Invigilation' },
-  { type: 'SKILL', value: 'E_LEARNING_DELIVERY', label: 'E-Learning Delivery' },
+  EDUCATION_TRAINING: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'LECTURING', label: 'Lecturing', description: 'University and college-level teaching' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TVET_TRAINING', label: 'TVET Training', description: 'Technical and vocational skills instruction' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CURRICULUM_DEVELOPMENT', label: 'Curriculum Development', description: 'Designing and reviewing curricula aligned to KICD/CUE standards' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'EDUCATIONAL_ADMINISTRATION', label: 'Educational Administration', description: 'School management, deanship, and academic leadership' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'EARLY_CHILDHOOD_DEVELOPMENT', label: 'Early Childhood Development', description: 'Pre-primary and nursery education' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SPECIAL_NEEDS_EDUCATION', label: 'Special Needs Education', description: 'Inclusive education for learners with disabilities' },
+  ],
 
-  // HR & Admin skills
-  { type: 'SKILL', value: 'CANDIDATE_SCREENING', label: 'Candidate Screening', aliases: ['Talent Screening', 'CV Screening'] },
-  { type: 'SKILL', value: 'INTERVIEWING', label: 'Interviewing' },
-  { type: 'SKILL', value: 'ONBOARDING', label: 'Employee Onboarding' },
-  { type: 'SKILL', value: 'PERFORMANCE_MANAGEMENT', label: 'Performance Management' },
-  { type: 'SKILL', value: 'TRAINING_FACILITATION', label: 'Training Facilitation' },
-  { type: 'SKILL', value: 'DATA_ENTRY_SKILL', label: 'Data Entry', aliases: ['Typing'] },
-  { type: 'SKILL', value: 'SCHEDULING', label: 'Scheduling & Calendar Management' },
-  { type: 'SKILL', value: 'FILING_RECORDS', label: 'Filing & Records Management' },
+  HEALTHCARE_MEDICAL: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'MEDICAL_DOCTOR', label: 'Medical Doctor', description: 'Physicians and clinical specialists' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'NURSING', label: 'Nursing', description: 'Registered nurses and nursing officers' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CLINICAL_OFFICERS', label: 'Clinical Officers', description: 'Mid-level medical practitioners unique to East Africa' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PHARMACY', label: 'Pharmacy', description: 'Pharmacists and pharmaceutical technologists' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PUBLIC_HEALTH', label: 'Public Health', description: 'Community health, epidemiology, and health promotion' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'MEDICAL_LABORATORY', label: 'Medical Laboratory', description: 'Lab technologists and scientists' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'NUTRITION_DIETETICS', label: 'Nutrition & Dietetics', description: 'Nutritional assessment and dietary planning' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'HEALTH_RECORDS', label: 'Health Records & ICT', description: 'Health information management systems' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'HEALTH_ADMINISTRATION', label: 'Health Administration', description: 'Hospital management and health systems governance' },
+  ],
 
-  // Marketing skills
-  { type: 'SKILL', value: 'SEO', label: 'Search Engine Optimization', aliases: ['SEO'] },
-  { type: 'SKILL', value: 'SEM', label: 'Search Engine Marketing', aliases: ['Google Ads', 'PPC'] },
-  { type: 'SKILL', value: 'SOCIAL_MEDIA_MANAGEMENT', label: 'Social Media Management' },
-  { type: 'SKILL', value: 'COPYWRITING', label: 'Copywriting' },
-  { type: 'SKILL', value: 'EMAIL_MARKETING', label: 'Email Marketing' },
+  ENGINEERING: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'CIVIL_ENGINEERING', label: 'Civil Engineering', description: 'Structural, geotechnical, and transportation engineering' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'ELECTRICAL_ENGINEERING', label: 'Electrical Engineering', description: 'Power systems, electrical installation, and maintenance' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'MECHANICAL_ENGINEERING', label: 'Mechanical Engineering', description: 'Plant maintenance, HVAC, and manufacturing systems' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CHEMICAL_ENGINEERING', label: 'Chemical Engineering', description: 'Process engineering, oil & gas, and manufacturing' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'ENVIRONMENTAL_ENGINEERING', label: 'Environmental Engineering', description: 'Water treatment, waste management, and EIA' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'GEOMATIC_ENGINEERING', label: 'Geomatic / Surveying Engineering', description: 'Land surveying, GIS, and geospatial analysis' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'AGRICULTURAL_ENGINEERING', label: 'Agricultural Engineering', description: 'Irrigation, farm machinery, and post-harvest technology' },
+  ],
 
-  // Project Management
-  { type: 'SKILL', value: 'PROJECT_MANAGEMENT', label: 'Project Management', aliases: ['PM'] },
-  { type: 'SKILL', value: 'AGILE_SCRUM', label: 'Agile & Scrum' },
-  { type: 'SKILL', value: 'RISK_MANAGEMENT', label: 'Risk Management' },
-  { type: 'SKILL', value: 'STAKEHOLDER_MANAGEMENT', label: 'Stakeholder Management' },
+  MARKETING_COMMUNICATIONS: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'DIGITAL_MARKETING', label: 'Digital Marketing', description: 'SEO, SEM, social media, and online advertising' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CONTENT_MARKETING', label: 'Content Marketing', description: 'Blog writing, content strategy, and copywriting' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SOCIAL_MEDIA_MANAGEMENT', label: 'Social Media Management', description: 'Facebook, Twitter/X, Instagram, TikTok management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PUBLIC_RELATIONS', label: 'Public Relations', description: 'Media relations, press releases, and crisis communication' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'BRAND_MANAGEMENT', label: 'Brand Management', description: 'Brand strategy, positioning, and identity' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'EVENT_MANAGEMENT', label: 'Event Management', description: 'Corporate events, activations, and exhibitions' },
+  ],
 
-  // Soft skills / Cross-cutting
-  { type: 'SKILL', value: 'REPORT_WRITING', label: 'Report Writing', aliases: ['Proposal Writing'] },
-  { type: 'SKILL', value: 'PRESENTATION_SKILLS', label: 'Presentation Skills' },
-  { type: 'SKILL', value: 'TEAM_LEADERSHIP', label: 'Team Leadership' },
-  { type: 'SKILL', value: 'PROBLEM_SOLVING', label: 'Problem Solving' },
-  { type: 'SKILL', value: 'CLIENT_MANAGEMENT', label: 'Client Management', aliases: ['Account Management'] },
-  { type: 'SKILL', value: 'MONITORING_EVALUATION', label: 'Monitoring & Evaluation', aliases: ['M&E'] },
-  { type: 'SKILL', value: 'RESEARCH_SKILLS', label: 'Research Skills' },
-  { type: 'SKILL', value: 'QUANTITATIVE_ANALYSIS', label: 'Quantitative Analysis' },
-  { type: 'SKILL', value: 'QUALITATIVE_ANALYSIS', label: 'Qualitative Analysis' },
-  { type: 'SKILL', value: 'COMMUNITY_MOBILIZATION', label: 'Community Mobilization' },
+  PROCUREMENT_SUPPLY_CHAIN: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'PROCUREMENT', label: 'Procurement', description: 'Sourcing, vendor management, and purchase orders' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SUPPLY_CHAIN_MANAGEMENT', label: 'Supply Chain Management', description: 'End-to-end supply chain planning and execution' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'LOGISTICS', label: 'Logistics', description: 'Transportation, distribution, and last-mile delivery' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'WAREHOUSING', label: 'Warehousing', description: 'Inventory management, storage, and distribution centres' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'IMPORT_EXPORT', label: 'Import & Export', description: 'Customs clearance, freight forwarding, and trade compliance' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'FLEET_MANAGEMENT', label: 'Fleet Management', description: 'Vehicle tracking, maintenance, and dispatch' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CONTRACT_MANAGEMENT', label: 'Contract Management', description: 'Supplier contracts, SLAs, and vendor performance' },
+  ],
+
+  LEGAL: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'CORPORATE_LAW', label: 'Corporate Law', description: 'Company secretarial, governance, and mergers' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'LITIGATION', label: 'Litigation', description: 'Civil and criminal court representation' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'COMPLIANCE_REGULATORY', label: 'Compliance & Regulatory', description: 'Regulatory compliance, AML/KYC, and licensing' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CONVEYANCING', label: 'Conveyancing', description: 'Property transfer, land registration, and title searches' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'LABOUR_LAW', label: 'Labour Law', description: 'Employment contracts, disputes, and labour relations' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'INTELLECTUAL_PROPERTY', label: 'Intellectual Property', description: 'Trademarks, patents, copyrights, and KIPI registration' },
+  ],
+
+  ADMINISTRATION: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'OFFICE_ADMINISTRATION', label: 'Office Administration', description: 'General office management and coordination' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'RECEPTION_FRONT_DESK', label: 'Reception & Front Desk', description: 'Visitor management, switchboard, and first impressions' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DATA_ENTRY', label: 'Data Entry', description: 'Typing, data capture, and records digitization' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SECRETARIAL', label: 'Secretarial', description: 'Executive assistance, minute-taking, and diary management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'FILING_RECORDS_MANAGEMENT', label: 'Filing & Records Management', description: 'Document management, archiving, and registry' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DRIVING_MESSENGER', label: 'Driving & Messenger', description: ' chauffeur services, mail dispatch, and errands' },
+  ],
+
+  SALES_BUSINESS_DEVELOPMENT: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'BUSINESS_DEVELOPMENT', label: 'Business Development', description: 'Strategic partnerships, market expansion, and proposals' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DIRECT_SALES', label: 'Direct Sales', description: 'Field sales, cold calling, and lead conversion' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'ACCOUNT_MANAGEMENT', label: 'Account Management', description: 'Key account handling and client retention' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'REAL_ESTATE_SALES', label: 'Real Estate Sales', description: 'Property selling and estate agency' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'INSURANCE_SALES', label: 'Insurance Sales', description: 'Life and general insurance agent roles' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'B2B_SALES', label: 'B2B Sales', description: 'Corporate and institutional sales' },
+  ],
+
+  LOGISTICS_TRANSPORT: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'FREIGHT_FORWARDING', label: 'Freight Forwarding', description: 'Air, sea, and road freight management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CUSTOMS_CLEARANCE', label: 'Customs Clearance', description: 'KRA customs processes, CDS, and tariff classification' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TRANSPORT_MANAGEMENT', label: 'Transport Management', description: 'Fleet operations, routing, and scheduling' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'LAST_MILE_DELIVERY', label: 'Last-Mile Delivery', description: 'E-commerce delivery and dispatch riding' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'WAREHOUSE_OPERATIONS', label: 'Warehouse Operations', description: 'Pick/pack, stock control, and dispatch' },
+  ],
+
+  AGRICULTURE_AGRIBUSINESS: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'AGRONOMY', label: 'Agronomy', description: 'Crop science, soil management, and agronomic practices' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'VETERINARY', label: 'Veterinary', description: 'Animal health, livestock management, and vet services' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'AGRIBUSINESS_MANAGEMENT', label: 'Agribusiness Management', description: 'Agricultural value chains, marketing, and farm management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'FOOD_SCIENCE', label: 'Food Science', description: 'Food processing, quality control, and safety standards' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'HORTICULTURE', label: 'Horticulture', description: 'Floriculture, fruits, vegetables, and export crops' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'AGRICULTURAL_EXTENSION', label: 'Agricultural Extension', description: 'Farmer training, outreach, and technology transfer' },
+  ],
+
+  GOVERNMENT_PUBLIC_ADMIN: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'PUBLIC_POLICY', label: 'Public Policy', description: 'Policy analysis, formulation, and implementation' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'GOVERNANCE', label: 'Governance', description: 'Public sector governance, ethics, and accountability' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'COUNTY_ADMINISTRATION', label: 'County Administration', description: 'County executive and assembly operations' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DISASTER_MANAGEMENT', label: 'Disaster Management', description: 'Emergency preparedness, response, and recovery' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PUBLIC_FINANCE', label: 'Public Finance', description: 'Budgeting, IFMIS, and public expenditure management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'URBAN_PLANNING', label: 'Urban Planning', description: 'Spatial planning, zoning, and county development plans' },
+  ],
+
+  MEDIA_CREATIVE: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'JOURNALISM', label: 'Journalism', description: 'News reporting, editing, and investigative journalism' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'GRAPHIC_DESIGN', label: 'Graphic Design', description: 'Visual design, branding materials, and print design' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'VIDEO_PRODUCTION', label: 'Video Production', description: 'Filming, editing, and post-production' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PHOTOGRAPHY', label: 'Photography', description: 'Commercial, event, and editorial photography' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'UI_UX_DESIGN', label: 'UI/UX Design', description: 'User interface and user experience design for digital products' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'COPYWRITING', label: 'Copywriting', description: 'Advertising copy, scripts, and creative writing' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'BROADCAST_MEDIA', label: 'Broadcast Media', description: 'Radio and television production and presentation' },
+  ],
+
+  CUSTOMER_SERVICE: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'CALL_CENTRE', label: 'Call Centre', description: 'Inbound and outbound call centre operations' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CUSTOMER_SUCCESS', label: 'Customer Success', description: 'Onboarding, retention, and customer satisfaction' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'CLIENT_RELATIONS', label: 'Client Relations', description: 'Account support, complaint resolution, and client care' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'TECHNICAL_SUPPORT', label: 'Technical Support', description: 'Product support, troubleshooting, and issue resolution' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'FRONT_OFFICE', label: 'Front Office', description: 'Reception, guest services, and customer-facing operations' },
+  ],
+
+  RESEARCH_DATA_ANALYTICS: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'MONITORING_EVALUATION', label: 'Monitoring & Evaluation', description: 'Project M&E, logic models, and donor reporting' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'DATA_ANALYSIS', label: 'Data Analysis', description: 'Statistical analysis, data mining, and insights generation' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'RESEARCH', label: 'Research', description: 'Qualitative and quantitative research methodologies' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'BUSINESS_INTELLIGENCE', label: 'Business Intelligence', description: 'BI dashboards, reporting, and data-driven strategy' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SURVEY_DATA_COLLECTION', label: 'Survey & Data Collection', description: 'Questionnaire design, field data collection, and ODK/KoboToolbox' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'GEOGRAPHIC_INFORMATION_SYSTEMS', label: 'Geographic Information Systems', description: 'GIS mapping, spatial analysis, and remote sensing' },
+  ],
+
+  CONSTRUCTION_REAL_ESTATE: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'PROJECT_MANAGEMENT_CONSTRUCTION', label: 'Construction Project Management', description: 'Site supervision, project planning, and contractor management' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'QUANTITY_SURVEYING', label: 'Quantity Surveying', description: 'Cost estimation, BOQ preparation, and contract administration' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'ARCHITECTURE', label: 'Architecture', description: 'Building design, space planning, and architectural drafting' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PROPERTY_MANAGEMENT', label: 'Property Management', description: 'Tenant relations, rent collection, and property maintenance' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'REAL_ESTATE_VALUATION', label: 'Real Estate Valuation', description: 'Property valuation, appraisals, and market analysis' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SITE_SUPERVISION', label: 'Site Supervision', description: 'Foreman, site clerk, and construction supervision' },
+  ],
+
+  SOCIAL_WORK_COMMUNITY_DEVELOPMENT: [
+    { type: TaxonomyType.SUBCATEGORY, value: 'COMMUNITY_DEVELOPMENT', label: 'Community Development', description: 'Grassroots mobilization, participatory development, and community organizing' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'SOCIAL_WORK', label: 'Social Work', description: 'Case management, child protection, and family support' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'COUNSELLING', label: 'Counselling', description: 'Psychological counselling, trauma support, and psychosocial care' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'PROGRAMME_MANAGEMENT', label: 'Programme Management', description: 'NGO programme design, implementation, and donor coordination' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'GENDER_DEVELOPMENT', label: 'Gender & Development', description: 'Gender mainstreaming, women empowerment, and GBV response' },
+    { type: TaxonomyType.SUBCATEGORY, value: 'YOUTH_DEVELOPMENT', label: 'Youth Development', description: 'Youth empowerment, mentorship, and skills building' },
+  ],
+};
+
+// ============================================================
+// SKILLS (100+ Kenyan-market-relevant skills)
+// ============================================================
+
+const skills: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  // --- Finance & Accounting Skills ---
+  { type: TaxonomyType.SKILL, value: 'ACCOUNTS_PAYABLE_MANAGEMENT', label: 'Accounts Payable Management', description: 'Processing supplier invoices and managing creditor payments' },
+  { type: TaxonomyType.SKILL, value: 'BANK_RECONCILIATION', label: 'Bank Reconciliation', description: 'Reconciling bank statements with ledger records' },
+  { type: TaxonomyType.SKILL, value: 'FINANCIAL_REPORTING', label: 'Financial Reporting', description: 'Preparing IFRS-compliant financial statements' },
+  { type: TaxonomyType.SKILL, value: 'INVOICE_PROCESSING', label: 'Invoice Processing', description: 'Verifying, approving, and recording invoices' },
+  { type: TaxonomyType.SKILL, value: 'AUDIT_SUPPORT', label: 'Audit Support', description: 'Assisting internal and external auditors with documentation' },
+  { type: TaxonomyType.SKILL, value: 'BUDGETING', label: 'Budgeting', description: 'Preparing and managing organizational budgets' },
+  { type: TaxonomyType.SKILL, value: 'TAX_COMPLIANCE', label: 'Tax Compliance', description: 'KRA returns, PAYE, VAT, and withholding tax' },
+  { type: TaxonomyType.SKILL, value: 'PAYROLL_MANAGEMENT', label: 'Payroll Management', description: 'Processing salaries, statutory deductions (NSSF, NHIF/SHIF, NITA)' },
+  { type: TaxonomyType.SKILL, value: 'CREDIT_ANALYSIS', label: 'Credit Analysis', description: 'Evaluating creditworthiness and managing credit risk' },
+  { type: TaxonomyType.SKILL, value: 'FORECASTING', label: 'Financial Forecasting', description: 'Revenue and expenditure forecasting' },
+  { type: TaxonomyType.SKILL, value: 'COST_ACCOUNTING', label: 'Cost Accounting', description: 'Job costing, marginal costing, and cost control' },
+  { type: TaxonomyType.SKILL, value: 'CASH_FLOW_MANAGEMENT', label: 'Cash Flow Management', description: 'Managing liquidity and cash flow projections' },
+  { type: TaxonomyType.SKILL, value: 'GRANT_MANAGEMENT', label: 'Grant Management', description: 'Donor fund management, reporting, and compliance' },
+  { type: TaxonomyType.SKILL, value: 'IFRS_KAS', label: 'IFRS / KAS', description: 'International Financial Reporting Standards and Kenya Accounting Standards' },
+
+  // --- IT & Software Development Skills ---
+  { type: TaxonomyType.SKILL, value: 'PYTHON', label: 'Python', description: 'General-purpose programming language for web, data, and automation' },
+  { type: TaxonomyType.SKILL, value: 'JAVASCRIPT', label: 'JavaScript', description: 'Core web programming language for frontend and backend' },
+  { type: TaxonomyType.SKILL, value: 'REACT', label: 'React', description: 'Frontend JavaScript library for building user interfaces' },
+  { type: TaxonomyType.SKILL, value: 'NODE_JS', label: 'Node.js', description: 'Server-side JavaScript runtime' },
+  { type: TaxonomyType.SKILL, value: 'SQL', label: 'SQL', description: 'Database querying and management (MySQL, PostgreSQL)' },
+  { type: TaxonomyType.SKILL, value: 'TYPESCRIPT', label: 'TypeScript', description: 'Typed superset of JavaScript' },
+  { type: TaxonomyType.SKILL, value: 'HTML_CSS', label: 'HTML & CSS', description: 'Core web technologies for page structure and styling' },
+  { type: TaxonomyType.SKILL, value: 'GIT', label: 'Git', description: 'Version control system for source code management' },
+  { type: TaxonomyType.SKILL, value: 'DOCKER', label: 'Docker', description: 'Containerization and container orchestration' },
+  { type: TaxonomyType.SKILL, value: 'AWS', label: 'AWS', description: 'Amazon Web Services cloud platform' },
+  { type: TaxonomyType.SKILL, value: 'AZURE', label: 'Microsoft Azure', description: 'Microsoft cloud platform and services' },
+  { type: TaxonomyType.SKILL, value: 'REST_API_DESIGN', label: 'REST API Design', description: 'Designing and building RESTful APIs' },
+  { type: TaxonomyType.SKILL, value: 'GRAPHQL', label: 'GraphQL', description: 'Query language for APIs' },
+  { type: TaxonomyType.SKILL, value: 'LINUX_ADMINISTRATION', label: 'Linux Administration', description: 'Linux server management and shell scripting' },
+  { type: TaxonomyType.SKILL, value: 'AGILE_SCRUM', label: 'Agile & Scrum', description: 'Agile project management and Scrum framework' },
+  { type: TaxonomyType.SKILL, value: 'NEXT_JS', label: 'Next.js', description: 'React framework for production-grade web apps' },
+  { type: TaxonomyType.SKILL, value: 'FLUTTER', label: 'Flutter', description: 'Cross-platform mobile app development framework' },
+  { type: TaxonomyType.SKILL, value: 'REACT_NATIVE', label: 'React Native', description: 'Cross-platform mobile development using React' },
+  { type: TaxonomyType.SKILL, value: 'TAILWIND_CSS', label: 'Tailwind CSS', description: 'Utility-first CSS framework for rapid UI development' },
+  { type: TaxonomyType.SKILL, value: 'MACHINE_LEARNING', label: 'Machine Learning', description: 'Building and deploying ML models' },
+  { type: TaxonomyType.SKILL, value: 'DATA_ENGINEERING_SKILLS', label: 'Data Engineering', description: 'Building ETL pipelines and data infrastructure' },
+  { type: TaxonomyType.SKILL, value: 'CYBERSECURITY_FUNDAMENTALS', label: 'Cybersecurity Fundamentals', description: 'Network security, encryption, and threat assessment' },
+  { type: TaxonomyType.SKILL, value: 'CI_CD', label: 'CI/CD', description: 'Continuous integration and continuous deployment pipelines' },
+  { type: TaxonomyType.SKILL, value: 'TERRAFORM', label: 'Terraform', description: 'Infrastructure as Code for cloud provisioning' },
+  { type: TaxonomyType.SKILL, value: 'KUBERNETES', label: 'Kubernetes', description: 'Container orchestration and management' },
+
+  // --- HR Skills ---
+  { type: TaxonomyType.SKILL, value: 'CANDIDATE_SCREENING', label: 'Candidate Screening', description: 'Reviewing CVs and shortlisting candidates' },
+  { type: TaxonomyType.SKILL, value: 'PERFORMANCE_MANAGEMENT', label: 'Performance Management', description: 'Appraisals, KPIs, and performance improvement plans' },
+  { type: TaxonomyType.SKILL, value: 'RECRUITMENT', label: 'Recruitment', description: 'Full-cycle recruitment from sourcing to onboarding' },
+  { type: TaxonomyType.SKILL, value: 'ONBOARDING', label: 'Employee Onboarding', description: 'New hire orientation and integration' },
+  { type: TaxonomyType.SKILL, value: 'EMPLOYEE_RELATIONS', label: 'Employee Relations', description: 'Managing workplace dynamics and labour issues' },
+  { type: TaxonomyType.SKILL, value: 'COMPENSATION_ANALYSIS', label: 'Compensation Analysis', description: 'Salary benchmarking and pay structure design' },
+  { type: TaxonomyType.SKILL, value: 'TRAINING_NEEDS_ANALYSIS', label: 'Training Needs Analysis', description: 'Identifying skill gaps and designing training programmes' },
+  { type: TaxonomyType.SKILL, value: 'HRIS_MANAGEMENT', label: 'HRIS Management', description: 'Managing human resource information systems' },
+
+  // --- Education Skills ---
+  { type: TaxonomyType.SKILL, value: 'CURRICULUM_DEVELOPMENT_SKILL', label: 'Curriculum Development', description: 'Designing and aligning curricula to KICD/CUE standards' },
+  { type: TaxonomyType.SKILL, value: 'LESSON_PLANNING', label: 'Lesson Planning', description: 'Creating structured lesson plans and learning materials' },
+  { type: TaxonomyType.SKILL, value: 'CLASSROOM_MANAGEMENT', label: 'Classroom Management', description: 'Maintaining discipline and engagement in learning environments' },
+  { type: TaxonomyType.SKILL, value: 'ASSESSMENT_EVALUATION', label: 'Assessment & Evaluation', description: 'Designing tests, rubrics, and grading systems' },
+  { type: TaxonomyType.SKILL, value: 'PEDAGOGY', label: 'Pedagogy', description: 'Teaching methods and instructional strategies' },
+  { type: TaxonomyType.SKILL, value: 'E_LEARNING_DELIVERY', label: 'E-Learning Delivery', description: 'Online teaching using LMS platforms (Moodle, Google Classroom)' },
+  { type: TaxonomyType.SKILL, value: 'MENTORSHIP', label: 'Mentorship', description: 'Student mentoring and academic advising' },
+
+  // --- Administration Skills ---
+  { type: TaxonomyType.SKILL, value: 'DATA_ENTRY', label: 'Data Entry', description: 'Fast and accurate typing and data capture' },
+  { type: TaxonomyType.SKILL, value: 'FILE_MANAGEMENT', label: 'File Management', description: 'Organizing and maintaining physical and digital records' },
+  { type: TaxonomyType.SKILL, value: 'SCHEDULING', label: 'Scheduling', description: 'Calendar management, meeting coordination, and diary keeping' },
+  { type: TaxonomyType.SKILL, value: 'OFFICE_MANAGEMENT', label: 'Office Management', description: 'Running day-to-day office operations and supplies' },
+  { type: TaxonomyType.SKILL, value: 'CORRESPONDENCE', label: 'Correspondence', description: 'Drafting letters, emails, and official communications' },
+  { type: TaxonomyType.SKILL, value: 'MINUTE_TAKING', label: 'Minute Taking', description: 'Recording proceedings of meetings and conferences' },
+  { type: TaxonomyType.SKILL, value: 'TRAVEL_ARRANGEMENTS', label: 'Travel Arrangements', description: 'Booking flights, hotels, and travel logistics' },
+
+  // --- Marketing Skills ---
+  { type: TaxonomyType.SKILL, value: 'SEO', label: 'Search Engine Optimization (SEO)', description: 'Improving website visibility in search engines' },
+  { type: TaxonomyType.SKILL, value: 'SEM', label: 'Search Engine Marketing (SEM)', description: 'Paid search advertising (Google Ads)' },
+  { type: TaxonomyType.SKILL, value: 'SOCIAL_MEDIA_MARKETING', label: 'Social Media Marketing', description: 'Managing brand presence on social platforms' },
+  { type: TaxonomyType.SKILL, value: 'CONTENT_CREATION', label: 'Content Creation', description: 'Writing blogs, articles, and marketing copy' },
+  { type: TaxonomyType.SKILL, value: 'EMAIL_MARKETING', label: 'Email Marketing', description: 'Designing and executing email campaigns' },
+  { type: TaxonomyType.SKILL, value: 'BRAND_STRATEGY', label: 'Brand Strategy', description: 'Developing and executing brand positioning' },
+  { type: TaxonomyType.SKILL, value: 'INFLUENCER_MARKETING', label: 'Influencer Marketing', description: 'Partnering with social media influencers' },
+
+  // --- Legal Skills ---
+  { type: TaxonomyType.SKILL, value: 'LEGAL_DRAFTING', label: 'Legal Drafting', description: 'Preparing contracts, agreements, and legal documents' },
+  { type: TaxonomyType.SKILL, value: 'CONVEYANCING', label: 'Conveyancing', description: 'Property transfers and land registration processes' },
+  { type: TaxonomyType.SKILL, value: 'LEGAL_RESEARCH', label: 'Legal Research', description: 'Statutory and case law research' },
+  { type: TaxonomyType.SKILL, value: 'COMPLIANCE_MANAGEMENT', label: 'Compliance Management', description: 'Ensuring regulatory compliance and risk mitigation' },
+
+  // --- Procurement & Supply Chain Skills ---
+  { type: TaxonomyType.SKILL, value: 'PROCUREMENT_MANAGEMENT', label: 'Procurement Management', description: 'Strategic sourcing, vendor evaluation, and purchase order management' },
+  { type: TaxonomyType.SKILL, value: 'INVENTORY_MANAGEMENT', label: 'Inventory Management', description: 'Stock control, reorder levels, and warehouse management' },
+  { type: TaxonomyType.SKILL, value: 'LOGISTICS_COORDINATION', label: 'Logistics Coordination', description: 'Coordinating shipments, transport, and delivery schedules' },
+  { type: TaxonomyType.SKILL, value: 'SUPPLIER_MANAGEMENT', label: 'Supplier Management', description: 'Vendor onboarding, performance review, and negotiations' },
+  { type: TaxonomyType.SKILL, value: 'CUSTOMS_PROCEDURES', label: 'Customs Procedures', description: 'Kenya Revenue Authority customs clearance and documentation' },
+
+  // --- Healthcare Skills ---
+  { type: TaxonomyType.SKILL, value: 'PATIENT_CARE', label: 'Patient Care', description: 'Direct patient care and clinical assessment' },
+  { type: TaxonomyType.SKILL, value: 'CLINICAL_ASSESSMENT', label: 'Clinical Assessment', description: 'Diagnosing and evaluating patient conditions' },
+  { type: TaxonomyType.SKILL, value: 'PHARMACOLOGY', label: 'Pharmacology', description: 'Drug dispensing, interactions, and pharmaceutical knowledge' },
+  { type: TaxonomyType.SKILL, value: 'EPIDEMIOLOGY', label: 'Epidemiology', description: 'Disease surveillance, outbreak investigation, and public health data' },
+  { type: TaxonomyType.SKILL, value: 'MATERNAL_CHILD_HEALTH', label: 'Maternal & Child Health', description: 'Antenatal care, delivery, and child immunization' },
+  { type: TaxonomyType.SKILL, value: 'HEALTH_RECORDS_MANAGEMENT', label: 'Health Records Management', description: 'Managing patient records and health information systems' },
+
+  // --- Engineering Skills ---
+  { type: TaxonomyType.SKILL, value: 'AUTO_CAD', label: 'AutoCAD', description: 'Computer-aided design and drafting' },
+  { type: TaxonomyType.SKILL, value: 'STRUCTURAL_DESIGN', label: 'Structural Design', description: 'Designing safe and compliant structures' },
+  { type: TaxonomyType.SKILL, value: 'PROJECT_MANAGEMENT_ENGINEERING', label: 'Engineering Project Management', description: 'Managing engineering projects from conception to handover' },
+  { type: TaxonomyType.SKILL, value: 'SITE_SUPERVISION', label: 'Site Supervision', description: 'Overseeing construction works and quality control' },
+  { type: TaxonomyType.SKILL, value: 'BOQ_PREPARATION', label: 'BOQ Preparation', description: 'Preparing Bills of Quantities for construction projects' },
+
+  // --- Research & Data Analytics Skills ---
+  { type: TaxonomyType.SKILL, value: 'MONITORING_EVALUATION', label: 'Monitoring & Evaluation', description: 'Designing M&E frameworks, logframes, and theory of change' },
+  { type: TaxonomyType.SKILL, value: 'DATA_VISUALIZATION', label: 'Data Visualization', description: 'Creating charts, dashboards, and visual reports' },
+  { type: TaxonomyType.SKILL, value: 'STATISTICAL_ANALYSIS', label: 'Statistical Analysis', description: 'Using statistical methods for data interpretation' },
+  { type: TaxonomyType.SKILL, value: 'QUALITATIVE_RESEARCH', label: 'Qualitative Research', description: 'Interviews, focus groups, and thematic analysis' },
+  { type: TaxonomyType.SKILL, value: 'QUANTITATIVE_RESEARCH', label: 'Quantitative Research', description: 'Surveys, sampling, and statistical inference' },
+  { type: TaxonomyType.SKILL, value: 'GIS_MAPPING', label: 'GIS Mapping', description: 'Geospatial data analysis and map creation' },
+  { type: TaxonomyType.SKILL, value: 'REPORT_WRITING', label: 'Report Writing', description: 'Writing professional and donor-compliant reports' },
+
+  // --- Project Management & Soft Skills ---
+  { type: TaxonomyType.SKILL, value: 'PROJECT_MANAGEMENT', label: 'Project Management', description: 'Planning, executing, and closing projects' },
+  { type: TaxonomyType.SKILL, value: 'STAKEHOLDER_MANAGEMENT', label: 'Stakeholder Management', description: 'Managing expectations of donors, clients, and partners' },
+  { type: TaxonomyType.SKILL, value: 'RISK_MANAGEMENT', label: 'Risk Management', description: 'Identifying, assessing, and mitigating risks' },
+  { type: TaxonomyType.SKILL, value: 'PROPOSAL_WRITING', label: 'Proposal Writing', description: 'Writing winning grant proposals and business proposals' },
+  { type: TaxonomyType.SKILL, value: 'TEAM_LEADERSHIP', label: 'Team Leadership', description: 'Leading, motivating, and developing teams' },
+  { type: TaxonomyType.SKILL, value: 'PRESENTATION_SKILLS', label: 'Presentation Skills', description: 'Delivering effective presentations and public speaking' },
+  { type: TaxonomyType.SKILL, value: 'COMMUNITY_MOBILIZATION', label: 'Community Mobilization', description: 'Engaging communities for participatory development' },
+  { type: TaxonomyType.SKILL, value: 'PROBLEM_SOLVING', label: 'Problem Solving', description: 'Analytical thinking and creative problem resolution' },
+  { type: TaxonomyType.SKILL, value: 'CRITICAL_THINKING', label: 'Critical Thinking', description: 'Objective analysis and sound judgment' },
+  { type: TaxonomyType.SKILL, value: 'NEGOTIATION', label: 'Negotiation', description: 'Reaching agreements through effective negotiation' },
+  { type: TaxonomyType.SKILL, value: 'BUSINESS_ANALYSIS', label: 'Business Analysis', description: 'Requirements gathering, process mapping, and solution design' },
+  { type: TaxonomyType.SKILL, value: 'PRODUCT_MANAGEMENT', label: 'Product Management', description: 'Product strategy, roadmaps, and user stories' },
+  { type: TaxonomyType.SKILL, value: 'UI_UX_DESIGN', label: 'UI/UX Design', description: 'Designing user interfaces and experiences' },
+  { type: TaxonomyType.SKILL, value: 'TECHNICAL_WRITING', label: 'Technical Writing', description: 'Writing technical documentation and user manuals' },
+  { type: TaxonomyType.SKILL, value: 'CHANGE_MANAGEMENT', label: 'Change Management', description: 'Leading organizational change and transformation' },
 ];
 
 // ============================================================
-// TOOLS
+// TOOLS (30+ tools commonly used in Kenya)
 // ============================================================
 
-const tools: TaxonomyEntry[] = [
-  // Finance & Accounting tools
-  { type: 'TOOL', value: 'EXCEL', label: 'Microsoft Excel', aliases: ['Spreadsheets', 'MS Excel'] },
-  { type: 'TOOL', value: 'QUICKBOOKS', label: 'QuickBooks', aliases: ['Quick Books'] },
-  { type: 'TOOL', value: 'SAGE_PASTEL', label: 'Sage Pastel', aliases: ['Sage'] },
-  { type: 'TOOL', value: 'GOOGLE_SHEETS', label: 'Google Sheets' },
-  { type: 'TOOL', value: 'ERP_SYSTEMS', label: 'ERP Systems', aliases: ['SAP', 'Oracle ERP', 'Odoo'] },
-  { type: 'TOOL', value: 'POWER_BI', label: 'Microsoft Power BI' },
-  { type: 'TOOL', value: 'TABLEAU', label: 'Tableau' },
+const tools: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  // --- Finance & Accounting Tools ---
+  { type: TaxonomyType.TOOL, value: 'EXCEL', label: 'Microsoft Excel', description: 'Spreadsheet application for data analysis and financial modelling' },
+  { type: TaxonomyType.TOOL, value: 'GOOGLE_SHEETS', label: 'Google Sheets', description: 'Cloud-based spreadsheet for collaboration' },
+  { type: TaxonomyType.TOOL, value: 'QUICKBOOKS', label: 'QuickBooks', description: 'Accounting software for small and medium businesses' },
+  { type: TaxonomyType.TOOL, value: 'SAGE_PASTEL', label: 'Sage Pastel', description: 'Widely-used accounting software in Kenyan SMEs' },
+  { type: TaxonomyType.TOOL, value: 'POWER_BI', label: 'Microsoft Power BI', description: 'Business intelligence and data visualization platform' },
+  { type: TaxonomyType.TOOL, value: 'TABLEAU', label: 'Tableau', description: 'Data visualization and business intelligence tool' },
+  { type: TaxonomyType.TOOL, value: 'SAP', label: 'SAP', description: 'Enterprise resource planning (ERP) software' },
+  { type: TaxonomyType.TOOL, value: 'ORACLE', label: 'Oracle', description: 'Database management and enterprise software' },
+  { type: TaxonomyType.TOOL, value: 'ERP_SYSTEMS', label: 'ERP Systems', description: 'Enterprise resource planning systems (Odoo, SAP, Oracle)' },
+  { type: TaxonomyType.TOOL, value: 'TALLY', label: 'Tally', description: 'Accounting software popular with Indian-linked businesses in Kenya' },
+  { type: TaxonomyType.TOOL, value: 'PASTEL_EVOLUTION', label: 'Pastel Evolution', description: 'Sage Pastel Evolution ERP for mid-sized businesses' },
 
-  // Dev tools
-  { type: 'TOOL', value: 'VS_CODE', label: 'Visual Studio Code', aliases: ['VSCode'] },
-  { type: 'TOOL', value: 'GITHUB', label: 'GitHub', aliases: ['Git'] },
-  { type: 'TOOL', value: 'JIRA', label: 'Jira', aliases: ['Atlassian Jira'] },
-  { type: 'TOOL', value: 'POSTMAN', label: 'Postman' },
-  { type: 'TOOL', value: 'VERCEL', label: 'Vercel' },
-  { type: 'TOOL', value: 'AWS_CONSOLE', label: 'AWS Console' },
-  { type: 'TOOL', value: 'FIGMA_TOOL', label: 'Figma', aliases: ['Design Tool'] },
-  { type: 'TOOL', value: 'ADOBE_CC', label: 'Adobe Creative Cloud', aliases: ['Photoshop', 'Illustrator', 'Premiere Pro'] },
+  // --- Communication & Collaboration Tools ---
+  { type: TaxonomyType.TOOL, value: 'SLACK', label: 'Slack', description: 'Team messaging and collaboration platform' },
+  { type: TaxonomyType.TOOL, value: 'MICROSOFT_TEAMS', label: 'Microsoft Teams', description: 'Unified communication and collaboration platform' },
+  { type: TaxonomyType.TOOL, value: 'GOOGLE_WORKSPACE', label: 'Google Workspace', description: 'Gmail, Drive, Docs, Sheets, and Calendar' },
+  { type: TaxonomyType.TOOL, value: 'ZOOM', label: 'Zoom', description: 'Video conferencing and virtual meetings' },
 
-  // Productivity
-  { type: 'TOOL', value: 'GOOGLE_WORKSPACE', label: 'Google Workspace', aliases: ['G-Suite', 'Gmail', 'Google Docs'] },
-  { type: 'TOOL', value: 'MICROSOFT_365', label: 'Microsoft 365', aliases: ['Office 365', 'MS Office', 'Word', 'PowerPoint'] },
-  { type: 'TOOL', value: 'SLACK', label: 'Slack' },
-  { type: 'TOOL', value: 'TEAMS', label: 'Microsoft Teams' },
-  { type: 'TOOL', value: 'TRELLO', label: 'Trello' },
-  { type: 'TOOL', value: 'ZOOM', label: 'Zoom' },
+  // --- Marketing Tools ---
+  { type: TaxonomyType.TOOL, value: 'MAILCHIMP', label: 'Mailchimp', description: 'Email marketing and automation platform' },
+  { type: TaxonomyType.TOOL, value: 'SALESFORCE', label: 'Salesforce', description: 'Customer relationship management (CRM) platform' },
+  { type: TaxonomyType.TOOL, value: 'HUBSPOT', label: 'HubSpot', description: 'Inbound marketing, sales, and CRM platform' },
+  { type: TaxonomyType.TOOL, value: 'GOOGLE_ANALYTICS', label: 'Google Analytics', description: 'Web analytics and user behaviour tracking' },
+  { type: TaxonomyType.TOOL, value: 'GOOGLE_ADS', label: 'Google Ads', description: 'Online advertising platform (Search, Display, YouTube)' },
+  { type: TaxonomyType.TOOL, value: 'META_BUSINESS_SUITE', label: 'Meta Business Suite', description: 'Facebook and Instagram advertising and management' },
+  { type: TaxonomyType.TOOL, value: 'CANVA', label: 'Canva', description: 'Online graphic design tool for non-designers' },
 
-  // Marketing
-  { type: 'TOOL', value: 'GOOGLE_ANALYTICS', label: 'Google Analytics' },
-  { type: 'TOOL', value: 'GOOGLE_ADS', label: 'Google Ads' },
-  { type: 'TOOL', value: 'META_BUSINESS_SUITE', label: 'Meta Business Suite', aliases: ['Facebook Ads', 'Instagram Ads'] },
-  { type: 'TOOL', value: 'MAILCHIMP', label: 'Mailchimp' },
-  { type: 'TOOL', value: 'HOOTSUITE', label: 'Hootsuite' },
+  // --- Development Tools ---
+  { type: TaxonomyType.TOOL, value: 'JIRA', label: 'Jira', description: 'Project and issue tracking for software development' },
+  { type: TaxonomyType.TOOL, value: 'GITHUB', label: 'GitHub', description: 'Code hosting, version control, and collaboration' },
+  { type: TaxonomyType.TOOL, value: 'FIGMA', label: 'Figma', description: 'Collaborative UI/UX design tool' },
+  { type: TaxonomyType.TOOL, value: 'ADOBE_PHOTOSHOP', label: 'Adobe Photoshop', description: 'Professional image editing and design' },
+  { type: TaxonomyType.TOOL, value: 'VS_CODE', label: 'Visual Studio Code', description: 'Popular code editor for web development' },
+  { type: TaxonomyType.TOOL, value: 'POSTMAN', label: 'Postman', description: 'API testing and documentation tool' },
+  { type: TaxonomyType.TOOL, value: 'VERCEL', label: 'Vercel', description: 'Deployment platform for frontend applications' },
 
-  // HR
-  { type: 'TOOL', value: 'BRIGHTHR', label: 'BrightHR' },
-  { type: 'TOOL', value: 'WORKDAY', label: 'Workday' },
+  // --- Data & Research Tools ---
+  { type: TaxonomyType.TOOL, value: 'SPSS', label: 'SPSS', description: 'Statistical analysis software used in research' },
+  { type: TaxonomyType.TOOL, value: 'STATA', label: 'Stata', description: 'Statistical software for data science and research' },
+  { type: TaxonomyType.TOOL, value: 'R_STUDIO', label: 'R Studio', description: 'Integrated development environment for R' },
+  { type: TaxonomyType.TOOL, value: 'MATLAB', label: 'MATLAB', description: 'Numerical computing and engineering simulation' },
+  { type: TaxonomyType.TOOL, value: 'KOBO_TOOLBOX', label: 'KoboToolbox', description: 'Mobile data collection tool widely used in Kenya' },
+  { type: TaxonomyType.TOOL, value: 'ODK', label: 'ODK (Open Data Kit)', description: 'Open-source mobile data collection' },
+
+  // --- Engineering & Construction Tools ---
+  { type: TaxonomyType.TOOL, value: 'AUTOCAD', label: 'AutoCAD', description: 'Computer-aided design for engineering and architecture' },
+  { type: TaxonomyType.TOOL, value: 'MS_PROJECT', label: 'Microsoft Project', description: 'Project scheduling and resource management' },
+  { type: TaxonomyType.TOOL, value: 'ARCGIS', label: 'ArcGIS', description: 'Geographic information system for mapping and analysis' },
 ];
 
 // ============================================================
 // QUALIFICATIONS
 // ============================================================
 
-const qualifications: TaxonomyEntry[] = [
-  { type: 'QUALIFICATION', value: 'HIGH_SCHOOL_CERT', label: 'Kenya Certificate of Secondary Education (KCSE)', aliases: ['KCSE', 'O-Level', 'High School'] },
-  { type: 'QUALIFICATION', value: 'CERTIFICATE', label: 'Certificate' },
-  { type: 'QUALIFICATION', value: 'DIPLOMA', label: 'Diploma' },
-  { type: 'QUALIFICATION', value: 'BACHELOR_DEGREE', label: "Bachelor's Degree", aliases: ['Bachelors', 'Undergraduate Degree'] },
-  { type: 'QUALIFICATION', value: 'MASTER_DEGREE', label: "Master's Degree", aliases: ['Masters', 'Postgraduate Degree'] },
-  { type: 'QUALIFICATION', value: 'PHD', label: 'Doctorate (PhD)' },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_COMMERCE', label: 'Bachelor of Commerce', aliases: ['BCom'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_SCIENCE', label: 'Bachelor of Science', aliases: ['BSc'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_ARTS', label: 'Bachelor of Arts', aliases: ['BA'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_EDUCATION', label: 'Bachelor of Education', aliases: ['BEd'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_LAW', label: 'Bachelor of Laws', aliases: ['LLB'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_MEDICINE', label: 'Bachelor of Medicine & Surgery', aliases: ['MBChB', 'MBBS'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_ENGINEERING', label: 'Bachelor of Engineering', aliases: ['BEng', 'BE'] },
-  { type: 'QUALIFICATION', value: 'BACHELOR_OF_NURSING', label: 'Bachelor of Science in Nursing', aliases: ['BScN'] },
-  { type: 'QUALIFICATION', value: 'MBA', label: 'Master of Business Administration', aliases: ['MBA'] },
-  { type: 'QUALIFICATION', value: 'MASTER_OF_SCIENCE', label: 'Master of Science', aliases: ['MSc'] },
-  { type: 'QUALIFICATION', value: 'MASTER_OF_ARTS', label: 'Master of Arts', aliases: ['MA'] },
-  { type: 'QUALIFICATION', value: 'CPA', label: 'Certified Public Accountant (Kenya)', aliases: ['CPA Kenya', 'ICPAK'] },
-  { type: 'QUALIFICATION', value: 'ACCA', label: 'ACCA' },
-  { type: 'QUALIFICATION', value: 'CISA', label: 'CISA (Certified Information Systems Auditor)' },
-  { type: 'QUALIFICATION', value: 'PMP', label: 'PMP (Project Management Professional)' },
-  { type: 'QUALIFICATION', value: 'CIPS', label: 'CIPS (Chartered Institute of Procurement & Supply)' },
-  { type: 'QUALIFICATION', value: 'CHRP', label: 'CHRP (Certified HR Professional)' },
-];
-
-// ============================================================
-// CERTIFICATIONS
-// ============================================================
-
-const certifications: TaxonomyEntry[] = [
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_1', label: 'CPA Section 1' },
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_2', label: 'CPA Section 2' },
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_3', label: 'CPA Section 3' },
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_4', label: 'CPA Section 4' },
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_5', label: 'CPA Section 5' },
-  { type: 'CERTIFICATION', value: 'CPA_SECTION_6', label: 'CPA Section 6' },
-  { type: 'CERTIFICATION', value: 'QUICKBOOKS_CERTIFIED', label: 'QuickBooks Certified' },
-  { type: 'CERTIFICATION', value: 'AWS_CERTIFIED', label: 'AWS Certified Solutions Architect' },
-  { type: 'CERTIFICATION', value: 'AZURE_FUNDAMENTALS', label: 'Microsoft Azure Fundamentals (AZ-900)' },
-  { type: 'CERTIFICATION', value: 'GOOGLE_CLOUD', label: 'Google Cloud Certified' },
-  { type: 'CERTIFICATION', value: 'PEDAGOGY_CERTIFICATE', label: 'Pedagogy Certificate', aliases: ['Teaching Certificate', 'Postgraduate Diploma in Education'] },
-  { type: 'CERTIFICATION', value: 'TVETA_REGISTRATION', label: 'TVETA Registration' },
-  { type: 'CERTIFICATION', value: 'COMPtia_A_PLUS', label: 'CompTIA A+' },
-  { type: 'CERTIFICATION', value: 'COMPtia_SECURITY_PLUS', label: 'CompTIA Security+' },
-  { type: 'CERTIFICATION', value: 'PMP_CERT', label: 'PMP Certification' },
-  { type: 'CERTIFICATION', value: 'CIPS_CERT', label: 'CIPS Certification' },
-  { type: 'CERTIFICATION', value: 'CHRP_CERT', label: 'CHRP Certification' },
-  { type: 'CERTIFICATION', value: 'FIRST_AID', label: 'First Aid Certificate' },
-  { type: 'CERTIFICATION', value: 'BLS', label: 'Basic Life Support' },
-  { type: 'CERTIFICATION', value: 'DATA_PROTECTION', label: 'Data Protection Certificate' },
-];
-
-// ============================================================
-// ROLES (common Kenyan job titles)
-// ============================================================
-
-const roles: TaxonomyEntry[] = [
-  { type: 'ROLE', value: 'ACCOUNTS_PAYABLE_OFFICER', label: 'Accounts Payable Officer', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'ACCOUNTS_ASSISTANT', label: 'Accounts Assistant', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'FINANCE_ASSISTANT', label: 'Finance Assistant', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'FINANCE_OFFICER', label: 'Finance Officer', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'FINANCE_MANAGER', label: 'Finance Manager', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'JUNIOR_ACCOUNTANT', label: 'Junior Accountant', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'AUDIT_ASSISTANT', label: 'Audit Assistant', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'AUDIT_MANAGER', label: 'Audit Manager', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'GRANT_FINANCE_OFFICER', label: 'Grant Finance Officer', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'CREDIT_OFFICER', label: 'Credit Officer', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'TAX_OFFICER', label: 'Tax Officer', parentValue: 'FINANCE_ACCOUNTING' },
-  { type: 'ROLE', value: 'FRONTEND_DEVELOPER', label: 'Frontend Developer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'BACKEND_DEVELOPER', label: 'Backend Developer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'FULLSTACK_DEVELOPER', label: 'Full Stack Developer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'MOBILE_DEVELOPER_ROLE', label: 'Mobile Developer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'DATA_ANALYST', label: 'Data Analyst', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'DATA_SCIENTIST', label: 'Data Scientist', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'DEVOPS_ENGINEER', label: 'DevOps Engineer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'IT_SUPPORT_OFFICER', label: 'IT Support Officer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'NETWORK_ADMINISTRATOR', label: 'Network Administrator', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'UI_UX_DESIGNER', label: 'UI/UX Designer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'QA_ENGINEER', label: 'QA Engineer', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'PRODUCT_MANAGER', label: 'Product Manager', parentValue: 'TECHNOLOGY' },
-  { type: 'ROLE', value: 'MEDICAL_OFFICER', label: 'Medical Officer', parentValue: 'HEALTHCARE' },
-  { type: 'ROLE', value: 'REGISTERED_NURSE', label: 'Registered Nurse', parentValue: 'HEALTHCARE' },
-  { type: 'ROLE', value: 'CLINICAL_OFFICER_ROLE', label: 'Clinical Officer', parentValue: 'HEALTHCARE' },
-  { type: 'ROLE', value: 'PHARMACIST', label: 'Pharmacist', parentValue: 'HEALTHCARE' },
-  { type: 'ROLE', value: 'PUBLIC_HEALTH_OFFICER', label: 'Public Health Officer', parentValue: 'HEALTHCARE' },
-  { type: 'ROLE', value: 'LECTURER', label: 'Lecturer', parentValue: 'EDUCATION' },
-  { type: 'ROLE', value: 'PART_TIME_LECTURER', label: 'Part-Time Lecturer', parentValue: 'EDUCATION' },
-  { type: 'ROLE', value: 'TEACHER', label: 'Teacher', parentValue: 'EDUCATION' },
-  { type: 'ROLE', value: 'PRINCIPAL', label: 'School Principal', parentValue: 'EDUCATION' },
-  { type: 'ROLE', value: 'CIVIL_ENGINEER_ROLE', label: 'Civil Engineer', parentValue: 'ENGINEERING' },
-  { type: 'ROLE', value: 'ELECTRICAL_ENGINEER_ROLE', label: 'Electrical Engineer', parentValue: 'ENGINEERING' },
-  { type: 'ROLE', value: 'MECHANICAL_ENGINEER_ROLE', label: 'Mechanical Engineer', parentValue: 'ENGINEERING' },
-  { type: 'ROLE', value: 'HR_OFFICER', label: 'HR Officer', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'ROLE', value: 'HR_MANAGER', label: 'HR Manager', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'ROLE', value: 'RECRUITMENT_OFFICER', label: 'Recruitment Officer', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'ROLE', value: 'HR_ADMIN_ASSISTANT', label: 'HR & Admin Assistant', parentValue: 'HUMAN_RESOURCES' },
-  { type: 'ROLE', value: 'MARKETING_OFFICER', label: 'Marketing Officer', parentValue: 'MARKETING' },
-  { type: 'ROLE', value: 'DIGITAL_MARKETING_SPECIALIST', label: 'Digital Marketing Specialist', parentValue: 'MARKETING' },
-  { type: 'ROLE', value: 'SOCIAL_MEDIA_MANAGER', label: 'Social Media Manager', parentValue: 'MARKETING' },
-  { type: 'ROLE', value: 'ADMIN_ASSISTANT', label: 'Admin Assistant', parentValue: 'ADMINISTRATION' },
-  { type: 'ROLE', value: 'OFFICE_MANAGER', label: 'Office Manager', parentValue: 'ADMINISTRATION' },
-  { type: 'ROLE', value: 'PROJECT_OFFICER', label: 'Project Officer', parentValue: 'SOCIAL_WORK' },
-  { type: 'ROLE', value: 'M_E_OFFICER', label: 'M&E Officer', parentValue: 'SOCIAL_WORK' },
-  { type: 'ROLE', value: 'PROGRAM_OFFICER', label: 'Program Officer', parentValue: 'SOCIAL_WORK' },
-  { type: 'ROLE', value: 'LOGISTICS_OFFICER', label: 'Logistics Officer', parentValue: 'SUPPLY_CHAIN' },
-  { type: 'ROLE', value: 'PROCUREMENT_OFFICER', label: 'Procurement Officer', parentValue: 'SUPPLY_CHAIN' },
-];
-
-// ============================================================
-// SPECIALIZATIONS
-// ============================================================
-
-const specializations: TaxonomyEntry[] = [
-  // Health specializations
-  { type: 'SPECIALIZATION', value: 'COMMUNITY_HEALTH', label: 'Community Health' },
-  { type: 'SPECIALIZATION', value: 'COUNSELLING_PSYCHOLOGY', label: 'Counselling Psychology' },
-  { type: 'SPECIALIZATION', value: 'HEALTH_RECORDS_INFORMATION_MANAGEMENT', label: 'Health Records & Information Management' },
-  { type: 'SPECIALIZATION', value: 'SOCIAL_WORK_SPEC', label: 'Social Work' },
-  { type: 'SPECIALIZATION', value: 'ENVIRONMENTAL_SCIENCES', label: 'Environmental Sciences' },
-  { type: 'SPECIALIZATION', value: 'HIV_AIDS', label: 'HIV/AIDS Programming' },
-  { type: 'SPECIALIZATION', value: 'MATERNAL_CHILD_HEALTH', label: 'Maternal & Child Health' },
-  { type: 'SPECIALIZATION', value: 'NUTRITION_SPEC', label: 'Nutrition' },
-  { type: 'SPECIALIZATION', value: 'MENTAL_HEALTH', label: 'Mental Health' },
-
-  // Tech specializations
-  { type: 'SPECIALIZATION', value: 'FINTECH', label: 'FinTech' },
-  { type: 'SPECIALIZATION', value: 'HEALTHTECH', label: 'HealthTech' },
-  { type: 'SPECIALIZATION', value: 'EDTECH', label: 'EdTech' },
-  { type: 'SPECIALIZATION', value: 'AGRITECH', label: 'AgriTech' },
-  { type: 'SPECIALIZATION', value: 'E_COMMERCE', label: 'E-Commerce' },
-  { type: 'SPECIALIZATION', value: 'MOBILE_MONEY', label: 'Mobile Money / Payments', aliases: ['M-Pesa Integration', 'Mobile Payments'] },
-
-  // Finance specializations
-  { type: 'SPECIALIZATION', value: 'MICROFINANCE', label: 'Microfinance' },
-  { type: 'SPECIALIZATION', value: 'ISLAMIC_FINANCE', label: 'Islamic Finance' },
-  { type: 'SPECIALIZATION', value: 'DEBT_CAPITAL_MARKETS', label: 'Debt Capital Markets' },
-
-  // Dev specializations
-  { type: 'SPECIALIZATION', value: 'BLOCKCHAIN', label: 'Blockchain', aliases: ['Web3'] },
-  { type: 'SPECIALIZATION', value: 'IOT', label: 'Internet of Things', aliases: ['IoT'] },
-];
-
-// ============================================================
-// REGULATIONS
-// ============================================================
-
-const regulations: TaxonomyEntry[] = [
-  { type: 'REGULATION', value: 'KRA_COMPLIANCE', label: 'KRA Compliance', aliases: ['Kenya Revenue Authority'] },
-  { type: 'REGULATION', value: 'NSSF_COMPLIANCE', label: 'NSSF Compliance' },
-  { type: 'REGULATION', value: 'NHIF_COMPLIANCE', label: 'NHIF Compliance' },
-  { type: 'REGULATION', value: 'SHIF_COMPLIANCE', label: 'SHIF Compliance', aliases: ['Social Health Insurance Fund'] },
-  { type: 'REGULATION', value: 'KNBS_STANDARDS', label: 'KNBS Standards' },
-  { type: 'REGULATION', value: 'NCA_COMPLIANCE', label: 'NCA Compliance', aliases: ['National Construction Authority'] },
-  { type: 'REGULATION', value: 'DATA_PROTECTION_ACT', label: 'Data Protection Act', aliases: ['ODPC', 'Kenya DPA'] },
-  { type: 'REGULATION', value: 'CBK_REGULATIONS', label: 'CBK Regulations', aliases: ['Central Bank of Kenya'] },
-  { type: 'REGULATION', value: 'CMA_REGULATIONS', label: 'CMA Regulations', aliases: ['Capital Markets Authority'] },
+const qualifications: Omit<TaxonomySeedItem, 'parentId'>[] = [
+  { type: TaxonomyType.QUALIFICATION, value: 'BACHELOR_DEGREE', label: "Bachelor's Degree", description: 'Undergraduate degree from a recognized university' },
+  { type: TaxonomyType.QUALIFICATION, value: 'MASTER_DEGREE', label: "Master's Degree", description: 'Postgraduate degree (MA, MSc, MBA)' },
+  { type: TaxonomyType.QUALIFICATION, value: 'PHD', label: 'Doctorate (PhD)', description: 'Highest academic degree' },
+  { type: TaxonomyType.QUALIFICATION, value: 'DIPLOMA', label: 'Diploma', description: 'Post-secondary diploma from a recognized institution' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CERTIFICATE', label: 'Certificate', description: 'Post-secondary certificate or professional certificate' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CPA', label: 'CPA (Certified Public Accountant)', description: 'ICPAK-certified accounting qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'ACCA', label: 'ACCA (Association of Chartered Certified Accountants)', description: 'International accounting qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CFA', label: 'CFA (Chartered Financial Analyst)', description: 'Investment management and financial analysis' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CIM', label: 'CIM (Chartered Institute of Marketing)', description: 'Professional marketing qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CHRP', label: 'CHRP (Certified Human Resource Professional)', description: 'IHRM-certified HR professional qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CIS', label: 'CIS (Certified Investment & Securities Analyst)', description: 'Investment analysis qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CISA', label: 'CISA (Certified Information Systems Auditor)', description: 'IT audit and assurance qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'PMP', label: 'PMP (Project Management Professional)', description: 'PMI-certified project management' },
+  { type: TaxonomyType.QUALIFICATION, value: 'PRINCE2', label: 'PRINCE2', description: 'Project management methodology certification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'PROFESSIONAL_CERTIFICATE', label: 'Professional Certificate', description: 'Industry-recognized professional certificate' },
+  { type: TaxonomyType.QUALIFICATION, value: 'CIPS', label: 'CIPS (Chartered Institute of Procurement & Supply)', description: 'Professional procurement and supply qualification' },
+  { type: TaxonomyType.QUALIFICATION, value: 'KCSE', label: 'Kenya Certificate of Secondary Education (KCSE)', description: 'National secondary school examination' },
+  { type: TaxonomyType.QUALIFICATION, value: 'TVETA_CERTIFICATE', label: 'TVETA Certificate', description: 'Technical/vocational qualification from TVETA-accredited institution' },
 ];
 
 // ============================================================
 // MAIN SEED FUNCTION
 // ============================================================
 
-async function main() {
-  console.log('Seeding taxonomy...\n');
+async function seedTaxonomy() {
+  console.log('🔄 Seeding taxonomy items...\n');
 
-  const allEntries: TaxonomyEntry[] = [
-    ...orgTypes,
+  // Step 1: Clear existing taxonomy items
+  const deleted = await prisma.taxonomyItem.deleteMany({});
+  console.log(`🗑️  Cleared ${deleted.count} existing taxonomy items\n`);
+
+  // Step 2: Create parent items (organization types, industries, categories)
+  const parentItems: Omit<TaxonomySeedItem, 'parentId'>[] = [
+    ...organizationTypes,
     ...industries,
     ...categories,
-    ...skills,
-    ...tools,
-    ...qualifications,
-    ...certifications,
-    ...roles,
-    ...specializations,
-    ...regulations,
   ];
 
-  // Group by type for reporting
-  const typeGroups = allEntries.reduce((acc, entry) => {
-    if (!acc[entry.type]) acc[entry.type] = [];
-    acc[entry.type].push(entry);
-    return acc;
-  }, {} as Record<string, TaxonomyEntry[]>);
+  // Build the createMany data
+  const parentData = parentItems.map((item) => ({
+    type: item.type,
+    value: item.value,
+    label: item.label,
+    description: item.description ?? null,
+    isActive: true,
+    parentId: null,
+  }));
 
-  let totalInserted = 0;
-  let aliasCount = 0;
+  const parentResult = await prisma.taxonomyItem.createMany({
+    data: parentData,
+    skipDuplicates: true,
+  });
+  console.log(`✅ Created ${parentResult.count} parent items (org types, industries, categories)\n`);
 
-  // Insert all taxonomy items in a transaction
-  const result = await prisma.$transaction(async (tx) => {
-    // First pass: insert all items without parent resolution
-    const idMap = new Map<string, string>(); // value -> id
-
-    for (const entry of allEntries) {
-      const item = await tx.taxonomyItem.upsert({
-        where: { type_value: { type: entry.type, value: entry.value } },
-        update: { label: entry.label, description: entry.description, isActive: true },
-        create: {
-          type: entry.type,
-          value: entry.value,
-          label: entry.label,
-          description: entry.description,
-          isActive: true,
-        },
-      });
-      idMap.set(`${entry.type}:${entry.value}`, item.id);
-      totalInserted++;
-    }
-
-    // Second pass: resolve parentIds for subcategories and roles
-    for (const entry of allEntries) {
-      if (entry.parentValue) {
-        const parentId = idMap.get(`CATEGORY:${entry.parentValue}`);
-        if (parentId) {
-          await tx.taxonomyItem.update({
-            where: { type_value: { type: entry.type, value: entry.value } },
-            data: { parentId },
-          });
-        }
-      }
-    }
-
-    // Third pass: insert aliases
-    for (const entry of allEntries) {
-      if (entry.aliases && entry.aliases.length > 0) {
-        const itemId = idMap.get(`${entry.type}:${entry.value}`);
-        if (!itemId) continue;
-
-        for (const alias of entry.aliases) {
-          await tx.taxonomyAlias.upsert({
-            where: { taxonomyItemId_alias: { taxonomyItemId: itemId, alias } },
-            update: {},
-            create: { taxonomyItemId: itemId, alias },
-          });
-          aliasCount++;
-        }
-      }
-    }
-
-    return { idMap };
+  // Step 3: Fetch all parent items to build the value → id map
+  const createdParents = await prisma.taxonomyItem.findMany({
+    where: {
+      type: { in: [TaxonomyType.ORGANIZATION_TYPE, TaxonomyType.INDUSTRY, TaxonomyType.CATEGORY] },
+    },
   });
 
-  // Report
-  console.log('Taxonomy seeded successfully!\n');
-  for (const [type, entries] of Object.entries(typeGroups)) {
-    console.log(`  ${type}: ${entries.length} items`);
+  const valueToId = new Map<string, string>();
+  for (const item of createdParents) {
+    valueToId.set(item.value, item.id);
   }
-  console.log(`\nTotal taxonomy items: ${totalInserted}`);
-  console.log(`Total aliases: ${aliasCount}`);
-  console.log(`\nNext: run matching engine seed or connect auth.`);
+
+  // Step 4: Create subcategories with parentId references
+  const subcategoryData: {
+    type: TaxonomyType;
+    value: string;
+    label: string;
+    description: string | null;
+    isActive: boolean;
+    parentId: string;
+  }[] = [];
+
+  for (const [parentValue, children] of Object.entries(subcategoriesByParent)) {
+    const parentId = valueToId.get(parentValue);
+    if (!parentId) {
+      console.warn(`⚠️  Warning: Could not find parent category with value "${parentValue}"`);
+      continue;
+    }
+    for (const child of children) {
+      subcategoryData.push({
+        type: child.type,
+        value: child.value,
+        label: child.label,
+        description: child.description ?? null,
+        isActive: true,
+        parentId,
+      });
+    }
+  }
+
+  const subcategoryResult = await prisma.taxonomyItem.createMany({
+    data: subcategoryData,
+    skipDuplicates: true,
+  });
+  console.log(`✅ Created ${subcategoryResult.count} subcategory items\n`);
+
+  // Step 5: Create non-hierarchical items (skills, tools, qualifications)
+  const flatItems: Omit<TaxonomySeedItem, 'parentId'>[] = [...skills, ...tools, ...qualifications];
+
+  const flatData = flatItems.map((item) => ({
+    type: item.type,
+    value: item.value,
+    label: item.label,
+    description: item.description ?? null,
+    isActive: true,
+    parentId: null,
+  }));
+
+  // Process in batches of 100 to avoid hitting query limits
+  let flatCreated = 0;
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < flatData.length; i += BATCH_SIZE) {
+    const batch = flatData.slice(i, i + BATCH_SIZE);
+    const result = await prisma.taxonomyItem.createMany({
+      data: batch,
+      skipDuplicates: true,
+    });
+    flatCreated += result.count;
+  }
+  console.log(`✅ Created ${flatCreated} flat items (skills, tools, qualifications)\n`);
+
+  // Step 6: Summary
+  const totalCreated = parentResult.count + subcategoryResult.count + flatCreated;
+
+  const counts = await prisma.taxonomyItem.groupBy({
+    by: ['type'],
+    _count: { type: true },
+    orderBy: { type: 'asc' },
+  });
+
+  console.log('📊 Taxonomy Summary:');
+  console.log('─'.repeat(50));
+  for (const count of counts) {
+    console.log(`   ${count.type.padEnd(30)} ${String(count._count.type).padStart(5)}`);
+  }
+  console.log('─'.repeat(50));
+  console.log(`   ${'TOTAL'.padEnd(30)} ${String(totalCreated).padStart(5)}`);
+  console.log();
+
+  return {
+    totalCreated,
+    parentCount: parentResult.count,
+    subcategoryCount: subcategoryResult.count,
+    flatCount: flatCreated,
+    typeBreakdown: counts.map((c) => ({ type: c.type, count: c._count.type })),
+  };
 }
 
-main()
-  .then(async () => { await prisma.$disconnect(); })
-  .catch(async (e) => {
-    console.error(e);
+// ============================================================
+// MAIN (entry point)
+// ============================================================
+
+async function main() {
+  try {
+    const result = await seedTaxonomy();
+    console.log('🎉 Taxonomy seeding completed successfully!');
+    console.log(`   Total items created: ${result.totalCreated}`);
+  } catch (error) {
+    console.error('❌ Error seeding taxonomy:', error);
+    throw error;
+  } finally {
     await prisma.$disconnect();
-    process.exit(1);
-  });
+  }
+}
+
+// Allow running directly via `npx tsx prisma/seed-taxonomy.ts`
+if (typeof require !== 'undefined' && require.main === module) {
+  main();
+}
+
+export { seedTaxonomy, main };

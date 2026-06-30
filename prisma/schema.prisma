@@ -421,9 +421,18 @@ model Job {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  organization     Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  category         JobCategory?      @relation(fields: [categoryId], references: [id])
-  subcategory      JobSubcategory    @relation(fields: [subcategoryId], references: [id])
+  organization     Organization?         @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  category         JobCategory?          @relation(fields: [categoryId], references: [id])
+  subcategory      JobSubcategory        @relation(fields: [subcategoryId], references: [id])
+  jobProfile       JobProfile?
+  jobSkills        JobSkill[]
+  jobTools         JobTool[]
+  jobQualifications JobQualification[]
+  jobCertifications JobCertification[]
+  jobSpecializations JobSpecialization[]
+  jobSubcategoryLinks JobSubcategoryLink[]
+  candidateJobScores CandidateJobScore[]
+  applications        JobApplication[]
 
   @@index([status])
   @@index([featured])
@@ -1027,8 +1036,11 @@ model JobProfile {
   preferredExperienceYears Float           @default(0.0)
   seniorityLevel           ExperienceLevel?
   parserConfidenceScore    Float?
+  extractionStatus         JobExtractionStatus @default(PENDING)
   createdAt                DateTime        @default(now())
   updatedAt                DateTime        @updatedAt
+
+  job                      Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@map("job_profiles")
 }
@@ -1046,7 +1058,10 @@ model JobSkill {
   rawText     String?
   createdAt   DateTime        @default(now())
 
+  job         Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
   @@unique([jobId, skillId])
+  @@index([jobId])
   @@map("job_skills")
 }
 
@@ -1063,7 +1078,10 @@ model JobTool {
   rawText     String?
   createdAt   DateTime        @default(now())
 
+  job         Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
   @@unique([jobId, toolId])
+  @@index([jobId])
   @@map("job_tools")
 }
 
@@ -1080,7 +1098,11 @@ model JobQualification {
   importance      SkillImportance   @default(MUST_HAVE)
   weight          Float             @default(1.00)
   rawText         String?
+  createdAt       DateTime          @default(now())
 
+  job             Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
   @@map("job_qualifications")
 }
 
@@ -1095,7 +1117,11 @@ model JobCertification {
   importance      SkillImportance @default(MUST_HAVE)
   weight          Float           @default(1.00)
   rawText         String?
+  createdAt       DateTime        @default(now())
 
+  job             Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
   @@map("job_certifications")
 }
 
@@ -1108,8 +1134,12 @@ model JobSpecialization {
   jobId            String
   specializationId String
   importance       SkillImportance @default(MUST_HAVE)
+  createdAt        DateTime        @default(now())
+
+  job               Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@unique([jobId, specializationId])
+  @@index([jobId])
   @@map("job_specializations")
 }
 
@@ -1125,7 +1155,10 @@ model JobSubcategoryLink {
   confidenceScore Float?
   createdAt       DateTime @default(now())
 
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
   @@unique([jobId, subcategoryId])
+  @@index([jobId])
   @@map("job_subcategory_links")
 }
 
@@ -1160,6 +1193,7 @@ model CandidateJobScore {
   computedAt              DateTime            @default(now())
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@unique([candidateId, jobId])
   @@index([candidateId, finalScore])
@@ -1182,8 +1216,12 @@ model JobApplication {
   updatedAt             DateTime          @updatedAt
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  job       Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@unique([candidateId, jobId])
+  @@index([candidateId])
+  @@index([jobId])
+  @@index([status])
   @@map("applications")
 }
 
