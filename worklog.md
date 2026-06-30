@@ -422,3 +422,27 @@ Stage Summary:
 - Similar job titles truncate to single line on mobile
 - Page H1/H2 headings scale fluidly on screens below 640px
 - Breadcrumbs scroll horizontally on mobile instead of wrapping
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Jobseeker Dashboard - Complete all demo pages, nav highlighting, mobile responsive
+
+Work Log:
+- Read full project plan (2829 lines) from JOBR AI matching PHASE 1.txt via bash chunking
+- Identified existing dashboard pages: Overview, Matches, Profile, CV Upload, Applications (5/7)
+- Created /account/saved/page.tsx — Saved Jobs page with remove confirmation, date formatting
+- Created /account/preferences/page.tsx — Full preferences form: 47 county chips, work mode radios, job type chips, salary inputs, availability, relocation toggle
+- Created AccountNav.tsx — Client component using usePathname for active nav state in both sidebar and mobile nav
+- Refactored layout.tsx to use AccountNav, keeping it as a server component
+- Fixed applications page import (was importing non-existent demoApplications)
+- Added .dashboard-stats-grid and .dashboard-completion-row CSS classes for mobile responsiveness
+- Mobile: stats grid 2-col, completion row stacked, quick actions stacked, saved job cards stacked
+- Build verified clean, pushed to GitHub
+
+Stage Summary:
+- Dashboard now has all 7 routes: Overview, Matches, Profile, CV Upload, Applications, Saved Jobs, Preferences
+- Active nav highlighting works on both desktop sidebar and mobile horizontal nav
+- Mobile responsive for all dashboard pages
+- All demo data from demo-candidate.ts (James Mito persona with 8 match scores, 3 applications, 4 saved jobs)
+- Pushed to GitHub: commit 77eaabe
