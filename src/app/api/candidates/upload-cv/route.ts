@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * POST /api/candidates/upload-cv
@@ -9,7 +10,6 @@ import { prisma } from '@/lib/prisma';
  *
  * Expected form fields:
  *   - file: the CV file (PDF, DOCX, DOC)
- *   - candidateId: string (temporary, until auth is implemented)
  *
  * Flow:
  *   1. Validate file type and size (max 5MB)
@@ -20,12 +20,9 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(request: NextRequest) {
   try {
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const formData = await request.formData();
@@ -57,7 +54,6 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: In production, upload file to S3/Vercel Blob and store the URL
-    // const storageUrl = await uploadToStorage(file, candidateId);
 
     // Extract text using markitdown
     let extractedText = '';
@@ -69,25 +65,16 @@ export async function POST(request: NextRequest) {
       extractedText = result.text_content;
     } catch (conversionError) {
       console.error('[CV Upload] markitdown conversion failed:', conversionError);
-      // Still accept the file, but mark extraction as failed
       extractedText = '';
     }
 
     // Update candidate onboarding status
     await prisma.candidate.update({
       where: { id: candidateId },
-      data: {
-        onboardingStatus: 'CV_UPLOADED',
-      },
+      data: { onboardingStatus: 'CV_UPLOADED' },
     });
 
-    // TODO: In production, queue AI extraction job here
-    // The extraction would:
-    //   1. Parse extractedText with LLM
-    //   2. Extract skills, qualifications, experience, etc.
-    //   3. Map to taxonomy IDs
-    //   4. Populate CandidateProfile, CandidateSkill, CandidateQualification, etc.
-    //   5. Update onboardingStatus to EXTRACTION_COMPLETE
+    // TODO: Queue AI extraction job here
 
     return NextResponse.json({
       success: true,
@@ -96,13 +83,9 @@ export async function POST(request: NextRequest) {
       fileSize: file.size,
       fileType: file.type,
       textLength: extractedText.length,
-      // extractionQueued: true,  // uncomment when extraction is implemented
     });
   } catch (error) {
     console.error('[POST /api/candidates/upload-cv]', error);
-    return NextResponse.json(
-      { error: 'Failed to upload CV' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to upload CV' }, { status: 500 });
   }
 }

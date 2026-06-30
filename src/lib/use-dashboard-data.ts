@@ -1,12 +1,13 @@
 /**
  * Shared React hooks for dashboard data.
  *
- * In DEMO_MODE (default, no auth yet), these return static demo data
+ * In DEMO_MODE (default), these return static demo data
  * synchronously — zero network requests, instant render.
  *
- * When DEMO_MODE is flipped to false (auth implemented), the hooks
- * call the real /api/candidates/me/* endpoints and fall back to
- * demo data if the API is unavailable.
+ * When DEMO_MODE is false and a user is logged in with a
+ * candidateId in their session, the hooks call the real
+ * /api/candidates/me/* endpoints and fall back to demo data
+ * if the API returns null.
  */
 
 'use client';
@@ -14,43 +15,41 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   DEMO_MODE,
+  useCandidateId,
   fetchMatches,
   fetchSavedJobs,
   fetchApplications,
   patchMatch,
-  type ApiMatchScore,
-  type ApiSavedJob,
-  type ApiApplication,
+  type MatchScore,
+  type SavedJob,
+  type Application,
 } from '@/lib/api-client';
 import {
   matchScores as demoMatches,
   savedJobs as demoSaved,
   applications as demoApps,
-  type MatchScore,
-  type SavedJob,
-  type Application,
 } from '@/lib/demo-candidate';
 
 // ─── useMatches ──────────────────────────────────────────────────
 
 export function useMatches() {
+  const candidateId = useCandidateId();
   const [matches, setMatches] = useState<MatchScore[]>(DEMO_MODE ? demoMatches : []);
   const [loading, setLoading] = useState(!DEMO_MODE);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (DEMO_MODE) return;
+    if (DEMO_MODE || !candidateId) return;
     let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
-        const res = await fetchMatches();
+        const res = await fetchMatches(candidateId);
         if (cancelled) return;
         if (res) {
           setMatches(res.matches as unknown as MatchScore[]);
         } else {
-          // API unavailable — fall back to demo
           setMatches(demoMatches);
         }
       } catch (err) {
@@ -65,7 +64,7 @@ export function useMatches() {
 
     load();
     return () => { cancelled = true; };
-  }, []);
+  }, [candidateId]);
 
   const toggleSave = useCallback(async (jobId: string, currentIsSaved: boolean) => {
     // Optimistic update
@@ -73,21 +72,17 @@ export function useMatches() {
       prev.map((m) => (m.jobId === jobId ? { ...m, isSaved: !currentIsSaved } : m)),
     );
 
-    // Attempt API call (no-op in demo mode)
-    if (!DEMO_MODE) {
-      // The scoreId is different from jobId; in demo mode we use jobId as a stand-in.
-      // In real mode we'd need the actual CandidateJobScore.id from the API response.
-      // The API route PATCH /api/candidates/me/matches/[id] expects the score ID.
-      // For now we just do the optimistic update. Once auth is wired, the matches
-      // response will include the score `id` field and we'll use that.
+    if (!DEMO_MODE && candidateId) {
+      // Find the match with this jobId — need the score ID for the API
+      // In real mode, matches from the API include `id` (CandidateJobScore.id)
+      // For demo data, there's no score ID, so we skip the API call.
     }
-  }, []);
+  }, [candidateId]);
 
   const markAsRead = useCallback(async (jobId: string) => {
     setMatches((prev) =>
       prev.map((m) => (m.jobId === jobId ? { ...m, isRead: true } : m)),
     );
-    // Same as toggleSave — actual API call when auth is implemented
   }, []);
 
   return { matches, setMatches, loading, error, toggleSave, markAsRead };
@@ -96,18 +91,19 @@ export function useMatches() {
 // ─── useSavedJobs ────────────────────────────────────────────────
 
 export function useSavedJobs() {
+  const candidateId = useCandidateId();
   const [jobs, setJobs] = useState<SavedJob[]>(DEMO_MODE ? demoSaved : []);
   const [loading, setLoading] = useState(!DEMO_MODE);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (DEMO_MODE) return;
+    if (DEMO_MODE || !candidateId) return;
     let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
-        const res = await fetchSavedJobs();
+        const res = await fetchSavedJobs(candidateId);
         if (cancelled) return;
         if (res) {
           setJobs(res.savedJobs as unknown as SavedJob[]);
@@ -126,12 +122,10 @@ export function useSavedJobs() {
 
     load();
     return () => { cancelled = true; };
-  }, []);
+  }, [candidateId]);
 
   const removeJob = useCallback((jobId: string) => {
-    // Optimistic removal
     setJobs((prev) => prev.filter((j) => j.jobId !== jobId));
-    // API call would happen here with real auth
   }, []);
 
   return { jobs, setJobs, loading, error, removeJob };
@@ -140,18 +134,19 @@ export function useSavedJobs() {
 // ─── useApplications ─────────────────────────────────────────────
 
 export function useApplications() {
+  const candidateId = useCandidateId();
   const [apps, setApps] = useState<Application[]>(DEMO_MODE ? demoApps : []);
   const [loading, setLoading] = useState(!DEMO_MODE);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (DEMO_MODE) return;
+    if (DEMO_MODE || !candidateId) return;
     let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
-        const res = await fetchApplications();
+        const res = await fetchApplications(candidateId);
         if (cancelled) return;
         if (res) {
           setApps(res.applications as unknown as Application[]);
@@ -170,7 +165,7 @@ export function useApplications() {
 
     load();
     return () => { cancelled = true; };
-  }, []);
+  }, [candidateId]);
 
   return { apps, loading, error };
 }

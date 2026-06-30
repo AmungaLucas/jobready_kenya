@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * PATCH /api/candidates/me/matches/[id]
  *
  * Update is_read or is_saved on a candidate job score.
- *
- * Body: { is_read?: boolean, is_saved?: boolean }
  */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { id } = await params;
@@ -32,11 +28,7 @@ export async function PATCH(
       );
     }
 
-    // Verify the score belongs to this candidate
-    const existing = await prisma.candidateJobScore.findUnique({
-      where: { id },
-    });
-
+    const existing = await prisma.candidateJobScore.findUnique({ where: { id } });
     if (!existing || existing.candidateId !== candidateId) {
       return NextResponse.json({ error: 'Match not found' }, { status: 404 });
     }
@@ -51,10 +43,7 @@ export async function PATCH(
       updateData.savedAt = is_saved ? new Date() : null;
     }
 
-    const updated = await prisma.candidateJobScore.update({
-      where: { id },
-      data: updateData,
-    });
+    const updated = await prisma.candidateJobScore.update({ where: { id }, data: updateData });
 
     return NextResponse.json({
       id: updated.id,
@@ -65,9 +54,6 @@ export async function PATCH(
     });
   } catch (error) {
     console.error('[PATCH /api/candidates/me/matches/[id]]', error);
-    return NextResponse.json(
-      { error: 'Failed to update match' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update match' }, { status: 500 });
   }
 }

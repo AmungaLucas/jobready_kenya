@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * GET /api/candidates/me/profile
@@ -9,12 +10,9 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET(request: NextRequest) {
   try {
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const candidate = await prisma.candidate.findUnique({
@@ -22,41 +20,13 @@ export async function GET(request: NextRequest) {
       include: {
         profile: true,
         preferences: true,
-        interests: {
-          select: { categoryId: true, interestRank: true },
-          orderBy: { interestRank: 'asc' },
-        },
-        subcategories: {
-          select: { subcategoryId: true, confidenceScore: true },
-        },
-        skills: {
-          select: { skillId: true, proficiency: true, yearsExperience: true, confidenceScore: true },
-        },
-        tools: {
-          select: { toolId: true, proficiency: true, confidenceScore: true },
-        },
-        qualifications: {
-          select: {
-            qualificationId: true,
-            institution: true,
-            fieldOfStudy: true,
-            level: true,
-            status: true,
-            startYear: true,
-            endYear: true,
-          },
-        },
-        certifications: {
-          select: {
-            certificationId: true,
-            issuingBody: true,
-            status: true,
-            yearAwarded: true,
-          },
-        },
-        workExperiences: {
-          orderBy: { startDate: 'desc' },
-        },
+        interests: { select: { categoryId: true, interestRank: true }, orderBy: { interestRank: 'asc' } },
+        subcategories: { select: { subcategoryId: true, confidenceScore: true } },
+        skills: { select: { skillId: true, proficiency: true, yearsExperience: true, confidenceScore: true } },
+        tools: { select: { toolId: true, proficiency: true, confidenceScore: true } },
+        qualifications: { select: { qualificationId: true, institution: true, fieldOfStudy: true, level: true, status: true, startYear: true, endYear: true } },
+        certifications: { select: { certificationId: true, issuingBody: true, status: true, yearAwarded: true } },
+        workExperiences: { orderBy: { startDate: 'desc' } },
       },
     });
 
@@ -91,7 +61,6 @@ export async function GET(request: NextRequest) {
       id ? taxonomyMap.get(id)?.label ?? id : null;
 
     return NextResponse.json({
-      // Basic info
       firstName: candidate.firstName,
       lastName: candidate.lastName,
       email: candidate.email,
@@ -99,26 +68,18 @@ export async function GET(request: NextRequest) {
       locationCounty: candidate.locationCounty,
       country: candidate.country,
       onboardingStatus: candidate.onboardingStatus,
-
-      // Profile
       primaryCategory: getLabel(candidate.profile?.primaryCategoryId),
       primarySubcategory: getLabel(candidate.profile?.primarySubcategoryId),
       seniorityLevel: candidate.profile?.seniorityLevel,
       totalExperienceYears: candidate.profile?.totalExperienceYears ?? 0,
       profileCompletionScore: candidate.profile?.profileCompletionScore,
       extractionStatus: candidate.profile?.extractionStatus,
-
-      // Skills with labels
       skills: candidate.skills.map((s) => ({
         name: getLabel(s.skillId) ?? s.skillId,
         proficiency: s.proficiency,
         yearsExperience: s.yearsExperience ?? 0,
       })),
-
-      // Tools with labels
       tools: candidate.tools.map((t) => getLabel(t.toolId) ?? t.toolId),
-
-      // Work experiences
       workExperience: candidate.workExperiences.map((we) => ({
         id: we.id,
         employerName: we.employerName ?? '',
@@ -129,8 +90,6 @@ export async function GET(request: NextRequest) {
         description: we.description ?? '',
         industry: getLabel(we.organizationIndustryId) ?? we.organizationIndustryId ?? '',
       })),
-
-      // Education / Qualifications
       education: candidate.qualifications.map((q) => ({
         id: q.id,
         institution: q.institution ?? '',
@@ -140,8 +99,6 @@ export async function GET(request: NextRequest) {
         startYear: q.startYear ?? 0,
         endYear: q.endYear ?? null,
       })),
-
-      // Certifications
       certifications: candidate.certifications.map((c) => ({
         id: c.id,
         name: getLabel(c.certificationId) ?? c.certificationId ?? '',
@@ -149,14 +106,10 @@ export async function GET(request: NextRequest) {
         status: c.status,
         yearAwarded: c.yearAwarded ?? null,
       })),
-
-      // Interests
       interests: candidate.interests.map((i) => ({
         category: getLabel(i.categoryId) ?? i.categoryId,
         isPrimary: i.categoryId === candidate.profile?.primaryCategoryId,
       })),
-
-      // Preferences
       preferences: candidate.preferences
         ? {
             preferredLocations: (candidate.preferences.preferredLocations as string[]) ?? [],
@@ -173,9 +126,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('[GET /api/candidates/me/profile]', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch profile' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
   }
 }

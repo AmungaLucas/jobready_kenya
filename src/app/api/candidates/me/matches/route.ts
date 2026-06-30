@@ -1,27 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * GET /api/candidates/me/matches
  *
  * Returns paginated match scores for the authenticated candidate.
  * Supports filtering by verdict and read status.
- *
- * Query params:
- *   page (1-indexed, default 1)
- *   limit (default 20)
- *   verdict (EXCELLENT | STRONG | MODERATE | WEAK | NOT_RECOMMENDED)
- *   read (true | false)
  */
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Replace with real auth — get candidateId from session/JWT
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -50,20 +41,10 @@ export async function GET(request: NextRequest) {
         include: {
           job: {
             select: {
-              id: true,
-              slug: true,
-              title: true,
-              employmentType: true,
-              locationCity: true,
-              locationCounty: true,
-              isRemote: true,
-              salaryMin: true,
-              salaryMax: true,
-              salaryCurrency: true,
-              salaryDisclosure: true,
-              organization: {
-                select: { name: true },
-              },
+              id: true, slug: true, title: true, employmentType: true,
+              locationCity: true, locationCounty: true, isRemote: true,
+              salaryMin: true, salaryMax: true, salaryCurrency: true, salaryDisclosure: true,
+              organization: { select: { name: true } },
             },
           },
         },
@@ -71,8 +52,8 @@ export async function GET(request: NextRequest) {
       prisma.candidateJobScore.count({ where }),
     ]);
 
-    // Transform to match the MatchScore shape used by the frontend
     const matches = scores.map((s) => ({
+      id: s.id,
       jobId: s.jobId,
       jobSlug: s.job.slug,
       jobTitle: s.job.title,
@@ -100,18 +81,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       matches,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (error) {
     console.error('[GET /api/candidates/me/matches]', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch matches' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch matches' }, { status: 500 });
   }
 }

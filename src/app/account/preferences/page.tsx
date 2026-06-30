@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { candidate, type CandidatePreferences } from '@/lib/demo-candidate';
-import { DEMO_MODE, updatePreferences, type ApiPreferences } from '@/lib/api-client';
+import { DEMO_MODE, useCandidateId, updatePreferences, type ApiPreferences } from '@/lib/api-client';
 import { Save, RotateCcw, Check } from 'lucide-react';
 
 const KENYAN_COUNTIES = [
@@ -33,6 +33,8 @@ export default function PreferencesPage() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const candidateId = useCandidateId();
+
   async function handleSave() {
     setSaving(true);
     try {
@@ -48,7 +50,7 @@ export default function PreferencesPage() {
           willingToRelocate: prefs.willingToRelocate,
           preferredJobTypes: prefs.preferredJobTypes,
         };
-        const result = await updatePreferences(apiPrefs);
+        const result = await updatePreferences(candidateId, apiPrefs);
         if (result) {
           setSaved(true);
           setTimeout(() => setSaved(false), 2000);

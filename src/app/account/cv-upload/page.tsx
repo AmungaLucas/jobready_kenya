@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { UploadCloud, FileText, Check, ChevronRight, Loader2 } from 'lucide-react';
-import { DEMO_MODE, uploadCV } from '@/lib/api-client';
+import { DEMO_MODE, useCandidateId, uploadCV } from '@/lib/api-client';
 
 const onboardingSteps = [
   { label: 'Profile', status: 'completed' },
@@ -57,6 +57,8 @@ export default function CVUploadPage() {
     setSelectedFile(file);
   }
 
+  const candidateId = useCandidateId();
+
   async function handleUpload() {
     if (!selectedFile) return;
 
@@ -65,7 +67,7 @@ export default function CVUploadPage() {
 
     try {
       if (!DEMO_MODE && selectedFile) {
-        const result = await uploadCV(selectedFile);
+        const result = await uploadCV(candidateId, selectedFile);
         if (result?.success) {
           setUploadSuccess(true);
         } else {

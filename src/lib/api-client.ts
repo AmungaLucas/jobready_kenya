@@ -1,31 +1,36 @@
 /**
  * Shared API client for dashboard data fetching.
  *
- * When auth is not yet implemented (no candidate session), all hooks
- * fall back to the static demo data in demo-candidate.ts.
+ * When DEMO_MODE is true (no auth session), all hooks fall back to
+ * static demo data in demo-candidate.ts.
  *
- * Once NextAuth/Auth.js is wired, set DEMO_MODE = false and the hooks
- * will call the real /api/candidates/me/* endpoints.
+ * When a user is logged in (session.candidateId exists), the hooks
+ * call the real /api/candidates/me/* endpoints.
  */
 
-// Flip this to false once auth is implemented and candidate ID is available from session
+'use client';
+
+import { useSession } from 'next-auth/react';
+
+// Flip this to false once auth is fully functional
 export const DEMO_MODE = true;
 
-// In production this comes from the auth session (e.g. session.user.candidateId)
-export function getCandidateId(): string | null {
-  if (typeof window === 'undefined') return null;
-  // Temporary: allow override via localStorage for testing API routes manually
-  return localStorage.getItem('candidateId');
+/**
+ * Get the candidate ID from the NextAuth session.
+ * Call this inside React components/hooks only (client-side).
+ */
+export function useCandidateId(): string | null {
+  const { data: session } = useSession();
+  const candidateId = (session?.user as Record<string, unknown>)?.candidateId as string | undefined;
+  return candidateId ?? null;
 }
 
-// ─── Generic fetch wrapper ───────────────────────────────────────
+// ─── Generic fetch wrapper (internal) ───────────────────────────
 async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
+  candidateId: string | null,
 ): Promise<T | null> {
-  if (DEMO_MODE) return null;
-
-  const candidateId = getCandidateId();
   if (!candidateId) return null;
 
   try {
@@ -51,6 +56,7 @@ async function apiFetch<T>(
 // ─── Typed response shapes (must match API route responses) ──────
 
 export interface ApiMatchScore {
+  id?: string; // CandidateJobScore ID (for PATCH)
   jobId: string;
   jobSlug: string;
   jobTitle: string;
@@ -88,6 +94,7 @@ export interface ApiApplication {
   jobTitle: string;
   company: string;
   location: string;
+  employmentType?: string;
   matchScoreAtApplication: number | null;
   status: string;
   appliedAt: string;
@@ -127,34 +134,34 @@ export interface ApiPreferences {
   preferredJobTypes: string[];
 }
 
-// ─── Fetch helpers ───────────────────────────────────────────────
+// ─── Fetch helpers (take candidateId param) ──────────────────
 
-export async function fetchMatches(verdict?: string): Promise<MatchesResponse | null> {
+export async function fetchMatches(candidateId: string | null, verdict?: string): Promise<MatchesResponse | null> {
   const params = new URLSearchParams();
   if (verdict && verdict !== 'ALL') params.set('verdict', verdict);
   const qs = params.toString();
-  return apiFetch<MatchesResponse>(`/api/candidates/me/matches${qs ? `?${qs}` : ''}`);
+  return apiFetch<MatchesResponse>(`/api/candidates/me/matches${qs ? `?${qs}` : ''}`, {}, candidateId);
 }
 
-export async function fetchSavedJobs(): Promise<SavedJobsResponse | null> {
-  return apiFetch<SavedJobsResponse>('/api/candidates/me/saved');
+export async function fetchSavedJobs(candidateId: string | null): Promise<SavedJobsResponse | null> {
+  return apiFetch<SavedJobsResponse>('/api/candidates/me/saved', {}, candidateId);
 }
 
-export async function fetchApplications(): Promise<ApplicationsResponse | null> {
-  return apiFetch<ApplicationsResponse>('/api/candidates/me/applications');
+export async function fetchApplications(candidateId: string | null): Promise<ApplicationsResponse | null> {
+  return apiFetch<ApplicationsResponse>('/api/candidates/me/applications', {}, candidateId);
 }
 
-export async function fetchPreferences(): Promise<ApiPreferences | null> {
-  return apiFetch<ApiPreferences>('/api/candidates/me/preferences');
+export async function fetchPreferences(candidateId: string | null): Promise<ApiPreferences | null> {
+  return apiFetch<ApiPreferences>('/api/candidates/me/preferences', {}, candidateId);
 }
 
 // ─── Mutation helpers ────────────────────────────────────────────
 
 export async function patchMatch(
+  candidateId: string | null,
   scoreId: string,
   data: { is_read?: boolean; is_saved?: boolean },
 ): Promise<boolean> {
-  const candidateId = getCandidateId();
   if (!candidateId) return false;
 
   try {
@@ -173,9 +180,9 @@ export async function patchMatch(
 }
 
 export async function updatePreferences(
+  candidateId: string | null,
   data: Partial<ApiPreferences>,
 ): Promise<ApiPreferences | null> {
-  const candidateId = getCandidateId();
   if (!candidateId) return null;
 
   try {
@@ -194,8 +201,10 @@ export async function updatePreferences(
   }
 }
 
-export async function uploadCV(file: File): Promise<{ success: boolean; message: string; fileName?: string } | null> {
-  const candidateId = getCandidateId();
+export async function uploadCV(
+  candidateId: string | null,
+  file: File,
+): Promise<{ success: boolean; message: string; fileName?: string } | null> {
   if (!candidateId) return null;
 
   try {

@@ -1,35 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * PATCH /api/candidates/me/preferences
  *
  * Update candidate job preferences.
- *
- * Body fields (all optional):
- *   preferredLocations: string[]
- *   preferredJobTypes: string[]
- *   remotePreference: 'ONSITE' | 'HYBRID' | 'REMOTE' | 'ANY'
- *   expectedSalaryMin: number
- *   expectedSalaryMax: number
- *   salaryCurrency: string
- *   availabilityStatus: 'IMMEDIATE' | 'NOTICE_PERIOD' | 'UNAVAILABLE'
- *   noticePeriodDays: number
- *   willingToRelocate: boolean
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const body = await request.json();
 
-    // Build update data — only include provided fields
     const updateData: Record<string, unknown> = {};
     if (Array.isArray(body.preferredLocations)) updateData.preferredLocations = body.preferredLocations;
     if (Array.isArray(body.preferredJobTypes)) updateData.preferredJobTypes = body.preferredJobTypes;
@@ -42,18 +28,12 @@ export async function PATCH(request: NextRequest) {
     if (typeof body.willingToRelocate === 'boolean') updateData.willingToRelocate = body.willingToRelocate;
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
-        { error: 'No valid fields to update' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
     const preferences = await prisma.candidatePreferences.upsert({
       where: { candidateId },
-      create: {
-        candidateId,
-        ...updateData,
-      },
+      create: { candidateId, ...updateData },
       update: updateData,
     });
 
@@ -70,9 +50,6 @@ export async function PATCH(request: NextRequest) {
     });
   } catch (error) {
     console.error('[PATCH /api/candidates/me/preferences]', error);
-    return NextResponse.json(
-      { error: 'Failed to update preferences' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update preferences' }, { status: 500 });
   }
 }

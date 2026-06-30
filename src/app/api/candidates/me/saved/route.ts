@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerCandidateId } from '@/lib/get-server-candidate';
 
 /**
  * GET /api/candidates/me/saved
  *
  * Returns jobs the candidate has saved (isSaved = true).
- * Query params: page, limit
  */
 export async function GET(request: NextRequest) {
   try {
-    const candidateId = request.headers.get('x-candidate-id');
+    const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
-      return NextResponse.json(
-        { error: 'Authentication required. Provide x-candidate-id header.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -32,20 +29,10 @@ export async function GET(request: NextRequest) {
         include: {
           job: {
             select: {
-              id: true,
-              slug: true,
-              title: true,
-              employmentType: true,
-              locationCity: true,
-              locationCounty: true,
-              isRemote: true,
-              salaryMin: true,
-              salaryMax: true,
-              salaryCurrency: true,
-              salaryDisclosure: true,
-              organization: {
-                select: { name: true },
-              },
+              id: true, slug: true, title: true, employmentType: true,
+              locationCity: true, locationCounty: true, isRemote: true,
+              salaryMin: true, salaryMax: true, salaryCurrency: true, salaryDisclosure: true,
+              organization: { select: { name: true } },
             },
           },
         },
@@ -76,18 +63,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       savedJobs,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (error) {
     console.error('[GET /api/candidates/me/saved]', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch saved jobs' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch saved jobs' }, { status: 500 });
   }
 }

@@ -45,6 +45,9 @@ local-*
 .z-ai-config
 *.log
 dev.log
+
+# local database
+db/*.db
 dev.out.log
 test
 prompt

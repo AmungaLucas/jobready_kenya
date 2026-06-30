@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import MobileDrawer from './MobileDrawer';
 import {
   ChevronDown,
@@ -15,11 +16,19 @@ import {
   HeartHandshake,
   PlusCircle,
   UploadCloud,
+  LogOut,
+  User,
 } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+
+  const isLoggedIn = status === 'authenticated' && session?.user;
+  const userName = (session?.user as Record<string, unknown>)?.name as string | undefined;
+  const firstName = userName?.split(' ')[0];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +37,19 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    function handleClick(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.user-menu-container')) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [userMenuOpen]);
 
   return (
     <>
@@ -48,66 +70,105 @@ export default function Navbar() {
               </button>
               <div className="dropdown-menu">
                 <Link href="/jobs">
-                  <Briefcase className="w-4 h-4 inline" /> All Jobs
+                  <Briefcase className="w-4 h-4" /> Browse All Jobs
                 </Link>
                 <Link href="/categories">
-                  <LayoutGrid className="w-4 h-4 inline" /> Browse by Category
+                  <LayoutGrid className="w-4 h-4" /> Jobs by Category
                 </Link>
-                <Link href="/locations/nairobi">
-                  <MapPin className="w-4 h-4 inline" /> Browse by Location
+                <Link href="/locations">
+                  <MapPin className="w-4 h-4" /> Jobs by Location
                 </Link>
                 <Link href="/government-jobs">
-                  <Landmark className="w-4 h-4 inline" /> Govt Jobs
-                </Link>
-                <Link href="/government-jobs?type=COUNTY_GOVERNMENT">
-                  <Building2 className="w-4 h-4 inline" /> County Jobs
+                  <Landmark className="w-4 h-4" /> Government Jobs
                 </Link>
               </div>
             </li>
             <li className="group relative">
               <button type="button" className="flex items-center gap-1">
-                Opportunities
+                More
                 <ChevronDown className="w-4 h-4 dropdown-arrow" />
               </button>
               <div className="dropdown-menu">
-                <div className="dropdown-label">Explore</div>
-                <Link href="/opportunities?type=SCHOLARSHIP">
-                  <GraduationCap className="w-4 h-4 inline" /> Scholarships
-                </Link>
-                <Link href="/jobs?type=INTERNSHIP">
-                  <Briefcase className="w-4 h-4 inline" /> Internships
-                </Link>
-                <Link href="/opportunities?type=FELLOWSHIP">
-                  <Users className="w-4 h-4 inline" /> Fellowships
-                </Link>
-                <Link href="/opportunities?type=VOLUNTEER">
-                  <HeartHandshake className="w-4 h-4 inline" /> Volunteering
-                </Link>
-                <div className="dropdown-divider"></div>
                 <Link href="/opportunities">
-                  <LayoutGrid className="w-4 h-4 inline" /> <strong>All Opportunities &rarr;</strong>
+                  <HeartHandshake className="w-4 h-4" /> Opportunities
+                </Link>
+                <Link href="/blog">
+                  <GraduationCap className="w-4 h-4" /> Resources
+                </Link>
+                <Link href="/cv-services">
+                  <UploadCloud className="w-4 h-4" /> CV Services
+                </Link>
+                <Link href="/faq">
+                  <Users className="w-4 h-4" /> FAQ
                 </Link>
               </div>
-            </li>
-            <li>
-              <Link href="/blog">Resources</Link>
-            </li>
-            <li>
-              <Link href="/cv-services">CV Services</Link>
-            </li>
-            <li>
-              <Link href="/faq">FAQ</Link>
             </li>
           </ul>
 
           <div className="navbar-actions">
-            <Link href="/contact" className="btn-outline">
-              <PlusCircle className="w-4 h-4 inline" /> <span>Post a Job</span>
-            </Link>
-            <Link href="/cv-services" className="btn-primary">
-              <UploadCloud className="w-4 h-4 inline" /> <span>Upload CV</span>
-            </Link>
-            <button type="button" className="btn-icon avatar">JD</button>
+            {isLoggedIn ? (
+              <>
+                <Link href="/account/cv-upload" className="btn-outline" style={{ display: 'none' }}>
+                  <UploadCloud className="w-4 h-4 inline" /> <span>Upload CV</span>
+                </Link>
+                <div className="user-menu-container" style={{ position: 'relative' }}>
+                  <button
+                    type="button"
+                    className="btn-icon avatar"
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    title={userName}
+                  >
+                    {firstName?.[0] ?? 'U'}
+                  </button>
+                  {userMenuOpen && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        right: 0,
+                        marginTop: '0.5rem',
+                        background: '#fff',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        minWidth: '200px',
+                        zIndex: 100,
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {userName && (
+                        <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #f0eeeb', fontSize: '0.82rem', color: '#3d3d3d' }}>
+                          Signed in as <strong>{firstName}</strong>
+                        </div>
+                      )}
+                      <Link
+                        href="/account"
+                        onClick={() => setUserMenuOpen(false)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', fontSize: '0.85rem', color: '#1a1a1a', textDecoration: 'none' }}
+                      >
+                        <User className="w-4 h-4" /> Dashboard
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: '/' }); }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', fontSize: '0.85rem', color: '#ef4444', width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left' }}
+                      >
+                        <LogOut className="w-4 h-4" /> Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="btn-outline">
+                  Sign in
+                </Link>
+                <Link href="/register" className="btn-primary">
+                  Create account
+                </Link>
+              </>
+            )}
             <button
               type="button"
               className="navbar-toggle"

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import {
   X,
   ChevronDown,
@@ -14,6 +15,8 @@ import {
   HeartHandshake,
   PlusCircle,
   UploadCloud,
+  LogOut,
+  User,
 } from 'lucide-react';
 
 interface MobileDrawerProps {
@@ -24,6 +27,9 @@ interface MobileDrawerProps {
 export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const [jobsOpen, setJobsOpen] = useState(false);
   const [oppOpen, setOppOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === 'authenticated' && session?.user;
+  const userName = (session?.user as Record<string, unknown>)?.name as string | undefined;
 
   if (!isOpen) return null;
 
@@ -133,12 +139,33 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         </ul>
 
         <div className="mobile-actions">
-          <Link href="/contact" className="btn-outline" onClick={onClose}>
-            <PlusCircle className="w-4 h-4 inline" /> Post a Job
-          </Link>
-          <Link href="/cv-services" className="btn-primary" onClick={onClose}>
-            <UploadCloud className="w-4 h-4 inline" /> Upload CV
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link href="/account" className="btn-outline" onClick={onClose}>
+                <User className="w-4 h-4 inline" /> Dashboard
+              </Link>
+              <Link href="/account/cv-upload" className="btn-primary" onClick={onClose}>
+                <UploadCloud className="w-4 h-4 inline" /> Upload CV
+              </Link>
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => { onClose(); signOut({ callbackUrl: '/' }); }}
+                style={{ width: '100%' }}
+              >
+                <LogOut className="w-4 h-4 inline" /> Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="btn-outline" onClick={onClose}>
+                Sign in
+              </Link>
+              <Link href="/register" className="btn-primary" onClick={onClose}>
+                Create account
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </>

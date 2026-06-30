@@ -18,20 +18,41 @@ function cleanup() {
   }
 }
 
+// In demo mode, dashboard and API routes are accessible without auth.
+// Set to false (in api-client.ts) once auth is fully functional.
+const DEMO_MODE = true;
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ─── Auth-protected routes ────────────────────────────────────
-  // Once NextAuth is fully configured, uncomment the session check
-  // below. For now the dashboard uses demo data, so we allow access.
-  //
-  // const protectedPaths = ['/account', '/api/candidates'];
-  // const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
-  // if (isProtected) {
-  //   // Check session cookie / token here
-  //   // If no session, redirect to login:
-  //   // return NextResponse.redirect(new URL('/login', request.url));
-  // }
+  // ─── Auth protection (disabled in demo mode) ──────────────────
+  if (!DEMO_MODE) {
+    const isAccountRoute = pathname.startsWith('/account');
+    const isCandidateApi = pathname.startsWith('/api/candidates/');
+
+    if (isAccountRoute || isCandidateApi) {
+      // Check for NextAuth session token cookie
+      // The session cookie name is typically "next-auth.session-token" (http) or
+      // "__Secure-next-auth.session-token" (https)
+      const sessionCookie =
+        request.cookies.get('next-auth.session-token') ??
+        request.cookies.get('__Secure-next-auth.session-token');
+
+      if (!sessionCookie) {
+        // For API routes, return 401 JSON
+        if (isCandidateApi) {
+          return NextResponse.json(
+            { error: 'Authentication required' },
+            { status: 401 }
+          );
+        }
+        // For /account pages, redirect to login
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('callbackUrl', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+  }
 
   // ─── Rate limiting for API routes ─────────────────────────────
   if (pathname.startsWith('/api/')) {
@@ -47,10 +68,7 @@ export function proxy(request: NextRequest) {
     } else if (record.count >= RATE_LIMIT) {
       return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), {
         status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': '60',
-        },
+        headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
       });
     } else {
       record.count++;
