@@ -53,16 +53,16 @@ export default function FilterChips() {
   }, [router, pathname]);
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mt-4">
-      <span className="text-xs font-medium text-gray-400 uppercase tracking-wider mr-1">Filters:</span>
+    <div className="flex flex-wrap items-center gap-2 mt-4 overflow-x-auto no-scrollbar pb-1">
+      <span className="text-xs font-medium text-gray-400 uppercase tracking-wider mr-1 whitespace-nowrap">Filters:</span>
       {typeFilters.map((filter) => (
         <button
           key={filter.value || 'all'}
           type="button"
           className={
             activeType === filter.value
-              ? 'text-emerald-700 font-semibold text-sm bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200'
-              : 'text-gray-500 hover:text-gray-700 text-sm hover:bg-gray-50 px-2.5 py-1 rounded-full transition'
+              ? 'text-emerald-700 font-semibold text-sm bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 whitespace-nowrap'
+              : 'text-gray-500 hover:text-gray-700 text-sm hover:bg-gray-50 px-2.5 py-1 rounded-full transition whitespace-nowrap'
           }
           onClick={() => updateParam('type', filter.value)}
         >
@@ -70,10 +70,10 @@ export default function FilterChips() {
         </button>
       ))}
 
-      <div className="w-px h-5 bg-gray-200 mx-1" />
+      <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />
 
       <select
-        className="text-sm text-gray-500 focus:outline-none focus:text-emerald-700 bg-transparent cursor-pointer"
+        className="text-sm text-gray-500 focus:outline-none focus:text-emerald-700 bg-transparent cursor-pointer flex-shrink-0"
         value={activeSort}
         onChange={(e) => updateParam('sort', e.target.value)}
       >
@@ -88,7 +88,7 @@ export default function FilterChips() {
         <button
           type="button"
           onClick={clearAll}
-          className="text-xs text-red-500 hover:text-red-700 font-medium ml-2 transition"
+          className="text-xs text-red-500 hover:text-red-700 font-medium ml-2 transition whitespace-nowrap flex-shrink-0"
         >
           Clear all
         </button>

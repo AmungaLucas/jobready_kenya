@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { candidate } from '@/lib/demo-candidate';
+import { useSession } from 'next-auth/react';
 import { useMatches, useApplications, useSavedJobs } from '@/lib/use-dashboard-data';
 import {
   LayoutDashboard,
@@ -12,6 +12,7 @@ import {
   Send,
   Bookmark,
   Settings,
+  Loader2,
 } from 'lucide-react';
 
 const navItems = [
@@ -26,15 +27,60 @@ const navItems = [
 
 export default function AccountNav() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
   const { matches } = useMatches();
   const { apps } = useApplications();
   const { jobs: savedJobs } = useSavedJobs();
 
   const unreadCount = matches.filter((m) => !m.isRead && m.verdict !== 'NOT_RECOMMENDED').length;
 
+  const userSession = session?.user as Record<string, unknown> | undefined;
+  const displayName = userSession?.name
+    ? String(userSession.name)
+    : (userSession?.email ?? 'User');
+  const displayEmail = userSession?.email ?? '';
+
+  // Extract initials from display name
+  const nameParts = displayName.trim().split(/\s+/);
+  const initials = nameParts.length >= 2
+    ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
+    : displayName.slice(0, 2).toUpperCase();
+
+  // Profile completion — compute from real data if available
+  const completionScore = 0; // Will be updated via profile fetch below
+
   function isActive(href: string) {
     if (href === '/account') return pathname === '/account';
     return pathname.startsWith(href);
+  }
+
+  if (status === 'loading') {
+    return (
+      <>
+        <nav className="mobile-dashboard-nav">
+          <div className="mobile-nav-inner">
+            {navItems.map((item) => (
+              <div key={item.href} className="mobile-nav-item" style={{ opacity: 0.5 }}>
+                <item.icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </nav>
+
+        <aside className="dashboard-sidebar">
+          <div className="sidebar-user">
+            <div className="dashboard-avatar">
+              <Loader2 className="w-5 h-5 animate-spin" />
+            </div>
+            <div>
+              <div style={{ width: 120, height: 14, borderRadius: 4, background: '#e5e7eb', animation: 'pulse 2s infinite' }} />
+              <div style={{ width: 160, height: 10, borderRadius: 4, background: '#e5e7eb', marginTop: 4, animation: 'pulse 2s infinite' }} />
+            </div>
+          </div>
+        </aside>
+      </>
+    );
   }
 
   return (
@@ -59,17 +105,17 @@ export default function AccountNav() {
       <aside className="dashboard-sidebar">
         <div className="sidebar-user">
           <div className="dashboard-avatar">
-            {candidate.firstName[0]}{candidate.lastName[0]}
+            {initials}
           </div>
           <div>
-            <p className="sidebar-user-name">{candidate.firstName} {candidate.lastName}</p>
-            <p className="sidebar-user-email">{candidate.email}</p>
+            <p className="sidebar-user-name">{displayName}</p>
+            <p className="sidebar-user-email">{displayEmail}</p>
           </div>
           <div className="sidebar-completion">
             <div className="sidebar-completion-bar">
-              <div className="sidebar-completion-fill" style={{ width: `${candidate.profileCompletionScore}%` }} />
+              <div className="sidebar-completion-fill" style={{ width: `${completionScore}%` }} />
             </div>
-            <p className="sidebar-completion-text">{candidate.profileCompletionScore}%</p>
+            <p className="sidebar-completion-text">{completionScore}%</p>
           </div>
         </div>
 

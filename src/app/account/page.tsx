@@ -1,17 +1,71 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { candidate, getVerdictBarColor, profileCompletionChecklist } from '@/lib/demo-candidate';
 import { useMatches, useApplications, useSavedJobs } from '@/lib/use-dashboard-data';
-import { ArrowRight, FileUp, User, Target, Send, Bookmark } from 'lucide-react';
+import { ArrowRight, FileUp, User, Target, Send, Bookmark, Loader2 } from 'lucide-react';
 
 export default function AccountOverviewPage() {
-  const { matches } = useMatches();
-  const { apps } = useApplications();
-  const { jobs: savedJobs } = useSavedJobs();
+  const router = useRouter();
+  const { matches, loading: matchesLoading } = useMatches();
+  const { apps, loading: appsLoading } = useApplications();
+  const { jobs: savedJobs, loading: savedLoading } = useSavedJobs();
+  const [redirecting, setRedirecting] = useState(true);
+  const [profileData, setProfileData] = useState<{
+    firstName: string | null;
+    lastName: string | null;
+    onboardingStatus: string | null;
+    profileCompletionScore: number | null;
+  } | null>(null);
+
+  // Fetch candidate profile to check onboarding status
+  useEffect(() => {
+    fetch('/api/candidates/me')
+      .then((res) => {
+        if (!res.ok) throw new Error('Not authenticated');
+        return res.json();
+      })
+      .then((data) => {
+        const candidate = data.candidate || data;
+        setProfileData({
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          onboardingStatus: candidate.onboardingStatus,
+          profileCompletionScore: candidate.profile?.profileCompletionScore ?? 0,
+        });
+
+        // Redirect to onboarding if status is STARTED
+        if (candidate.onboardingStatus === 'STARTED') {
+          router.push('/account/onboarding');
+          return;
+        }
+        setRedirecting(false);
+      })
+      .catch(() => {
+        setRedirecting(false);
+      });
+  }, [router]);
+
+  const loading = matchesLoading || appsLoading || savedLoading || redirecting;
+
+  const displayName = profileData?.firstName
+    ? `${profileData.firstName}${profileData.lastName ? ` ${profileData.lastName}` : ''}`
+    : 'User';
+
+  const completionScore = profileData?.profileCompletionScore ?? 0;
+  const scoreDeg = (completionScore / 100) * 360;
 
   const topMatches = matches.filter(m => m.verdict !== 'NOT_RECOMMENDED').slice(0, 5);
-  const scoreDeg = (candidate.profileCompletionScore / 100) * 360;
+
+  if (redirecting) {
+    return (
+      <div className="dashboard-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#0b7e4a' }} />
+        <span style={{ color: '#6b6b6b' }}>Loading your dashboard...</span>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -21,7 +75,7 @@ export default function AccountOverviewPage() {
           <span className="separator">/</span>
           <span>Dashboard</span>
         </div>
-        <h1>Welcome back, {candidate.firstName}</h1>
+        <h1>Welcome back, {displayName}</h1>
         <p>Here is your job matching summary and recent activity.</p>
       </div>
 
@@ -40,8 +94,8 @@ export default function AccountOverviewPage() {
           <div className="stat-label">Saved jobs</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">24</div>
-          <div className="stat-label">Profile views</div>
+          <div className="stat-number">{completionScore}%</div>
+          <div className="stat-label">Profile complete</div>
         </div>
       </div>
 
@@ -49,7 +103,7 @@ export default function AccountOverviewPage() {
       <div className="dashboard-completion-row">
         <div>
           <div className="score-ring" style={{ '--score-deg': `${scoreDeg}deg` } as React.CSSProperties}>
-            <span className="score-ring-value">{candidate.profileCompletionScore}%</span>
+            <span className="score-ring-value">{completionScore}%</span>
           </div>
           <p style={{ fontSize: '0.78rem', color: '#8a8a8a', textAlign: 'center', marginTop: '0.5rem' }}>Profile completion</p>
         </div>
@@ -106,45 +160,39 @@ export default function AccountOverviewPage() {
 
       <div className="dashboard-divider" />
 
-      {/* Recent activity */}
-      <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#1a1a1a', marginBottom: '1rem', letterSpacing: '-0.01em' }}>Recent activity</h2>
-      <div>
-        <div className="activity-item">
-          <div className="activity-dot" style={{ background: '#0b7e4a' }} />
-          <div>
-            <p className="activity-text">You were <strong>shortlisted</strong> for Accounts Payable Officer at Safaricom PLC</p>
-            <p className="activity-time">2 days ago</p>
-          </div>
+      {/* Recent applications */}
+      <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#1a1a1a', marginBottom: '1rem', letterSpacing: '-0.01em' }}>Recent applications</h2>
+      {apps.length === 0 ? (
+        <div className="empty-state">
+          <p>No applications yet. Browse jobs and start applying.</p>
+          <Link href="/jobs" className="btn-outline" style={{ display: 'inline-flex', marginTop: '1rem' }}>
+            <ArrowRight className="w-4 h-4" /> Browse Jobs
+          </Link>
         </div>
-        <div className="activity-item">
-          <div className="activity-dot" style={{ background: '#d97706' }} />
-          <div>
-            <p className="activity-text"><strong>Interview scheduled</strong> for Junior Accountant at Equity Bank — June 30, 2026</p>
-            <p className="activity-time">1 day ago</p>
-          </div>
+      ) : (
+        <div>
+          {apps.slice(0, 5).map((app) => (
+            <Link key={app.id} href={`/jobs/${app.jobSlug}`} className="match-card" style={{ display: 'block' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#1a1a1a', margin: 0 }}>{app.jobTitle}</p>
+                  <p className="match-company">{app.company} &middot; {app.location}</p>
+                </div>
+                <span style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '9999px',
+                  background: app.status === 'APPLIED' ? '#dcfce7' : '#fef3c7',
+                  color: app.status === 'APPLIED' ? '#166534' : '#92400e',
+                }}>
+                  {app.status}
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
-        <div className="activity-item">
-          <div className="activity-dot" />
-          <div>
-            <p className="activity-text">New matches found: 3 strong matches in Finance &amp; Accounting</p>
-            <p className="activity-time">3 days ago</p>
-          </div>
-        </div>
-        <div className="activity-item">
-          <div className="activity-dot" />
-          <div>
-            <p className="activity-text">You applied to Finance Assistant at UNDP Kenya</p>
-            <p className="activity-time">4 days ago</p>
-          </div>
-        </div>
-        <div className="activity-item">
-          <div className="activity-dot" />
-          <div>
-            <p className="activity-text">Profile updated: CPA Section 2 certification added</p>
-            <p className="activity-time">1 week ago</p>
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 }

@@ -407,7 +407,7 @@ export default function ProfilePage() {
         {/* ── Personal Information ── */}
         <div className="profile-section">
           <h3>Personal information</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6b6b', display: 'block', marginBottom: '0.3rem' }}>First name</label>
               <Input value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
@@ -430,7 +430,7 @@ export default function ProfilePage() {
         {/* ── Profile ── */}
         <div className="profile-section">
           <h3>Career profile</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
             <div>
               <label style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b6b6b', display: 'block', marginBottom: '0.3rem' }}>Seniority level</label>
               <select
@@ -495,7 +495,7 @@ export default function ProfilePage() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.75rem' }}>
                 <Input placeholder="Job title" value={we.roleTitle || ''} onChange={(e) => updateWorkExperience(index, 'roleTitle', e.target.value)} />
                 <Input placeholder="Company / Employer" value={we.employerName || ''} onChange={(e) => updateWorkExperience(index, 'employerName', e.target.value)} />
                 <Input
@@ -571,7 +571,7 @@ export default function ProfilePage() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.75rem' }}>
                 <Input placeholder="Institution" value={edu.institution || ''} onChange={(e) => updateEducation(index, 'institution', e.target.value)} />
                 <Input placeholder="Field of study" value={edu.fieldOfStudy || ''} onChange={(e) => updateEducation(index, 'fieldOfStudy', e.target.value)} />
                 <select
@@ -687,8 +687,8 @@ export default function ProfilePage() {
           <span className="separator">/</span>
           <span>Profile</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div style={{ minWidth: 0 }}>
             <h1>Your profile</h1>
             <p>How employers and the matching engine see you.</p>
           </div>

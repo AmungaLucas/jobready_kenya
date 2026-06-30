@@ -15,7 +15,7 @@ export async function getAuthCandidateId(): Promise<string | null> {
 
   if (!session?.user) return null;
 
-  const userId = (session.user as Record<string, unknown>).id as string | undefined;
+  const userId = (session.user as Record<string, unknown>).userId as string | undefined;
   if (!userId) return null;
 
   const candidate = await prisma.candidate.findUnique({

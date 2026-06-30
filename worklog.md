@@ -646,3 +646,28 @@ Stage Summary:
 - Apply flow: in-app modal with cover letter, server-side Application records
 - Mobile: sidebar drawer, responsive CSS overrides
 - Commit: 46c4d72, all pushed to main
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Fix profile edit, onboarding redirect, apply flow, mobile responsiveness, auth bugs
+
+Work Log:
+- Fixed `getAuthCandidateId` bug: `session.user.id` → `session.user.userId` (JWT puts it under `userId`)
+- Fixed `api-client.ts` `useCandidateId()`: now fetches candidateId from `/api/candidates/me/profile` API instead of reading non-existent `session.user.candidateId`
+- Added `candidateId` field to `/api/candidates/me/profile` response
+- Fixed apply route: `prisma.application` → `prisma.jobApplication` (3 locations: findUnique, create, compound key)
+- Removed `coverLetter` from jobApplication create (field doesn't exist on model)
+- Rewrote `AccountNav.tsx` to use `useSession()` for real user name/email/initials instead of hardcoded demo-candidate data; added loading skeleton state
+- Rewrote `account/page.tsx` (dashboard overview) to use real API data; added onboarding redirect when `onboardingStatus === 'STARTED'`; replaced hardcoded recent activity with real applications list; removed demo-candidate import
+- Made FilterChips mobile-friendly: added `whitespace-nowrap`, `flex-shrink-0`, `overflow-x-auto` for horizontal scroll on small screens
+- Made profile edit form grids responsive: reduced `minmax(250px, 1fr)` → `minmax(200px, 1fr)` and `minmax(220px, 1fr)` → `minmax(180px, 1fr)` for work experience and education grids
+- Made profile read-only view header responsive: added `flexWrap: 'wrap'` and `gap`
+
+Stage Summary:
+- 7 critical bugs fixed across auth, API, and frontend
+- Profile edit mode was already functional (the edit button and form existed) — the real blocker was the auth chain (`getAuthCandidateId` → `useCandidateId` → dashboard hooks)
+- Onboarding wizard already had full 4-step navigation — added first-login redirect from dashboard overview
+- In-app apply flow was already built in SmartApplyButton — fixed the runtime crash from wrong Prisma model name
+- Mobile responsiveness improved for filter chips, profile form grids, and dashboard layout
+- All changes pass lint (zero new errors)

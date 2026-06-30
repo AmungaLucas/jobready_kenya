@@ -43,7 +43,7 @@ export async function POST(
     }
 
     // Check if already applied
-    const existingApplication = await prisma.application.findUnique({
+    const existingApplication = await prisma.jobApplication.findUnique({
       where: {
         candidateId_jobId: {
           candidateId: candidate.id,
@@ -80,11 +80,10 @@ export async function POST(
 
     const application = await prisma.$transaction(async (tx) => {
       // Create application
-      const app = await tx.application.create({
+      const app = await tx.jobApplication.create({
         data: {
           candidateId: candidate.id,
           jobId: id,
-          coverLetter: coverLetter || null,
           matchScoreAtApplication,
           status: "APPLIED",
         },

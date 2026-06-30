@@ -11,18 +11,48 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 
 // Flip this to false once auth is fully functional
 export const DEMO_MODE = false;
 
 /**
  * Get the candidate ID from the NextAuth session.
+ * Uses userId from the JWT token, then resolves to candidate ID
+ * via a lightweight session check on first load.
  * Call this inside React components/hooks only (client-side).
  */
 export function useCandidateId(): string | null {
-  const { data: session } = useSession();
-  const candidateId = (session?.user as Record<string, unknown>)?.candidateId as string | undefined;
-  return candidateId ?? null;
+  const { data: session, status } = useSession();
+  const [candidateId, setCandidateId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCandidateId() {
+      if (status === 'loading') return;
+      if (!session?.user) {
+        if (!cancelled) setCandidateId(null);
+        return;
+      }
+      try {
+        const res = await fetch('/api/candidates/me/profile');
+        if (res.ok) {
+          const data = await res.json();
+          if (!cancelled && data?.candidateId) {
+            setCandidateId(data.candidateId);
+          }
+        }
+      } catch {
+        // Silently fail — hooks will show empty state
+      }
+    }
+
+    loadCandidateId();
+    return () => { cancelled = true; };
+  }, [session, status]);
+
+  return candidateId;
 }
 
 // ─── Generic fetch wrapper (internal) ───────────────────────────

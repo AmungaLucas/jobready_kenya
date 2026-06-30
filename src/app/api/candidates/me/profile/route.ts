@@ -61,6 +61,7 @@ export async function GET(request: NextRequest) {
       id ? taxonomyMap.get(id)?.label ?? id : null;
 
     return NextResponse.json({
+      candidateId: candidate.id,
       firstName: candidate.firstName,
       lastName: candidate.lastName,
       email: candidate.email,
