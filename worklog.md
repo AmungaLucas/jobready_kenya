@@ -524,3 +524,37 @@ Stage Summary:
 - CV upload has proper validation, file size display, and uploading state
 - Preferences save is wired to PATCH API with loading feedback
 - Matches save/bookmark and saved jobs remove are wired with optimistic updates
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Implement NextAuth integration with session-based auth
+
+Work Log:
+- Added NEXTAUTH_SECRET and NEXTAUTH_URL to local .env (not committed)
+- Switched Prisma provider back to SQLite for local dev (MySQL for production)
+- Pushed auth tables (User, Account, Session, VerificationToken) to local SQLite
+- Fixed TaxonomyItem self-referential relation for SQLite
+- Created src/lib/get-server-candidate.ts: shared helper that tries NextAuth session first, falls back to x-candidate-id header
+- Updated auth.ts: JWT callback now looks up candidateId from Candidate table and stores in token
+- Session callback exposes candidateId in session.user
+- Updated all 7 API routes to use getServerCandidateId() instead of raw header check
+- Updated api-client.ts: new useCandidateId() hook reads candidateId from NextAuth session
+- All fetch/mutation helpers now take candidateId as first parameter
+- Updated use-dashboard-data.ts hooks to pass candidateId from useCandidateId()
+- Updated preferences page and CV upload page to pass candidateId
+- Updated Navbar: shows Sign in/Create account when logged out, user avatar+dropdown when logged in
+- Updated MobileDrawer: auth-aware action buttons (Dashboard, Upload CV, Sign out vs Sign in, Create account)
+- Updated proxy.ts: session cookie check for protected routes (disabled when DEMO_MODE=true)
+- Added db/*.db to .gitignore, removed custom.db from git tracking
+- Build: clean, 44 routes, zero errors
+- Pushed commit 701b99a to main
+
+Stage Summary:
+- Full NextAuth auth flow: register → auto-sign-in → dashboard
+- JWT tokens contain userId, role, email, name, candidateId
+- Server-side API auth via getServerCandidateId() (session → header fallback)
+- Client-side auth via useCandidateId() hook (reads from NextAuth session)
+- Navbar and mobile drawer are auth-aware
+- DEMO_MODE=true still active — flip to false in api-client.ts + proxy.ts to enable auth
+- Production: set DATABASE_URL and NEXTAUTH_SECRET in Vercel env vars
