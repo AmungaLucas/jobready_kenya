@@ -494,3 +494,33 @@ Stage Summary:
 - All routes use x-candidate-id header for auth (placeholder until real auth)
 - Build passes clean, pushed to main
 - Note: [matchId] dynamic segment renamed to [id] due to env filesystem limitation with bracket+m character combo
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Wire all 7 dashboard pages to API routes with demo-mode fallback
+
+Work Log:
+- Created src/lib/api-client.ts: shared fetch layer with DEMO_MODE flag (true by default), typed response interfaces, and mutation helpers (patchMatch, updatePreferences, uploadCV)
+- Created src/lib/use-dashboard-data.ts: 3 React hooks (useMatches, useSavedJobs, useApplications) that call real API when auth available, fall back to demo-candidate.ts static data in demo mode
+- Wired all 7 dashboard pages:
+  - Overview (page.tsx): stats from hooks instead of direct demo imports
+  - Matches: save/unsave via toggleSave(), markAsRead on link click, loading state
+  - Applications: uses useApplications hook, getStatusLabel for readable status text
+  - Saved Jobs: uses useSavedJobs hook, removeJob with optimistic update
+  - Preferences: save calls PATCH /api/candidates/me/preferences in non-demo mode, loading spinner
+  - CV Upload: real file upload to POST /api/candidates/upload-cv, client-side validation (type + 5MB), uploading spinner, error messages, file size display
+  - AccountNav: badge counts from hooks (unread matches, apps, saved)
+- Fixed bug: applications page used app.matchScore (undefined) instead of app.matchScoreAtApplication
+- Merged middleware.ts into proxy.ts to fix Next.js 16 conflict (both detected = error)
+- Included auth scaffolding from prior session: AuthProvider, auth.ts, get-auth-candidate.ts, login/register pages, NextAuth API routes
+- Build: clean, 44 routes, zero errors (only pre-existing markitdown warning)
+- Pushed commit d48de5e to main
+
+Stage Summary:
+- All dashboard pages now use a shared data layer (api-client.ts + use-dashboard-data.ts)
+- DEMO_MODE=true: pages render instantly with static demo data (zero API calls)
+- When auth is implemented: flip DEMO_MODE=false, pages call real /api/candidates/me/* endpoints
+- CV upload has proper validation, file size display, and uploading state
+- Preferences save is wired to PATCH API with loading feedback
+- Matches save/bookmark and saved jobs remove are wired with optimistic updates
