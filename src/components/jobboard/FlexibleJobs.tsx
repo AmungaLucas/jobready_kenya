@@ -3,37 +3,44 @@ import { prisma } from '@/lib/prisma';
 import { formatSalary } from '@/lib/jobs';
 
 export default async function FlexibleJobs() {
-  // Fetch flexible work jobs
-  const flexibleJobs = await prisma.job.findMany({
-    where: {
-      status: 'ACTIVE',
-      deletedAt: null,
-      employmentType: { in: ['PART_TIME', 'FREELANCE', 'TEMPORARY', 'CASUAL'] },
-    },
-    select: {
-      slug: true, title: true, locationCity: true, locationCounty: true,
-      employmentType: true, salaryMin: true, salaryMax: true, salaryDisclosure: true,
-      organization: { select: { orgName: true } },
-    },
-    orderBy: { datePosted: 'desc' },
-    take: 4,
-  });
+  let flexibleJobs: Awaited<ReturnType<typeof prisma.job.findMany>> = [];
+  let countyData: Awaited<ReturnType<typeof prisma.job.groupBy>> = [];
+  let slugMap: Record<string, string> = {};
+  try {
+    // Fetch flexible work jobs
+    flexibleJobs = await prisma.job.findMany({
+      where: {
+        status: 'ACTIVE',
+        deletedAt: null,
+        employmentType: { in: ['PART_TIME', 'FREELANCE', 'TEMPORARY', 'CASUAL'] },
+      },
+      select: {
+        slug: true, title: true, locationCity: true, locationCounty: true,
+        employmentType: true, salaryMin: true, salaryMax: true, salaryDisclosure: true,
+        organization: { select: { orgName: true } },
+      },
+      orderBy: { datePosted: 'desc' },
+      take: 4,
+    });
 
-  // Get job counts per county for sidebar
-  const countyData = await prisma.job.groupBy({
-    by: ['locationCounty'],
-    where: { status: 'ACTIVE', deletedAt: null, locationCounty: { not: null } },
-    _count: { id: true },
-    orderBy: { _count: { id: 'desc' } },
-    take: 8,
-  });
+    // Get job counts per county for sidebar
+    countyData = await prisma.job.groupBy({
+      by: ['locationCounty'],
+      where: { status: 'ACTIVE', deletedAt: null, locationCounty: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 8,
+    });
 
-  // Resolve county names to slugs via location table
-  const countySlugs = await prisma.location.findMany({
-    where: { county: { in: countyData.map(c => c.locationCounty!) } },
-    select: { county: true, slug: true },
-  });
-  const slugMap = Object.fromEntries(countySlugs.map(l => [l.county, l.slug]));
+    // Resolve county names to slugs via location table
+    const countySlugs = await prisma.location.findMany({
+      where: { county: { in: countyData.map(c => c.locationCounty!) } },
+      select: { county: true, slug: true },
+    });
+    slugMap = Object.fromEntries(countySlugs.map(l => [l.county, l.slug]));
+  } catch {
+    // Fallback: render empty sections if DB is unavailable
+  }
 
   const icons = ['🛍️', '✍️', '🎪', '📋'];
 

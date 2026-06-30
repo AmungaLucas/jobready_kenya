@@ -3,29 +3,35 @@ import { prisma } from '@/lib/prisma';
 import { formatDate } from '@/lib/jobs';
 
 export default async function GovernmentJobs() {
-  // National government jobs (orgType includes GOVERNMENT)
-  const nationalJobs = await prisma.job.findMany({
-    where: {
-      status: 'ACTIVE',
-      deletedAt: null,
-      organization: { orgType: { in: ['NATIONAL_GOVERNMENT', 'STATE_CORPORATION', 'REGULATORY_AUTHORITY'] } },
-    },
-    select: { slug: true, title: true, organization: { select: { orgName: true, orgType: true } }, deadline: true },
-    orderBy: { datePosted: 'desc' },
-    take: 4,
-  });
+  let nationalJobs: Awaited<ReturnType<typeof prisma.job.findMany>> = [];
+  let countyJobs: Awaited<ReturnType<typeof prisma.job.findMany>> = [];
+  try {
+    // National government jobs (orgType includes GOVERNMENT)
+    nationalJobs = await prisma.job.findMany({
+      where: {
+        status: 'ACTIVE',
+        deletedAt: null,
+        organization: { orgType: { in: ['NATIONAL_GOVERNMENT', 'STATE_CORPORATION', 'REGULATORY_AUTHORITY'] } },
+      },
+      select: { slug: true, title: true, organization: { select: { orgName: true, orgType: true } }, deadline: true },
+      orderBy: { datePosted: 'desc' },
+      take: 4,
+    });
 
-  // County government jobs
-  const countyJobs = await prisma.job.findMany({
-    where: {
-      status: 'ACTIVE',
-      deletedAt: null,
-      organization: { orgType: 'COUNTY_GOVERNMENT' },
-    },
-    select: { slug: true, title: true, locationCounty: true, organization: { select: { orgName: true } }, deadline: true },
-    orderBy: { datePosted: 'desc' },
-    take: 4,
-  });
+    // County government jobs
+    countyJobs = await prisma.job.findMany({
+      where: {
+        status: 'ACTIVE',
+        deletedAt: null,
+        organization: { orgType: 'COUNTY_GOVERNMENT' },
+      },
+      select: { slug: true, title: true, locationCounty: true, organization: { select: { orgName: true } }, deadline: true },
+      orderBy: { datePosted: 'desc' },
+      take: 4,
+    });
+  } catch {
+    // Fallback: render empty sections if DB is unavailable
+  }
 
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">

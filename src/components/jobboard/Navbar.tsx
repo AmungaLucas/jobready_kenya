@@ -108,8 +108,8 @@ export default function Navbar() {
           <div className="navbar-actions">
             {isLoggedIn ? (
               <>
-                <Link href="/account/cv-upload" className="btn-outline" style={{ display: 'none' }}>
-                  <UploadCloud className="w-4 h-4 inline" /> <span>Upload CV</span>
+                <Link href="/account" className="btn-outline">
+                  <User className="w-4 h-4 inline" /> <span>Dashboard</span>
                 </Link>
                 <div className="user-menu-container" style={{ position: 'relative' }}>
                   <button
@@ -142,11 +142,18 @@ export default function Navbar() {
                         </div>
                       )}
                       <Link
-                        href="/account"
+                        href="/account/cv-upload"
                         onClick={() => setUserMenuOpen(false)}
                         style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', fontSize: '0.85rem', color: '#1a1a1a', textDecoration: 'none' }}
                       >
-                        <User className="w-4 h-4" /> Dashboard
+                        <UploadCloud className="w-4 h-4" /> Upload CV
+                      </Link>
+                      <Link
+                        href="/account/matches"
+                        onClick={() => setUserMenuOpen(false)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', fontSize: '0.85rem', color: '#1a1a1a', textDecoration: 'none' }}
+                      >
+                        <Briefcase className="w-4 h-4" /> My Matches
                       </Link>
                       <button
                         type="button"

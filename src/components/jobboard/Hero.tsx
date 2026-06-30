@@ -3,7 +3,13 @@ import { getJobs } from '@/lib/jobs';
 import { timeAgo } from '@/lib/jobs';
 
 export default async function Hero() {
-  const { jobs } = await getJobs({ perPage: 5 });
+  let jobs: Awaited<ReturnType<typeof getJobs>>['jobs'] = [];
+  try {
+    const result = await getJobs({ perPage: 5 });
+    jobs = result.jobs;
+  } catch {
+    // Fallback: render hero without job listings if DB is unavailable
+  }
 
   return (
     <section className="section-bg py-12 md:py-16" style={{ marginTop: 0 }}>
@@ -62,27 +68,38 @@ export default async function Hero() {
                 View all →
               </Link>
             </div>
-            <ul className="divide-y divide-gray-200/50">
-              {jobs.map((job) => (
-                <li key={job.id} className="py-2.5 flex flex-wrap items-center justify-between gap-1">
-                  <div className="job-meta-inline flex items-center gap-2 min-w-0">
-                    <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition truncate">
-                      {job.title}
-                    </Link>
-                    <span className="meta-secondary text-xs text-gray-400 ml-2 whitespace-nowrap">{job.organization?.orgName || 'Confidential'}</span>
-                  </div>
-                  <span className="text-xs text-gray-300 ml-auto whitespace-nowrap">{timeAgo(job.datePosted)}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 pt-1 border-t border-gray-200/50 flex justify-start">
-              <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1.5">
-                Browse all latest jobs
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-            </div>
+            {jobs.length > 0 ? (
+              <ul className="divide-y divide-gray-200/50">
+                {jobs.map((job) => (
+                  <li key={job.id} className="py-2.5 flex flex-wrap items-center justify-between gap-1">
+                    <div className="job-meta-inline flex items-center gap-2 min-w-0">
+                      <Link href={`/jobs/${job.slug}`} className="text-sm font-semibold text-gray-800 hover:text-emerald-600 transition truncate">
+                        {job.title}
+                      </Link>
+                      <span className="meta-secondary text-xs text-gray-400 ml-2 whitespace-nowrap">{job.organization?.orgName || 'Confidential'}</span>
+                    </div>
+                    <span className="text-xs text-gray-300 ml-auto whitespace-nowrap">{timeAgo(job.datePosted)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="py-12 text-center text-sm text-gray-400">
+                <p className="mb-3">Loading latest jobs...</p>
+                <Link href="/jobs" className="text-emerald-600 font-semibold hover:text-emerald-700 transition">
+                  Browse all jobs →
+                </Link>
+              </div>
+            )}
+            {jobs.length > 0 && (
+              <div className="mt-4 pt-1 border-t border-gray-200/50 flex justify-start">
+                <Link href="/jobs" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition inline-flex items-center gap-1.5">
+                  Browse all latest jobs
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

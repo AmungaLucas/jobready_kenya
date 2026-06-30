@@ -12,6 +12,12 @@ function createPrismaClient() {
         url: process.env.DATABASE_URL,
       },
     },
+    // Add query timeout to prevent hanging on Vercel serverless
+    ...(process.env.DATABASE_URL?.startsWith('mysql') ? {
+      transactionOptions: {
+        timeout: 10000, // 10 second timeout for transactions
+      },
+    } : {}),
   });
 
   // In Vercel serverless, disconnect when the function is about to freeze

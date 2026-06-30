@@ -12,7 +12,12 @@ function daysUntil(date: Date | null): string {
 }
 
 export default async function ClosingSoon() {
-  const jobs = await getClosingSoonJobs(14, 6);
+  let jobs: Awaited<ReturnType<typeof getClosingSoonJobs>> = [];
+  try {
+    jobs = await getClosingSoonJobs(14, 6);
+  } catch {
+    // Fallback: render empty section if DB is unavailable
+  }
 
   return (
     <section className="section-bg py-10 border-t border-gray-200/50">
