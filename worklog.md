@@ -469,3 +469,28 @@ Stage Summary:
 - Taxonomy seed: ~300 items with aliases, ready for `npx tsx prisma/seed-taxonomy.ts`
 - User needs to run `prisma db push` + taxonomy seed on production MySQL
 - Next phase: connect auth (NextAuth/Auth.js) to start wiring real candidate data
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Audit all files from phase 2 (matching engine + API routes), fix issues, rebuild missing files, commit & push
+
+Work Log:
+- Read all 4 matching engine files (types.ts, scorer.ts, engine.ts, index.ts) — verified correct
+- Discovered 6 of 7 API route files were missing (lost during context compression in previous session)
+- Found and fixed index.ts bug: was re-exporting types from ./scorer instead of ./types
+- Verified Prisma relation names in engine.ts against actual schema — all correct
+- Confirmed Prisma singleton handles disconnect on beforeExit — no manual $disconnect needed
+- Rebuilt all 7 API routes from scratch: matches, matches/[id], profile, preferences, saved, applications, upload-cv
+- Fixed directory naming issue: [matchId] gets corrupted to atchId] in this environment, used [id] instead
+- Re-ran matches/route.ts after accidental deletion during directory fix
+- Ran next build — compiles successfully with only 1 expected warning (markitdown not installed)
+- Committed 13 files (4 matching engine + 7 API routes + schema.prisma + seed-taxonomy.ts)
+- Pushed to GitHub (b08a840)
+
+Stage Summary:
+- Matching engine: types.ts, scorer.ts, engine.ts, index.ts — all verified correct
+- 7 API routes created: matches (GET), matches/[id] (PATCH), profile (GET), preferences (PATCH), saved (GET), applications (GET), upload-cv (POST)
+- All routes use x-candidate-id header for auth (placeholder until real auth)
+- Build passes clean, pushed to main
+- Note: [matchId] dynamic segment renamed to [id] due to env filesystem limitation with bracket+m character combo
