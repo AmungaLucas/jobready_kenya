@@ -4,6 +4,7 @@ import "./globals.css";
 import CookieConsent from '@/components/jobboard/CookieConsent';
 import WhatsAppButton from '@/components/jobboard/WhatsAppButton';
 import { generateOrganizationJsonLd } from '@/lib/jsonld';
+import AuthProvider from '@/components/AuthProvider';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -137,9 +138,11 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationJsonLd()) }} />
       </head>
       <body className="font-sans bg-[#faf9f6]">
-        {children}
-        <CookieConsent />
-        <WhatsAppButton />
+        <AuthProvider>
+          {children}
+          <CookieConsent />
+          <WhatsAppButton />
+        </AuthProvider>
       </body>
     </html>
   );

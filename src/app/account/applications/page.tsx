@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { MapPin, Briefcase } from 'lucide-react';
-import { applications as demoApplications } from '@/lib/demo-candidate';
+import { useApplications } from '@/lib/use-dashboard-data';
+import { getStatusLabel } from '@/lib/demo-candidate';
 
 function getStatusClass(status: string) {
   return status.toLowerCase();
@@ -15,6 +18,24 @@ function formatDate(dateStr: string) {
 }
 
 export default function ApplicationsPage() {
+  const { apps, loading } = useApplications();
+
+  if (loading) {
+    return (
+      <div className="dashboard-header">
+        <div className="dashboard-breadcrumb">
+          <Link href="/">Home</Link>
+          <span className="separator">/</span>
+          <Link href="/account">Dashboard</Link>
+          <span className="separator">/</span>
+          <span>Applications</span>
+        </div>
+        <h1>Applications</h1>
+        <p>Loading your applications...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="dashboard-header">
@@ -29,8 +50,8 @@ export default function ApplicationsPage() {
         <p>Track your job applications and their status</p>
       </div>
 
-      {demoApplications.length > 0 ? (
-        demoApplications.map((app) => (
+      {apps.length > 0 ? (
+        apps.map((app) => (
           <div key={app.id} className="match-card">
             <Link href={`/jobs/${app.jobSlug}`} className="match-title">
               {app.jobTitle}
@@ -41,23 +62,25 @@ export default function ApplicationsPage() {
                 <MapPin style={{ width: '0.8rem', height: '0.8rem' }} /> {app.location}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                <Briefcase style={{ width: '0.8rem', height: '0.8rem' }} /> {app.employmentType}
+                <Briefcase style={{ width: '0.8rem', height: '0.8rem' }} /> {app.employmentType || 'Full-time'}
               </span>
               <span>Applied {formatDate(app.appliedAt)}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-              <span className={`match-score-number excellent`} style={{ fontSize: '0.82rem' }}>
-                {app.matchScore}% match
-              </span>
+              {app.matchScoreAtApplication !== null && (
+                <span className="match-score-number excellent" style={{ fontSize: '0.82rem' }}>
+                  {app.matchScoreAtApplication}% match
+                </span>
+              )}
               <span className={`status-text ${getStatusClass(app.status)}`}>
-                {app.status}
+                {getStatusLabel(app.status)}
               </span>
             </div>
           </div>
         ))
       ) : (
         <div className="empty-state">
-          <p>You haven't applied to any jobs yet.</p>
+          <p>You haven&apos;t applied to any jobs yet.</p>
         </div>
       )}
     </>

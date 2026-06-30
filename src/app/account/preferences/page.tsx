@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { candidate, type CandidatePreferences } from '@/lib/demo-candidate';
-import { Save, RotateCcw } from 'lucide-react';
+import { DEMO_MODE, updatePreferences, type ApiPreferences } from '@/lib/api-client';
+import { Save, RotateCcw, Check } from 'lucide-react';
 
 const KENYAN_COUNTIES = [
   'Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Uasin Gishu', 'Kiambu',
@@ -30,10 +31,38 @@ const JOB_TYPE_LABELS: Record<string, string> = {
 export default function PreferencesPage() {
   const [prefs, setPrefs] = useState<CandidatePreferences>({ ...candidate.preferences });
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  async function handleSave() {
+    setSaving(true);
+    try {
+      if (!DEMO_MODE) {
+        const apiPrefs: Partial<ApiPreferences> = {
+          preferredLocations: prefs.preferredLocations,
+          remotePreference: prefs.remotePreference,
+          expectedSalaryMin: prefs.expectedSalaryMin,
+          expectedSalaryMax: prefs.expectedSalaryMax,
+          salaryCurrency: prefs.salaryCurrency,
+          availabilityStatus: prefs.availabilityStatus,
+          noticePeriodDays: prefs.noticePeriodDays,
+          willingToRelocate: prefs.willingToRelocate,
+          preferredJobTypes: prefs.preferredJobTypes,
+        };
+        const result = await updatePreferences(apiPrefs);
+        if (result) {
+          setSaved(true);
+          setTimeout(() => setSaved(false), 2000);
+        }
+      } else {
+        // Demo mode — optimistic save
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    } catch {
+      // Silently fail in demo mode
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handleReset() {
@@ -201,10 +230,16 @@ export default function PreferencesPage() {
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '0.6rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-          <button type="button" className="btn-primary" onClick={handleSave}>
-            <Save className="w-4 h-4" /> {saved ? 'Saved' : 'Save preferences'}
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={handleSave}
+            disabled={saving}
+          >
+            {saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+            {saving ? 'Saving...' : saved ? 'Saved' : 'Save preferences'}
           </button>
-          <button type="button" className="btn-outline" onClick={handleReset}>
+          <button type="button" className="btn-outline" onClick={handleReset} disabled={saving}>
             <RotateCcw className="w-4 h-4" /> Reset
           </button>
         </div>

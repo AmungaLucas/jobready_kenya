@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { UploadCloud, FileText, Check, ChevronRight } from 'lucide-react';
+import { UploadCloud, FileText, Check, ChevronRight, Loader2 } from 'lucide-react';
+import { DEMO_MODE, uploadCV } from '@/lib/api-client';
 
 const onboardingSteps = [
   { label: 'Profile', status: 'completed' },
@@ -13,25 +14,80 @@ const onboardingSteps = [
 
 export default function CVUploadPage() {
   const [activeTab, setActiveTab] = useState<'upload' | 'build'>('upload');
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) setSelectedFile(file.name);
+    if (file) {
+      validateAndSetFile(file);
+    }
   }
 
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) setSelectedFile(file.name);
+    if (file) {
+      validateAndSetFile(file);
+    }
   }
 
-  function handleUpload() {
-    if (selectedFile) setUploadSuccess(true);
+  function validateAndSetFile(file: File) {
+    setUploadError(null);
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/msword',
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError('Invalid file type. Please upload a PDF, DOCX, or DOC file.');
+      setSelectedFile(null);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File too large. Maximum size is 5MB.');
+      setSelectedFile(null);
+      return;
+    }
+    setSelectedFile(file);
+  }
+
+  async function handleUpload() {
+    if (!selectedFile) return;
+
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      if (!DEMO_MODE && selectedFile) {
+        const result = await uploadCV(selectedFile);
+        if (result?.success) {
+          setUploadSuccess(true);
+        } else {
+          setUploadError('Upload failed. Please try again.');
+        }
+      } else {
+        // Demo mode — simulate upload delay
+        await new Promise((r) => setTimeout(r, 1200));
+        setUploadSuccess(true);
+      }
+    } catch {
+      setUploadError('An error occurred during upload. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function resetUpload() {
+    setUploadSuccess(false);
+    setSelectedFile(null);
+    setUploadError(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   return (
@@ -98,16 +154,18 @@ export default function CVUploadPage() {
                 CV uploaded successfully
               </div>
               <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.3rem' }}>
-                {selectedFile}
+                {selectedFile?.name}
               </div>
               <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.15rem' }}>
-                Your profile is now 97% complete
+                {!DEMO_MODE
+                  ? 'Your CV is being processed. We will extract your skills, qualifications, and experience automatically.'
+                  : 'Your profile is now 97% complete'}
               </div>
               <button
                 type="button"
                 className="btn-outline"
                 style={{ marginTop: '1.5rem' }}
-                onClick={() => { setUploadSuccess(false); setSelectedFile(null); }}
+                onClick={resetUpload}
               >
                 Upload a different CV
               </button>
@@ -134,17 +192,31 @@ export default function CVUploadPage() {
                   onChange={handleFileSelect}
                 />
               </div>
+              {uploadError && (
+                <p style={{ fontSize: '0.82rem', color: '#ef4444', marginTop: '0.5rem' }}>
+                  {uploadError}
+                </p>
+              )}
               {selectedFile && (
                 <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <FileText style={{ width: '1.2rem', height: '1.2rem', color: '#6b6b6b' }} />
-                  <span style={{ fontSize: '0.85rem', color: '#3d3d3d' }}>{selectedFile}</span>
+                  <span style={{ fontSize: '0.85rem', color: '#3d3d3d' }}>{selectedFile.name}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#a0a0a0' }}>
+                    ({(selectedFile.size / 1024).toFixed(0)} KB)
+                  </span>
                   <button
                     type="button"
                     className="btn-primary"
                     style={{ marginLeft: 'auto', padding: '0.35rem 1.2rem', fontSize: '0.82rem' }}
                     onClick={handleUpload}
+                    disabled={uploading}
                   >
-                    Upload
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        {' '}Uploading...
+                      </>
+                    ) : 'Upload'}
                   </button>
                 </div>
               )}

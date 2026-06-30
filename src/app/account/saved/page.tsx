@@ -2,27 +2,43 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { savedJobs, type SavedJob } from '@/lib/demo-candidate';
-import { ExternalLink, Trash2, MapPin, Briefcase, X } from 'lucide-react';
+import { useSavedJobs } from '@/lib/use-dashboard-data';
+import { ExternalLink, Trash2, MapPin, Briefcase } from 'lucide-react';
+
+function formatSavedDate(dateStr: string) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return d.toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 export default function SavedJobsPage() {
-  const [jobs, setJobs] = useState<SavedJob[]>(savedJobs);
+  const { jobs, removeJob, loading } = useSavedJobs();
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
 
   function handleRemove(jobId: string) {
-    setJobs((prev) => prev.filter((j) => j.jobId !== jobId));
+    removeJob(jobId);
     setConfirmRemove(null);
   }
 
-  function formatSavedDate(dateStr: string) {
-    const d = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - d.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return d.toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (loading) {
+    return (
+      <div className="dashboard-header">
+        <div className="dashboard-breadcrumb">
+          <Link href="/">Home</Link>
+          <span className="separator">/</span>
+          <Link href="/account">Dashboard</Link>
+          <span className="separator">/</span>
+          <span>Saved Jobs</span>
+        </div>
+        <h1>Saved jobs</h1>
+        <p>Loading your saved jobs...</p>
+      </div>
+    );
   }
 
   return (

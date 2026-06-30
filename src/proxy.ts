@@ -19,36 +19,47 @@ function cleanup() {
 }
 
 export function proxy(request: NextRequest) {
-  // Rate limiting for API routes only
-  if (!request.nextUrl.pathname.startsWith('/api/')) {
-    return NextResponse.next();
-  }
+  const { pathname } = request.nextUrl;
 
-  cleanup();
+  // ─── Auth-protected routes ────────────────────────────────────
+  // Once NextAuth is fully configured, uncomment the session check
+  // below. For now the dashboard uses demo data, so we allow access.
+  //
+  // const protectedPaths = ['/account', '/api/candidates'];
+  // const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
+  // if (isProtected) {
+  //   // Check session cookie / token here
+  //   // If no session, redirect to login:
+  //   // return NextResponse.redirect(new URL('/login', request.url));
+  // }
 
-  // Extract IP safely from headers (request.ip may not be available in all environments)
-  const forwarded = request.headers.get('x-forwarded-for');
-  const ip = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : 'unknown';
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
+  // ─── Rate limiting for API routes ─────────────────────────────
+  if (pathname.startsWith('/api/')) {
+    cleanup();
 
-  if (!record || now - record.lastReset > WINDOW_MS) {
-    rateLimitMap.set(ip, { count: 1, lastReset: now });
-  } else if (record.count >= RATE_LIMIT) {
-    return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), {
-      status: 429,
-      headers: {
-        'Content-Type': 'application/json',
-        'Retry-After': '60',
-      },
-    });
-  } else {
-    record.count++;
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : 'unknown';
+    const now = Date.now();
+    const record = rateLimitMap.get(ip);
+
+    if (!record || now - record.lastReset > WINDOW_MS) {
+      rateLimitMap.set(ip, { count: 1, lastReset: now });
+    } else if (record.count >= RATE_LIMIT) {
+      return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': '60',
+        },
+      });
+    } else {
+      record.count++;
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/:path*'],
+  matcher: ['/', '/api/:path*', '/account/:path*'],
 };

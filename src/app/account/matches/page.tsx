@@ -2,43 +2,54 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { matchScores, getVerdictColor, getVerdictLabel, type Verdict, matchWeights } from '@/lib/demo-candidate';
+import { getVerdictColor, getVerdictLabel, matchWeights, type Verdict } from '@/lib/demo-candidate';
+import { useMatches } from '@/lib/use-dashboard-data';
 import { ExternalLink, Bookmark, ChevronDown, ChevronUp } from 'lucide-react';
 
 type FilterVerdict = 'ALL' | Verdict;
 type SortBy = 'score' | 'date';
 
-const filterOptions: { value: FilterVerdict; label: string; count: number }[] = [
-  { value: 'ALL', label: 'All matches', count: 0 },
-  { value: 'EXCELLENT', label: 'Excellent', count: 0 },
-  { value: 'STRONG', label: 'Strong', count: 0 },
-  { value: 'MODERATE', label: 'Moderate', count: 0 },
-  { value: 'WEAK', label: 'Weak', count: 0 },
-  { value: 'NOT_RECOMMENDED', label: 'Not recommended', count: 0 },
-];
-
 export default function MatchesPage() {
+  const { matches, toggleSave, markAsRead, loading } = useMatches();
   const [activeFilter, setActiveFilter] = useState<FilterVerdict>('ALL');
   const [sortBy, setSortBy] = useState<SortBy>('score');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  // Compute counts
-  const counts = filterOptions.map((opt) => ({
-    ...opt,
-    count: opt.value === 'ALL'
-      ? matchScores.length
-      : matchScores.filter((m) => m.verdict === opt.value).length,
-  }));
+  // Compute counts from live data
+  const counts: { value: FilterVerdict; label: string; count: number }[] = [
+    { value: 'ALL', label: 'All matches', count: matches.length },
+    { value: 'EXCELLENT', label: 'Excellent', count: matches.filter((m) => m.verdict === 'EXCELLENT').length },
+    { value: 'STRONG', label: 'Strong', count: matches.filter((m) => m.verdict === 'STRONG').length },
+    { value: 'MODERATE', label: 'Moderate', count: matches.filter((m) => m.verdict === 'MODERATE').length },
+    { value: 'WEAK', label: 'Weak', count: matches.filter((m) => m.verdict === 'WEAK').length },
+    { value: 'NOT_RECOMMENDED', label: 'Not recommended', count: matches.filter((m) => m.verdict === 'NOT_RECOMMENDED').length },
+  ];
 
   // Filter and sort
   let filtered = activeFilter === 'ALL'
-    ? [...matchScores]
-    : matchScores.filter((m) => m.verdict === activeFilter);
+    ? [...matches]
+    : matches.filter((m) => m.verdict === activeFilter);
 
   if (sortBy === 'score') {
     filtered.sort((a, b) => b.finalScore - a.finalScore);
   } else {
     filtered.sort((a, b) => new Date(b.computedAt).getTime() - new Date(a.computedAt).getTime());
+  }
+
+  if (loading) {
+    return (
+      <div className="dashboard-header">
+        <div className="dashboard-breadcrumb">
+          <Link href="/">Home</Link>
+          <span className="separator">/</span>
+          <Link href="/account">Dashboard</Link>
+          <span className="separator">/</span>
+          <span>My Matches</span>
+        </div>
+        <h1>My matches</h1>
+        <p>Loading your matches...</p>
+      </div>
+    );
   }
 
   return (
@@ -95,7 +106,14 @@ export default function MatchesPage() {
             <div key={match.jobId} className="match-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <Link href={`/jobs/${match.jobSlug}`} className="match-title">{match.jobTitle}</Link>
+                  <Link
+                    href={`/jobs/${match.jobSlug}`}
+                    className="match-title"
+                    onClick={() => markAsRead(match.jobId)}
+                  >
+                    {match.jobTitle}
+                    {!match.isRead && <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#0b7e4a', marginLeft: '0.4rem', verticalAlign: 'middle' }} />}
+                  </Link>
                   <p className="match-company">{match.company} &middot; {match.location}</p>
                   <div className="match-meta">
                     <span>{match.employmentType.replace('_', ' ')}</span>
@@ -116,7 +134,11 @@ export default function MatchesPage() {
                     <Link href={`/jobs/${match.jobSlug}`} className="btn-outline" style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}>
                       <ExternalLink className="w-3 h-3" /> View job
                     </Link>
-                    <button className="btn-outline" style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}>
+                    <button
+                      className="btn-outline"
+                      style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}
+                      onClick={() => toggleSave(match.jobId, match.isSaved)}
+                    >
                       <Bookmark className="w-3 h-3" /> {match.isSaved ? 'Saved' : 'Save'}
                     </button>
                     <button

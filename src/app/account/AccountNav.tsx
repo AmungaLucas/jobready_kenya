@@ -2,7 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { candidate, matchScores, applications, savedJobs } from '@/lib/demo-candidate';
+import { candidate } from '@/lib/demo-candidate';
+import { useMatches, useApplications, useSavedJobs } from '@/lib/use-dashboard-data';
 import {
   LayoutDashboard,
   Target,
@@ -25,7 +26,11 @@ const navItems = [
 
 export default function AccountNav() {
   const pathname = usePathname();
-  const unreadCount = matchScores.filter((m) => !m.isRead && m.verdict !== 'NOT_RECOMMENDED').length;
+  const { matches } = useMatches();
+  const { apps } = useApplications();
+  const { jobs: savedJobs } = useSavedJobs();
+
+  const unreadCount = matches.filter((m) => !m.isRead && m.verdict !== 'NOT_RECOMMENDED').length;
 
   function isActive(href: string) {
     if (href === '/account') return pathname === '/account';
@@ -76,7 +81,7 @@ export default function AccountNav() {
               item.href === '/account/matches'
                 ? unreadCount
                 : item.href === '/account/applications'
-                ? applications.length
+                ? apps.length
                 : item.href === '/account/saved'
                 ? savedJobs.length
                 : 0;
