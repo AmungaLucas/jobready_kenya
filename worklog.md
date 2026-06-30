@@ -579,3 +579,24 @@ Stage Summary:
 - Full auth flow is now live: register → auto sign-in → /account dashboard
 - Auth guard active: unauthenticated users are redirected to /login or get 401
 - DEMO_MODE off — dashboard hooks now call real API routes when session exists
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Build AI extraction pipeline (CV parsing, job profiling, taxonomy matching)
+
+Work Log:
+- Created src/lib/extraction/taxonomy-lookup.ts — Singleton that loads all TaxonomyItems into memory-indexed maps; fuzzy-matches AI-extracted text labels to DB IDs using bigram Jaccard similarity (threshold 0.35-0.45); supports SKILL, QUALIFICATION, CATEGORY, SUBCATEGORY, INDUSTRY, CERTIFICATION, ROLE, ORG_TYPE
+- Created src/lib/extraction/candidate-extractor.ts — Sends CV text to LLM with structured JSON prompt; parses skills, qualifications, work experiences, certifications, interests, subcategories, seniority, total experience; maps to taxonomy IDs; persists in Prisma transaction; sets onboardingStatus to EXTRACTION_COMPLETE; triggers computeAndSaveMatches
+- Created src/lib/extraction/job-extractor.ts — Same pattern for jobs: parses description into JobProfile + JobSkill + JobQualification + JobSubcategoryLink; includes extractJobsBatch() for backfill with configurable limit/offset/delay
+- Created scripts/extract-job-profiles.ts — CLI batch script targeting production MySQL, processes jobs without JobProfile records
+- Created POST /api/candidates/me/extract-profile — standalone endpoint to trigger extraction for logged-in candidate
+- Rewrote upload-cv route — replaced TODO at line 77 with synchronous call to extractCandidateProfile; returns extractionStats in response
+- Updated cv-upload page — shows extraction stat pills (skills/quals/experiences/certs counts), 'View your matches' CTA button, 'Uploading & extracting...' spinner text
+- Added normalizeQualLevel() and normalizeSeniority() in both extractors to handle LLM output variations (e.g. BACHELORS→BACHELOR, MASTERS→MASTER)
+- Pushed commit 4bdd784 to GitHub
+
+Stage Summary:
+- Full extraction pipeline: CV upload → markitdown text extraction → LLM structured parsing → taxonomy mapping → DB persist → matching trigger
+- Job backfill script ready to run: bun run scripts/extract-job-profiles.ts
+- End-to-end flow: Register → Upload CV → AI extracts profile → Matches computed → View matches on dashboard
