@@ -446,3 +446,26 @@ Stage Summary:
 - Mobile responsive for all dashboard pages
 - All demo data from demo-candidate.ts (James Mito persona with 8 match scores, 3 applications, 4 saved jobs)
 - Pushed to GitHub: commit 77eaabe
+
+---
+Task ID: 13
+Agent: Main Agent
+Task: Matching engine Prisma schema + taxonomy seed data
+
+Work Log:
+- Schema already had 20+ matching engine models from a prior push (came in during rebase)
+- Validated schema with prisma validate (valid)
+- Created prisma/seed-taxonomy.ts: comprehensive Kenyan job market taxonomy
+  - 16 org types, 35 industries, 14 categories, 80+ subcategories
+  - 80+ skills, 30+ tools, 22 qualifications, 20 certifications
+  - 50+ role titles, 18 specializations, 9 regulatory items
+  - All with aliases for fuzzy matching (e.g. "Talent Acquisition" → Recruitment)
+  - Uses upsert for idempotent re-runs
+- Generated Prisma client, verified Next.js build passes
+- Pushed commit 7319e1c
+
+Stage Summary:
+- Schema: 1253 lines, 20+ new models covering full matching engine
+- Taxonomy seed: ~300 items with aliases, ready for `npx tsx prisma/seed-taxonomy.ts`
+- User needs to run `prisma db push` + taxonomy seed on production MySQL
+- Next phase: connect auth (NextAuth/Auth.js) to start wiring real candidate data
