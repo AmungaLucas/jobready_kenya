@@ -504,3 +504,751 @@ model Opportunity {
 
   @@map("opportunities")
 }
+
+// ============================================
+// 🧠 MATCHING ENGINE ENUMS
+// ============================================
+
+enum TaxonomyType {
+  ORGANIZATION_TYPE
+  INDUSTRY
+  CATEGORY
+  SUBCATEGORY
+  ROLE
+  SKILL
+  TOOL
+  QUALIFICATION
+  CERTIFICATION
+  SPECIALIZATION
+  REGULATION
+  COMPETENCY
+}
+
+enum TaxonomyRelationshipType {
+  RELATED
+  ADJACENT
+  TRANSFERABLE
+  PARENT_CHILD
+  SIMILAR
+}
+
+enum Proficiency {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum UserRole {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+enum OnboardingStatus {
+  STARTED
+  CV_UPLOADED
+  EXTRACTION_COMPLETE
+  PROFILE_REVIEWED
+  DOMAIN_SUGGESTED
+  DOMAIN_CONFIRMED
+  INTERESTS_SELECTED
+  PREFERENCES_SET
+  COMPLETED
+}
+
+enum ExtractionStatus {
+  PENDING
+  EXTRACTED
+  FAILED
+  NEEDS_REVIEW
+  LLM_FALLBACK
+}
+
+enum RemotePreference {
+  ONSITE
+  HYBRID
+  REMOTE
+  ANY
+}
+
+enum AvailabilityStatus {
+  IMMEDIATE
+  NOTICE_PERIOD
+  UNAVAILABLE
+}
+
+enum CandidateDataSource {
+  AI_EXTRACTED
+  USER_ADDED
+  USER_SELECTED
+  AI_SUGGESTED
+  ADMIN_ADDED
+}
+
+enum SkillImportance {
+  MUST_HAVE
+  NICE_TO_HAVE
+}
+
+enum MatchVerdict {
+  EXCELLENT
+  STRONG
+  MODERATE
+  WEAK
+  NOT_RECOMMENDED
+}
+
+enum RecommendationType {
+  PRIMARY_MATCH
+  INTEREST_MATCH
+  ADJACENT_MATCH
+  STRETCH_MATCH
+  NOT_RECOMMENDED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  VIEWED
+  SHORTLISTED
+  INTERVIEW
+  REJECTED
+  HIRED
+  WITHDRAWN
+}
+
+enum ViewSource {
+  MATCH
+  SEARCH
+  DIRECT
+}
+
+enum FunnelStage {
+  VIEWED
+  CLICKED_APPLY
+  STARTED_APPLICATION
+  SUBMITTED
+  COMPLETED
+}
+
+enum ParserType {
+  HEURISTIC
+  LLM
+  HYBRID
+}
+
+enum AiExtractionStatus {
+  SUCCESS
+  FAILED
+  NEEDS_REVIEW
+}
+
+enum SearchType {
+  KEYWORD
+  CATEGORY
+  SKILL
+}
+
+enum QualificationLevel {
+  CERTIFICATE
+  DIPLOMA
+  BACHELOR
+  MASTER
+  PHD
+  OTHER
+}
+
+enum JobExtractionStatus {
+  PENDING
+  EXTRACTED
+  FAILED
+  NEEDS_REVIEW
+}
+
+enum WorkMode {
+  ONSITE
+  HYBRID
+  REMOTE
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  TEMPORARY
+  GRADUATE_TRAINEE
+}
+
+// ============================================
+// 👤 USER MODEL
+// ============================================
+
+model User {
+  id          String   @id @default(cuid())
+  fullName    String?
+  email       String   @unique
+  phone       String?
+  passwordHash String?
+  role        UserRole @default(CANDIDATE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  candidates  Candidate[]
+
+  @@map("users")
+}
+
+// ============================================
+// 🧑‍💼 CANDIDATE MODEL
+// ============================================
+
+model Candidate {
+  id                String           @id @default(cuid())
+  userId            String           @unique
+  firstName         String?
+  lastName          String?
+  email             String?
+  phone             String?
+  emailVerified     Boolean          @default(false)
+  emailVerifiedAt   DateTime?
+  locationCounty    String?
+  country           String           @default("Kenya")
+  onboardingStatus  OnboardingStatus @default(STARTED)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user                User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile             CandidateProfile?           @relation("CandidateProfile")
+  preferences         CandidatePreferences?       @relation("CandidatePreferences")
+  interests           CandidateInterest[]
+  subcategories       CandidateSubcategory[]
+  skills              CandidateSkill[]
+  tools               CandidateTool[]
+  qualifications      CandidateQualification[]
+  certifications      CandidateCertification[]
+  workExperiences     CandidateWorkExperience[]
+  searchHistory       CandidateSearchHistory[]
+  jobScores           CandidateJobScore[]
+  applications        JobApplication[]
+  jobViews            JobView[]
+  applicationFunnels  ApplicationFunnel[]
+
+  @@map("candidates")
+}
+
+// ============================================
+// 📋 CANDIDATE PROFILE
+// ============================================
+
+model CandidateProfile {
+  candidateId           String           @id
+  primaryCategoryId     String?
+  primarySubcategoryId  String?
+  totalExperienceYears  Float            @default(0.0)
+  seniorityLevel        ExperienceLevel?
+  profileCompletionScore Int             @default(0)
+  parserConfidenceScore Float?
+  extractionStatus      ExtractionStatus @default(PENDING)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  candidate Candidate @relation("CandidateProfile", fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_profiles")
+}
+
+// ============================================
+// ⚙️ CANDIDATE PREFERENCES
+// ============================================
+
+model CandidatePreferences {
+  candidateId         String             @id
+  preferredLocations  Json?
+  preferredJobTypes   Json?
+  remotePreference    RemotePreference   @default(ANY)
+  expectedSalaryMin   Float?
+  expectedSalaryMax   Float?
+  salaryCurrency      String             @default("KES")
+  availabilityStatus  AvailabilityStatus @default(IMMEDIATE)
+  noticePeriodDays    Int                @default(0)
+  willingToRelocate   Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  candidate Candidate @relation("CandidatePreferences", fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_preferences")
+}
+
+// ============================================
+// 🎯 CANDIDATE INTERESTS
+// ============================================
+
+model CandidateInterest {
+  id           String             @id @default(cuid())
+  candidateId  String
+  categoryId   String
+  interestRank Int?
+  source       CandidateDataSource @default(USER_SELECTED)
+  aiSuggested  Boolean            @default(false)
+  userConfirmed Boolean           @default(false)
+  overrideReason String?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, categoryId])
+  @@index([candidateId])
+  @@index([categoryId])
+  @@map("candidate_interests")
+}
+
+// ============================================
+// 📂 CANDIDATE SUBCATEGORIES
+// ============================================
+
+model CandidateSubcategory {
+  id              String             @id @default(cuid())
+  candidateId     String
+  subcategoryId   String
+  confidenceScore Float?
+
+  source          CandidateDataSource @default(AI_EXTRACTED)
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, subcategoryId])
+  @@map("candidate_subcategories")
+}
+
+// ============================================
+// 🛠️ CANDIDATE SKILLS
+// ============================================
+
+model CandidateSkill {
+  id              String             @id @default(cuid())
+  candidateId     String
+  skillId         String
+  rawText         String?
+  proficiency     Proficiency?
+  yearsExperience  Float?
+  confidenceScore Float?
+  source          CandidateDataSource @default(AI_EXTRACTED)
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, skillId])
+  @@map("candidate_skills")
+}
+
+// ============================================
+// 🔧 CANDIDATE TOOLS
+// ============================================
+
+model CandidateTool {
+  id              String             @id @default(cuid())
+  candidateId     String
+  toolId          String
+  rawText         String?
+  proficiency     Proficiency?
+  confidenceScore Float?
+  source          CandidateDataSource @default(AI_EXTRACTED)
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, toolId])
+  @@map("candidate_tools")
+}
+
+// ============================================
+// 🎓 CANDIDATE QUALIFICATIONS
+// ============================================
+
+model CandidateQualification {
+  id              String            @id @default(cuid())
+  candidateId     String
+  qualificationId String?
+  institution     String?
+  fieldOfStudy    String?
+  level           QualificationLevel?
+  status          String            @default("COMPLETED")
+  startYear       Int?
+  endYear         Int?
+  rawText         String?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_qualifications")
+}
+
+// ============================================
+// 📜 CANDIDATE CERTIFICATIONS
+// ============================================
+
+model CandidateCertification {
+  id              String  @id @default(cuid())
+  candidateId     String
+  certificationId String?
+  issuingBody     String?
+  status          String  @default("COMPLETED")
+  yearAwarded     Int?
+  rawText         String?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_certifications")
+}
+
+// ============================================
+// 💼 CANDIDATE WORK EXPERIENCES
+// ============================================
+
+model CandidateWorkExperience {
+  id                     String    @id @default(cuid())
+  candidateId            String
+  employerName           String?
+  roleTitle              String?
+  normalizedRoleId       String?
+  organizationTypeId     String?
+  organizationIndustryId String?
+  startDate              DateTime?
+  endDate                DateTime?
+  isCurrent              Boolean   @default(false)
+  description            String?
+  responsibilities        Json?
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("candidate_work_experiences")
+}
+
+// ============================================
+// 🔍 CANDIDATE SEARCH HISTORY
+// ============================================
+
+model CandidateSearchHistory {
+  id           String     @id @default(cuid())
+  candidateId  String
+  searchQuery  String
+  searchType   SearchType @default(KEYWORD)
+  resultsCount Int        @default(0)
+  createdAt    DateTime   @default(now())
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([searchQuery])
+  @@map("candidate_search_history")
+}
+
+// ============================================
+// 🗂️ TAXONOMY ITEM
+// ============================================
+
+model TaxonomyItem {
+  id          String                 @id @default(cuid())
+  type        TaxonomyType
+  value       String
+  label       String
+  parentId    String?
+  description String?
+  isActive    Boolean                @default(true)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  parent      TaxonomyItem?          @relation("TaxonomyHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    TaxonomyItem[]         @relation("TaxonomyHierarchy")
+
+  @@unique([type, value])
+  @@index([type])
+  @@index([parentId])
+  @@map("taxonomy_items")
+}
+
+// ============================================
+// 🔤 TAXONOMY ALIAS
+// ============================================
+
+model TaxonomyAlias {
+  id              String   @id @default(cuid())
+  taxonomyItemId  String
+  alias           String
+  createdAt       DateTime @default(now())
+
+  @@unique([taxonomyItemId, alias])
+  @@index([alias])
+  @@map("taxonomy_aliases")
+}
+
+// ============================================
+// 🔗 TAXONOMY RELATIONSHIP
+// ============================================
+
+model TaxonomyRelationship {
+  id                String                    @id @default(cuid())
+  sourceItemId      String
+  targetItemId      String
+  relationshipType  TaxonomyRelationshipType  @default(RELATED)
+  weight            Float                     @default(1.00)
+  createdAt         DateTime                  @default(now())
+
+  @@unique([sourceItemId, targetItemId, relationshipType])
+  @@map("taxonomy_relationships")
+}
+
+// ============================================
+// 📊 TAXONOMY SKILL LEVEL
+// ============================================
+
+model TaxonomySkillLevel {
+  id        String     @id @default(cuid())
+  skillId   String
+  level     Proficiency
+  weight    Float      @default(1.00)
+  createdAt DateTime   @default(now())
+
+  @@unique([skillId, level])
+  @@map("taxonomy_skill_levels")
+}
+
+// ============================================
+// 📋 JOB PROFILE
+// ============================================
+
+model JobProfile {
+  id                       String          @id @default(cuid())
+  jobId                    String          @unique
+  organizationTypeId       String?
+  organizationIndustryId   String?
+  jobCategoryId            String?
+  primarySubcategoryId     String?
+  normalizedRoleId         String?
+  minimumExperienceYears   Float           @default(0.0)
+  preferredExperienceYears Float           @default(0.0)
+  seniorityLevel           ExperienceLevel?
+  parserConfidenceScore    Float?
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+
+  @@map("job_profiles")
+}
+
+// ============================================
+// 🛠️ JOB SKILLS
+// ============================================
+
+model JobSkill {
+  id          String          @id @default(cuid())
+  jobId       String
+  skillId     String
+  importance  SkillImportance @default(MUST_HAVE)
+  weight      Float           @default(1.00)
+  rawText     String?
+  createdAt   DateTime        @default(now())
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+// ============================================
+// 🔧 JOB TOOLS
+// ============================================
+
+model JobTool {
+  id          String          @id @default(cuid())
+  jobId       String
+  toolId      String
+  importance  SkillImportance @default(NICE_TO_HAVE)
+  weight      Float           @default(1.00)
+  rawText     String?
+  createdAt   DateTime        @default(now())
+
+  @@unique([jobId, toolId])
+  @@map("job_tools")
+}
+
+// ============================================
+// 🎓 JOB QUALIFICATIONS
+// ============================================
+
+model JobQualification {
+  id              String            @id @default(cuid())
+  jobId           String
+  qualificationId String?
+  level           QualificationLevel?
+  fieldOfStudy    String?
+  importance      SkillImportance   @default(MUST_HAVE)
+  weight          Float             @default(1.00)
+  rawText         String?
+
+  @@map("job_qualifications")
+}
+
+// ============================================
+// 📜 JOB CERTIFICATIONS
+// ============================================
+
+model JobCertification {
+  id              String          @id @default(cuid())
+  jobId           String
+  certificationId String?
+  importance      SkillImportance @default(MUST_HAVE)
+  weight          Float           @default(1.00)
+  rawText         String?
+
+  @@map("job_certifications")
+}
+
+// ============================================
+// 🎯 JOB SPECIALIZATIONS
+// ============================================
+
+model JobSpecialization {
+  id               String          @id @default(cuid())
+  jobId            String
+  specializationId String
+  importance       SkillImportance @default(MUST_HAVE)
+
+  @@unique([jobId, specializationId])
+  @@map("job_specializations")
+}
+
+// ============================================
+// 📂 JOB SUBCATEGORY LINKS
+// ============================================
+
+model JobSubcategoryLink {
+  id              String   @id @default(cuid())
+  jobId           String
+  subcategoryId   String
+  importance      String   @default("PRIMARY")
+  confidenceScore Float?
+  createdAt       DateTime @default(now())
+
+  @@unique([jobId, subcategoryId])
+  @@map("job_subcategory_links")
+}
+
+// ============================================
+// 📊 CANDIDATE JOB SCORES
+// ============================================
+
+model CandidateJobScore {
+  id                      String              @id @default(cuid())
+  candidateId             String
+  jobId                   String
+  finalScore              Float               @default(0.0)
+  categoryScore           Float               @default(0.0)
+  subcategoryScore        Float               @default(0.0)
+  skillsScore             Float               @default(0.0)
+  qualificationsScore     Float               @default(0.0)
+  experienceScore         Float               @default(0.0)
+  industryScore           Float               @default(0.0)
+  matchedSkillCount       Int                 @default(0)
+  totalRequiredSkills     Int                 @default(0)
+  matchedQualificationCount Int               @default(0)
+  totalRequiredQualifications Int             @default(0)
+  verdict                 MatchVerdict
+  recommendationType      RecommendationType  @default(PRIMARY_MATCH)
+  matchedItems            Json?
+  missingItems            Json?
+  explanation             String?
+  isRead                  Boolean             @default(false)
+  readAt                  DateTime?
+  isSaved                 Boolean             @default(false)
+  savedAt                 DateTime?
+  computedAt              DateTime            @default(now())
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, jobId])
+  @@index([candidateId, finalScore])
+  @@index([jobId, finalScore])
+  @@index([verdict])
+  @@map("candidate_job_scores")
+}
+
+// ============================================
+// 📝 JOB APPLICATIONS
+// ============================================
+
+model JobApplication {
+  id                    String            @id @default(cuid())
+  candidateId           String
+  jobId                 String
+  matchScoreAtApplication Float?
+  status                ApplicationStatus @default(APPLIED)
+  appliedAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, jobId])
+  @@map("applications")
+}
+
+// ============================================
+// 👁️ JOB VIEWS
+// ============================================
+
+model JobView {
+  id          String     @id @default(cuid())
+  jobId       String
+  candidateId String
+  viewedAt    DateTime   @default(now())
+  source      ViewSource @default(MATCH)
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("job_views")
+}
+
+// ============================================
+// 📈 APPLICATION FUNNEL
+// ============================================
+
+model ApplicationFunnel {
+  id          String       @id @default(cuid())
+  jobId       String
+  candidateId String
+  stage       FunnelStage
+  stageAt     DateTime     @default(now())
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("application_funnel")
+}
+
+// ============================================
+// 🤖 AI EXTRACTIONS
+// ============================================
+
+model AiExtraction {
+  id              String              @id @default(cuid())
+  sourceType      String
+  sourceId        String
+  rawText         String?
+  extractedJson   Json?
+  parserType      ParserType          @default(HEURISTIC)
+  modelUsed       String?
+  confidenceScore Float?
+  status          AiExtractionStatus  @default(SUCCESS)
+  errorMessage    String?
+  createdAt       DateTime            @default(now())
+
+  @@index([sourceType, sourceId])
+  @@map("ai_extractions")
+}
+
+// ============================================
+// ⚙️ SYSTEM SETTINGS
+// ============================================
+
+model SystemSetting {
+  id          String   @id @default(cuid())
+  settingKey  String   @unique
+  settingValue String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("system_settings")
+}
