@@ -15,8 +15,8 @@ export default async function ClosingSoon() {
   let jobs: Awaited<ReturnType<typeof getClosingSoonJobs>> = [];
   try {
     jobs = await getClosingSoonJobs(14, 6);
-  } catch {
-    // Fallback: render empty section if DB is unavailable
+  } catch (err) {
+    console.error('[ClosingSoon] Failed to fetch closing soon jobs:', err);
   }
 
   return (

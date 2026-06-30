@@ -38,8 +38,8 @@ export default async function FlexibleJobs() {
       select: { county: true, slug: true },
     });
     slugMap = Object.fromEntries(countySlugs.map(l => [l.county, l.slug]));
-  } catch {
-    // Fallback: render empty sections if DB is unavailable
+  } catch (err) {
+    console.error('[FlexibleJobs] Failed to fetch flexible jobs:', err);
   }
 
   const icons = ['🛍️', '✍️', '🎪', '📋'];

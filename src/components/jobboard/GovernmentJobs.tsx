@@ -29,8 +29,8 @@ export default async function GovernmentJobs() {
       orderBy: { datePosted: 'desc' },
       take: 4,
     });
-  } catch {
-    // Fallback: render empty sections if DB is unavailable
+  } catch (err) {
+    console.error('[GovernmentJobs] Failed to fetch gov jobs:', err);
   }
 
   return (

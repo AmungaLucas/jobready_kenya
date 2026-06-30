@@ -7,8 +7,8 @@ export default async function Hero() {
   try {
     const result = await getJobs({ perPage: 5 });
     jobs = result.jobs;
-  } catch {
-    // Fallback: render hero without job listings if DB is unavailable
+  } catch (err) {
+    console.error('[Hero] Failed to fetch jobs:', err);
   }
 
   return (
