@@ -600,3 +600,23 @@ Stage Summary:
 - Full extraction pipeline: CV upload → markitdown text extraction → LLM structured parsing → taxonomy mapping → DB persist → matching trigger
 - Job backfill script ready to run: bun run scripts/extract-job-profiles.ts
 - End-to-end flow: Register → Upload CV → AI extracts profile → Matches computed → View matches on dashboard
+
+---
+Task ID: 10
+Agent: Main Agent
+Task: Fix homepage crash and navbar dashboard link
+
+Work Log:
+- Diagnosed homepage "Something went wrong" error: 4 server components (Hero, ClosingSoon, GovernmentJobs, FlexibleJobs) queried MySQL without error handling
+- Wrapped all DB-calling server components in try/catch with console.error logging
+- Found ROOT CAUSE: schema.prisma provider was accidentally changed from 'mysql' to 'sqlite' in commit 701b99a
+- Verified schema integrity: diff between pre/post matching-engine schemas shows 0 lines removed, 809 lines added (only new models appended)
+- Restored provider = "mysql" — this was causing Vercel to generate a SQLite Prisma client that couldn't talk to production MySQL
+- Updated Navbar: visible "Dashboard" button when logged in, dropdown now shows "Upload CV" and "My Matches" links
+- Added transaction timeout (10s) to Prisma client for Vercel serverless resilience
+
+Stage Summary:
+- Homepage will render gracefully even if DB is temporarily unavailable (try/catch on all server components)
+- Jobs will load correctly once Vercel rebuilds with provider = "mysql"
+- No schema was altered destructively — all original models preserved exactly as-is
+- Commits: 7aecbc2 (try/catch + navbar), 52b1a30 (mysql provider fix)
