@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { MapPin, Briefcase } from 'lucide-react';
-import { demoApplications } from '@/lib/demo-candidate';
+import { applications as demoApplications } from '@/lib/demo-candidate';
 
 function getStatusClass(status: string) {
   return status.toLowerCase();

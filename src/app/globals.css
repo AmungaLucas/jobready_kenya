@@ -2194,6 +2194,22 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
   height: 1rem;
 }
 
+/* Stats grid (used by overview page) */
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Overview completion + actions row */
+.dashboard-completion-row {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard-layout {
@@ -2227,5 +2243,23 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
   }
   .score-ring .score-ring-value {
     font-size: 1.1rem;
+  }
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-completion-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .quick-actions {
+    flex-direction: column;
+  }
+  .quick-actions .btn-primary,
+  .quick-actions .btn-outline {
+    justify-content: center;
+  }
+  .saved-job-card {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 }

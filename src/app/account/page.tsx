@@ -19,7 +19,7 @@ export default function AccountOverviewPage() {
       </div>
 
       {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', marginBottom: '2rem' }}>
+      <div className="dashboard-stats-grid">
         <div className="stat-card">
           <div className="stat-number">{matchScores.filter(m => m.verdict !== 'NOT_RECOMMENDED').length}</div>
           <div className="stat-label">Jobs matched</div>
@@ -39,7 +39,7 @@ export default function AccountOverviewPage() {
       </div>
 
       {/* Profile completion + Quick actions */}
-      <div style={{ display: 'flex', gap: '3rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
+      <div className="dashboard-completion-row">
         <div>
           <div className="score-ring" style={{ '--score-deg': `${scoreDeg}deg` } as React.CSSProperties}>
             <span className="score-ring-value">{candidate.profileCompletionScore}%</span>
