@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 interface SmartApplyButtonProps {
   applicationUrl?: string | null;
@@ -10,6 +11,7 @@ interface SmartApplyButtonProps {
   jobTitle: string;
   companyName: string;
   deadline?: string | null;
+  jobId?: string | null;
 }
 
 /* ───────────────────────────── helpers ───────────────────────────── */
@@ -37,11 +39,15 @@ function ServicePromotionModal({
   jobTitle,
   companyName,
   onProceed,
+  onApplyWithProfile,
+  isLoggedIn,
   onClose,
 }: {
   jobTitle: string;
   companyName: string;
   onProceed: () => void;
+  onApplyWithProfile?: () => void;
+  isLoggedIn?: boolean;
   onClose: () => void;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -163,6 +169,19 @@ function ServicePromotionModal({
             Continue to Apply
           </button>
 
+          {/* Apply with profile — for logged-in users with jobId */}
+          {isLoggedIn && onApplyWithProfile && (
+            <button
+              onClick={onApplyWithProfile}
+              className="w-full mt-3 bg-white border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 text-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Apply with Profile
+            </button>
+          )}
+
           {/* Skip text — very subtle, not aggressive */}
           <p className="text-center mt-3">
             <button
@@ -171,6 +190,225 @@ function ServicePromotionModal({
             >
               No thanks, take me directly to apply
             </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────────────── In-App Apply Modal ───────────────── */
+
+function InAppApplyModal({
+  jobId,
+  jobTitle,
+  companyName,
+  onClose,
+}: {
+  jobId: string;
+  jobTitle: string;
+  companyName: string;
+  onClose: () => void;
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const [closing, setClosing] = useState(false);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setClosing(true);
+        setTimeout(onClose, 200);
+      }
+    }
+    document.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  function handleClose() {
+    if (!submitting) {
+      setClosing(true);
+      setTimeout(onClose, 200);
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (submitting || submitted) return;
+    try {
+      setSubmitting(true);
+      setError(null);
+
+      const res = await fetch(`/api/jobs/${jobId}/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          coverLetter: coverLetter.trim() || null,
+          source: 'DIRECT',
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Application failed' }));
+        if (res.status === 409) {
+          setError('You have already applied to this job.');
+        } else if (res.status === 401) {
+          setError('Please sign in to apply.');
+        } else {
+          setError(data.error || 'Something went wrong. Please try again.');
+        }
+        return;
+      }
+
+      setSubmitted(true);
+      toast.success('Application submitted successfully!');
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={(e) => {
+        if (e.target === overlayRef.current) handleClose();
+      }}
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity duration-200 ${
+        closing ? 'opacity-0' : 'opacity-100'
+      }`}
+    >
+      <div
+        className={`bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transition-all duration-200 ${
+          closing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+        }`}
+      >
+        {/* Header */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 pt-6 pb-4 text-white relative">
+          <button
+            onClick={handleClose}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition text-white"
+            aria-label="Close"
+            disabled={submitting}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg leading-tight">Apply with Profile</h3>
+              <p className="text-emerald-100 text-sm mt-0.5">
+                {jobTitle} at {companyName}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5">
+          {submitted ? (
+            <div className="text-center py-4">
+              <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h4 className="font-bold text-gray-800 text-lg">Application Sent!</h4>
+              <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+                Your profile has been submitted to <strong>{companyName}</strong> for the <strong>{jobTitle}</strong> position. You can track your application status from your dashboard.
+              </p>
+              <button
+                onClick={handleClose}
+                className="mt-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm"
+              >
+                Done
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="mb-4">
+                <label htmlFor="cover-letter" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Cover letter <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <textarea
+                  id="cover-letter"
+                  value={coverLetter}
+                  onChange={(e) => setCoverLetter(e.target.value)}
+                  placeholder="Write a brief cover letter to introduce yourself and explain why you're a great fit for this role..."
+                  rows={6}
+                  className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm bg-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition placeholder:text-gray-400"
+                  disabled={submitting}
+                />
+              </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                  <svg className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
+
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold py-3.5 px-6 rounded-xl transition shadow-md shadow-emerald-200 flex items-center justify-center gap-2 text-sm disabled:cursor-not-allowed"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    Submit Application
+                  </>
+                )}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────────────── How To Apply Panel ───────────────── */
+
+function HowToApplyPanel({ howToApply }: { howToApply: string | null }) {
+  if (!howToApply) return null;
+  return (
+    <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+      <div className="flex items-start gap-2.5">
+        <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg className="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <h4 className="font-bold text-gray-800 text-sm">How to Apply</h4>
+          <p className="text-sm text-gray-600 mt-1 leading-relaxed whitespace-pre-line">
+            {howToApply}
           </p>
         </div>
       </div>
@@ -187,9 +425,26 @@ export default function SmartApplyButton({
   jobTitle,
   companyName,
   deadline,
+  jobId,
 }: SmartApplyButtonProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showInAppApply, setShowInAppApply] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const method = detectMethod({ applicationUrl, applyEmail, howToApply });
+
+  // Check auth status on mount (only when jobId is available)
+  useEffect(() => {
+    if (!jobId) return;
+    fetch('/api/auth/session')
+      .then((res) => {
+        if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .catch(() => setIsLoggedIn(false));
+  }, [jobId]);
 
   const executeApply = useCallback(() => {
     switch (method) {
@@ -215,26 +470,9 @@ export default function SmartApplyButton({
     setShowModal(true);
   }
 
-  /* ── How To Apply instructions panel ── */
-  function HowToApplyPanel() {
-    if (method !== 'instructions' || !howToApply) return null;
-    return (
-      <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-        <div className="flex items-start gap-2.5">
-          <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <svg className="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-bold text-gray-800 text-sm">How to Apply</h4>
-            <p className="text-sm text-gray-600 mt-1 leading-relaxed whitespace-pre-line">
-              {howToApply}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+  function handleInAppApply() {
+    setShowModal(false);
+    setShowInAppApply(true);
   }
 
   /* ── Button Label ── */
@@ -268,7 +506,7 @@ export default function SmartApplyButton({
           {buttonLabel}
           {buttonIcon}
         </button>
-        <HowToApplyPanel />
+        {method === 'instructions' && <HowToApplyPanel howToApply={howToApply} />}
       </div>
 
       {showModal && (
@@ -276,7 +514,18 @@ export default function SmartApplyButton({
           jobTitle={jobTitle}
           companyName={companyName}
           onProceed={executeApply}
+          onApplyWithProfile={jobId ? handleInAppApply : undefined}
+          isLoggedIn={isLoggedIn ?? false}
           onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {showInAppApply && jobId && (
+        <InAppApplyModal
+          jobId={jobId}
+          jobTitle={jobTitle}
+          companyName={companyName}
+          onClose={() => setShowInAppApply(false)}
         />
       )}
     </>

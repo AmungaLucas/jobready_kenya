@@ -312,6 +312,7 @@ export default function JobDetailsContent({ job, similar }: JobDetailsContentPro
                     jobTitle={job.title}
                     companyName={job.company}
                     deadline={job.deadline}
+                    jobId={job.id}
                   />
                   <button
                     type="button"

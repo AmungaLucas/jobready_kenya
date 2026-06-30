@@ -154,6 +154,7 @@ export default function MatchesPage() {
               </div>
 
               {isExpanded && (
+                <div className="overflow-x-auto">
                 <div className="score-breakdown">
                   <div className="score-breakdown-row">
                     <span className="label">Category match (weight {matchWeights.category}%)</span>
@@ -183,6 +184,7 @@ export default function MatchesPage() {
                     <span className="label" style={{ fontWeight: 600, color: '#3d3d3d' }}>Final weighted score</span>
                     <span className="value" style={{ color: '#0b7e4a', fontWeight: 700 }}>{match.finalScore}%</span>
                   </div>
+                </div>
                 </div>
               )}
             </div>

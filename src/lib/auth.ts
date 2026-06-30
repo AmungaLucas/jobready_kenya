@@ -1,15 +1,17 @@
-import type { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
+import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -24,7 +26,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.passwordHash
+        );
+
         if (!isValid) {
           return null;
         }
@@ -33,55 +39,29 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.fullName,
-          image: user.image,
         };
       },
     }),
   ],
   session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  pages: {
-    signIn: '/login',
-    error: '/login',
+    strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      // On sign-in, attach user role and look up candidateId
+    async jwt({ token, user }) {
       if (user) {
         token.userId = user.id;
-        token.role = 'CANDIDATE';
-        token.email = user.email;
-        token.name = user.name;
-
-        // Look up the candidate record linked to this user
-        try {
-          const candidate = await prisma.candidate.findUnique({
-            where: { userId: user.id },
-            select: { id: true },
-          });
-          token.candidateId = candidate?.id ?? null;
-        } catch {
-          // DB might not be available during build; candidateId stays null
-          token.candidateId = null;
-        }
-      }
-
-      // Handle session update (e.g., after profile edit)
-      if (trigger === 'update' && session) {
-        token = { ...token, ...session };
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as Record<string, unknown>).id = token.userId;
-        (session.user as Record<string, unknown>).role = token.role;
-        (session.user as Record<string, unknown>).candidateId = token.candidateId;
+        (session.user as Record<string, unknown>).userId = token.userId;
       }
       return session;
     },
+  },
+  pages: {
+    signIn: "/account",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

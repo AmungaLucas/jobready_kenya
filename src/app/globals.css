@@ -1799,6 +1799,17 @@ body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background: #fa
 .profile-section .info-value a:hover {
   text-decoration: underline;
 }
+@media (max-width: 639px) {
+  .profile-section .info-row {
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.8rem;
+  }
+  .profile-section .info-label {
+    min-width: unset;
+    font-size: 0.75rem;
+  }
+}
 
 /* Onboarding steps */
 .onboarding-steps {
