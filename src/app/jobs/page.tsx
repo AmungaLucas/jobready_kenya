@@ -29,21 +29,29 @@ export async function generateMetadata({ searchParams }: JobsPageProps): Promise
   // Resolve category label for dynamic titles
   let categoryLabel: string | null = null;
   if (category) {
-    const cat = await prisma.jobCategory.findFirst({
-      where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
-      select: { label: true },
-    });
-    categoryLabel = cat?.label || null;
+    try {
+      const cat = await prisma.jobCategory.findFirst({
+        where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
+        select: { label: true },
+      });
+      categoryLabel = cat?.label || null;
+    } catch (err) {
+      console.error('[jobs/metadata] category lookup failed:', err);
+    }
   }
 
   // Resolve county name
   let countyName: string | null = null;
   if (county) {
-    const loc = await prisma.location.findFirst({
-      where: { slug: county },
-      select: { county: true },
-    });
-    countyName = loc?.county || null;
+    try {
+      const loc = await prisma.location.findFirst({
+        where: { slug: county },
+        select: { county: true },
+      });
+      countyName = loc?.county || null;
+    } catch (err) {
+      console.error('[jobs/metadata] county lookup failed:', err);
+    }
   }
 
   // Build dynamic title parts
@@ -102,7 +110,15 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const page = typeof params.page === 'string' ? Number(params.page) : 1;
   const perPage = 20;
 
-  const { jobs, total } = await getJobs({ category, location, type, county, search, page, perPage });
+  let jobs: Awaited<ReturnType<typeof getJobs>>['jobs'] = [];
+  let total = 0;
+  try {
+    const result = await getJobs({ category, location, type, county, search, page, perPage });
+    jobs = result.jobs;
+    total = result.total;
+  } catch (err) {
+    console.error('[JobsPage] Failed to fetch jobs:', err);
+  }
 
   // Build breadcrumb items based on active filters
   const breadcrumbItems = [
@@ -110,15 +126,23 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     { name: 'Jobs', url: '/jobs' },
   ];
   if (county) {
-    const loc = await prisma.location.findFirst({ where: { slug: county }, select: { county: true } });
-    if (loc) breadcrumbItems.push({ name: loc.county, url: `/locations/${county}` });
+    try {
+      const loc = await prisma.location.findFirst({ where: { slug: county }, select: { county: true } });
+      if (loc) breadcrumbItems.push({ name: loc.county, url: `/locations/${county}` });
+    } catch (err) {
+      console.error('[JobsPage] county breadcrumb failed:', err);
+    }
   }
   if (category) {
-    const cat = await prisma.jobCategory.findFirst({
-      where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
-      select: { label: true },
-    });
-    if (cat) breadcrumbItems.push({ name: cat.label, url: `/jobs?category=${category}` });
+    try {
+      const cat = await prisma.jobCategory.findFirst({
+        where: { OR: [{ slug: category }, { value: category.toUpperCase().replace(/-/g, '_') }] },
+        select: { label: true },
+      });
+      if (cat) breadcrumbItems.push({ name: cat.label, url: `/jobs?category=${category}` });
+    } catch (err) {
+      console.error('[JobsPage] category breadcrumb failed:', err);
+    }
   }
   if (search) {
     breadcrumbItems.push({ name: `Search: ${search}`, url: `/jobs?search=${encodeURIComponent(search)}` });

@@ -3,15 +3,20 @@ import { prisma } from '@/lib/prisma';
 import GoogleAd from '@/components/jobboard/GoogleAd';
 
 export default async function Sidebar() {
-  const categories = await prisma.jobCategory.findMany({
-    select: {
-      label: true,
-      slug: true,
-      _count: { select: { jobs: { where: { status: 'ACTIVE', deletedAt: null } } } },
-    },
-    orderBy: { sortOrder: 'asc' },
-    take: 8,
-  });
+  let categories: Awaited<ReturnType<typeof prisma.jobCategory.findMany>> = [];
+  try {
+    categories = await prisma.jobCategory.findMany({
+      select: {
+        label: true,
+        slug: true,
+        _count: { select: { jobs: { where: { status: 'ACTIVE', deletedAt: null } } } },
+      },
+      orderBy: { sortOrder: 'asc' },
+      take: 8,
+    });
+  } catch (err) {
+    console.error('[Sidebar] Failed to fetch categories:', err);
+  }
 
   return (
     <div className="lg:col-span-1 space-y-6 sidebar-sticky">
