@@ -118,7 +118,7 @@ export async function extractJobProfile(jobId: string): Promise<{
       title: true,
       description: true,
       organization: {
-        select: { organizationType: true, industry: true },
+        select: { orgType: true, orgIndustry: true },
       },
     },
   });
@@ -126,12 +126,12 @@ export async function extractJobProfile(jobId: string): Promise<{
   if (!job) return { success: false, error: 'Job not found' };
 
   const orgContext = job.organization
-    ? `Organization type: ${job.organization.organizationType ?? 'Unknown'}, Industry: ${job.organization.industry ?? 'Unknown'}`
+    ? `Organization type: ${job.organization.orgType ?? 'Unknown'}, Industry: ${job.organization.orgIndustry ?? 'Unknown'}`
     : '';
 
   const userContent = `Job Title: ${job.title}\n${orgContext}\n\nJob Description:\n${job.description ?? ''}`;
 
-  return extractJobFromText(jobId, userContent);
+  return extractJobFromText(jobId, userContent, prisma);
 }
 
 // ─── Core Extraction Logic (shared) ──────────────────────────────
@@ -139,8 +139,10 @@ export async function extractJobProfile(jobId: string): Promise<{
 async function extractJobFromText(
   jobId: string,
   userContent: string,
+  prismaClient: PrismaClient,
 ): Promise<{ success: boolean; error?: string; stats?: Record<string, number> }> {
   try {
+    // Step 1: LLM call (outside transaction — can be slow)
     const raw = await callLLM(JOB_EXTRACTION_SYSTEM, userContent);
     let parsed: ParsedJob;
 
@@ -152,23 +154,32 @@ async function extractJobFromText(
       return { success: false, error: 'AI returned invalid data format' };
     }
 
-    const lookup = await TaxonomyLookup.getInstance(prisma);
+    // Step 2: Load taxonomy lookup (outside transaction)
+    const lookup = await TaxonomyLookup.getInstance(prismaClient);
 
-    const stats = await prisma.$transaction(async (tx) => {
-      const primaryCategoryId = parsed.primaryCategory
-        ? lookup.findCategoryId(parsed.primaryCategory)
+    // Step 3: Resolve all taxonomy IDs (outside transaction)
+    const primaryCategoryId = parsed.primaryCategory
+      ? lookup.findCategoryId(parsed.primaryCategory)
+      : null;
+    const primarySubcategoryId =
+      parsed.subcategories && parsed.subcategories.length > 0
+        ? lookup.findSubcategoryId(parsed.subcategories[0])
         : null;
-      const primarySubcategoryId =
-        parsed.subcategories && parsed.subcategories.length > 0
-          ? lookup.findSubcategoryId(parsed.subcategories[0])
-          : null;
-      const industryId = parsed.organizationIndustry
-        ? lookup.findIndustryId(parsed.organizationIndustry)
-        : null;
-      const orgTypeId = parsed.organizationType
-        ? lookup.findOrgTypeId(parsed.organizationType)
-        : null;
+    const industryId = parsed.organizationIndustry
+      ? lookup.findIndustryId(parsed.organizationIndustry)
+      : null;
+    const orgTypeId = parsed.organizationType
+      ? lookup.findOrgTypeId(parsed.organizationType)
+      : null;
 
+    const skillNames = parsed.requiredSkills ?? [];
+    const skillIds = lookup.findSkillIds(skillNames, 20);
+    const quals = parsed.requiredQualifications ?? [];
+    const subcatNames = parsed.subcategories ?? [];
+    const subcatIds = lookup.findSubcategoryIds(subcatNames, 5);
+
+    // Step 4: DB writes in a short transaction (only DB ops, no LLM)
+    const stats = await prismaClient.$transaction(async (tx) => {
       // Upsert JobProfile
       await tx.jobProfile.upsert({
         where: { jobId },
@@ -198,11 +209,7 @@ async function extractJobFromText(
       });
 
       // ── Skills ───────────────────────────────────────
-      const skillNames = parsed.requiredSkills ?? [];
-      const skillIds = lookup.findSkillIds(skillNames, 20);
       let skillsCreated = 0;
-
-      // Delete old skills and recreate
       await tx.jobSkill.deleteMany({ where: { jobId } });
       for (const skillId of skillIds) {
         await tx.jobSkill.create({
@@ -212,9 +219,7 @@ async function extractJobFromText(
       }
 
       // ── Qualifications ───────────────────────────────
-      const quals = parsed.requiredQualifications ?? [];
       let qualsCreated = 0;
-
       await tx.jobQualification.deleteMany({ where: { jobId } });
       for (const q of quals) {
         const qualId = q.name ? lookup.findQualificationId(q.name) : null;
@@ -232,10 +237,7 @@ async function extractJobFromText(
       }
 
       // ── Subcategory Links ────────────────────────────
-      const subcatNames = parsed.subcategories ?? [];
-      const subcatIds = lookup.findSubcategoryIds(subcatNames, 5);
       let subcatsCreated = 0;
-
       await tx.jobSubcategoryLink.deleteMany({ where: { jobId } });
       for (const scId of subcatIds) {
         await tx.jobSubcategoryLink.create({
@@ -245,7 +247,7 @@ async function extractJobFromText(
       }
 
       return { skills: skillsCreated, qualifications: qualsCreated, subcategories: subcatsCreated };
-    });
+    }, { timeout: 30000 });
 
     return { success: true, stats };
   } catch (error) {
@@ -257,14 +259,15 @@ async function extractJobFromText(
 // ─── Batch Extraction (for backfill scripts) ─────────────────────
 
 export async function extractJobsBatch(
-  options?: { limit?: number; offset?: number; delayMs?: number },
+  options?: { limit?: number; offset?: number; delayMs?: number; prismaClient?: PrismaClient },
 ): Promise<{ processed: number; succeeded: number; failed: number }> {
   const limit = options?.limit ?? 50;
   const offset = options?.offset ?? 0;
   const delayMs = options?.delayMs ?? 500;
+  const db = options?.prismaClient ?? prisma;
 
   // Find jobs without an extracted profile
-  const jobs = await prisma.job.findMany({
+  const jobs = await db.job.findMany({
     where: {
       status: 'ACTIVE',
       deletedAt: null,
@@ -283,21 +286,21 @@ export async function extractJobsBatch(
   let failed = 0;
 
   for (const job of jobs) {
-    const org = await prisma.job.findUnique({
+    const org = await db.job.findUnique({
       where: { id: job.id },
       select: {
         organization: {
-          select: { organizationType: true, industry: true },
+          select: { orgType: true, orgIndustry: true },
         },
       },
     });
 
     const orgContext = org?.organization
-      ? `Organization type: ${org.organization.organizationType ?? 'Unknown'}, Industry: ${org.organization.industry ?? 'Unknown'}`
+      ? `Organization type: ${org.organization.orgType ?? 'Unknown'}, Industry: ${org.organization.orgIndustry ?? 'Unknown'}`
       : '';
 
     const userContent = `Job Title: ${job.title}\n${orgContext}\n\nJob Description:\n${job.description ?? ''}`;
-    const result = await extractJobFromText(job.id, userContent);
+    const result = await extractJobFromText(job.id, userContent, db);
 
     if (result.success) {
       succeeded++;

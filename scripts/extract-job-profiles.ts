@@ -24,6 +24,7 @@ const DATABASE_URL =
 
 const prisma = new PrismaClient({
   datasources: { db: { url: DATABASE_URL } },
+  transactionOptions: { timeout: 30000 },
 });
 
 async function main() {
@@ -42,7 +43,7 @@ async function main() {
   console.log('=== Job Profile Batch Extraction ===');
   console.log(`Limit: ${limit}, Offset: ${offset}, Delay: ${delayMs}ms\n`);
 
-  const result = await extractJobsBatch({ limit, offset, delayMs });
+  const result = await extractJobsBatch({ limit, offset, delayMs, prismaClient: prisma });
 
   console.log(`\n=== Final Results ===`);
   console.log(`Processed: ${result.processed}`);
