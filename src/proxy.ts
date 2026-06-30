@@ -19,8 +19,8 @@ function cleanup() {
 }
 
 // In demo mode, dashboard and API routes are accessible without auth.
-// Set to false (in api-client.ts) once auth is fully functional.
-const DEMO_MODE = true;
+// Set to false once auth is fully functional.
+const DEMO_MODE = false;
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

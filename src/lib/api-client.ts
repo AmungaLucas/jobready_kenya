@@ -13,7 +13,7 @@
 import { useSession } from 'next-auth/react';
 
 // Flip this to false once auth is fully functional
-export const DEMO_MODE = true;
+export const DEMO_MODE = false;
 
 /**
  * Get the candidate ID from the NextAuth session.
