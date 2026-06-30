@@ -558,3 +558,24 @@ Stage Summary:
 - Navbar and mobile drawer are auth-aware
 - DEMO_MODE=true still active — flip to false in api-client.ts + proxy.ts to enable auth
 - Production: set DATABASE_URL and NEXTAUTH_SECRET in Vercel env vars
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Implement NextAuth sign-in/register flow, flip DEMO_MODE to false
+
+Work Log:
+- Verified Vercel env vars (DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL) are set in Production + Preview
+- Created /api/auth/[...nextauth]/route.ts — NextAuth catch-all handler (GET + POST)
+- Created /api/auth/register/route.ts — Registration endpoint with validation (email regex, min 8 char password), bcrypt hash (12 rounds), User + Candidate creation in Prisma transaction, full name split into firstName/lastName
+- Created /login/page.tsx — Clean login form with email/password, show/hide toggle, error display, callback URL support
+- Created /register/page.tsx — Registration form with name/email/password/confirm, password strength indicators (8+ chars, uppercase, number), auto-sign-in after registration
+- Flipped DEMO_MODE = false in both api-client.ts and proxy.ts
+- Verified auth guard: /account → 307 redirect to /login, /api/candidates/* → 401 JSON
+- Browser-verified both login and register pages render correctly
+- Pushed commit afe97da to GitHub
+
+Stage Summary:
+- Full auth flow is now live: register → auto sign-in → /account dashboard
+- Auth guard active: unauthenticated users are redirected to /login or get 401
+- DEMO_MODE off — dashboard hooks now call real API routes when session exists
