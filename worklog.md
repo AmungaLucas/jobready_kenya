@@ -620,3 +620,29 @@ Stage Summary:
 - Jobs will load correctly once Vercel rebuilds with provider = "mysql"
 - No schema was altered destructively — all original models preserved exactly as-is
 - Commits: 7aecbc2 (try/catch + navbar), 52b1a30 (mysql provider fix)
+
+---
+Task ID: 12
+Agent: Main Agent + 3 Subagents
+Task: Build candidate backend, onboarding wizard, profile edit, apply flow, mobile fixes
+
+Work Log:
+- Added 22 new enums + 16 new models to prisma/schema.prisma (User, Candidate, CandidateProfile, CandidatePreferences, CandidateWorkExperience, CandidateEducation, CandidateSkill, CandidateTool, CandidateQualification, CandidateCertification, CandidateInterest, CandidateSubcategory, CandidateSearchHistory, Application, JobView, ApplicationFunnel, Update, AiExtraction, SystemSetting)
+- Pushed schema to production MySQL (all candidate tables created)
+- Installed bcryptjs, @types/bcryptjs, @auth/prisma-adapter
+- Created NextAuth v4 config with CredentialsProvider + JWT strategy
+- Built 7 API routes: register, session, candidates/me (GET/PUT), onboarding (POST), jobs/[id]/apply (POST), locations/counties, taxonomy
+- Built 4-step onboarding wizard UI (/account/onboarding) with personal info, professional profile, education/skills, preferences
+- Rewrote profile page as client component with edit mode (inline forms, add/edit/delete for experiences, education, skills)
+- Added in-app apply flow to SmartApplyButton with cover letter modal and server-side tracking
+- Mobile: sidebar drawer for jobs page, responsive info-rows, match table overflow fix
+- Fixed applications page import (demoApplications → applications)
+- Resolved git rebase conflicts, verified build passes
+
+Stage Summary:
+- Full candidate auth + CRUD backend operational
+- Onboarding wizard: 4 steps with real API integration
+- Profile edit: toggle between view/edit modes, nested data CRUD
+- Apply flow: in-app modal with cover letter, server-side Application records
+- Mobile: sidebar drawer, responsive CSS overrides
+- Commit: 46c4d72, all pushed to main
