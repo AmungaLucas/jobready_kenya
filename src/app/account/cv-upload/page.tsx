@@ -19,6 +19,7 @@ export default function CVUploadPage() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [extractionStats, setExtractionStats] = useState<Record<string, number> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -70,8 +71,12 @@ export default function CVUploadPage() {
         const result = await uploadCV(candidateId, selectedFile);
         if (result?.success) {
           setUploadSuccess(true);
+          // Show extraction stats if available
+          if ('extractionStats' in result && result.extractionStats) {
+            setExtractionStats(result.extractionStats as Record<string, number>);
+          }
         } else {
-          setUploadError('Upload failed. Please try again.');
+          setUploadError(result?.message ?? 'Upload failed. Please try again.');
         }
       } else {
         // Demo mode — simulate upload delay
@@ -87,6 +92,7 @@ export default function CVUploadPage() {
 
   function resetUpload() {
     setUploadSuccess(false);
+    setExtractionStats(null);
     setSelectedFile(null);
     setUploadError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -153,24 +159,64 @@ export default function CVUploadPage() {
                 <Check style={{ width: '1.5rem', height: '1.5rem', color: '#065f46' }} />
               </div>
               <div style={{ fontSize: '1rem', fontWeight: 600, color: '#1a1a1a' }}>
-                CV uploaded successfully
+                CV uploaded and processed successfully
               </div>
               <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.3rem' }}>
                 {selectedFile?.name}
               </div>
-              <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.15rem' }}>
-                {!DEMO_MODE
-                  ? 'Your CV is being processed. We will extract your skills, qualifications, and experience automatically.'
-                  : 'Your profile is now 97% complete'}
+              {extractionStats ? (
+                <div style={{
+                  marginTop: '1rem', display: 'inline-flex', flexWrap: 'wrap', gap: '0.5rem',
+                  justifyContent: 'center', maxWidth: '400px',
+                }}>
+                  {extractionStats.skills ? (
+                    <span style={{ background: '#f0fdf4', color: '#166534', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 500 }}>
+                      {extractionStats.skills} skills
+                    </span>
+                  ) : null}
+                  {extractionStats.qualifications ? (
+                    <span style={{ background: '#eff6ff', color: '#1e40af', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 500 }}>
+                      {extractionStats.qualifications} qualifications
+                    </span>
+                  ) : null}
+                  {extractionStats.experiences ? (
+                    <span style={{ background: '#fef3c7', color: '#92400e', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 500 }}>
+                      {extractionStats.experiences} experiences
+                    </span>
+                  ) : null}
+                  {extractionStats.certifications ? (
+                    <span style={{ background: '#f5f3ff', color: '#5b21b6', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 500 }}>
+                      {extractionStats.certifications} certifications
+                    </span>
+                  ) : null}
+                </div>
+              ) : !DEMO_MODE ? (
+                <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.5rem' }}>
+                  Your CV is being processed. We are extracting your skills, qualifications, and experience.
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.82rem', color: '#8a8a8a', marginTop: '0.15rem' }}>
+                  Your profile is now 97% complete
+                </div>
+              )}
+              <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                {extractionStats && extractionStats.skills > 0 && (
+                  <Link
+                    href="/account/matches"
+                    className="btn-primary"
+                    style={{ fontSize: '0.82rem' }}
+                  >
+                    View your matches
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  className="btn-outline"
+                  onClick={resetUpload}
+                >
+                  Upload a different CV
+                </button>
               </div>
-              <button
-                type="button"
-                className="btn-outline"
-                style={{ marginTop: '1.5rem' }}
-                onClick={resetUpload}
-              >
-                Upload a different CV
-              </button>
             </div>
           ) : (
             <>
@@ -216,7 +262,7 @@ export default function CVUploadPage() {
                     {uploading ? (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        {' '}Uploading...
+                        {' '}{!DEMO_MODE ? 'Uploading & extracting...' : 'Uploading...'}
                       </>
                     ) : 'Upload'}
                   </button>

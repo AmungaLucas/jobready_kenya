@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerCandidateId } from '@/lib/get-server-candidate';
+import { extractCandidateProfile } from '@/lib/extraction/candidate-extractor';
 
 /**
  * POST /api/candidates/upload-cv
  *
  * Accepts a CV file (multipart/form-data), extracts text using markitdown,
- * then triggers AI-based profile extraction.
+ * then triggers AI-based profile extraction synchronously.
  *
  * Expected form fields:
  *   - file: the CV file (PDF, DOCX, DOC)
  *
  * Flow:
  *   1. Validate file type and size (max 5MB)
- *   2. Store file reference (in production: upload to S3/Blob storage)
- *   3. Extract text using markitdown
- *   4. Update candidate onboardingStatus to CV_UPLOADED
- *   5. Return success — AI extraction will happen async (cron or queue)
+ *   2. Extract text using markitdown
+ *   3. Update candidate onboardingStatus to CV_UPLOADED
+ *   4. Trigger AI profile extraction (skills, quals, experience, etc.)
+ *   5. Trigger job matching
+ *   6. Return success with extraction stats
  */
 export async function POST(request: NextRequest) {
   try {
@@ -74,15 +76,32 @@ export async function POST(request: NextRequest) {
       data: { onboardingStatus: 'CV_UPLOADED' },
     });
 
-    // TODO: Queue AI extraction job here
+    // Trigger AI extraction if we got usable text
+    let extractionResult: { success: boolean; error?: string; stats?: Record<string, number> } | null = null;
+
+    if (extractedText.length >= 50) {
+      console.log(`[CV Upload] Starting AI extraction for candidate ${candidateId} (${extractedText.length} chars)`);
+      extractionResult = await extractCandidateProfile(candidateId, extractedText);
+      if (extractionResult.success) {
+        console.log(`[CV Upload] Extraction complete: ${JSON.stringify(extractionResult.stats)}`);
+      } else {
+        console.error(`[CV Upload] Extraction failed: ${extractionResult.error}`);
+      }
+    } else {
+      console.log(`[CV Upload] Extracted text too short (${extractedText.length} chars), skipping AI extraction`);
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'CV uploaded successfully',
+      message: extractionResult?.success
+        ? 'CV uploaded and profile extracted successfully'
+        : 'CV uploaded. Profile extraction ' + (extractionResult ? 'failed — ' + extractionResult.error : 'skipped (text too short)'),
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
       textLength: extractedText.length,
+      extracted: extractionResult?.success ?? false,
+      extractionStats: extractionResult?.stats ?? null,
     });
   } catch (error) {
     console.error('[POST /api/candidates/upload-cv]', error);
