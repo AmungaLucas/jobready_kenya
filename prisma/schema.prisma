@@ -822,6 +822,7 @@ model Candidate {
   emailVerifiedAt   DateTime?
   locationCounty    String?
   country           String           @default("Kenya")
+  referralCode        String?                       @unique  // e.g. JOHN889
   onboardingStatus  OnboardingStatus @default(STARTED)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
@@ -845,6 +846,10 @@ model Candidate {
   payments            Payment[]
   subscription        Subscription?
   premiumPurchases    PremiumPurchase[]
+  // Referral system
+  referralsMade       Referral[]                  @relation("ReferralReferrer")
+  referralsReceived   Referral[]                  @relation("ReferralReferred")
+  wallet              Wallet?
 
   @@map("candidates")
 }
@@ -1533,4 +1538,146 @@ model PremiumPurchase {
   @@index([itemType])
   @@index([status])
   @@map("premium_purchases")
+}
+
+// ============================================
+// 🤝 REFERRAL SYSTEM
+// ============================================
+
+model CommissionTier {
+  id                String   @id @default(cuid())
+  minReferrals      Int      @default(0)    // Minimum paid referrals to unlock this rate
+  commissionPercent  Float    // e.g. 10.0 = 10%
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("commission_tiers")
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerId     String   // Candidate who referred
+  referredId     String   // Candidate who was referred
+  referralCode   String   // The code used at signup
+  status         ReferralStatus @default(PENDING)
+  firstPaymentAt DateTime? // When the referred user made their first payment
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  referrer   Candidate @relation("ReferralReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred   Candidate @relation("ReferralReferred", fields: [referredId], references: [id], onDelete: Cascade)
+  commissions ReferralCommission[]
+
+  @@unique([referrerId, referredId])
+  @@index([referrerId])
+  @@index([referredId])
+  @@index([referralCode])
+  @@map("referrals")
+}
+
+model ReferralCommission {
+  id                String   @id @default(cuid())
+  referralId        String
+  paymentId         String   // The payment that triggered this commission
+  amountPaid        Int      // How much the referred user paid (KES)
+  commissionPercent  Float    // Rate applied
+  commissionAmount  Int      // Actual commission earned (KES)
+  status            ReferralCommissionStatus @default(PENDING)
+  creditedAt        DateTime?
+  cooldownEndsAt    DateTime? // 48-hour fraud prevention window
+  createdAt         DateTime @default(now())
+
+  referral Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+
+  @@unique([referralId, paymentId]) // One commission per payment per referral
+  @@index([referralId])
+  @@index([paymentId])
+  @@index([status])
+  @@map("referral_commissions")
+}
+
+model Wallet {
+  id                   String   @id @default(cuid())
+  candidateId          String   @unique
+  availableBalance     Int      @default(0)  // Withdrawable (past cooldown)
+  pendingBalance       Int      @default(0)  // Earned but within 48h cooldown
+  totalEarned          Int      @default(0)  // All-time commissions
+  totalWithdrawn       Int      @default(0)  // All-time withdrawals
+  minimumWithdrawal    Int      @default(1000) // KES threshold
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id              String            @id @default(cuid())
+  walletId        String
+  type            WalletTxType      // CREDIT or DEBIT
+  amount          Int               // KES
+  balanceAfter    Int               // Running balance after this tx
+  reference       String?           // Reference to commission/withdrawal ID
+  description     String
+  createdAt       DateTime          @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([createdAt])
+  @@map("wallet_transactions")
+}
+
+model Withdrawal {
+  id                 String         @id @default(cuid())
+  candidateId        String
+  amount             Int            // KES
+  phoneNumber        String         // M-Pesa number (254...)
+  status             WithdrawalStatus @default(PENDING)
+  conversationId     String?        // B2C OriginatorConversationID
+  mpesaReceipt       String?        // B2C receipt number on success
+  failureReason      String?
+  processedById      String?        // Admin who approved (if manual)
+  processedAt        DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([candidateId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("withdrawals")
+}
+
+// ============================================
+// 🤝 REFERRAL ENUMS
+// ============================================
+
+enum ReferralStatus {
+  PENDING           // Referred user signed up but hasn't paid yet
+  ACTIVE            // Referred user made at least one payment
+  REWARDED          // Referrer has earned commissions from this referral
+  FRAUD_FLAGGED     // Suspicious activity
+  DISQUALIFIED      // Self-referral or duplicate
+}
+
+enum ReferralCommissionStatus {
+  PENDING           // Within 48h cooldown
+  CREDITED          // Credited to wallet
+  CLAWED_BACK       // Reversed (e.g. payment was reversed)
+}
+
+enum WalletTxType {
+  CREDIT            // Commission earned
+  DEBIT             // Withdrawal
+}
+
+enum WithdrawalStatus {
+  PENDING           // Requested, awaiting processing
+  PROCESSING        // B2C request sent
+  SUCCESS           // M-Pesa confirmed payout
+  FAILED            // B2C failed, will retry or require manual intervention
+  REJECTED          // Admin rejected
 }

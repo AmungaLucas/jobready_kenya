@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseCallback } from '@/lib/mpesa';
+import { processReferralCommission } from '@/lib/services/commission';
 
 /**
  * POST /api/v1/webhooks/mpesa/stk
@@ -102,6 +103,11 @@ export async function POST(request: NextRequest) {
       });
 
       console.log(`[mpesa/stk] Payment ${payment.id} COMPLETED — receipt=${callback.mpesaReceiptNumber}`);
+
+      // Fire referral commission check (async, don't block response)
+      processReferralCommission(payment.id).catch((err) => {
+        console.error(`[mpesa/stk] Commission processing error:`, err);
+      });
     } else {
       // ─── FAILURE (user cancelled, insufficient funds, timeout) ──
       const failStatus = callback.resultCode === '1032' ? 'CANCELLED' : 'FAILED';

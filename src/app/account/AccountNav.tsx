@@ -16,6 +16,7 @@ import {
   Settings,
   Loader2,
   Crown,
+  Users,
 } from 'lucide-react';
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { href: '/account/cv-upload', label: 'CV Upload', icon: FileUp },
   { href: '/account/applications', label: 'Applications', icon: Send },
   { href: '/account/saved', label: 'Saved Jobs', icon: Bookmark },
+  { href: '/account/referrals', label: 'Referrals', icon: Users },
   { href: '/account/alerts', label: 'Alerts', icon: Bell },
   { href: '/account/subscription', label: 'Subscription', icon: Crown },
   { href: '/account/preferences', label: 'Preferences', icon: Settings },
