@@ -731,3 +731,29 @@ Stage Summary:
 - Markitdown CV extraction will work at runtime (package installed)
 - Job alerts: candidates can create multiple alert rules with keyword/location/category/frequency filters
 - All 41 Prisma models in schema (added JobAlert as 41st)
+
+---
+Task ID: phase-c-d
+Agent: Main Agent
+Task: Phase C (schema/tracking/security) + Phase 3 (M-Pesa monetization)
+
+Work Log:
+- Phase C: robots.ts disallow, HSTS preload, CSP connect-src, rawDescription/extractionStatus on Job, API enum, Company model, search-history/job-view/funnel/interests APIs, tracking components, proxy.ts fixes
+- Phase 3 schema: 6 new enums (PaymentProvider, PaymentStatus, PaymentItemType, SubscriptionTier, SubscriptionStatus, AlertFrequency)
+- Phase 3 models: Payment (full M-Pesa tx lifecycle), Subscription (FREE/BASIC/PRO tiers), PremiumPurchase (one-time items)
+- Phase 3 service: M-Pesa Daraja (OAuth caching, STK Push, callback parsing, phone normalization, pricing constants)
+- Phase 3 API: 6 new routes (initiate, callback, status, subscription, cancel, purchases)
+- Phase 3 gating: checkPremiumAccess() helper, matches endpoint 3-tier (FREE=list, Basic=scores, Pro=scores+explanations)
+- Phase 3 dashboard: /account/subscription page (plan card, upgrade CTAs, M-Pesa phone input, polling, payment history)
+- Phase 3 cron: subscription expiry in existing match cron
+- Proxy: callback exempted from auth + rate limiting
+- Committed 3578a7d (Phase C), 5e9f792 (Phase 3), both pushed to main
+
+Stage Summary:
+- Full M-Pesa Daraja integration ready (needs env vars on production)
+- 3-tier pricing: FREE (browse/apply), Basic KES 100/mo (match scores), Pro KES 200/mo (explanations)
+- One-time purchases: Priority App KES 50, CV Review KES 300
+- Feature gating active on match scores endpoint
+- Subscription page with real-time M-Pesa polling
+- Env vars needed: MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_PASSKEY, MPESA_SHORTCODE, MPESA_IS_SANDBOX
+- DB push needed: `npx prisma db push` with valid MySQL credentials
