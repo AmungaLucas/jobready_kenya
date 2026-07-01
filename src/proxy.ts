@@ -94,7 +94,11 @@ export function proxy(request: NextRequest) {
   }
 
   // ─── 2. Auth protection for candidate API routes ────────────
-  if (pathname.startsWith('/api/candidates/')) {
+  // Skip auth-optional routes (view/funnel tracking handles auth internally)
+  const authOptionalPaths = ['/api/jobs/', '/api/taxonomy', '/api/locations', '/api/cron/'];
+  const isAuthOptional = authOptionalPaths.some(p => pathname.startsWith(p));
+
+  if (pathname.startsWith('/api/candidates/') && !isAuthOptional) {
     const sessionCookie =
       request.cookies.get('next-auth.session-token') ??
       request.cookies.get('__Secure-next-auth.session-token');
@@ -108,7 +112,8 @@ export function proxy(request: NextRequest) {
   }
 
   // ─── 3. Rate limiting for API routes ─────────────────────────
-  if (pathname.startsWith('/api/')) {
+  // Skip rate limiting for internal/cron endpoints
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/cron/')) {
     const ip = getIp(request);
     const { allowed, retryAfter } = checkRateLimit(ip, pathname);
 

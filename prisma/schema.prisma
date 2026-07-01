@@ -123,6 +123,7 @@ enum JobSource {
   MANUAL
   SCRAPED
   IMPORTED
+  API
 }
 
 // ============================================
@@ -393,6 +394,9 @@ model Job {
   sourceUrl       String?
   sourcePlatform  String?
 
+  rawDescription  String?
+  extractionStatus JobExtractionStatus @default(PENDING)
+
   searchText      String?
 
   experienceLevel ExperienceLevel?
@@ -431,7 +435,7 @@ model Job {
   jobQualifications JobQualification[]
   jobCertifications JobCertification[]
   jobSpecializations JobSpecialization[]
-  jobSubcategoryLinks JobSubcategoryLink[]
+  jobSubcategories    JobSubcategoryLink[]
   candidateJobScores CandidateJobScore[]
   applications        JobApplication[]
 
@@ -717,6 +721,7 @@ model User {
   accounts  Account[]
   candidates Candidate[]
   sessions  Session[]
+  company   Company?
 
   @@map("users")
 }
@@ -1296,6 +1301,9 @@ model JobView {
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
+  @@index([candidateId])
+  @@index([jobId])
+  @@index([viewedAt])
   @@map("job_views")
 }
 
@@ -1312,6 +1320,9 @@ model ApplicationFunnel {
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
+  @@unique([jobId, candidateId])
+  @@index([candidateId])
+  @@index([jobId])
   @@map("application_funnel")
 }
 
@@ -1369,4 +1380,31 @@ model JobAlert {
   candidate        Candidate       @relation("CandidateAlerts", fields: [candidateId], references: [id], onDelete: Cascade)
 
   @@map("job_alerts")
+}
+
+// ============================================
+// 🏢 COMPANY (Recruiter organizations that post jobs)
+// ============================================
+
+model Company {
+  id          String   @id @default(cuid())
+  userId      String   @unique  // The recruiter User who owns this company
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  website     String?
+  description String?
+  industry    String?
+  size        String?  // e.g. "1-10", "11-50", "51-200", "201-500", "500+"
+  location    String?
+  isVerified  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([isActive])
+  @@index([industry])
+  @@map("companies")
 }

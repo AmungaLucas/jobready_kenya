@@ -268,6 +268,12 @@ function InAppApplyModal({
 
       setSubmitted(true);
       toast.success('Application submitted successfully!');
+      // Track SUBMITTED funnel step
+      fetch(`/api/jobs/${jobId}/funnel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: 'SUBMITTED' }),
+      }).catch(() => {});
     } catch {
       setError('Network error. Please check your connection and try again.');
     } finally {
@@ -447,6 +453,15 @@ export default function SmartApplyButton({
   }, [jobId]);
 
   const executeApply = useCallback(() => {
+    // Track CLICKED_APPLY funnel step
+    if (jobId) {
+      fetch(`/api/jobs/${jobId}/funnel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: 'CLICKED_APPLY' }),
+      }).catch(() => {});
+    }
+
     switch (method) {
       case 'url':
         window.open(applicationUrl!, '_blank', 'noopener,noreferrer');
@@ -473,6 +488,14 @@ export default function SmartApplyButton({
   function handleInAppApply() {
     setShowModal(false);
     setShowInAppApply(true);
+    // Track STARTED_APPLICATION funnel step
+    if (jobId) {
+      fetch(`/api/jobs/${jobId}/funnel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: 'STARTED_APPLICATION' }),
+      }).catch(() => {});
+    }
   }
 
   /* ── Button Label ── */
