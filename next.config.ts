@@ -6,6 +6,23 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Native Node.js packages that must not be bundled by webpack/turbopack.
+  // markitdown-js uses fs, path, tmp, fluent-ffmpeg etc. at the top level.
+  // serverExternalPackages tells Next.js to load these at runtime instead.
+  serverExternalPackages: [
+    'markitdown-js',
+    'fluent-ffmpeg',
+    'tmp',
+    'mammoth',
+    'pdf-parse-tt-message-gone',
+    'xlsx',
+    'iconv-lite',
+    '@kenjiuno/msgreader',
+    'node-pptx-parser',
+    'unzipper',
+    'exiftool-vendored',
+    'node-tesseract-ocr',
+  ],
   images: {
     remotePatterns: [
       {

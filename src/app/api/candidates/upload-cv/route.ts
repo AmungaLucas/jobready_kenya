@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerCandidateId } from '@/lib/get-server-candidate';
 import { extractCandidateProfile } from '@/lib/extraction/candidate-extractor';
+import { writeFile, unlink, mkdir } from 'fs/promises';
+import { join } from 'path';
+import { randomUUID } from 'crypto';
+import os from 'os';
 
 /**
  * POST /api/candidates/upload-cv
  *
  * Accepts a CV file (multipart/form-data), extracts text using
- * pdf-parse (PDF) or mammoth (DOCX), then triggers AI-based
+ * markitdown-js (unified PDF/DOCX parser), then triggers AI-based
  * profile extraction synchronously.
  *
  * Expected form fields:
@@ -15,12 +19,16 @@ import { extractCandidateProfile } from '@/lib/extraction/candidate-extractor';
  *
  * Flow:
  *   1. Validate file type and size (max 5MB)
- *   2. Extract text using appropriate parser
- *   3. Update candidate onboardingStatus to CV_UPLOADED
- *   4. Trigger AI profile extraction (skills, quals, experience, etc.)
- *   5. Return success with extraction stats
+ *   2. Write buffer to a temp file
+ *   3. Use markitdown-js to extract text
+ *   4. Clean up temp file
+ *   5. Update candidate onboardingStatus to CV_UPLOADED
+ *   6. Trigger AI profile extraction (skills, quals, experience, etc.)
+ *   7. Return success with extraction stats
  */
 export async function POST(request: NextRequest) {
+  let tempFilePath: string | null = null;
+
   try {
     const candidateId = await getServerCandidateId(request);
     if (!candidateId) {
@@ -57,25 +65,45 @@ export async function POST(request: NextRequest) {
 
     // TODO: In production, upload file to S3/Vercel Blob and store the URL
 
-    // Extract text from CV
+    // Extract text from CV using markitdown-js
     let extractedText = '';
     const buffer = Buffer.from(await file.arrayBuffer());
 
     try {
-      if (file.type === 'application/pdf') {
-        // Use pdf-parse for PDF files
-        const pdfParse = (await import('pdf-parse')).default;
-        const data = await pdfParse(buffer);
-        extractedText = data.text || '';
-      } else {
-        // Use mammoth for DOCX/DOC files
-        const mammoth = await import('mammoth');
-        const result = await mammoth.extractRawText({ buffer });
-        extractedText = result.value || '';
-      }
+      // Determine file extension from original filename
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      const allowedExts = ['pdf', 'docx', 'doc'];
+      const fileExt = allowedExts.includes(ext) ? `.${ext}` : '';
+
+      // Write buffer to a temp file (markitdown-js operates on file paths)
+      const tmpDir = join(os.tmpdir(), 'cv-uploads');
+      await mkdir(tmpDir, { recursive: true });
+      tempFilePath = join(tmpDir, `${randomUUID()}${fileExt}`);
+      await writeFile(tempFilePath, buffer);
+
+      // Dynamically import markitdown-js (loaded at runtime via serverExternalPackages)
+      const { default: MarkItDown } = await import('markitdown-js');
+      const md = new MarkItDown();
+
+      const result = await md.convert(tempFilePath, {
+        fileExtension: fileExt || undefined,
+      });
+
+      extractedText = result?.textContent || '';
+      console.log(`[CV Upload] markitdown-js extracted ${extractedText.length} chars from ${file.name}`);
     } catch (conversionError) {
-      console.error('[CV Upload] text extraction failed:', conversionError);
+      console.error('[CV Upload] markitdown-js extraction failed:', conversionError);
       extractedText = '';
+    } finally {
+      // Always clean up the temp file
+      if (tempFilePath) {
+        try {
+          await unlink(tempFilePath);
+        } catch (cleanupErr) {
+          console.warn('[CV Upload] Failed to clean up temp file:', cleanupErr);
+        }
+        tempFilePath = null;
+      }
     }
 
     // Update candidate onboarding status
@@ -114,5 +142,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[POST /api/candidates/upload-cv]', error);
     return NextResponse.json({ error: 'Failed to upload CV' }, { status: 500 });
+  } finally {
+    // Safety net: clean up if still exists
+    if (tempFilePath) {
+      try {
+        await unlink(tempFilePath);
+      } catch {
+        // already cleaned up or never created
+      }
+    }
   }
 }
