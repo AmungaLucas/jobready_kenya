@@ -609,6 +609,12 @@ enum MatchVerdict {
   NOT_RECOMMENDED
 }
 
+enum AlertFrequency {
+  INSTANT
+  DAILY
+  WEEKLY
+}
+
 enum RecommendationType {
   PRIMARY_MATCH
   INTEREST_MATCH
@@ -791,6 +797,7 @@ model Candidate {
   applications        JobApplication[]
   jobViews            JobView[]
   applicationFunnels  ApplicationFunnel[]
+  alerts             JobAlert[]           @relation("CandidateAlerts")
 
   @@map("candidates")
 }
@@ -1338,4 +1345,26 @@ model SystemSetting {
   updatedAt   DateTime @updatedAt
 
   @@map("system_settings")
+}
+
+// ============================================
+// 🔔 JOB ALERTS
+// ============================================
+
+model JobAlert {
+  id               String          @id @default(cuid())
+  candidateId      String
+  name             String
+  keywords         String?
+  locationSlugs    Json?
+  categorySlug     String?
+  frequency        AlertFrequency  @default(DAILY)
+  isActive         Boolean         @default(true)
+  lastTriggeredAt  DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  candidate        Candidate       @relation("CandidateAlerts", fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("job_alerts")
 }

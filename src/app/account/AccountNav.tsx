@@ -11,6 +11,7 @@ import {
   FileUp,
   Send,
   Bookmark,
+  Bell,
   Settings,
   Loader2,
 } from 'lucide-react';
@@ -22,6 +23,7 @@ const navItems = [
   { href: '/account/cv-upload', label: 'CV Upload', icon: FileUp },
   { href: '/account/applications', label: 'Applications', icon: Send },
   { href: '/account/saved', label: 'Saved Jobs', icon: Bookmark },
+  { href: '/account/alerts', label: 'Alerts', icon: Bell },
   { href: '/account/preferences', label: 'Preferences', icon: Settings },
 ];
 
