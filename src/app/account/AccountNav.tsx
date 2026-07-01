@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { useMatches, useApplications, useSavedJobs } from '@/lib/use-dashboard-data';
 import {
   LayoutDashboard,
@@ -33,6 +34,24 @@ export default function AccountNav() {
   const { matches } = useMatches();
   const { apps } = useApplications();
   const { jobs: savedJobs } = useSavedJobs();
+  const [completionScore, setCompletionScore] = useState(0);
+
+  // Fetch profile completion score from the API
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    fetch('/api/candidates/me')
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error('Not authenticated');
+      })
+      .then((data) => {
+        const candidate = data.candidate || data;
+        setCompletionScore(candidate.profile?.profileCompletionScore ?? 0);
+      })
+      .catch(() => {
+        // Keep default 0 if fetch fails
+      });
+  }, [status]);
 
   const unreadCount = matches.filter((m) => !m.isRead && m.verdict !== 'NOT_RECOMMENDED').length;
 
@@ -48,8 +67,7 @@ export default function AccountNav() {
     ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
     : displayName.slice(0, 2).toUpperCase();
 
-  // Profile completion — compute from real data if available
-  const completionScore = 0; // Will be updated via profile fetch below
+  // Profile completion — fetched from API above
 
   function isActive(href: string) {
     if (href === '/account') return pathname === '/account';

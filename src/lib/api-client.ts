@@ -68,10 +68,9 @@ async function apiFetch<T>(
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        'x-candidate-id': candidateId,
         ...options.headers,
       },
-    });
+      });
     if (!res.ok) {
       console.warn(`[apiFetch] ${path} returned ${res.status}`);
       return null;
@@ -199,7 +198,6 @@ export async function patchMatch(
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'x-candidate-id': candidateId,
       },
       body: JSON.stringify(data),
     });
@@ -220,7 +218,6 @@ export async function updatePreferences(
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'x-candidate-id': candidateId,
       },
       body: JSON.stringify(data),
     });
@@ -243,9 +240,6 @@ export async function uploadCV(
 
     const res = await fetch('/api/candidates/upload-cv', {
       method: 'POST',
-      headers: {
-        'x-candidate-id': candidateId,
-      },
       body: formData,
     });
     if (!res.ok) return null;

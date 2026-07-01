@@ -9,7 +9,8 @@ import { Mail, Lock, User, Loader2, Eye, EyeOff, Briefcase, Check } from 'lucide
 export default function RegisterPage() {
   const router = useRouter();
 
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,7 +29,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password || !confirmPassword) {
       setError('Please fill in all fields');
       return;
     }
@@ -50,7 +51,8 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fullName: fullName.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email: email.trim().toLowerCase(),
           password,
         }),
@@ -117,20 +119,40 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Full Name */}
+            {/* First Name */}
             <div className="space-y-1.5">
-              <label htmlFor="fullName" className="block text-sm font-medium text-[#3d3d3d]">
-                Full name
+              <label htmlFor="firstName" className="block text-sm font-medium text-[#3d3d3d]">
+                First name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999]" />
                 <input
-                  id="fullName"
+                  id="firstName"
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. John Kamau"
-                  autoComplete="name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="e.g. John"
+                  autoComplete="given-name"
+                  required
+                  className="w-full pl-10 pr-4 py-2.5 border border-[#d0cdc7] rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0b7e4a]/20 focus:border-[#0b7e4a] transition placeholder:text-[#bbb]"
+                />
+              </div>
+            </div>
+
+            {/* Last Name */}
+            <div className="space-y-1.5">
+              <label htmlFor="lastName" className="block text-sm font-medium text-[#3d3d3d]">
+                Last name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999]" />
+                <input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="e.g. Kamau"
+                  autoComplete="family-name"
                   required
                   className="w-full pl-10 pr-4 py-2.5 border border-[#d0cdc7] rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0b7e4a]/20 focus:border-[#0b7e4a] transition placeholder:text-[#bbb]"
                 />
