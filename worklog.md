@@ -670,7 +670,40 @@ Stage Summary:
 - Onboarding wizard already had full 4-step navigation — added first-login redirect from dashboard overview
 - In-app apply flow was already built in SmartApplyButton — fixed the runtime crash from wrong Prisma model name
 - Mobile responsiveness improved for filter chips, profile form grids, and dashboard layout
-- All changes pass lint (zero new errors)
+---
+Task ID: phase-c
+Agent: Main Agent
+Task: Phase C - Schema enhancements, tracking APIs, security hardening
+
+Work Log:
+- C1: Added /forgot-password and /reset-password to robots.ts disallow list
+- C2: Added HSTS preload to Strict-Transport-Security header
+- C2: Added images.unsplash.com to CSP connect-src
+- C3: Added rawDescription (String?) + extractionStatus (JobExtractionStatus) to Job model
+- C4: Renamed Job.jobSubcategoryLinks relation field to jobSubcategories (kept @@map("job_subcategory_links"))
+- C4: Updated matching/engine.ts to use new field name
+- C5: Added API value to JobSource enum
+- C6: Created Company model (id, userId, name, slug, logoUrl, website, description, industry, size, location, isVerified, isActive)
+- C6: Added User.company reverse relation
+- C7: Built GET/POST /api/candidates/me/search-history (5-min dedup, Zod v4 validation)
+- C8: Built POST /api/jobs/[id]/view (anonymous-aware, ViewSource enum)
+- C9: Created TrackJobView component, wired into /jobs/[slug]/page.tsx
+- C10: Built POST /api/jobs/[id]/funnel (upsert with @@unique([jobId, candidateId]))
+- C10: Added indexes to ApplicationFunnel and JobView models
+- C11: Wired CLICKED_APPLY, STARTED_APPLICATION, SUBMITTED funnel tracking into SmartApplyButton
+- C12: Built GET/PATCH /api/candidates/me/interests (full replace with transaction)
+- Updated proxy.ts: exempted /api/jobs/ from candidate auth guard, exempted /api/cron/ from rate limiting
+- Resolved git rebase conflict (remote had JobAlert model, kept both)
+- Build: clean, zero errors, all new routes visible
+- Pushed commit 3578a7d to main
+
+Stage Summary:
+- Schema: +2 Job fields (rawDescription, extractionStatus), +1 enum value (API), +1 model (Company), +3 indexes
+- 4 new API endpoints: search-history, job view, funnel, interests
+- 2 new tracking components: TrackJobView, TrackFunnelStep
+- 3 funnel stages tracked: CLICKED_APPLY, STARTED_APPLICATION, SUBMITTED
+- Security: HSTS preload, CSP connect-src, cron rate limit exemption, auth path fixes
+- Note: prisma db push needs valid credentials on production server to create new tables/columns
 
 ---
 Task ID: 1H+1J
