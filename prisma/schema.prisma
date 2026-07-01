@@ -619,6 +619,43 @@ enum AlertFrequency {
   WEEKLY
 }
 
+// ============================================
+// 💳 PAYMENT & SUBSCRIPTION ENUMS
+// ============================================
+
+enum PaymentProvider {
+  MPESA
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUNDED
+}
+
+enum PaymentItemType {
+  SUBSCRIPTION
+  PRIORITY_APPLICATION
+  CV_REVIEW
+  FEATURED_JOB
+}
+
+enum SubscriptionTier {
+  FREE
+  BASIC_PREMIUM
+  PRO_PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PAST_DUE
+}
+
 enum RecommendationType {
   PRIMARY_MATCH
   INTEREST_MATCH
@@ -805,6 +842,9 @@ model Candidate {
   jobViews            JobView[]
   applicationFunnels  ApplicationFunnel[]
   alerts             JobAlert[]           @relation("CandidateAlerts")
+  payments            Payment[]
+  subscription        Subscription?
+  premiumPurchases    PremiumPurchase[]
 
   @@map("candidates")
 }
@@ -1407,4 +1447,90 @@ model Company {
   @@index([isActive])
   @@index([industry])
   @@map("companies")
+}
+
+// ============================================
+// 💳 PAYMENTS
+// ============================================
+
+model Payment {
+  id                String          @id @default(cuid())
+  candidateId       String
+  provider          PaymentProvider @default(MPESA)
+  providerTxId      String?         // M-Pesa MpesaReceiptNumber
+  phoneNumber       String?         // M-Pesa phone number (254...)
+  amount            Int             // Amount in KES (smallest unit not needed — whole shillings)
+  currency          String          @default("KES")
+  status            PaymentStatus   @default(PENDING)
+  itemType          PaymentItemType
+  referenceId       String?         // Links to subscription/purchase ID
+  description       String?         // Human-readable description
+  mpesaCheckoutId   String?         // M-Pesa CheckoutRequestID for polling
+  mpesaCallbackRaw  String?         // Full raw callback JSON for audit
+  failureReason     String?         // Why it failed
+  expiresAt         DateTime?       // STK Push expiry (10 min)
+  completedAt       DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([status])
+  @@index([providerTxId])
+  @@index([mpesaCheckoutId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ============================================
+// 📅 SUBSCRIPTIONS
+// ============================================
+
+model Subscription {
+  id            String             @id @default(cuid())
+  candidateId   String             @unique  // One active subscription per candidate
+  tier          SubscriptionTier   @default(FREE)
+  status        SubscriptionStatus @default(ACTIVE)
+  amount        Int                // Monthly price in KES
+  startsAt      DateTime           @default(now())
+  expiresAt     DateTime?
+  cancelledAt   DateTime?
+  autoRenew     Boolean            @default(true)
+  paymentId     String?            // Last successful payment
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([expiresAt])
+  @@index([tier])
+  @@map("subscriptions")
+}
+
+// ============================================
+// 🛍️ PREMIUM PURCHASES (one-time: priority app, CV review)
+// ============================================
+
+model PremiumPurchase {
+  id            String           @id @default(cuid())
+  candidateId   String
+  itemType      PaymentItemType  // PRIORITY_APPLICATION, CV_REVIEW, FEATURED_JOB
+  jobId         String?          // For priority applications
+  amount        Int              // Price in KES
+  status        PaymentStatus    @default(PENDING)
+  paymentId     String?          // Linked payment
+  usedAt        DateTime?        // When the purchase was consumed
+  expiresAt     DateTime?        // If unused, when it expires
+  metadata      String?          // JSON string for extra data (CV review result, etc.)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([itemType])
+  @@index([status])
+  @@map("premium_purchases")
 }

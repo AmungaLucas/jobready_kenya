@@ -15,6 +15,7 @@ import {
   Bell,
   Settings,
   Loader2,
+  Crown,
 } from 'lucide-react';
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
   { href: '/account/applications', label: 'Applications', icon: Send },
   { href: '/account/saved', label: 'Saved Jobs', icon: Bookmark },
   { href: '/account/alerts', label: 'Alerts', icon: Bell },
+  { href: '/account/subscription', label: 'Subscription', icon: Crown },
   { href: '/account/preferences', label: 'Preferences', icon: Settings },
 ];
 

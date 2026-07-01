@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
   // ─── Execute matching ─────────────────────────────────────────
   let candidatesProcessed = 0;
   let jobsProcessed = 0;
+  let subscriptionsExpired = 0;
   const errors: string[] = [];
 
   // Process candidates
@@ -110,10 +111,30 @@ export async function POST(request: NextRequest) {
     console.error(`[cron/match] ${msg}`);
   }
 
+  // ─── Expire past-due subscriptions ───────────────────────────
+  try {
+    const expired = await prisma.subscription.updateMany({
+      where: {
+        status: 'ACTIVE',
+        expiresAt: { lt: new Date() },
+      },
+      data: { status: 'EXPIRED' },
+    });
+    subscriptionsExpired = expired.count;
+    if (subscriptionsExpired > 0) {
+      console.log(`[cron/match] Expired ${subscriptionsExpired} subscriptions`);
+    }
+  } catch (err) {
+    const msg = `Subscription expiry: ${err instanceof Error ? err.message : "unknown error"}`;
+    errors.push(msg);
+    console.error(`[cron/match] ${msg}`);
+  }
+
   return NextResponse.json({
     status: "completed",
     candidatesProcessed,
     jobsProcessed,
+    subscriptionsExpired,
     errorCount: errors.length,
     errors: errors.length > 0 ? errors.slice(0, 10) : undefined,
     timestamp: new Date().toISOString(),
