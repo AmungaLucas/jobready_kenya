@@ -67,6 +67,19 @@ function checkRateLimit(
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // ─── 0. Handle CORS preflight (OPTIONS) immediately ─────────
+  if (pathname.startsWith('/api/') && request.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://jobboard.ke',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    });
+  }
+
   // ─── 1. Auth protection for /account/* routes ────────────────
   if (pathname.startsWith('/account')) {
     const sessionCookie =
@@ -113,7 +126,7 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // ─── 4. CORS headers for API routes ─────────────────────────
+  // ─── 4. Add CORS headers to API responses ───────────────────
   if (pathname.startsWith('/api/')) {
     const response = NextResponse.next();
     response.headers.set('Access-Control-Allow-Origin', 'https://jobboard.ke');
