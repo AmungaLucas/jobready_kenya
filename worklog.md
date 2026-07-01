@@ -698,3 +698,35 @@ Stage Summary:
 - Markitdown CV extraction will work at runtime (package installed)
 - Job alerts: candidates can create multiple alert rules with keyword/location/category/frequency filters
 - All 41 Prisma models in schema (added JobAlert as 41st)
+
+---
+Task ID: validation
+Agent: Main Agent
+Task: Full step-by-step validation of all Phase 1A-1K deliverables
+
+Work Log:
+- Phase 1A: Schema validated — 41 models, 37 enums, all 26 required models present, prisma validate passes
+- Phase 1B: Layout validated — AccountNav renders 8 nav items in both sidebar and mobile nav
+- Phase 1C: Overview validated — real API hooks, profile completion ring, onboarding redirect on STARTED
+- Phase 1D: Onboarding validated — 4 step functions (Step1Personal..Step4Preferences), 16 step-navigation references
+- Phase 1E: Profile validated — editing state, add/removeWorkExperience/Education/Skill, Trash2 buttons, PUT /api/candidates/me
+- Phase 1F: Matches validated — verdict filter badges, score bars, MatchingCard component
+- Phase 1G: Saved+Applications validated — removeJob with optimistic update, status badges
+- Phase 1H: Alerts validated — page (507 lines), GET/POST/PATCH/DELETE API routes, nav entry
+- Phase 1I: API routes validated — 12 route files, all HTTP methods present except saved DELETE (by design — uses matches toggle)
+- Phase 1J: CV extraction validated and FIXED:
+  - BUG: `markitdown` v0.0.4 was a Python CLI, not a Node.js library
+  - BUG: `markitdown-js` had Next.js bundling failures (xlsx S3 imports, no default export)
+  - FIX: Replaced with `pdf-parse` (PDF) + `mammoth` (DOCX) — both serverless-compatible
+- Phase 1K: Build verified clean, committed fb65f3e, pushed to main
+
+Critical bugs found and fixed:
+1. /api/candidates/me GET included 5 non-existent Prisma relations (educations, primaryCategory, primarySubcategory, normalizedRole, organizationType, organizationIndustry) — these are plain String fields in the schema. Would crash at runtime.
+2. /api/candidates/me PUT referenced CandidateEducation model (doesn't exist) — should be CandidateQualification. Used wrong Prisma enum filter types. Would crash on profile save.
+3. upload-cv route used wrong package (Python markitdown) and then wrong API (buffer vs filepath). Replaced with pdf-parse + mammoth.
+
+Stage Summary:
+- All 11 phases validated
+- 3 critical runtime bugs found and fixed
+- Build clean, pushed to main (fb65f3e)
+- Remaining before production: run `prisma db push` on production MySQL to create job_alerts table
