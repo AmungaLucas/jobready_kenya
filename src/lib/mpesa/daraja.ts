@@ -84,6 +84,9 @@ export async function initiateSTKPush(req: STKPushRequest): Promise<STKPushResul
   const token = await getAccessToken();
   const shortcode = process.env.MPESA_SHORTCODE;
   const passkey = process.env.MPESA_PASSKEY;
+  const partyB = process.env.MPESA_PARTY_B || shortcode;
+  const transactionType = process.env.MPESA_TRANSACTION_TYPE || 'CustomerPayBillOnline';
+  const callbackUrl = process.env.MPESA_CALLBACK_URL || `${process.env.NEXTAUTH_URL || 'https://jobboard.ke'}/api/payments/callback`;
 
   if (!shortcode || !passkey) {
     throw new Error('MPESA_SHORTCODE and MPESA_PASSKEY must be set');
@@ -93,18 +96,23 @@ export async function initiateSTKPush(req: STKPushRequest): Promise<STKPushResul
   const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
   const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString('base64');
 
+  // AccountReference: max 13 chars (not 12 — Daraja allows 13)
+  // TransactionDesc: max 13 chars
+  const accountRef = req.reference.slice(0, 13) || 'JobReady';
+  const txDesc = req.description.slice(0, 13) || 'Payment';
+
   const body = {
     BusinessShortCode: shortcode,
     Password: password,
     Timestamp: timestamp,
-    TransactionType: 'CustomerPayBillOnline',
+    TransactionType: transactionType,
     Amount: req.amount,
     PartyA: req.phoneNumber,
-    PartyB: shortcode,
+    PartyB: partyB,
     PhoneNumber: req.phoneNumber,
-    CallBackURL: `${process.env.NEXTAUTH_URL || 'https://jobboard.ke'}/api/payments/callback`,
-    AccountReference: req.reference.slice(0, 12), // Max 12 chars
-    TransactionDesc: req.description.slice(0, 13), // Max 13 chars
+    CallBackURL: callbackUrl,
+    AccountReference: accountRef,
+    TransactionDesc: txDesc,
   };
 
   const res = await fetch(`${getBaseUrl()}/mpesa/stkpush/v1/processrequest`, {

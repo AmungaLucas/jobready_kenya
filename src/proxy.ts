@@ -95,7 +95,7 @@ export function proxy(request: NextRequest) {
 
   // ─── 2. Auth protection for candidate API routes ────────────
   // Skip auth-optional routes (view/funnel tracking handles auth internally)
-  const authOptionalPaths = ['/api/jobs/', '/api/taxonomy', '/api/locations', '/api/cron/', '/api/payments/callback'];
+  const authOptionalPaths = ['/api/jobs/', '/api/taxonomy', '/api/locations', '/api/cron/', '/api/payments/callback', '/api/v1/webhooks/'];
   const isAuthOptional = authOptionalPaths.some(p => pathname.startsWith(p));
 
   if (pathname.startsWith('/api/candidates/') && !isAuthOptional) {
@@ -113,7 +113,7 @@ export function proxy(request: NextRequest) {
 
   // ─── 3. Rate limiting for API routes ─────────────────────────
   // Skip rate limiting for internal/cron endpoints
-  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/cron/') && !pathname.startsWith('/api/payments/callback')) {
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/cron/') && !pathname.startsWith('/api/payments/callback') && !pathname.startsWith('/api/v1/webhooks/')) {
     const ip = getIp(request);
     const { allowed, retryAfter } = checkRateLimit(ip, pathname);
 
