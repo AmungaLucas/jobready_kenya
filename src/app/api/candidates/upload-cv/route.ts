@@ -6,19 +6,19 @@ import { extractCandidateProfile } from '@/lib/extraction/candidate-extractor';
 /**
  * POST /api/candidates/upload-cv
  *
- * Accepts a CV file (multipart/form-data), extracts text using markitdown,
- * then triggers AI-based profile extraction synchronously.
+ * Accepts a CV file (multipart/form-data), extracts text using
+ * pdf-parse (PDF) or mammoth (DOCX), then triggers AI-based
+ * profile extraction synchronously.
  *
  * Expected form fields:
  *   - file: the CV file (PDF, DOCX, DOC)
  *
  * Flow:
  *   1. Validate file type and size (max 5MB)
- *   2. Extract text using markitdown
+ *   2. Extract text using appropriate parser
  *   3. Update candidate onboardingStatus to CV_UPLOADED
  *   4. Trigger AI profile extraction (skills, quals, experience, etc.)
- *   5. Trigger job matching
- *   6. Return success with extraction stats
+ *   5. Return success with extraction stats
  */
 export async function POST(request: NextRequest) {
   try {
@@ -57,16 +57,24 @@ export async function POST(request: NextRequest) {
 
     // TODO: In production, upload file to S3/Vercel Blob and store the URL
 
-    // Extract text using markitdown
+    // Extract text from CV
     let extractedText = '';
+    const buffer = Buffer.from(await file.arrayBuffer());
+
     try {
-      const { MarkItDown } = await import('markitdown');
-      const md = new MarkItDown();
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const result = await md.convert(buffer);
-      extractedText = result.text_content;
+      if (file.type === 'application/pdf') {
+        // Use pdf-parse for PDF files
+        const pdfParse = (await import('pdf-parse')).default;
+        const data = await pdfParse(buffer);
+        extractedText = data.text || '';
+      } else {
+        // Use mammoth for DOCX/DOC files
+        const mammoth = await import('mammoth');
+        const result = await mammoth.extractRawText({ buffer });
+        extractedText = result.value || '';
+      }
     } catch (conversionError) {
-      console.error('[CV Upload] markitdown conversion failed:', conversionError);
+      console.error('[CV Upload] text extraction failed:', conversionError);
       extractedText = '';
     }
 

@@ -21,47 +21,24 @@ export async function GET() {
     const candidate = await prisma.candidate.findUnique({
       where: { userId },
       include: {
-        profile: {
-          include: {
-            primaryCategory: true,
-            primarySubcategory: true,
-          },
-        },
+        profile: true,
         preferences: true,
         skills: {
-          include: {
-            skill: true,
-          },
+          include: { skill: true },
         },
-        educations: true,
+        qualifications: true,
         workExperiences: {
-          include: {
-            normalizedRole: true,
-            organizationType: true,
-            organizationIndustry: true,
-          },
           orderBy: { startDate: "desc" },
         },
         certifications: {
-          include: {
-            certification: true,
-          },
+          include: { certification: true },
         },
         interests: {
-          include: {
-            category: true,
-          },
+          include: { category: true },
           orderBy: { interestRank: "asc" },
         },
         tools: {
-          include: {
-            tool: true,
-          },
-        },
-        qualifications: {
-          include: {
-            qualification: true,
-          },
+          include: { tool: true },
         },
       },
     });
@@ -107,7 +84,7 @@ export async function PUT(request: NextRequest) {
         profile: true,
         preferences: true,
         workExperiences: true,
-        educations: true,
+        qualifications: true,
         skills: true,
       },
     });
@@ -143,23 +120,23 @@ export async function PUT(request: NextRequest) {
       const updated = await tx.candidate.update({
         where: { userId },
         data: {
-          ...(firstName !== undefined && { firstName }),
-          ...(lastName !== undefined && { lastName }),
-          ...(phone !== undefined && { phone }),
-          ...(locationCounty !== undefined && { locationCounty }),
+          ...(firstName !== undefined && { firstName: firstName as string }),
+          ...(lastName !== undefined && { lastName: lastName as string }),
+          ...(phone !== undefined && { phone: phone as string }),
+          ...(locationCounty !== undefined && { locationCounty: locationCounty as string }),
         },
         include: {
           profile: true,
           preferences: true,
           workExperiences: true,
-          educations: true,
+          qualifications: true,
           skills: { include: { skill: true } },
         },
       });
 
       // ── 2. Upsert profile if profile data is provided ──
       if (profileData && Object.keys(profileData).length > 0) {
-        const profileId = existingCandidate.profile?.id;
+        const profileId = existingCandidate.profile?.candidateId;
         const {
           primaryCategoryId,
           primarySubcategoryId,
@@ -170,31 +147,23 @@ export async function PUT(request: NextRequest) {
 
         if (profileId) {
           await tx.candidateProfile.update({
-            where: { id: profileId },
+            where: { candidateId: profileId },
             data: {
-              ...(primaryCategoryId !== undefined && { primaryCategoryId }),
-              ...(primarySubcategoryId !== undefined && {
-                primarySubcategoryId,
-              }),
-              ...(totalExperienceYears !== undefined && {
-                totalExperienceYears,
-              }),
-              ...(seniorityLevel !== undefined && { seniorityLevel }),
-              ...(profileCompletionScore !== undefined && {
-                profileCompletionScore,
-              }),
+              ...(primaryCategoryId !== undefined && { primaryCategoryId: primaryCategoryId as string }),
+              ...(primarySubcategoryId !== undefined && { primarySubcategoryId: primarySubcategoryId as string }),
+              ...(totalExperienceYears !== undefined && { totalExperienceYears: parseFloat(totalExperienceYears as string) }),
+              ...(seniorityLevel !== undefined && { seniorityLevel: seniorityLevel as Prisma.ExperienceLevel }),
+              ...(profileCompletionScore !== undefined && { profileCompletionScore: parseInt(profileCompletionScore as string, 10) }),
             },
           });
         } else {
           await tx.candidateProfile.create({
             data: {
               candidateId: updated.id,
-              ...(primaryCategoryId && { primaryCategoryId }),
-              ...(primarySubcategoryId && { primarySubcategoryId }),
-              ...(totalExperienceYears !== undefined && {
-                totalExperienceYears,
-              }),
-              ...(seniorityLevel && { seniorityLevel }),
+              ...(primaryCategoryId && { primaryCategoryId: primaryCategoryId as string }),
+              ...(primarySubcategoryId && { primarySubcategoryId: primarySubcategoryId as string }),
+              ...(totalExperienceYears !== undefined && { totalExperienceYears: parseFloat(totalExperienceYears as string) }),
+              ...(seniorityLevel && { seniorityLevel: seniorityLevel as Prisma.ExperienceLevel }),
             },
           });
         }
@@ -203,7 +172,7 @@ export async function PUT(request: NextRequest) {
       // ── 3. Upsert preferences if preference data is provided ──
       const prefData = body.preferences;
       if (prefData) {
-        const prefId = existingCandidate.preferences?.id;
+        const prefId = existingCandidate.preferences?.candidateId;
         const {
           preferredLocations,
           preferredJobTypes,
@@ -218,40 +187,32 @@ export async function PUT(request: NextRequest) {
 
         if (prefId) {
           await tx.candidatePreferences.update({
-            where: { id: prefId },
+            where: { candidateId: prefId },
             data: {
-              ...(preferredLocations !== undefined && {
-                preferredLocations: JSON.stringify(preferredLocations),
-              }),
-              ...(preferredJobTypes !== undefined && {
-                preferredJobTypes: JSON.stringify(preferredJobTypes),
-              }),
-              ...(remotePreference !== undefined && { remotePreference }),
-              ...(expectedSalaryMin !== undefined && { expectedSalaryMin }),
-              ...(expectedSalaryMax !== undefined && { expectedSalaryMax }),
-              ...(salaryCurrency !== undefined && { salaryCurrency }),
-              ...(availabilityStatus !== undefined && { availabilityStatus }),
-              ...(noticePeriodDays !== undefined && { noticePeriodDays }),
-              ...(willingToRelocate !== undefined && { willingToRelocate }),
+              ...(preferredLocations !== undefined && { preferredLocations: preferredLocations as Prisma.InputJsonValue }),
+              ...(preferredJobTypes !== undefined && { preferredJobTypes: preferredJobTypes as Prisma.InputJsonValue }),
+              ...(remotePreference !== undefined && { remotePreference: remotePreference as Prisma.RemotePreference }),
+              ...(expectedSalaryMin !== undefined && { expectedSalaryMin: parseFloat(expectedSalaryMin as string) }),
+              ...(expectedSalaryMax !== undefined && { expectedSalaryMax: parseFloat(expectedSalaryMax as string) }),
+              ...(salaryCurrency !== undefined && { salaryCurrency: salaryCurrency as string }),
+              ...(availabilityStatus !== undefined && { availabilityStatus: availabilityStatus as Prisma.AvailabilityStatus }),
+              ...(noticePeriodDays !== undefined && { noticePeriodDays: parseInt(noticePeriodDays as string, 10) }),
+              ...(willingToRelocate !== undefined && { willingToRelocate: willingToRelocate as boolean }),
             },
           });
         } else {
           await tx.candidatePreferences.create({
             data: {
               candidateId: updated.id,
-              ...(preferredLocations && {
-                preferredLocations: JSON.stringify(preferredLocations),
-              }),
-              ...(preferredJobTypes && {
-                preferredJobTypes: JSON.stringify(preferredJobTypes),
-              }),
-              ...(remotePreference && { remotePreference }),
-              ...(expectedSalaryMin !== undefined && { expectedSalaryMin }),
-              ...(expectedSalaryMax !== undefined && { expectedSalaryMax }),
-              ...(salaryCurrency && { salaryCurrency }),
-              ...(availabilityStatus && { availabilityStatus }),
-              ...(noticePeriodDays !== undefined && { noticePeriodDays }),
-              ...(willingToRelocate !== undefined && { willingToRelocate }),
+              ...(preferredLocations && { preferredLocations: preferredLocations as Prisma.InputJsonValue }),
+              ...(preferredJobTypes && { preferredJobTypes: preferredJobTypes as Prisma.InputJsonValue }),
+              ...(remotePreference && { remotePreference: remotePreference as Prisma.RemotePreference }),
+              ...(expectedSalaryMin !== undefined && { expectedSalaryMin: parseFloat(expectedSalaryMin as string) }),
+              ...(expectedSalaryMax !== undefined && { expectedSalaryMax: parseFloat(expectedSalaryMax as string) }),
+              ...(salaryCurrency && { salaryCurrency: salaryCurrency as string }),
+              ...(availabilityStatus && { availabilityStatus: availabilityStatus as Prisma.AvailabilityStatus }),
+              ...(noticePeriodDays !== undefined && { noticePeriodDays: parseInt(noticePeriodDays as string, 10) }),
+              ...(willingToRelocate !== undefined && { willingToRelocate: willingToRelocate as boolean }),
             },
           });
         }
@@ -274,59 +235,73 @@ export async function PUT(request: NextRequest) {
 
         // Upsert each record
         for (const we of workExperiencesData) {
-          const weData: Prisma.CandidateWorkExperienceCreateInput = {
-            employerName: (we.employerName as string) || null,
-            roleTitle: (we.roleTitle as string) || null,
-            startDate: we.startDate ? new Date(we.startDate as string) : null,
-            endDate: we.endDate ? new Date(we.endDate as string) : null,
-            isCurrent: (we.isCurrent as boolean) ?? false,
-            description: (we.description as string) || null,
-            candidate: { connect: { id: updated.id } },
-          };
+          const startDate = we.startDate ? new Date(we.startDate as string) : null;
+          const endDate = we.endDate ? new Date(we.endDate as string) : null;
 
           if (we.id) {
             await tx.candidateWorkExperience.update({
               where: { id: we.id as string },
-              data: weData,
+              data: {
+                employerName: (we.employerName as string) || null,
+                roleTitle: (we.roleTitle as string) || null,
+                startDate,
+                endDate,
+                isCurrent: (we.isCurrent as boolean) ?? false,
+                description: (we.description as string) || null,
+              },
             });
           } else {
-            await tx.candidateWorkExperience.create({ data: weData });
+            await tx.candidateWorkExperience.create({
+              data: {
+                candidateId: updated.id,
+                employerName: (we.employerName as string) || null,
+                roleTitle: (we.roleTitle as string) || null,
+                startDate,
+                endDate,
+                isCurrent: (we.isCurrent as boolean) ?? false,
+                description: (we.description as string) || null,
+              },
+            });
           }
         }
       }
 
-      // ── 5. Handle educations ──
+      // ── 5. Handle qualifications (education) ──
       if (educationsData) {
         const incomingIds = educationsData
           .filter((e) => e.id)
           .map((e) => e.id as string);
-        const existingIds = existingCandidate.educations.map((e) => e.id);
+        const existingIds = existingCandidate.qualifications.map((q) => q.id);
 
         const idsToDelete = existingIds.filter((id) => !incomingIds.includes(id));
         if (idsToDelete.length > 0) {
-          await tx.candidateEducation.deleteMany({
+          await tx.candidateQualification.deleteMany({
             where: { id: { in: idsToDelete } },
           });
         }
 
         for (const edu of educationsData) {
-          const eduData: Prisma.CandidateEducationCreateInput = {
+          const qualData = {
             institution: (edu.institution as string) || null,
             fieldOfStudy: (edu.fieldOfStudy as string) || null,
-            level: edu.level ? (edu.level as Prisma.EnumQualificationLevelFilter["equals"]) : null,
-            status: edu.status ? (edu.status as Prisma.EnumQualificationStatusFilter["equals"]) : "COMPLETED",
+            level: edu.level ? (edu.level as Prisma.QualificationLevel) : null,
+            status: (edu.status as string) || "COMPLETED",
             startYear: edu.startYear ? parseInt(edu.startYear as string, 10) : null,
             endYear: edu.endYear ? parseInt(edu.endYear as string, 10) : null,
-            candidate: { connect: { id: updated.id } },
           };
 
           if (edu.id) {
-            await tx.candidateEducation.update({
+            await tx.candidateQualification.update({
               where: { id: edu.id as string },
-              data: eduData,
+              data: qualData,
             });
           } else {
-            await tx.candidateEducation.create({ data: eduData });
+            await tx.candidateQualification.create({
+              data: {
+                candidateId: updated.id,
+                ...qualData,
+              },
+            });
           }
         }
       }
@@ -340,7 +315,7 @@ export async function PUT(request: NextRequest) {
           });
         }
 
-        // Update existing skills' proficiency
+        // Update existing skills' proficiency or create new ones
         if (skillsData) {
           for (const sk of skillsData) {
             if (sk.id) {
@@ -348,7 +323,7 @@ export async function PUT(request: NextRequest) {
                 where: { id: sk.id as string },
                 data: {
                   ...(sk.proficiency !== undefined && {
-                    proficiency: sk.proficiency as Prisma.EnumProficiencyLevelFilter["equals"],
+                    proficiency: sk.proficiency as Prisma.Proficiency,
                   }),
                   ...(sk.yearsExperience !== undefined && {
                     yearsExperience: parseFloat(sk.yearsExperience as string),
@@ -375,7 +350,7 @@ export async function PUT(request: NextRequest) {
                     skillId: taxonomySkill.id,
                     rawText: sk.name as string,
                     proficiency: sk.proficiency
-                      ? (sk.proficiency as Prisma.EnumProficiencyLevelFilter["equals"])
+                      ? (sk.proficiency as Prisma.Proficiency)
                       : null,
                     yearsExperience: sk.yearsExperience
                       ? parseFloat(sk.yearsExperience as string)
@@ -384,7 +359,6 @@ export async function PUT(request: NextRequest) {
                   },
                 });
               }
-              // If no taxonomy match found, silently skip
             }
           }
         }
@@ -397,22 +371,16 @@ export async function PUT(request: NextRequest) {
     const updatedCandidate = await prisma.candidate.findUnique({
       where: { userId },
       include: {
-        profile: { include: { primaryCategory: true, primarySubcategory: true } },
+        profile: true,
         preferences: true,
         skills: { include: { skill: true } },
-        educations: true,
+        qualifications: true,
         workExperiences: {
-          include: {
-            normalizedRole: true,
-            organizationType: true,
-            organizationIndustry: true,
-          },
           orderBy: { startDate: "desc" },
         },
         certifications: { include: { certification: true } },
         interests: { include: { category: true }, orderBy: { interestRank: "asc" } },
         tools: { include: { tool: true } },
-        qualifications: { include: { qualification: true } },
       },
     });
 
