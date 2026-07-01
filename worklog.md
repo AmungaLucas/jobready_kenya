@@ -757,3 +757,25 @@ Stage Summary:
 - Subscription page with real-time M-Pesa polling
 - Env vars needed: MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, MPESA_PASSKEY, MPESA_SHORTCODE, MPESA_IS_SANDBOX
 - DB push needed: `npx prisma db push` with valid MySQL credentials
+
+
+---
+Task ID: Phase 3-A
+Agent: Main Agent
+Task: Wire M-Pesa Daraja production credentials and webhook endpoint
+
+Work Log:
+- Stored M-Pesa Daraja production credentials in .env.local (gitignored): Consumer Key, Secret, Passkey, Shortcode (5511376), PartyB (9393975), TransactionType (CustomerPayBillOnline), Callback URL
+- Updated daraja.ts: PartyB now uses MPESA_PARTY_B env var (9393975, different from shortcode), TransactionType from MPESA_TRANSACTION_TYPE, CallbackURL from MPESA_CALLBACK_URL, fixed AccountReference max to 13 chars
+- Created /api/v1/webhooks/mpesa/stk/route.ts — the Daraja-registered STK Push callback endpoint (https://api.jobready.co.ke/api/v1/webhooks/mpesa/stk) with full payment processing logic: subscription activation, premium purchase activation, idempotent reprocessing guard, proper error logging
+- Exempted /api/v1/webhooks/ from auth guard and rate limiting in proxy.ts
+- Added api.safaricom.co.ke to CSP connect-src in next.config.ts
+- Build verified clean, pushed to GitHub (c3f0e5a)
+
+Stage Summary:
+- M-Pesa Daraja production is now fully wired with the user-provided credentials
+- The payment flow is: user triggers STK Push → Daraja calls /api/v1/webhooks/mpesa/stk → callback processes payment → subscription/purchase activated
+- Existing payment layer (initiate, callback at /api/payments/callback, status polling, subscription page, premium access checks) was already built in prior session
+- .env.local must be copied to production server manually (gitignored)
+- DB schema for payments/subscriptions/purchases already exists in schema.prisma — user needs to run prisma db push on production
+
