@@ -1,6 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerCandidateId } from '@/lib/get-server-candidate';
+import { explainAndSaveMatch } from '@/lib/matching/explanation';
+
+/**
+ * GET /api/candidates/me/matches/[id]
+ *
+ * Get a single match detail with AI-generated explanation.
+ * The explanation is generated on first view and cached.
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const candidateId = await getServerCandidateId(request);
+    if (!candidateId) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    const match = await prisma.candidateJobScore.findUnique({
+      where: { id },
+      include: {
+        job: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            locationCounty: true,
+            isRemote: true,
+            organization: {
+              select: { orgName: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!match || match.candidateId !== candidateId) {
+      return NextResponse.json({ error: 'Match not found' }, { status: 404 });
+    }
+
+    // Generate explanation on first view (cached in DB)
+    let explanation = match.explanation;
+    if (!explanation && match.verdict !== 'NOT_RECOMMENDED') {
+      try {
+        explanation = await explainAndSaveMatch(candidateId, match.jobId);
+      } catch {
+        // Non-critical — just skip explanation
+      }
+    }
+
+    return NextResponse.json({
+      ...match,
+      explanation,
+    });
+  } catch (error) {
+    console.error('[GET /api/candidates/me/matches/[id]]', error);
+    return NextResponse.json({ error: 'Failed to fetch match' }, { status: 500 });
+  }
+}
 
 /**
  * PATCH /api/candidates/me/matches/[id]

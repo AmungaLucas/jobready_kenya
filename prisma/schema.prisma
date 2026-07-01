@@ -123,6 +123,7 @@ enum JobSource {
   MANUAL
   SCRAPED
   IMPORTED
+  API
 }
 
 // ============================================
@@ -385,6 +386,8 @@ model Job {
   title           String
   slug            String   @unique
   description     String
+  rawDescription  String?
+  extractionStatus JobExtractionStatus @default(PENDING)
 
   seoTitle        String?
   seoDescription  String?
@@ -447,6 +450,7 @@ model Job {
   @@index([status, featured])
   @@index([deletedAt])
   @@index([jobSource])
+  @@index([extractionStatus])
 
   @@map("jobs")
 }
