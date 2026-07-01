@@ -671,3 +671,30 @@ Stage Summary:
 - In-app apply flow was already built in SmartApplyButton — fixed the runtime crash from wrong Prisma model name
 - Mobile responsiveness improved for filter chips, profile form grids, and dashboard layout
 - All changes pass lint (zero new errors)
+
+---
+Task ID: 1H+1J
+Agent: Main Agent
+Task: Complete remaining Phase 1 items — Alerts page (1H) + Markitdown install (1J)
+
+Work Log:
+- Installed markitdown package (npm install markitdown) — was referenced in upload-cv route via dynamic import but missing from package.json, causing runtime failures on CV upload
+- Added AlertFrequency enum (INSTANT, DAILY, WEEKLY) to prisma/schema.prisma
+- Added JobAlert model to prisma/schema.prisma (id, candidateId, name, keywords, locationSlugs, categorySlug, frequency, isActive, lastTriggeredAt, timestamps)
+- Added `alerts` relation to Candidate model with @relation("CandidateAlerts")
+- Created GET/POST /api/candidates/me/alerts — list all alerts, create new alert with validation
+- Created PATCH/DELETE /api/candidates/me/alerts/[id] — toggle active, update settings, delete with ownership check
+- Built /account/alerts/page.tsx — full alert management UI:
+  - Empty state with "How it works" explainer
+  - Create form with: name, keywords, location chips (10 popular counties), category dropdown (10 categories), frequency radio buttons
+  - Alert cards showing: name, active/paused badge, frequency badge, keywords, locations, category, creation date
+  - Toggle pause/resume and delete actions with optimistic updates
+- Added Alerts (Bell icon) to AccountNav.tsx sidebar + mobile nav (8 nav items total)
+- Build verified clean: 46 routes including /account/alerts, /api/candidates/me/alerts, /api/candidates/me/alerts/[id]
+- Committed 7ac706b, pushed to main
+
+Stage Summary:
+- Phase 1A-1K are now ALL COMPLETE
+- Markitdown CV extraction will work at runtime (package installed)
+- Job alerts: candidates can create multiple alert rules with keyword/location/category/frequency filters
+- All 41 Prisma models in schema (added JobAlert as 41st)
