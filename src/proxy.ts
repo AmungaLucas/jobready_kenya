@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// In-memory rate limiting per IP for API routes
+// ─── In-memory rate limiting per IP ─────────────────────────────
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
-const RATE_LIMIT = 100; // requests per window per IP
+const RATE_LIMIT = 100; // requests per window per IP (general API)
+const AUTH_RATE_LIMIT = 10; // 10 req/min for auth endpoints
+const UPLOAD_RATE_LIMIT = 5; // 5 req/min for upload endpoints
 const WINDOW_MS = 60 * 1000; // 1 minute window
 
 // Cleanup old entries every 10 minutes to prevent memory leaks
@@ -18,66 +20,128 @@ function cleanup() {
   }
 }
 
-// In demo mode, dashboard and API routes are accessible without auth.
-// Set to false once auth is fully functional.
-const DEMO_MODE = false;
+function getIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (typeof forwarded === 'string' && forwarded.trim()) {
+    return forwarded.split(',')[0].trim();
+  }
+  const realIp = request.headers.get('x-real-ip');
+  if (typeof realIp === 'string' && realIp.trim()) {
+    return realIp.trim();
+  }
+  return 'unknown';
+}
+
+function checkRateLimit(ip: string, pathname: string): { allowed: boolean; retryAfter: number } {
+  cleanup();
+
+  const now = Date.now();
+  let limit = RATE_LIMIT;
+
+  // Stricter limits for auth and upload routes
+  if (pathname.startsWith('/api/auth/register') || (pathname.startsWith('/api/auth/') && pathname !== '/api/auth/session')) {
+    limit = AUTH_RATE_LIMIT;
+  } else if (pathname.includes('upload-cv') || pathname.includes('extract-profile')) {
+    limit = UPLOAD_RATE_LIMIT;
+  }
+
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now - record.lastReset > WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, lastReset: now });
+    return { allowed: true, retryAfter: 0 };
+  }
+
+  if (record.count >= limit) {
+    const retryAfter = Math.ceil((record.lastReset + WINDOW_MS - now) / 1000);
+    return { allowed: false, retryAfter };
+  }
+
+  record.count++;
+  return { allowed: true, retryAfter: 0 };
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ─── Auth protection (disabled in demo mode) ──────────────────
-  if (!DEMO_MODE) {
-    const isAccountRoute = pathname.startsWith('/account');
-    const isCandidateApi = pathname.startsWith('/api/candidates/');
+  // ─── 0. Handle CORS preflight (OPTIONS) immediately ─────────
+  if (pathname.startsWith('/api/') && request.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://jobboard.ke',
+        'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    });
+  }
 
-    if (isAccountRoute || isCandidateApi) {
-      // Check for NextAuth session token cookie
-      // The session cookie name is typically "next-auth.session-token" (http) or
-      // "__Secure-next-auth.session-token" (https)
-      const sessionCookie =
-        request.cookies.get('next-auth.session-token') ??
-        request.cookies.get('__Secure-next-auth.session-token');
+  // ─── 1. Auth protection for /account/* and /admin/* routes ─────
+  if (pathname.startsWith('/account') || pathname.startsWith('/admin')) {
+    const sessionCookie =
+      request.cookies.get('next-auth.session-token') ??
+      request.cookies.get('__Secure-next-auth.session-token');
 
-      if (!sessionCookie) {
-        // For API routes, return 401 JSON
-        if (isCandidateApi) {
-          return NextResponse.json(
-            { error: 'Authentication required' },
-            { status: 401 }
-          );
-        }
-        // For /account pages, redirect to login
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+    if (!sessionCookie) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // ─── Rate limiting for API routes ─────────────────────────────
-  if (pathname.startsWith('/api/')) {
-    cleanup();
+  // ─── 2. Auth protection for candidate API routes ────────────
+  // Skip auth-optional routes (view/funnel tracking handles auth internally)
+  const authOptionalPaths = ['/api/jobs/', '/api/taxonomy', '/api/locations', '/api/cron/', '/api/payments/callback', '/api/v1/webhooks/'];
+  const isAuthOptional = authOptionalPaths.some(p => pathname.startsWith(p));
+  const isAdminRoute = pathname.startsWith('/api/admin/');
 
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : 'unknown';
-    const now = Date.now();
-    const record = rateLimitMap.get(ip);
+  if ((pathname.startsWith('/api/candidates/') && !isAuthOptional) || isAdminRoute) {
+    const sessionCookie =
+      request.cookies.get('next-auth.session-token') ??
+      request.cookies.get('__Secure-next-auth.session-token');
 
-    if (!record || now - record.lastReset > WINDOW_MS) {
-      rateLimitMap.set(ip, { count: 1, lastReset: now });
-    } else if (record.count >= RATE_LIMIT) {
-      return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), {
-        status: 429,
-        headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
-      });
-    } else {
-      record.count++;
+    if (!sessionCookie) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
     }
+  }
+
+  // ─── 3. Rate limiting for API routes ─────────────────────────
+  // Skip rate limiting for internal/webhook endpoints
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/cron/') && !pathname.startsWith('/api/payments/callback') && !pathname.startsWith('/api/v1/webhooks/')) {
+    const ip = getIp(request);
+    const { allowed, retryAfter } = checkRateLimit(ip, pathname);
+
+    if (!allowed) {
+      return new NextResponse(
+        JSON.stringify({ error: 'Too Many Requests' }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(retryAfter),
+          },
+        }
+      );
+    }
+  }
+
+  // ─── 4. Add CORS headers to API responses ───────────────────
+  if (pathname.startsWith('/api/')) {
+    const response = NextResponse.next();
+    response.headers.set('Access-Control-Allow-Origin', 'https://jobboard.ke');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.headers.set('Access-Control-Max-Age', '86400');
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/api/:path*', '/account/:path*'],
+  matcher: ['/', '/api/:path*', '/account/:path*', '/admin/:path*'],
 };
