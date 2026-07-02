@@ -93,7 +93,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ candidate }, { status: 201 });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("[REGISTER] Full error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : undefined;
+    console.error("[REGISTER] Message:", message);
+    console.error("[REGISTER] Stack:", stack);
     return NextResponse.json(
       { error: "Internal server error during registration" },
       { status: 500 }
