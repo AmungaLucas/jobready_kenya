@@ -756,7 +756,7 @@ model User {
   updatedAt   DateTime @updatedAt
 
   accounts  Account[]
-  candidates Candidate[]
+  candidate  Candidate?
   sessions  Session[]
   company   Company?
 
