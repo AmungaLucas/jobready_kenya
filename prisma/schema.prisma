@@ -396,9 +396,6 @@ model Job {
   sourceUrl       String?
   sourcePlatform  String?
 
-  rawDescription  String?
-  extractionStatus JobExtractionStatus @default(PENDING)
-
   searchText      String?
 
   experienceLevel ExperienceLevel?
