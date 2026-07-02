@@ -5,6 +5,7 @@ import CookieConsent from '@/components/jobboard/CookieConsent';
 import WhatsAppButton from '@/components/jobboard/WhatsAppButton';
 import { generateOrganizationJsonLd } from '@/lib/jsonld';
 import AuthProvider from '@/components/AuthProvider';
+import { Toaster } from '@/components/ui/sonner';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -139,6 +140,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans bg-[#faf9f6]">
         <AuthProvider>
+          <Toaster position="top-right" richColors closeButton />
           {children}
           <CookieConsent />
           <WhatsAppButton />

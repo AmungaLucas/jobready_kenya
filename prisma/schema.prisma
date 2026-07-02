@@ -396,6 +396,9 @@ model Job {
   sourceUrl       String?
   sourcePlatform  String?
 
+  rawDescription  String?
+  extractionStatus JobExtractionStatus @default(PENDING)
+
   searchText      String?
 
   experienceLevel ExperienceLevel?
@@ -434,7 +437,7 @@ model Job {
   jobQualifications JobQualification[]
   jobCertifications JobCertification[]
   jobSpecializations JobSpecialization[]
-  jobSubcategoryLinks JobSubcategoryLink[]
+  jobSubcategories    JobSubcategoryLink[]
   candidateJobScores CandidateJobScore[]
   applications        JobApplication[]
 
@@ -619,6 +622,43 @@ enum AlertFrequency {
   WEEKLY
 }
 
+// ============================================
+// 💳 PAYMENT & SUBSCRIPTION ENUMS
+// ============================================
+
+enum PaymentProvider {
+  MPESA
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUNDED
+}
+
+enum PaymentItemType {
+  SUBSCRIPTION
+  PRIORITY_APPLICATION
+  CV_REVIEW
+  FEATURED_JOB
+}
+
+enum SubscriptionTier {
+  FREE
+  BASIC_PREMIUM
+  PRO_PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PAST_DUE
+}
+
 enum RecommendationType {
   PRIMARY_MATCH
   INTEREST_MATCH
@@ -713,12 +753,15 @@ model User {
   passwordHash String?
   image       String?
   role        UserRole @default(CANDIDATE)
+  resetToken  String?
+  resetTokenExpires DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   accounts  Account[]
   candidates Candidate[]
   sessions  Session[]
+  company   Company?
 
   @@map("users")
 }
@@ -782,6 +825,7 @@ model Candidate {
   emailVerifiedAt   DateTime?
   locationCounty    String?
   country           String           @default("Kenya")
+  referralCode        String?                       @unique  // e.g. JOHN889
   onboardingStatus  OnboardingStatus @default(STARTED)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
@@ -802,6 +846,13 @@ model Candidate {
   jobViews            JobView[]
   applicationFunnels  ApplicationFunnel[]
   alerts             JobAlert[]           @relation("CandidateAlerts")
+  payments            Payment[]
+  subscription        Subscription?
+  premiumPurchases    PremiumPurchase[]
+  // Referral system
+  referralsMade       Referral[]                  @relation("ReferralReferrer")
+  referralsReceived   Referral[]                  @relation("ReferralReferred")
+  wallet              Wallet?
 
   @@map("candidates")
 }
@@ -1298,6 +1349,9 @@ model JobView {
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
+  @@index([candidateId])
+  @@index([jobId])
+  @@index([viewedAt])
   @@map("job_views")
 }
 
@@ -1314,6 +1368,9 @@ model ApplicationFunnel {
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
+  @@unique([jobId, candidateId])
+  @@index([candidateId])
+  @@index([jobId])
   @@map("application_funnel")
 }
 
@@ -1371,4 +1428,259 @@ model JobAlert {
   candidate        Candidate       @relation("CandidateAlerts", fields: [candidateId], references: [id], onDelete: Cascade)
 
   @@map("job_alerts")
+}
+
+// ============================================
+// 🏢 COMPANY (Recruiter organizations that post jobs)
+// ============================================
+
+model Company {
+  id          String   @id @default(cuid())
+  userId      String   @unique  // The recruiter User who owns this company
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  website     String?
+  description String?
+  industry    String?
+  size        String?  // e.g. "1-10", "11-50", "51-200", "201-500", "500+"
+  location    String?
+  isVerified  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([isActive])
+  @@index([industry])
+  @@map("companies")
+}
+
+// ============================================
+// 💳 PAYMENTS
+// ============================================
+
+model Payment {
+  id                String          @id @default(cuid())
+  candidateId       String
+  provider          PaymentProvider @default(MPESA)
+  providerTxId      String?         // M-Pesa MpesaReceiptNumber
+  phoneNumber       String?         // M-Pesa phone number (254...)
+  amount            Int             // Amount in KES (smallest unit not needed — whole shillings)
+  currency          String          @default("KES")
+  status            PaymentStatus   @default(PENDING)
+  itemType          PaymentItemType
+  referenceId       String?         // Links to subscription/purchase ID
+  description       String?         // Human-readable description
+  mpesaCheckoutId   String?         // M-Pesa CheckoutRequestID for polling
+  mpesaCallbackRaw  String?         // Full raw callback JSON for audit
+  failureReason     String?         // Why it failed
+  expiresAt         DateTime?       // STK Push expiry (10 min)
+  completedAt       DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([status])
+  @@index([providerTxId])
+  @@index([mpesaCheckoutId])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+// ============================================
+// 📅 SUBSCRIPTIONS
+// ============================================
+
+model Subscription {
+  id            String             @id @default(cuid())
+  candidateId   String             @unique  // One active subscription per candidate
+  tier          SubscriptionTier   @default(FREE)
+  status        SubscriptionStatus @default(ACTIVE)
+  amount        Int                // Monthly price in KES
+  startsAt      DateTime           @default(now())
+  expiresAt     DateTime?
+  cancelledAt   DateTime?
+  autoRenew     Boolean            @default(true)
+  paymentId     String?            // Last successful payment
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([expiresAt])
+  @@index([tier])
+  @@map("subscriptions")
+}
+
+// ============================================
+// 🛍️ PREMIUM PURCHASES (one-time: priority app, CV review)
+// ============================================
+
+model PremiumPurchase {
+  id            String           @id @default(cuid())
+  candidateId   String
+  itemType      PaymentItemType  // PRIORITY_APPLICATION, CV_REVIEW, FEATURED_JOB
+  jobId         String?          // For priority applications
+  amount        Int              // Price in KES
+  status        PaymentStatus    @default(PENDING)
+  paymentId     String?          // Linked payment
+  usedAt        DateTime?        // When the purchase was consumed
+  expiresAt     DateTime?        // If unused, when it expires
+  metadata      String?          // JSON string for extra data (CV review result, etc.)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([itemType])
+  @@index([status])
+  @@map("premium_purchases")
+}
+
+// ============================================
+// 🤝 REFERRAL SYSTEM
+// ============================================
+
+model CommissionTier {
+  id                String   @id @default(cuid())
+  minReferrals      Int      @default(0)    // Minimum paid referrals to unlock this rate
+  commissionPercent  Float    // e.g. 10.0 = 10%
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("commission_tiers")
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerId     String   // Candidate who referred
+  referredId     String   // Candidate who was referred
+  referralCode   String   // The code used at signup
+  status         ReferralStatus @default(PENDING)
+  firstPaymentAt DateTime? // When the referred user made their first payment
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  referrer   Candidate @relation("ReferralReferrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred   Candidate @relation("ReferralReferred", fields: [referredId], references: [id], onDelete: Cascade)
+  commissions ReferralCommission[]
+
+  @@unique([referrerId, referredId])
+  @@index([referrerId])
+  @@index([referredId])
+  @@index([referralCode])
+  @@map("referrals")
+}
+
+model ReferralCommission {
+  id                String   @id @default(cuid())
+  referralId        String
+  paymentId         String   // The payment that triggered this commission
+  amountPaid        Int      // How much the referred user paid (KES)
+  commissionPercent  Float    // Rate applied
+  commissionAmount  Int      // Actual commission earned (KES)
+  status            ReferralCommissionStatus @default(PENDING)
+  creditedAt        DateTime?
+  cooldownEndsAt    DateTime? // 48-hour fraud prevention window
+  createdAt         DateTime @default(now())
+
+  referral Referral @relation(fields: [referralId], references: [id], onDelete: Cascade)
+
+  @@unique([referralId, paymentId]) // One commission per payment per referral
+  @@index([referralId])
+  @@index([paymentId])
+  @@index([status])
+  @@map("referral_commissions")
+}
+
+model Wallet {
+  id                   String   @id @default(cuid())
+  candidateId          String   @unique
+  availableBalance     Int      @default(0)  // Withdrawable (past cooldown)
+  pendingBalance       Int      @default(0)  // Earned but within 48h cooldown
+  totalEarned          Int      @default(0)  // All-time commissions
+  totalWithdrawn       Int      @default(0)  // All-time withdrawals
+  minimumWithdrawal    Int      @default(1000) // KES threshold
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id              String            @id @default(cuid())
+  walletId        String
+  type            WalletTxType      // CREDIT or DEBIT
+  amount          Int               // KES
+  balanceAfter    Int               // Running balance after this tx
+  reference       String?           // Reference to commission/withdrawal ID
+  description     String
+  createdAt       DateTime          @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([createdAt])
+  @@map("wallet_transactions")
+}
+
+model Withdrawal {
+  id                 String         @id @default(cuid())
+  candidateId        String
+  amount             Int            // KES
+  phoneNumber        String         // M-Pesa number (254...)
+  status             WithdrawalStatus @default(PENDING)
+  conversationId     String?        // B2C OriginatorConversationID
+  mpesaReceipt       String?        // B2C receipt number on success
+  failureReason      String?
+  processedById      String?        // Admin who approved (if manual)
+  processedAt        DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([candidateId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("withdrawals")
+}
+
+// ============================================
+// 🤝 REFERRAL ENUMS
+// ============================================
+
+enum ReferralStatus {
+  PENDING           // Referred user signed up but hasn't paid yet
+  ACTIVE            // Referred user made at least one payment
+  REWARDED          // Referrer has earned commissions from this referral
+  FRAUD_FLAGGED     // Suspicious activity
+  DISQUALIFIED      // Self-referral or duplicate
+}
+
+enum ReferralCommissionStatus {
+  PENDING           // Within 48h cooldown
+  CREDITED          // Credited to wallet
+  CLAWED_BACK       // Reversed (e.g. payment was reversed)
+}
+
+enum WalletTxType {
+  CREDIT            // Commission earned
+  DEBIT             // Withdrawal
+}
+
+enum WithdrawalStatus {
+  PENDING           // Requested, awaiting processing
+  PROCESSING        // B2C request sent
+  SUCCESS           // M-Pesa confirmed payout
+  FAILED            // B2C failed, will retry or require manual intervention
+  REJECTED          // Admin rejected
 }

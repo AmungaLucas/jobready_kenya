@@ -57,7 +57,7 @@ export async function getJobsForMatching(): Promise<JobMatchData[]> {
     },
     include: {
       jobProfile: true,
-      jobSubcategoryLinks: { select: { subcategoryId: true } },
+      jobSubcategories: { select: { subcategoryId: true } },
       jobSkills: {
         where: { importance: 'MUST_HAVE' },
         select: { skillId: true },
@@ -73,7 +73,7 @@ export async function getJobsForMatching(): Promise<JobMatchData[]> {
     id: job.id,
     jobCategoryId: job.jobProfile?.jobCategoryId ?? null,
     primarySubcategoryId: job.jobProfile?.primarySubcategoryId ?? null,
-    subcategoryIds: job.jobSubcategoryLinks.map((l) => l.subcategoryId),
+    subcategoryIds: job.jobSubcategories.map((l) => l.subcategoryId),
     requiredSkillIds: job.jobSkills.map((s) => s.skillId),
     optionalSkillIds: [],
     requiredQualificationIds: job.jobQualifications
@@ -163,7 +163,7 @@ export async function computeAndSaveMatchesForJob(jobId: string): Promise<number
     include: {
       job: {
         include: {
-          jobSubcategoryLinks: { select: { subcategoryId: true } },
+          jobSubcategories: { select: { subcategoryId: true } },
           jobSkills: {
             where: { importance: 'MUST_HAVE' },
             select: { skillId: true },
@@ -183,7 +183,7 @@ export async function computeAndSaveMatchesForJob(jobId: string): Promise<number
     id: jobId,
     jobCategoryId: jobProfile.jobCategoryId,
     primarySubcategoryId: jobProfile.primarySubcategoryId,
-    subcategoryIds: jobProfile.job.jobSubcategoryLinks.map((l) => l.subcategoryId),
+    subcategoryIds: jobProfile.job.jobSubcategories.map((l) => l.subcategoryId),
     requiredSkillIds: jobProfile.job.jobSkills.map((s) => s.skillId),
     optionalSkillIds: [],
     requiredQualificationIds: jobProfile.job.jobQualifications

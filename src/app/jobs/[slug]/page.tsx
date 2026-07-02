@@ -5,6 +5,7 @@ import { generateJobPostingJsonLd, generateBreadcrumbJsonLd, SITE_URL } from '@/
 import JobDetailsContent from '@/components/jobboard/JobDetailsContent';
 import Navbar from '@/components/jobboard/Navbar';
 import Footer from '@/components/jobboard/Footer';
+import TrackJobView from '@/components/jobboard/TrackJobView';
 
 // Remote MySQL: force dynamic — no ISR caching to minimize connections on Vercel
 export const dynamic = 'force-dynamic';
@@ -194,6 +195,7 @@ export default async function JobDetailsPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
       <Navbar />
+      <TrackJobView jobId={job.id} />
       <JobDetailsContent job={formattedJob} similar={formattedSimilar} />
       <Footer />
     </>
